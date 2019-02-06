@@ -1,27 +1,27 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
+import { HttpClient, HttpRequest, HttpEventType, HttpResponse } from '@angular/common/http'
 
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
-
+const URL = 'https://localhost:44307/api/upload/';
 @Component({
   templateUrl: './importar-conferencia.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./importar-conferencia.scss']
 })
 export class ImportarConferenciaComponent {
+
+  public progress: number;
+  public message: string;
+  constructor(private http: HttpClient) { }
+
   uploader: FileUploader = new FileUploader({
     url: URL,
-    isHTML5: true
+    allowedFileType: ["pdf"]
   });
   hasBaseDropZoneOver = false;
-  hasAnotherDropZoneOver = false;
 
   // Angular2 File Upload
   fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
-  }
-
-  fileOverAnother(e: any): void {
-    this.hasAnotherDropZoneOver = e;
   }
 }

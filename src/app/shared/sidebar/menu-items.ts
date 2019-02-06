@@ -32,7 +32,7 @@ export const ROUTES: RouteInfo[] = [
     extralink: false,
     submenu: [
       {
-        path: '/importador/importaconferencia',
+        path: '/importador/importarconferencia',
         title: 'Arquivo Conferência',
         icon: '',
         class: '',
