@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import {ImportarConferenciaComponent } from './relatorio/importar-conferencia.component';
+import {ImportarConferenciaComponent } from './conferencia/importar-conferencia.component';
 
 export const ImportadorRoutes: Routes = [
   {
@@ -12,7 +12,7 @@ export const ImportadorRoutes: Routes = [
         data: {
           title: 'Importar Conferência',
           urls: [
-            { title: 'Importar Conferência', url: '/relatorio/ImportarConferencia' },
+            { title: 'Importar Conferência', url: '/conferencia/ImportarConferencia' },
             { title: 'Importar Conferência' }
           ]
         }

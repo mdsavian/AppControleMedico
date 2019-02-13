@@ -12,11 +12,11 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     children: [      
-      { path: 'dashboards', loadChildren: './dashboards/dashboard.module#DashboardModule' },      
       {
         path: 'starter',
         loadChildren: './starter/starter.module#StarterModule'
       },
+      { path: 'relatorio', loadChildren: './relatorio/relatorio.module#RelatorioModule' },
       {
         path: 'component',
         loadChildren: './component/component.module#ComponentsModule'

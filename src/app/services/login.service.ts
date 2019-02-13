@@ -27,7 +27,7 @@ export class LoginService {
 
   }
 
-  public login(usuario:Usuario) {
+  public login(usuario: Usuario) {
     return this.http.post<Usuario>(this.accessPointUrl, usuario).pipe(map(usuario => {
       if (usuario && usuario.token) {
         localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
@@ -45,6 +45,13 @@ export class LoginService {
   }
 
   public get usuarioCorrenteValor(): Usuario {
-    return this.usuarioCorrenteSubject.value;
+    var usuario = this.usuarioCorrenteSubject.value;
+
+    // this.http.post<Usuario>(this.accessPointUrl, usuario).pipe(map(usuario => {
+    //   if (usuario && usuario.token) {
+    //     localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
+    //     this.usuarioCorrenteSubject.next(usuario);
+    //   }
+    return usuario;
   }
 }
