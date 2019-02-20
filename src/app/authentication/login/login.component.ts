@@ -17,10 +17,7 @@ export class LoginComponent implements OnInit {
     this.loginService.logout();
   }
 
-  usuario : Usuario = {login : "", senha:"", nomeCompleto: "",ativo:true, id : "",
-  cpf: "", dataNascimento: new Date('01/01/0001'), token:"", rg: "", genero: 1,celular: "", email: "",  cep: "", endereco: "", numero: "",
-    complemento: "", bairro: "", cidade: "", uf: "", permissaoAdministrador : false, visualizaValoresRelatorios : false, tipoUsuario : 0};
-
+  usuario : Usuario = {login : "", senha:"", token:"", permissaoAdministrador : false, ativo:true, visualizaValoresRelatorios : false, tipoUsuario : 0, medicoId :""};
   onLoggedin() {    
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       data=> {

@@ -1,50 +1,28 @@
 import { Component, ViewChild } from '@angular/core';
+import { ImportadorService } from '../../services/importador.service';
+import { plainToClass } from 'class-transformer';
+import { DadosRelatorioUnimed } from '../../modelos/dados_relatorio_unimed';
 
-declare var require: any;
-const data: any = require('./company.json');
 @Component({
   selector: 'app-relatorio-unimed',
   templateUrl: './relatorio-unimed.component.html',
   styleUrls: ['./relatorio-unimed.css']
 })
 export class RelatorioUnimedComponent {
-  editing = {};
-  rows = [];
-  temp = [...data];
+   
+  @ViewChild(RelatorioUnimedComponent)
+  table: RelatorioUnimedComponent;
 
   loadingIndicator = true;
   reorderable = true;
 
-  columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company' }];
+  rows = [];
+  columns = [{ name: 'Data' },{name:'Beneficiário', prop:'beneficiario' }, { name:"Código Movimento", prop: 'codigoMovimento' }, 
+             { name: 'Servico'}, {name:"Valor Produto", prop:"valorProduto"},{name:"Valor Participação", prop:"valorParticipacao"}];
 
-  @ViewChild(RelatorioUnimedComponent)
-  table: RelatorioUnimedComponent;
-  constructor() {
-    this.rows = data;
-    this.temp = [...data];
-    setTimeout(() => {
-      this.loadingIndicator = false;
-    }, 1500);
+  constructor(private importadorService:ImportadorService) {   
+    var data  = this.importadorService.RetornaDados();
+    this.rows = JSON.parse(data);  
   }
-
-  updateFilter(event) {
-    const val = event.target.value.toLowerCase();
-
-    // filter our data
-    const temp = this.temp.filter(function(d) {
-      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
-    });
-
-    // update the rows
-    this.rows = temp;
-    // Whenever the filter changes, always go back to the first page
-    this.table = data;
-  }
-  updateValue(event, cell, rowIndex) {
-    console.log('inline editing rowIndex', rowIndex);
-    this.editing[rowIndex + '-' + cell] = false;
-    this.rows[rowIndex][cell] = event.target.value;
-    this.rows = [...this.rows];
-    console.log('UPDATED!', this.rows[rowIndex][cell]);
-  }
+  
 }

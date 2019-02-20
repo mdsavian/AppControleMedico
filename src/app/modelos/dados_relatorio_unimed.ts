@@ -1,3 +1,5 @@
+import { Entidade } from "./entidade";
+
 export class DadosRelatorioUnimed {
 
     data: Date;
@@ -11,4 +13,12 @@ export class DadosRelatorioUnimed {
     valorProduto: number;
     valorParticipacao: number;
     prevPagamento: number;
+    convenio:string;
+
+    fillFromJSON(json: string) {
+        var jsonObj = JSON.parse(json);
+        for (var propName in jsonObj) {
+            this[propName] = jsonObj[propName]
+        }
+    }
 }

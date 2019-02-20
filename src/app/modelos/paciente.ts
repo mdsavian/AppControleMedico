@@ -12,10 +12,9 @@ export class Paciente extends Pessoa {
   nomeMae: string;    
   estadoCivil: number;
   tipoSanguineo: number;
-  imagem: string;
+  
   ocupacao: string;
-  
-  
+    
   telefone: string;    
   aceitaReceberSms: boolean;
   responsavel: string;

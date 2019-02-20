@@ -7,7 +7,6 @@ import { ImportarConferenciaComponent } from './conferencia/importar-conferencia
 import { ImportadorRoutes } from './importador.routing';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
 
-
 @NgModule({
   imports: [NgbModule, FileUploadModule, CommonModule, RouterModule.forChild(ImportadorRoutes), FormsModule],
   declarations: [ImportarConferenciaComponent]

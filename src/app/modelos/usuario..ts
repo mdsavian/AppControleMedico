@@ -1,10 +1,4 @@
-import { Pessoa } from "./pessoa";
-
-export class Usuario extends Pessoa{
-
-  constructor() {
-    super();
-  }
+export class Usuario{
 
   tipoUsuario : number;
   login : string;
@@ -12,4 +6,6 @@ export class Usuario extends Pessoa{
   permissaoAdministrador : boolean;
   visualizaValoresRelatorios : boolean;
   token:string;
+  medicoId:string;
+  ativo:boolean;
 }

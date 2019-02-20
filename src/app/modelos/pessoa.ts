@@ -13,6 +13,8 @@ export class Pessoa extends Entidade {
     celular: string;
     email: string;
     ativo:boolean;
+    imagem: string;
+    
     cep: string;
     endereco: string;
     numero: string;
@@ -20,4 +22,5 @@ export class Pessoa extends Entidade {
     bairro: string;
     cidade: string;
     uf: string;
+    
 }

@@ -61,6 +61,16 @@ export const ROUTES: RouteInfo[] = [
         labelClass: '',
         extralink: false,
         submenu: []
+      },
+      {
+        path: '/cadastros/cadastromedico',
+        title: 'Medíco',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
       }
     ]
   },
