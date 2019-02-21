@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Medico } from '../modelos/medico';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +14,15 @@ export class MedicoService {
     this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
    }
 
-   public salvar(medico) {
-    return this.http.post(this.accessPointUrl + '/' + medico, {headers: this.headers});
+   public salvar(medico:Medico) {
 
+    return this.http.post<Medico>(this.accessPointUrl, medico);
   }
+
+  //  public salvar(medico) {
+  //   return this.http.post(this.accessPointUrl + '/' + medico, {headers: this.headers});
+
+  // }
 
 
 }

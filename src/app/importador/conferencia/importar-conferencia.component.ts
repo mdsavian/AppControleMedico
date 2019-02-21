@@ -1,10 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FileUploader, FileItem, ParsedResponseHeaders } from 'ng2-file-upload/ng2-file-upload';
 import { HttpClient } from '@angular/common/http'
-import { DadosRelatorioUnimed } from '../../modelos/dados_relatorio_unimed';
 import { ImportadorService } from '../../services/importador.service';
 import { Router } from '@angular/router';
-import { classToPlain, plainToClass } from "class-transformer";
 
 const URL = 'https://localhost:44307/api/upload/';
 @Component({

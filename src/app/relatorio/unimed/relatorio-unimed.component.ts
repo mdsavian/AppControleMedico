@@ -1,7 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { ImportadorService } from '../../services/importador.service';
-import { plainToClass } from 'class-transformer';
-import { DadosRelatorioUnimed } from '../../modelos/dados_relatorio_unimed';
 
 @Component({
   selector: 'app-relatorio-unimed',

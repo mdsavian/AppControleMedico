@@ -52,10 +52,10 @@
                                 </button>
                               </div>
                               <input id="dataNascimento" name="dataNascimento" class="form-control" required
-                                [(ngModel)]="medico.dataNascimento" ngbDatepicker #dataNascimento="ngbDatepicker">
-                              <div *ngIf="dataNascimento.invalid && (dataNascimento.dirty || dataNascimento.touched)"
+                                [(ngModel)]="data" ngbDatepicker>
+                              <div *ngIf="data.invalid && (data.dirty || data.touched)"
                                 class="alert alert-danger">
-                                <div *ngIf="dataNascimento.errors.required"> Data de Nascimento Obrigatória. </div>
+                                <div *ngIf="data.errors.required"> Data de Nascimento Obrigatória. </div>
                               </div>
                             </div>
                           </div>

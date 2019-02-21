@@ -1,6 +1,4 @@
 import { Injectable } from "@angular/core";
-import { DadosRelatorioUnimed } from "../modelos/dados_relatorio_unimed";
-
 @Injectable({
     providedIn: 'root'
   })

@@ -46,12 +46,6 @@ export class LoginService {
 
   public get usuarioCorrenteValor(): Usuario {
     var usuario = this.usuarioCorrenteSubject.value;
-
-    // this.http.post<Usuario>(this.accessPointUrl, usuario).pipe(map(usuario => {
-    //   if (usuario && usuario.token) {
-    //     localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
-    //     this.usuarioCorrenteSubject.next(usuario);
-    //   }
     return usuario;
   }
 }
