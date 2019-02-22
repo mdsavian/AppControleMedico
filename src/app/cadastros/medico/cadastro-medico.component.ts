@@ -29,7 +29,7 @@ export class CadastroMedicoComponent implements OnInit {
   }
   medico: Medico = {
     id : "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "",
-    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm : "", convenios: Array<ConvenioMedico>
+    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm : "", convenios: new Array<ConvenioMedico>
   };
 
   public onSubmit(): void {
@@ -49,7 +49,7 @@ export class CadastroMedicoComponent implements OnInit {
 
   public buscaConvenios()
   {
-    var xx = this.convenioMedicoService.ConvenioMedico(this.medico.id);
+    var xx = this.convenioMedicoService.ConvenioMedico(this.medico.id).subscribe(c=> console.log(c));
     console.log(xx);
   }
 

@@ -24,6 +24,10 @@ export class AuthGuard implements CanActivate {
     }
 
     ValidaUsuario(usuario:Usuario) : boolean {
+        var data = new Date(Date.parse(usuario.token.substring(0, 19)));
+        console.log(usuario.token.substring(0, 19))
+        console.log("login " + data + " " + data.valueOf());
+        console.log(new Date().valueOf());
         if (Date.parse(usuario.token.substring(0, 19)) - Date.now() > 30) {
             console.log("opa passou");
         }
