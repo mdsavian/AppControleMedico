@@ -1,4 +1,6 @@
 import { Pessoa } from "./pessoa";
+import { Convenio } from "./convenio";
+import { ConvenioMedico } from "./convenioMedico";
 
 export class Medico extends Pessoa {
 
@@ -7,4 +9,5 @@ export class Medico extends Pessoa {
   }
 
   crm : string;  
+  convenios :ConvenioMedico[];
 }

@@ -64,7 +64,17 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/cadastros/cadastromedico',
-        title: 'Medíco',
+        title: 'Médico',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
+        path: '/cadastros/cadastroconvenio',
+        title: 'Convênio',
         icon: '',
         class: '',
         label: '',
