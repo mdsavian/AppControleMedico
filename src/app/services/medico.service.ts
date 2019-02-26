@@ -19,6 +19,11 @@ export class MedicoService {
     return this.http.post<Medico>(this.accessPointUrl, medico);
   }
 
+  public buscarPorId(medicoId:string) {
+
+    return this.http.get<Medico>(this.accessPointUrl + "/buscarPorId/" + medicoId);
+  }
+
   public Todos() 
   {
     return this.http.get<Array<Medico>>(this.accessPointUrl);

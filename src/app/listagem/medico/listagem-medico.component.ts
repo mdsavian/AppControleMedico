@@ -25,23 +25,20 @@ export class ListagemMedicoComponent {
   settings = tableData.settings;
 
   deletarRegistro(event)
-  {
-    alert.
+  {    
     console.log("opa");
     return false;
   }
 
   editarRegistro(event)
-  {
-    console.log(event.data.id);
+  {    
+    this.router.navigate(['/cadastros/cadastromedico'], { queryParams: { id: event.data.id } });
     return false;
   }
 
   criarRegistro(event)
   {
     this.router.navigate(['/cadastros/cadastromedico']);
-
-    return false;
   }
 }
 

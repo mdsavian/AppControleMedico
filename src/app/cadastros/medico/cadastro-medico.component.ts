@@ -7,7 +7,7 @@ import { Util } from '../../uteis/Util';
 import { DragulaService } from 'ng2-dragula';
 import { ConvenioMedicoService } from '../../services/convenioMedico.service';
 import { ConvenioMedico } from '../../modelos/convenioMedico';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -18,16 +18,25 @@ import { Router } from '@angular/router';
 
 export class CadastroMedicoComponent implements OnInit {
   estados = Estados;
-  public ngOnInit(): void {
+  public ngOnInit(): void {    
 
+    this.route.params.subscribe(params=> {
+      if(params['id'] != ""){
+        this.medicoService.buscarPorId(params['id']).subscribe(dado=> {
+          this.medico = dado;
+        });
+      }
+    });
+
+    
   }
   data : NgbDate = new NgbDate(1901,1,1);  
   public many2: Array<string> = ['Explore', 'them'];
-
+  medicoId:string;
 
   constructor(private medicoService: MedicoService, private dragulaService : DragulaService, 
-    private convenioMedicoService:ConvenioMedicoService,private router: Router) {
-    this.buscaConvenios();
+    private convenioMedicoService:ConvenioMedicoService,private route: ActivatedRoute, private router :Router) {
+    
   }
   medico: Medico = {
     id : "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "",
@@ -38,12 +47,11 @@ export class CadastroMedicoComponent implements OnInit {
     this.medico.dataNascimento = new Util().converteData(this.data);
     this.medicoService.salvar(this.medico).subscribe(
       data=> {
-        console.log("id = " + data.id);
         this.router.navigate(["listagem/listagemmedico"]);
       },
       error=>
       {
-        
+        //show modal erro
       }
     )
   }
