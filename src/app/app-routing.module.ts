@@ -24,6 +24,7 @@ export const routes: Routes = [
       { path: 'icons', loadChildren: './icons/icons.module#IconsModule' },
       { path: 'forms', loadChildren: './form/forms.module#FormModule' },
 
+      { path: 'listagem', loadChildren: './listagem/listagem.module#ListagemModule', canActivate: [AuthGuard] },
       { path: 'cadastros', loadChildren: './cadastros/cadastros.module#CadastrosModule', canActivate: [AuthGuard] },
       { path: 'importador', loadChildren: './importador/importador.module#ImportadorModule', canActivate: [AuthGuard] },
       

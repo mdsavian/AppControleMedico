@@ -21,6 +21,7 @@ export class LoginService {
   private accessPointUrl: string = 'https://localhost:44307/api/login/';
 
   constructor(private http: HttpClient) {
+    this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
 
     this.usuarioCorrenteSubject = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem('usuarioCorrente')));
     this.usuarioCorrente = this.usuarioCorrenteSubject.asObservable();
@@ -47,5 +48,10 @@ export class LoginService {
   public get usuarioCorrenteValor(): Usuario {
     var usuario = this.usuarioCorrenteSubject.value;
     return usuario;
+  }
+
+  public validaUsuario(usuario: Usuario): void {
+    var param = usuario.token.replace('/', '-');
+    this.http.get<boolean>(this.accessPointUrl + "validaUsuario/" + param, { headers: this.headers }).subscribe(c => console.log(c));
   }
 }

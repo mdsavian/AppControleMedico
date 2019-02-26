@@ -63,7 +63,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
       },
       {
-        path: '/cadastros/cadastromedico',
+        path: '/listagem/listagemmedico',
         title: 'Médico',
         icon: '',
         class: '',

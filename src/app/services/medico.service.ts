@@ -19,6 +19,11 @@ export class MedicoService {
     return this.http.post<Medico>(this.accessPointUrl, medico);
   }
 
+  public Todos() 
+  {
+    return this.http.get<Array<Medico>>(this.accessPointUrl);
+  }
+
   //  public salvar(medico) {
   //   return this.http.post(this.accessPointUrl + '/' + medico, {headers: this.headers});
 

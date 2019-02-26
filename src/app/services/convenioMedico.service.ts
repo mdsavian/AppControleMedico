@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConvenioMedico } from '../modelos/convenioMedico';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { ConvenioMedico } from '../modelos/convenioMedico';
 export class ConvenioMedicoService {
 
     private headers: HttpHeaders;
-    private accessPointUrl: string = 'https://localhost:44307/api/convenio';
+    private accessPointUrl: string = 'https://localhost:44307/api/convenioMedico';
   
     constructor(private http: HttpClient) {
       this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
@@ -25,8 +25,10 @@ export class ConvenioMedicoService {
     }
 
     public ConvenioMedico(medicoId:string)
-    {
-        return this.http.get<ConvenioMedico[]>(this.accessPointUrl + "/medicoId=" + medicoId);
+    {      
+      medicoId="5c6f21fbcfa4b03eb8dd154e";
+      console.log(medicoId);
+      return this.http.get<Array<ConvenioMedico>>(this.accessPointUrl + "/convenioDoMedico/" + medicoId, {headers:this.headers} );
     }
   
 }

@@ -29,11 +29,10 @@ export class CadastroMedicoComponent implements OnInit {
   }
   medico: Medico = {
     id : "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "",
-    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm : "", convenios: new Array<ConvenioMedico>
+    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm : "", convenios: new Array<ConvenioMedico>()
   };
 
   public onSubmit(): void {
-    console.log("data" + this.medico.dataNascimento);
     this.medico.dataNascimento = new Util().converteData(this.data);
     this.medicoService.salvar(this.medico).subscribe(
       data=> {
@@ -49,8 +48,20 @@ export class CadastroMedicoComponent implements OnInit {
 
   public buscaConvenios()
   {
-    var xx = this.convenioMedicoService.ConvenioMedico(this.medico.id).subscribe(c=> console.log(c));
-    console.log(xx);
+    var convenios :ConvenioMedico[];
+    //if (this.medico.id != "")
+      var xx = this.convenioMedicoService.ConvenioMedico(this.medico.id).subscribe(c=> {convenios = c;
+        console.log("opa " + convenios);
+        console.log("OLHA O RETORNO " + c)
+      
+        convenios.forEach(element => {
+          console.log(element.id);
+          
+        });
+      },error=> {console.log(error.error)});
+
+      
+      
   }
 
   
