@@ -7,6 +7,7 @@ import { Util } from '../../uteis/Util';
 import { DragulaService } from 'ng2-dragula';
 import { ConvenioMedicoService } from '../../services/convenioMedico.service';
 import { ConvenioMedico } from '../../modelos/convenioMedico';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -24,7 +25,8 @@ export class CadastroMedicoComponent implements OnInit {
   public many2: Array<string> = ['Explore', 'them'];
 
 
-  constructor(private medicoService: MedicoService, private dragulaService : DragulaService, private convenioMedicoService:ConvenioMedicoService) {
+  constructor(private medicoService: MedicoService, private dragulaService : DragulaService, 
+    private convenioMedicoService:ConvenioMedicoService,private router: Router) {
     this.buscaConvenios();
   }
   medico: Medico = {
@@ -37,7 +39,7 @@ export class CadastroMedicoComponent implements OnInit {
     this.medicoService.salvar(this.medico).subscribe(
       data=> {
         console.log("id = " + data.id);
-        // this.router.navigate(["cadastros/cadastropaciente"]);
+        this.router.navigate(["listagem/listagemmedico"]);
       },
       error=>
       {

@@ -26,22 +26,13 @@ export class AuthGuard implements CanActivate {
 
     ValidaUsuario(usuario:Usuario) : boolean {
 
-        this.loginService.validaUsuario(usuario);
-        
-
-        // var util = new Util();
-        // var data = util.stringParaData(usuario.token.substring(0, 19));
-        
-        // console.log("=== " + data.toLocaleString() + "  " + new Date());
-        // console.log(data.getTime()  - new Date().getTime());
-
-
-        // console.log(usuario.token.substring(0, 10) + " 1111 " + usuario.token.substring(11, 19))
-        // console.log(usuario.token.substring(0, 10) + " 1111 " + usuario.token.substring(11, 19))
-        // // console.log("login " + data + " " + data.valueOf());
-        // if (Date.parse(usuario.token.substring(0, 19)) - Date.now() > 30) {
-        //     console.log("opa passou");
-        // }
+        this.loginService.validaUsuario(usuario).subscribe(c=> {
+            if (c == false)
+            {
+                this.loginService.logout();
+                this.router.navigate(['/authentication/login']); 
+            }
+        });
 
         return true;
     }

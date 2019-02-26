@@ -3,7 +3,8 @@
         <div class="card">
             <div class="card-body">                
                 <div class="table table-responsive smart-table">
-                    <ng2-smart-table [settings]="settings" [source]="source" class=""></ng2-smart-table>
+                    <ng2-smart-table [settings]="settings" [source]="source" class=""
+                    (edit)="editarRegistro($event)" (create)="criarRegistro($event)" (delete)="deletarRegistro($event)"></ng2-smart-table>
                 </div>
             </div>
         </div>

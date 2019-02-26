@@ -50,8 +50,7 @@ export class LoginService {
     return usuario;
   }
 
-  public validaUsuario(usuario: Usuario): void {
-    var param = usuario.token.replace('/', '-');
-    this.http.get<boolean>(this.accessPointUrl + "validaUsuario/" + param, { headers: this.headers }).subscribe(c => console.log(c));
+  public validaUsuario(usuario: Usuario) {
+    return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers });
   }
 }
