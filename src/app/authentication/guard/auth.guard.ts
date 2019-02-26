@@ -26,13 +26,13 @@ export class AuthGuard implements CanActivate {
 
     ValidaUsuario(usuario:Usuario) : boolean {
 
-        this.loginService.validaUsuario(usuario).subscribe(c=> {
-            if (c == false)
-            {
-                this.loginService.logout();
-                this.router.navigate(['/authentication/login']); 
-            }
-        });
+        // this.loginService.validaUsuario(usuario).subscribe(c=> {
+        //     if (c == false)
+        //     {
+        //         this.loginService.logout();
+        //         this.router.navigate(['/authentication/login']); 
+        //     }
+        // });
 
         return true;
     }

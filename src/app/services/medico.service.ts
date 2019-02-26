@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 })
 export class MedicoService {
   private headers: HttpHeaders;
-  private accessPointUrl: string = 'https://localhost:44307/api/medico';
+  private accessPointUrl: string = 'https://localhost:44307/api/medico/';
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
@@ -21,7 +21,7 @@ export class MedicoService {
 
   public buscarPorId(medicoId:string) {
 
-    return this.http.get<Medico>(this.accessPointUrl + "/buscarPorId/" + medicoId);
+    return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
   }
 
   public Todos() 

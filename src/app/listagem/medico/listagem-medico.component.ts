@@ -32,7 +32,7 @@ export class ListagemMedicoComponent {
 
   editarRegistro(event)
   {    
-    this.router.navigate(['/cadastros/cadastromedico'], { queryParams: { id: event.data.id } });
+    this.router.navigate(['/cadastros/cadastromedico/', {id:event.data.id}]);
     return false;
   }
 
