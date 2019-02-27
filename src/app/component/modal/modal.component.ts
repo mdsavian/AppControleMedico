@@ -30,6 +30,7 @@ export class NgbdModalBasicComponent {
   ) {}
 
   open2(content) {
+    console.log(content);
     this.modalService.open(content).result.then(
       result => {
         this.closeResult = `Closed with: ${result}`;

@@ -29,10 +29,12 @@ export class MedicoService {
     return this.http.get<Array<Medico>>(this.accessPointUrl);
   }
 
-  //  public salvar(medico) {
-  //   return this.http.post(this.accessPointUrl + '/' + medico, {headers: this.headers});
+  Excluir(medicoId)
+  {
+    console.log("excluir : " + medicoId);
+    return this.http.post<string>(this.accessPointUrl + "excluirPorId", medicoId, { headers: this.headers });
 
-  // }
+  }
 
 
 }

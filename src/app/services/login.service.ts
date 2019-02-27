@@ -51,6 +51,8 @@ export class LoginService {
   }
 
   public validaUsuario(usuario: Usuario) {
-    return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers });
+    return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {
+      return retorno;
+    }));
   }
 }
