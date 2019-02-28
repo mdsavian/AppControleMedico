@@ -4,7 +4,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';
 import { Router } from '@angular/router';
-import {  NgbModal,  ModalDismissReasons,  NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   templateUrl: './listagem-medico.component.html'
@@ -15,23 +15,21 @@ export class ListagemMedicoComponent {
   public isSpinnerVisible = false;
   closeResult: string;
 
-constructor(private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
+constructor( private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
     this.buscaMedicos();
+    this.isSpinnerVisible = false;
   }
-
+  
   buscaMedicos(): void {
     this.medicoService.Todos().subscribe(dados => {
-      this.listaMedicos = dados;      
-      this.source = new LocalDataSource(this.listaMedicos); // create the source
-      this.isSpinnerVisible = false;
+      this.listaMedicos = dados;     
+      this.source = new LocalDataSource(this.listaMedicos);      
     });
   }
   settings = tableData.settings;
 
   deletarRegistro(event, modalExcluir) {
-    console.log("opa");
-
     this.modalService.open(modalExcluir).result.then(
       result => {
         if (result == 'Sim')

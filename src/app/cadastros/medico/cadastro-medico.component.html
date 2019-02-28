@@ -143,8 +143,6 @@
                         </div>
                       </div>
                     </div>
-
-
                     <div class="row rowcadastro">
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
@@ -158,15 +156,15 @@
                       </div>
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="estado">Estado(*)</label>
-                          <select class="form-control" [(ngModel)]="medico.estado" #estado="ngModel" id="estado"
-                            name="estado" required>
+                          <label class="control-label" for="uf">Estado(*)</label>
+                          <select class="form-control" [(ngModel)]="medico.uf" #uf="ngModel" id="uf"
+                            name="uf" required>
                             <option *ngFor="let codigo of estados | enumToArray">
                               {{codigo}}
                             </option>
                           </select>
-                          <div *ngIf="estado.invalid && (estado.dirty || estado.touched)" class="alert alert-danger">
-                            <div *ngIf="estado.errors.required">Estado Obrigatório. </div>
+                          <div *ngIf="uf.invalid && (uf.dirty || uf.touched)" class="alert alert-danger">
+                            <div *ngIf="uf.errors.required">Estado Obrigatório. </div>
                           </div>
                         </div>
                       </div>

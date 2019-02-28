@@ -1,23 +1,19 @@
-
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-body">                
+            <div class="card-body">
+                <div class="spinner" *ngIf=isSpinnerVisible>
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
                 <div class="table table-responsive smart-table" *ngIf=!isSpinnerVisible>
-                    <ng2-smart-table [settings]="settings" [source]="source" class=""
-                    (edit)="editarRegistro($event)" (create)="criarRegistro($event)" (delete)="deletarRegistro($event, modalExcluir)"></ng2-smart-table>
+                    <ng2-smart-table [settings]="settings" [source]="source" class="" (edit)="editarRegistro($event)"
+                        (create)="criarRegistro($event)" (delete)="deletarRegistro($event, modalExcluir)">
+                    </ng2-smart-table>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="preloader" *ngIf="isSpinnerVisible">
-        <div class="spinner">
-          <div class="double-bounce1"></div>
-          <div class="double-bounce2"></div>
-        </div>
-    </div>
-
 </div>
 
 <ng-template #modalExcluir id="modalExcluir" let-c="close" let-d="dismiss">
@@ -35,6 +31,3 @@
         <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
     </div>
 </ng-template>
-
-
-
