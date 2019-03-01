@@ -60,7 +60,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormsModule,
     HttpClientModule,
     NgbModule.forRoot(),
-    DragulaModule,
+    DragulaModule.forRoot(),
     PerfectScrollbarModule,
     AppRoutingModule,
     WebcamModule

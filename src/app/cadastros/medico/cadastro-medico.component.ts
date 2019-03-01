@@ -60,13 +60,12 @@ export class CadastroMedicoComponent implements OnInit {
   constructor(private medicoService: MedicoService, dragulaService: DragulaService, private convenioService :ConvenioService,
     private convenioMedicoService: ConvenioMedicoService, private route: ActivatedRoute, private router: Router) {
 
-      dragulaService.setOptions('PERSON', {
+      dragulaService.createGroup('PERSON', {
         copy: (el, source) => {
-          return source.id === 'left';
+          return source.id === 'convenios';
         },
         copyItem: (convenio: Convenio) => {
-          return new Convenio(convenio.nomeConvenio,convenio.diasRetorno, convenio.id);
-          
+          return new Convenio(convenio.nomeConvenio,convenio.diasRetorno, convenio.id);          
         },
         accepts: (el, target, source, sibling) => {
           // To avoid dragging from right to left container
