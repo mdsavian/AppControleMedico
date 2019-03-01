@@ -29,7 +29,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SpinnerComponent } from './shared/spinner.component';
-
+import { DragulaModule } from 'ng2-dragula';
 
 import { UsuarioService } from './services/usuario.service';
 import { JwtInterceptor } from './uteis/jwt.interceptor';
@@ -60,18 +60,19 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormsModule,
     HttpClientModule,
     NgbModule.forRoot(),
+    DragulaModule,
     PerfectScrollbarModule,
     AppRoutingModule,
     WebcamModule
   ],
   providers: [
-    {provide:LOCALE_ID, useValue: "pt"},
+    { provide: LOCALE_ID, useValue: "pt" },
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
     },
-    {provide:HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
-    {provide:HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi:true},
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy
@@ -80,4 +81,4 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

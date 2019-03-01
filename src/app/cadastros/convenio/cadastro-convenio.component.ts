@@ -17,7 +17,7 @@ export class CadastroConvenioComponent implements OnInit {
   }
 
   convenio: Convenio = {
-    id: "", nomeConvenio: "", diasRetorno: 0, medicoId: ""
+    id: "", nomeConvenio: "", diasRetorno: 0
   };
 
   public onSubmit(): void {
