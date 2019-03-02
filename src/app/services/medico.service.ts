@@ -11,29 +11,25 @@ export class MedicoService {
   private accessPointUrl: string = 'https://localhost:44307/api/medico/';
 
   constructor(private http: HttpClient) {
-    this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
-   }
+    this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
+  }
 
-   public salvar(medico:Medico) {
+  public salvar(medico: Medico) {
 
     return this.http.post<Medico>(this.accessPointUrl, medico);
   }
 
-  public buscarPorId(medicoId:string) {
+  public buscarPorId(medicoId: string) {
 
     return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
   }
 
-  public Todos() 
-  {
+  public Todos() {
     return this.http.get<Array<Medico>>(this.accessPointUrl);
   }
 
-  Excluir(medicoId)
-  {
-    console.log("excluir : " + medicoId);
-    return this.http.post<string>(this.accessPointUrl + "excluirPorId", medicoId, { headers: this.headers });
-
+  public Excluir(medicoId) {
+    return this.http.delete(this.accessPointUrl + "excluirPorId/" + medicoId);
   }
 
 

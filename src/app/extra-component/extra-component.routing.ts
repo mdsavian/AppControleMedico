@@ -3,7 +3,6 @@ import { Routes } from '@angular/router';
 import { ToastrComponent } from './toastr/toastr.component';
 import { UploadComponent } from './file-upload/upload.component';
 import { EditorComponent } from './editor/editor.component';
-import { DragComponent } from './drag-n-drop/drag.component';
 
 export const ExtraComponentsRoutes: Routes = [
   {
@@ -39,17 +38,6 @@ export const ExtraComponentsRoutes: Routes = [
           urls: [
             { title: 'Dashboard', url: '/dashboard' },
             { title: 'Editor Page' }
-          ]
-        }
-      },
-      {
-        path: 'dragndrop',
-        component: DragComponent,
-        data: {
-          title: 'DragComponent Page',
-          urls: [
-            { title: 'Dashboard', url: '/dashboard' },
-            { title: 'DragComponent Page' }
           ]
         }
       }

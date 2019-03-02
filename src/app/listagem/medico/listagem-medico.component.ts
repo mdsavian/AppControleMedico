@@ -34,7 +34,6 @@ constructor( private medicoService: MedicoService, private router: Router, priva
       result => {
         if (result == 'Sim')
         {
-          console.log(event.data.id);
           this.medicoService.Excluir(event.data.id).subscribe(retorno=> {
           if (retorno)
           {

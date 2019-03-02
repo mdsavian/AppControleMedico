@@ -1,5 +1,6 @@
 export const settings = {
   mode:'external',
+  noDataMessage:"Não foi encontrado nenhum registro",
   columns: {
     nomeCompleto: {
       title: 'Nome',
