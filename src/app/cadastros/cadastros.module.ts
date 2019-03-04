@@ -3,16 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgxMaskModule} from 'ngx-mask';
 import { DragulaModule } from 'ng2-dragula';
-
+import { UteisModule } from '../uteis/uteis.module'
 import { CadastrosRoutes } from './cadastros.routing';
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
-import { EnumToArrayPipe } from "../uteis/enumtoarray";
+import { DatePipe } from '@angular/common';
+
 
 @NgModule({
-  imports: [NgbModule,CommonModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot()],
-  declarations: [CadastroPacienteComponent, EnumToArrayPipe, CadastroMedicoComponent, CadastroConvenioComponent]
+  imports: [NgbModule,UteisModule, CommonModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
+  declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent]
 })
-export class CadastrosModule {}
+export class CadastrosModule { }

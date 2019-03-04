@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { EnumToArrayPipe } from '../uteis/enumToArray'
+import { EnumToArrayPipe } from './enumToArray.pipe'
 
 @NgModule({
   imports: [

@@ -7,7 +7,7 @@
                     <div class="double-bounce2"></div>
                 </div>
                 <div class="table table-responsive smart-table" *ngIf=!isSpinnerVisible>
-                    <ng2-smart-table [settings]="settings" [source]="source" class="" (edit)="editarRegistro($event)"
+                    <ng2-smart-table [(settings)]="settings" [(source)]="source" class="" (edit)="editarRegistro($event)"
                         (create)="criarRegistro($event)" (delete)="deletarRegistro($event, modalExcluir)">
                     </ng2-smart-table>
                 </div>

@@ -33,6 +33,7 @@ import {environment} from '../environments/environment';
 
 import { UsuarioService } from './services/usuario.service';
 
+import {NgxMaskModule} from 'ngx-mask'
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { JwtInterceptor } from './uteis/jwt.interceptor';
@@ -62,6 +63,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     UteisModule,
     HttpClientModule,
     NgbModule.forRoot(),
+    NgxMaskModule.forRoot(),
     PerfectScrollbarModule,
     AppRoutingModule,
     WebcamModule

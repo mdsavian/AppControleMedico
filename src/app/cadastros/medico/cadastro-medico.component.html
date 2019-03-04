@@ -42,22 +42,19 @@
                     </div>
 
                     <div class="row rowcadastro">
+
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="dataNascimento">Data de Nascimento(*)</label>
                           <div class="input-group">
-                            <div class="input-group mb-3">
-
-                              <div class="input-group-prepend">
-                                <button class="input-group-text" (click)="dataNascimento.toggle()" type="button">
-                                  <i class="fa fa-calendar"></i>
-                                </button>
-                              </div>
-                              <input id="dataNascimento" name="dataNascimento" class="form-control" required
-                                [(ngModel)]="data" ngbDatepicker>
-                              <div *ngIf="data.invalid && (data.dirty || data.touched)" class="alert alert-danger">
-                                <div *ngIf="data.errors.required"> Data de Nascimento Obrigatória. </div>
-                              </div>
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"> <i class="fa fa-calendar"></i> </span>
+                            </div>
+                            <input type="date"  id="dataNascimento" name="dataNascimento"
+                              class="form-control" required [(ngModel)]="medico.dataNascimento"
+                              #dataNascimento="ngModel">
+                            <div *ngIf="dataNascimento.invalid && (dataNascimento.dirty || dataNascimento.touched)" class="alert alert-danger">
+                              <div *ngIf="dataNascimento.errors.required"> Data de Nascimento Obrigatória. </div>
                             </div>
                           </div>
                         </div>
@@ -70,8 +67,8 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
                             </div>
-                            <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
-                              required [(ngModel)]="medico.celular" #celular="ngModel">
+                            <input type="text" mask="(00) 0 0000-0000" id="celular" name="celular" placeholder="Celular"
+                              class="form-control" required [(ngModel)]="medico.celular" #celular="ngModel">
                             <div *ngIf="celular.invalid && (celular.dirty || celular.touched)"
                               class="alert alert-danger">
                               <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
@@ -104,8 +101,8 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="cep">CEP(*)</label>
-                          <input type="text" id="cep" placeholder="CEP" name="cep" class="form-control"
-                            [(ngModel)]="medico.cep" required #cep="ngModel">
+                          <input type="text" id="cep" mask="00.000-000" placeholder="CEP" name="cep"
+                            class="form-control" [(ngModel)]="medico.cep" required #cep="ngModel">
                           <div *ngIf="cep.invalid && (cep.dirty || cep.touched)" class="alert alert-danger">
                             <div *ngIf="cep.errors.required">CEP Obrigatório. </div>
                           </div>
@@ -183,11 +180,12 @@
                 <ng-template ngbTabContent>
                   <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                     <div class="d-flex">
-                      <div class='dragndrop' [(dragula)]="CONVENIO" [(dragulaModel)]="convenios">
-                          <div *ngFor="let conv of convenios">{{conv.nomeConvenio}}</div>
+                      <div class='dragndrop' id="convenios" dragula="CONVENIO" [(dragulaModel)]="convenios">
+                        <div *ngFor="let conv of convenios">{{conv.nomeConvenio}}</div>
                       </div>
-                      <div class='dragndrop' [(dragula)]="CONVENIO" [(dragulaModel)]="medico.convenios">
-                          <div *ngFor="let conv of medico.convenios">{{conv.nomeConvenio}}</div>
+                      <div class='dragndrop' id="conveniosMedico" dragula="CONVENIO"
+                        [(dragulaModel)]="medico.convenios">
+                        <div *ngFor="let conv of medico.convenios">{{conv.nomeConvenio}}</div>
                       </div>
                     </div>
                   </div>

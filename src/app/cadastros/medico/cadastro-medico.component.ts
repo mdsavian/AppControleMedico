@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Estados } from "../../enums/estados";
 import { Medico } from '../../modelos/medico';
 import { MedicoService } from '../../services/medico.service';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { Util } from '../../uteis/Util';
 import { DragulaService } from 'ng2-dragula';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConvenioService } from '../../services/convenio.service';
@@ -17,7 +15,6 @@ import { Convenio } from '../../modelos/convenio';
 
 export class CadastroMedicoComponent implements OnInit,OnDestroy {
   estados = Estados;
-  data: NgbDate = new NgbDate(1901, 1, 1);
 
   medico: Medico = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "",
@@ -34,6 +31,7 @@ export class CadastroMedicoComponent implements OnInit,OnDestroy {
 
     var id = this.route.snapshot.paramMap.get('id');
 
+    
     if (id != null) {
       this.medicoService.buscarPorId(id).subscribe(dado => {
         this.medico = dado;
@@ -49,6 +47,8 @@ export class CadastroMedicoComponent implements OnInit,OnDestroy {
         this.convenios = dados;
       });
     }
+
+    console.log(this.medico.dataNascimento)
   }
 
   constructor(private medicoService: MedicoService, private dragulaService: DragulaService, private convenioService: ConvenioService,
@@ -62,16 +62,12 @@ export class CadastroMedicoComponent implements OnInit,OnDestroy {
         return new Convenio(convenio.nomeConvenio, convenio.diasRetorno, convenio.id);
       },
       accepts: (el, target, source, sibling) => {
-        // To avoid dragging from right to left container
         return target.id !== 'conveniosMedico';
       }
     });
   }
 
   public onSubmit(): void {
-    this.medico.dataNascimento = new Util().converteData(this.data);
-    console.log("convenios: " + this.convenios);
-    console.log("convenios medico: " + this.medico.convenios);
 
     this.medicoService.salvar(this.medico).subscribe(
       data => {
