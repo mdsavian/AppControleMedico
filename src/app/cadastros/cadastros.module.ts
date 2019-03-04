@@ -12,7 +12,7 @@ import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.componen
 import { EnumToArrayPipe } from "../uteis/enumtoarray";
 
 @NgModule({
-  imports: [NgbModule,CommonModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule],
+  imports: [NgbModule,CommonModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot()],
   declarations: [CadastroPacienteComponent, EnumToArrayPipe, CadastroMedicoComponent, CadastroConvenioComponent]
 })
 export class CadastrosModule {}

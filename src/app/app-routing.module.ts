@@ -39,7 +39,6 @@ export const routes: Routes = [
         loadChildren:
           './extra-component/extra-component.module#ExtraComponentsModule'
       },
-      { path: 'apps', loadChildren: './apps/apps.module#AppsModule' },
       {
         path: 'sample-pages',
         loadChildren: './sample-pages/sample-pages.module#SamplePagesModule'

@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  apiUrl: 'www.controlemedico.com/api/',
+  isLoading :false
 };

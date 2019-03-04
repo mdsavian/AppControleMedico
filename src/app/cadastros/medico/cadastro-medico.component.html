@@ -183,10 +183,10 @@
                 <ng-template ngbTabContent>
                   <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                     <div class="d-flex">
-                      <div class='dragndrop' dragula="CONVENIO" [(dragulaModel)]="convenios">
+                      <div class='dragndrop' [(dragula)]="CONVENIO" [(dragulaModel)]="convenios">
                           <div *ngFor="let conv of convenios">{{conv.nomeConvenio}}</div>
                       </div>
-                      <div class='dragndrop' dragula="CONVENIO" [(dragulaModel)]="medico.convenios">
+                      <div class='dragndrop' [(dragula)]="CONVENIO" [(dragulaModel)]="medico.convenios">
                           <div *ngFor="let conv of medico.convenios">{{conv.nomeConvenio}}</div>
                       </div>
                     </div>

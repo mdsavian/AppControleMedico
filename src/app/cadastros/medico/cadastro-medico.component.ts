@@ -15,7 +15,7 @@ import { Convenio } from '../../modelos/convenio';
 
 })
 
-export class CadastroMedicoComponent implements OnInit {
+export class CadastroMedicoComponent implements OnInit,OnDestroy {
   estados = Estados;
   data: NgbDate = new NgbDate(1901, 1, 1);
 

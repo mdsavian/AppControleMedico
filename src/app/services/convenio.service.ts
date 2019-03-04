@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Convenio } from '../modelos/convenio';
 
@@ -9,10 +9,12 @@ import { Convenio } from '../modelos/convenio';
 export class ConvenioService {
 
     private headers: HttpHeaders;
-    private accessPointUrl: string = 'https://localhost:44307/api/convenio/';
+    private baseUrl:string;
+    private accessPointUrl: string = this.baseUrl + 'convenio/';
   
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl:string) {
       this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
+      this.baseUrl = baseUrl;
      }
   
      public salvar(convenio:Convenio) {  

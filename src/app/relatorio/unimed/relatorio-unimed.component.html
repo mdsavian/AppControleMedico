@@ -2,10 +2,7 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Pesquisar Paciente</h4>
-        <form class="w-50 m-b-30">
-          <input type='text' class="form-control" placeholder='Digite o nome do paciente' (keyup)='updateFilter($event)' />
-        </form>
+        <h4 class="card-title">Conferência de Caixa</h4>
         <ngx-datatable #mydatatable class="material" [headerHeight]="50" [limit]="10" [columnMode]="'force'"
         [footerHeight]="50" [rowHeight]="'auto'" [rows]="rows" [columns]="columns">
       </ngx-datatable>
