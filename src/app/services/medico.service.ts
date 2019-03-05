@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Medico } from '../modelos/medico';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
   private headers: HttpHeaders;
-  private accessPointUrl: string = 'https://localhost:44307/api/medico/';
+  private accessPointUrl: string = environment.apiUrl + 'medico/';
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });

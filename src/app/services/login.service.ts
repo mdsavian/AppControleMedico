@@ -7,6 +7,7 @@ import 'rxjs/add/observable/throw';
 import { Usuario } from '../modelos/usuario.';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class LoginService {
   private usuarioCorrenteSubject: BehaviorSubject<Usuario>;
   public usuarioCorrente: Observable<Usuario>;
   private headers: HttpHeaders;
-  private accessPointUrl: string = 'https://localhost:44307/api/login/';
+  private accessPointUrl: string = environment.apiUrl + 'login/';
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
@@ -29,6 +30,9 @@ export class LoginService {
   }
 
   public login(usuario: Usuario) {
+    console.log(this.accessPointUrl);
+    console.log(environment.apiUrl);
+
     return this.http.post<Usuario>(this.accessPointUrl, usuario).pipe(map(usuario => {
       if (usuario && usuario.token) {
         localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
@@ -41,6 +45,7 @@ export class LoginService {
   }
 
   public logout() {
+    
     localStorage.removeItem("usuarioCorrente");
     this.usuarioCorrenteSubject.next(null);
   }
@@ -51,6 +56,7 @@ export class LoginService {
   }
 
   public validaUsuario(usuario: Usuario) {
+    console.log(this.accessPointUrl);
     return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {
       return retorno;
     }));
