@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://www.controlemedico.com/api/',
+  apiUrl: 'https://controlemedico.azurewebsites.net/api/',
   isLoading :false
 };
