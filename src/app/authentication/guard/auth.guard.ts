@@ -26,7 +26,6 @@ export class AuthGuard implements CanActivate {
     ValidaUsuario(usuario:Usuario) : boolean {
 
         this.loginService.validaUsuario(usuario).subscribe(c=> {
-            console.log("opaaa " + c);
             if (c == false)
             {
                 this.loginService.logout();

@@ -68,8 +68,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AppRoutingModule,
     WebcamModule
   ],
-  providers: [  
-    { provide: 'BASE_URL', useFactory: getBaseUrl },  
+  providers: [      
     { provide: LOCALE_ID, useValue: "pt" },
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
