@@ -16,7 +16,6 @@ export class MedicoService {
   }
 
   public salvar(medico: Medico) {
-
     return this.http.post<Medico>(this.accessPointUrl, medico);
   }
 

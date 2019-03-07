@@ -68,12 +68,15 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
 
     this.dragulaService.createGroup('CONVENIOS', {
       copy: (el, source) => {
+        console.log("opa copiando");
         return source.id === 'convenios';
       },
       copyItem: (convenio: Convenio) => {
+        console.log("opa copiando");
         return new Convenio(convenio.nomeConvenio, convenio.diasRetorno, convenio.id);
       },
       accepts: (el, target, source, sibling) => {
+        console.log(target.id, source.id, sibling.id)
         return target.id !== 'conveniosMedico';
       }
     });

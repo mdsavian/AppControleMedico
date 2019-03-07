@@ -14,16 +14,20 @@ export class PacienteService {
     this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
    }
 
-   public salvar(paciente:Paciente){
-     console.log("opa cheguei");
-    return this.http.post<Paciente>(this.accessPointUrl, paciente).pipe(map(paciente => {
-      console.log("chegoou : " + paciente);
-      return paciente;
-    }));    
-   }
+   public Todos(){
+    return this.http.get<Array<Paciente>>(this.accessPointUrl);
+  }
 
-   public buscarTodos(){
-    return this.http.get(this.accessPointUrl);
+  public salvar(paciente: Paciente) {
+    return this.http.post<Paciente>(this.accessPointUrl, paciente);
+  }
+
+  public buscarPorId(pacienteId: string) {
+    return this.http.get<Paciente>(this.accessPointUrl + "buscarPorId/" + pacienteId);
+  }
+
+  public Excluir(pacienteId) {
+    return this.http.delete(this.accessPointUrl + "excluirPorId/" + pacienteId);
   }
 
 }

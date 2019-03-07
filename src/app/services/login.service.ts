@@ -30,9 +30,6 @@ export class LoginService {
   }
 
   public login(usuario: Usuario) {
-    console.log(this.accessPointUrl);
-    console.log(environment.apiUrl);
-
     return this.http.post<Usuario>(this.accessPointUrl, usuario).pipe(map(usuario => {
       if (usuario && usuario.token) {
         localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
@@ -56,7 +53,6 @@ export class LoginService {
   }
 
   public validaUsuario(usuario: Usuario) {
-    console.log(this.accessPointUrl);
     return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {
       return retorno;
     }));

@@ -10,8 +10,6 @@ import { CadastrosRoutes } from './cadastros.routing';
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
-import { DatePipe } from '@angular/common';
-
 
 @NgModule({
   imports: [NgbModule,UteisModule, CommonModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],

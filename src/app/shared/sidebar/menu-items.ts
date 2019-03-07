@@ -32,7 +32,7 @@ export const ROUTES: RouteInfo[] = [
     extralink: false,
     submenu: [
       {
-        path: '/cadastros/cadastropaciente',
+        path: '/listagem/listagempaciente',
         title: 'Paciente',
         icon: '',
         class: '',

@@ -23,7 +23,7 @@ export class CadastroConvenioComponent implements OnInit {
   public onSubmit(): void {
     this.convenioService.salvar(this.convenio).subscribe(
       data => {
-        console.log("id = " + data.id);
+        
         // this.router.navigate(["cadastros/cadastropaciente"]);
       },
       error => {

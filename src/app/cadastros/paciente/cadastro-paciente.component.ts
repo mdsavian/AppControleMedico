@@ -12,7 +12,6 @@ export class CadastroPacienteComponent implements OnInit {
   
   estados = Estados;
   public ngOnInit(): void {
-    this.todos();
   }
 
   constructor(public router: Router, private pacienteService: PacienteService) {
@@ -28,15 +27,11 @@ export class CadastroPacienteComponent implements OnInit {
   public onSubmit(): void {
     console.log("antes");
     var salvo = this.pacienteService.salvar(this.paciente).subscribe(data => {
-      console.log(data.id);
+      // console.log(data.id);
       // this.router.navigate(["cadastros/cadastropaciente"]);
     },
       erro => {
-        console.log("Ocorreu um erro");
+        // console.log("Ocorreu um erro");
       });
     }
-    
-    public todos(): void {
-    this.pacienteService.buscarTodos().subscribe(c=> console.log(c));
-  }
 }

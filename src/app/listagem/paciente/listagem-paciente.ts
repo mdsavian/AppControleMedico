@@ -6,14 +6,27 @@ export const settings = {
       title: 'Nome',
       filter: true
     },
-    email: {
-      title: 'Email',
+    telefone: {
+      title: 'Telefone',
       filter: false
     },
-    celular: {
-      title: 'Celular',
+    convenio: {
+      title: 'Convênio',
+      filter: true
+    },
+    numeroCartao: {
+      title: 'Cartão',
+      filter: false
+    },
+    dataNascimento: {
+      title: 'Data de Nascimento',
+      filter: false
+    },
+    ativo: {
+      title: 'Ativo',
       filter: false
     }
+
   },  
   actions:
   {
