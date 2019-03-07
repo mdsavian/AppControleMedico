@@ -21,7 +21,6 @@ export class MedicoService {
   }
 
   public buscarPorId(medicoId: string) {
-
     return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
   }
 

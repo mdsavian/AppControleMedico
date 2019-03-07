@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Estados } from "../../enums/estados";
 import { Medico } from '../../modelos/medico';
 import { MedicoService } from '../../services/medico.service';
@@ -6,17 +6,21 @@ import { DragulaService } from 'ng2-dragula';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConvenioService } from '../../services/convenio.service';
 import { Convenio } from '../../modelos/convenio';
-import { NgbModule, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util';
+import { EnderecoService } from '../../services/endereco.service';
 
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
-  styleUrls: ['./cadastro-medico.component.scss'],
+  styleUrls: ['./cadastro-medico.component.scss', '../../cadastros/cadastros.scss'],
 
 })
 
 export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('nomeCompleto') private nomeCompleto: ElementRef;
+  @ViewChild('numero') private numero: ElementRef;
+  
   estados = Estados;
   data: string = "01/01/1901"
   util = new Util();
@@ -31,6 +35,8 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   convenios: Array<Convenio> = [];
 
   public ngAfterViewInit(): void {
+    
+    this.nomeCompleto.nativeElement.focus();
 
   }
   public ngOnDestroy(): void {
@@ -43,7 +49,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     if (id != null) {
       this.medicoService.buscarPorId(id).subscribe(dado => {
         this.medico = dado;
-         this.data = this.util.dataParaString(dado.dataNascimento);
+        this.data = this.util.dataParaString(dado.dataNascimento);
       });
 
       this.convenioService.TodosFiltrandoMedico(id).subscribe(dados => {
@@ -57,7 +63,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  constructor(private medicoService: MedicoService, private dragulaService: DragulaService, private convenioService: ConvenioService,
+  constructor(private medicoService: MedicoService, private enderecoService:EnderecoService, private dragulaService: DragulaService, private convenioService: ConvenioService,
     private route: ActivatedRoute, private router: Router) {
 
     this.dragulaService.createGroup('CONVENIOS', {
@@ -71,6 +77,23 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
         return target.id !== 'conveniosMedico';
       }
     });
+  }
+
+  public buscaCep()
+  {
+    this.enderecoService.buscarEndereco(this.medico.cep).subscribe(c=> {
+
+      this.medico.cep = c.cep;
+      this.medico.bairro = c.bairro;
+      this.medico.endereco = c.rua;
+      this.medico.complemento = c.complemento;
+      this.medico.uf = c.uf;
+      this.medico.cidade = c.cidade;
+
+      this.numero.nativeElement.focus();
+
+      console.log(c);
+    })
   }
 
   public onSubmit(): void {

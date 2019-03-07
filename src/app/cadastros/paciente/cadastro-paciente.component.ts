@@ -5,7 +5,8 @@ import { PacienteService } from "../../services/paciente.service"
 import { Router } from '@angular/router';
 
 @Component({
-  templateUrl: './cadastro-paciente.component.html'
+  templateUrl: './cadastro-paciente.component.html',
+  styleUrls: ['../../cadastros/cadastros.scss'],
 })
 export class CadastroPacienteComponent implements OnInit {
   

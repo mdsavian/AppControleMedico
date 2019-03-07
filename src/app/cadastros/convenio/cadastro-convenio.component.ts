@@ -4,7 +4,7 @@ import { ConvenioService } from '../../services/convenio.service';
 
 @Component({
   templateUrl: './cadastro-convenio.component.html',
-  styleUrls: ['./cadastro-convenio.component.scss'],
+  styleUrls: ['../../cadastros/cadastros.scss'],
 
 })
 
