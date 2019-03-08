@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Paciente } from "../../modelos/paciente";
 import { Estados } from "../../enums/estados";
 import { PacienteService } from "../../services/paciente.service"
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Util } from '../../uteis/Util';
+import { EnderecoService } from '../../services/endereco.service';
+import { ConvenioService } from '../../services/convenio.service';
+import { Convenio } from '../../modelos/convenio';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
 })
-export class CadastroPacienteComponent implements OnInit {
-  
-  estados = Estados;
-  public ngOnInit(): void {
-  }
+export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
-  constructor(public router: Router, private pacienteService: PacienteService) {
-  }
+  @ViewChild('nomeCompleto') private nomeCompleto: ElementRef;
+  @ViewChild('numero') private numero: ElementRef;
 
   paciente: Paciente = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",
@@ -24,14 +24,66 @@ export class CadastroPacienteComponent implements OnInit {
     numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: ""
   };
 
-  public onSubmit(): void {
-    console.log("antes");
-    var salvo = this.pacienteService.salvar(this.paciente).subscribe(data => {
-      // console.log(data.id);
-      // this.router.navigate(["cadastros/cadastropaciente"]);
-    },
-      erro => {
-        // console.log("Ocorreu um erro");
+  convenios: Array<Convenio> = [];
+  util = new Util();
+  estados = Estados;
+  dataNasci: string = "01/01/1901"
+  dataValidade: string = "01/01/1901"
+
+  public ngAfterViewInit(): void {
+    this.nomeCompleto.nativeElement.focus();
+  }
+
+  public ngOnInit(): void {
+    var id = this.route.snapshot.paramMap.get('id');
+
+    if (id != null) {
+      this.pacienteService.buscarPorId(id).subscribe(dado => {
+        this.paciente = dado;
+        this.dataNasci = this.util.dataParaString(dado.dataNascimento);
+        this.dataValidade = this.util.dataParaString(dado.dataValidadeCartao);
+      });
+      // this.convenioService.TodosFiltrandoMedico(id).subscribe(dados => {
+      //   this.convenios = dados;
+      // });
+    }
+    else {
+      this.convenioService.Todos().subscribe(dados => {
+        this.convenios = dados;
       });
     }
+  }
+
+  constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
+    private convenioService: ConvenioService, private route: ActivatedRoute) {
+  }
+
+  public buscaCep() {
+    if (this.paciente.cep != "") {
+      this.enderecoService.buscarEndereco(this.paciente.cep).subscribe(c => {
+        this.paciente.cep = c.cep;
+        this.paciente.bairro = c.bairro;
+        this.paciente.endereco = c.rua;
+        this.paciente.complemento = c.complemento;
+        this.paciente.uf = c.uf;
+        this.paciente.cidade = c.cidade;
+        this.numero.nativeElement.focus();
+      });
+    }
+  }
+
+  public formataData(e): void {
+    this.paciente.dataNascimento = this.util.stringParaData(e.target.value);
+  }
+
+  public onSubmit(): void {
+    this.pacienteService.salvar(this.paciente).subscribe(
+      data => {
+        this.router.navigate(["listagem/listagempaciente"]);
+      },
+      error => {
+        //show modal erro
+      }
+    )
+  }
 }

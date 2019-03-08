@@ -12,37 +12,11 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     children: [      
-      {
-        path: 'starter',
-        loadChildren: './starter/starter.module#StarterModule'
-      },
       { path: 'relatorio', loadChildren: './relatorio/relatorio.module#RelatorioModule' },
-      {
-        path: 'component',
-        loadChildren: './component/component.module#ComponentsModule'
-      },
       { path: 'icons', loadChildren: './icons/icons.module#IconsModule' },
-      { path: 'forms', loadChildren: './form/forms.module#FormModule' },
-
       { path: 'listagem', loadChildren: './listagem/listagem.module#ListagemModule', canActivate: [AuthGuard] },
       { path: 'cadastros', loadChildren: './cadastros/cadastros.module#CadastrosModule', canActivate: [AuthGuard] },
       { path: 'importador', loadChildren: './importador/importador.module#ImportadorModule', canActivate: [AuthGuard] },
-      
-      { path: 'tables', loadChildren: './table/tables.module#TablesModule' },
-      //{ path: 'charts', loadChildren: './charts/charts.module#ChartModule' },
-      {
-        path: 'widgets',
-        loadChildren: './widgets/widgets.module#WidgetsModule'
-      },
-      {
-        path: 'extra-component',
-        loadChildren:
-          './extra-component/extra-component.module#ExtraComponentsModule'
-      },
-      {
-        path: 'sample-pages',
-        loadChildren: './sample-pages/sample-pages.module#SamplePagesModule'
-      }
     ]
   },
   {

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Paciente} from '../modelos/paciente'
-import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
@@ -19,6 +18,7 @@ export class PacienteService {
   }
 
   public salvar(paciente: Paciente) {
+    console.log("entrei salvar ");
     return this.http.post<Paciente>(this.accessPointUrl, paciente);
   }
 

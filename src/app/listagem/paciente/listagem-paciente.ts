@@ -1,3 +1,5 @@
+import { Util } from "../../uteis/Util";
+
 export const settings = {
   mode:'external',
   noDataMessage:"Não foi encontrado nenhum registro",
@@ -19,12 +21,14 @@ export const settings = {
       filter: false
     },
     dataNascimento: {
-      title: 'Data de Nascimento',
-      filter: false
+      title: 'Data De Nascimento',
+      filter: false,
+      valuePrepareFunction: (data) => {return new Util().dataParaString(data) }
     },
     ativo: {
       title: 'Ativo',
-      filter: false
+      filter: false,
+      valuePrepareFunction: (valor) => { return valor === true ? 'Sim' : 'false' }
     }
 
   },  
