@@ -1,4 +1,5 @@
 import { Pessoa } from "./pessoa";
+import { Convenio } from "./convenio";
 
 export class Paciente extends Pessoa {
 
@@ -18,8 +19,9 @@ export class Paciente extends Pessoa {
   telefone: string;    
   aceitaReceberSms: boolean;
   responsavel: string;
-  convenio: string;
   numeroCartao: number;
   cartaoNacionalSaude: number;
   dataValidadeCartao: Date;
+  convenio :Convenio;
+  tipoPlano:string;
 }

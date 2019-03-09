@@ -8,17 +8,24 @@ export const settings = {
       title: 'Nome',
       filter: true
     },
-    telefone: {
-      title: 'Telefone',
-      filter: false
+    celular: {
+      title: 'Celular',
+      filter: false,
+      valuePrepareFunction: (celular)=> {return celular === null ? "" : new Util().formataCelular(celular)}
     },
     convenio: {
       title: 'Convênio',
-      filter: true
-    },
+      filter: true,
+      valuePrepareFunction: (convenio) => { return convenio === null ? "" : convenio.nomeConvenio} 
+    },    
     numeroCartao: {
       title: 'Cartão',
       filter: false
+    },
+    tipoPlano:
+    {
+      title:"Tipo Plano",
+      filter:true
     },
     dataNascimento: {
       title: 'Data De Nascimento',

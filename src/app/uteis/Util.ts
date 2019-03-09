@@ -28,6 +28,17 @@ export class Util {
         return data;
     }
 
+    public formataCelular(celular:string)
+    {
+        celular=celular.replace(/\D/g,"");             //Remove tudo o que não é dígito
+        celular=celular.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
+        celular=celular.replace(/(\d)(\d{4})$/,"$1-$2");   
+        
+
+        return celular;
+    
+    }
+
     public dataParaString(data:Date):string{
         var datepipe :DatePipe = new DatePipe('pt-BR');
 

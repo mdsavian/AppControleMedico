@@ -20,10 +20,11 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   paciente: Paciente = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",
     nomePai: "", ocupacao: "", tipoSanguineo: 1, telefone: "", celular: "", email: "", aceitaReceberSms: true, responsavel: "",
-    cep: "", endereco: "", numero: "", estadoCivil: 0, complemento: "", bairro: "", cidade: "", uf: "", convenio: "",
-    numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: ""
+    cep: "", endereco: "", numero: "", estadoCivil: 0, complemento: "", bairro: "", cidade: "", uf: "", convenio: new Convenio("", 0, ""),
+    numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: "", tipoPlano:""
   };
 
+  convenioId:string;
   convenios: Array<Convenio> = [];
   util = new Util();
   estados = Estados;
@@ -42,20 +43,24 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.paciente = dado;
         this.dataNasci = this.util.dataParaString(dado.dataNascimento);
         this.dataValidade = this.util.dataParaString(dado.dataValidadeCartao);
-      });
-      // this.convenioService.TodosFiltrandoMedico(id).subscribe(dados => {
-      //   this.convenios = dados;
-      // });
-    }
-    else {
-      this.convenioService.Todos().subscribe(dados => {
-        this.convenios = dados;
+        this.convenioId = this.paciente.convenio.id;
       });
     }
+
+    this.convenioService.Todos().subscribe(dados => {
+      this.convenios = dados;
+    });
+
   }
 
   constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private route: ActivatedRoute) {
+  }
+
+  public trocaConvenio(e) {
+
+    this.paciente.convenio = this.convenios.find(c=> c.id === this.convenioId);   
+    
   }
 
   public buscaCep() {
@@ -73,7 +78,10 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   public formataData(e): void {
-    this.paciente.dataNascimento = this.util.stringParaData(e.target.value);
+    if (e.target.id == "dataNascimento")
+      this.paciente.dataNascimento = this.util.stringParaData(e.target.value);
+    else
+      this.paciente.dataValidadeCartao = this.util.stringParaData(e.target.value);
   }
 
   public onSubmit(): void {

@@ -107,22 +107,22 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="nomeConjugue">Nome Cônjugue</label>
-                          <input type="text" placeholder="Nome Cônjugue" id="nomeConjugue" name="nomeConjugue"
+                          <input type="text" style="text-transform:uppercase" placeholder="Nome Cônjugue" id="nomeConjugue" name="nomeConjugue"
                             class="form-control" [(ngModel)]="paciente.nomeConjugue" #nomeConjugue="ngModel">
                         </div>
                       </div>
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="nomePai">Nome Pai</label>
-                          <input type="text" placeholder="Nome Pai" id="nomePai" name="nomePai" class="form-control"
+                          <input type="text" style="text-transform:uppercase" placeholder="Nome Pai" id="nomePai" name="nomePai" class="form-control"
                             [(ngModel)]="paciente.nomePai" #nomePai="ngModel">
                         </div>
                       </div>
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="nomemae">Nome Mãe</label>
-                          <input type="text" placeholder="Nome Mãe" id="nomemae" name="nomemae" class="form-control"
-                            [(ngModel)]="paciente.nomemae" #nomemae="ngModel">
+                          <label class="control-label" for="nomeMae">Nome Mãe</label>
+                          <input type="text" style="text-transform:uppercase" placeholder="Nome Mãe" id="nomeMae" name="nomeMae" class="form-control"
+                            [(ngModel)]="paciente.nomeMae" #nomeMae="ngModel">
                         </div>
                       </div>
                     </div>
@@ -291,12 +291,11 @@
                       <div class="col-xs-12 col-md-12">
                         <div class="form-group">
                           <label class="control-label" for="convenio">Convênio(*)</label>
-                          <select class="form-control" [(ngModel)]="paciente.convenio" #convenio="ngModel" id="convenio"
+                          <select class="form-control" [(ngModel)]="convenioId" #convenio id="convenio" (change)="trocaConvenio($event)"
                             name="convenio" required>
-                            <option>Unimed</option>
-                            <!--<option *ngFor="let codigo of convenios | enumToArray">
-                              {{codigo}}
-                            </option>-->
+                            <option *ngFor="let codigo of convenios" [ngValue]="codigo.id">
+                              {{codigo.nomeConvenio}}
+                            </option>
                           </select>
                           <div *ngIf="convenio.invalid && (convenio.dirty || convenio.touched)"
                             class="alert alert-danger">
@@ -315,41 +314,41 @@
                               <span class="input-group-text" id="basic-addon1"><i
                                   class="fa fa-credit-card-alt"></i></span>
                             </div>
-                            <input type="number" id="numerocartao" name="numerocartao" placeholder="Número Cartão"
-                              class="form-control" required [(ngModel)]="paciente.numerocartao" #numerocartao="ngModel">
-                            <div *ngIf="numerocartao.invalid && (numerocartao.dirty || numerocartao.touched)"
-                              class="alert alert-danger">
-                              <div *ngIf="numerocartao.errors.required">Número Cartão Obrigatório. </div>
-                            </div>
+                            <input type="number" id="numeroCartao" name="numeroCartao" placeholder="Número Cartão"
+                              class="form-control" required [(ngModel)]="paciente.numeroCartao" #numeroCartao="ngModel">
                           </div>
+                          <div *ngIf="numeroCartao.invalid && (numeroCartao.dirty || numerocartao.touched) "
+                              class="alert alert-danger">
+                              <div *ngIf="numeroCartao.errors.required">Número Cartão Obrigatório. </div>
+                            </div>
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="datavalidadecartao">Data Validade Cartão</label>
+                          <label class="control-label" for="dataValidadeCartao">Data Validade Cartão</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
-                            <input type="text" mask="00/00/0000" id="datavalidadecartao" name="datavalidadecartao"
+                            <input type="text" mask="00/00/0000" id="dataValidadeCartao" name="dataValidadeCartao"
                               placeholder="dd/mm/yyyy" class="form-control" required [(ngModel)]="dataValidade"
-                              #datavalidadecartao (blur)="formataData($event)">
+                              #dataValidadeCartao (blur)="formataData($event)">
                           </div>
                         </div>
                       </div>
 
                       <div class="col-xs-8 col-md-4">
                         <div class="form-group">
-                          <label class="control-label" for="cartaonacionalsaude">Cartão Nacional de Saúde</label>
+                          <label class="control-label" for="cartaoNacionalSaude">Cartão Nacional de Saúde</label>
                           <div class="input-group mb-3">
                             <div class="input-group-prepend">
                               <span class="input-group-text" id="basic-addon1"><i
                                   class="fa fa-credit-card-alt"></i></span>
                             </div>
-                            <input type="number" id="cartaonacionalsaude" name="cartaonacionalsaude"
+                            <input type="number" id="cartaoNacionalSaude" name="cartaoNacionalSaude"
                               placeholder="Cartão Nacional de Saúde" class="form-control"
-                              [(ngModel)]="paciente.cartaonacionalsaude" #cartaonacionalsaude="ngModel">
+                              [(ngModel)]="paciente.cartaoNacionalSaude" #cartaoNacionalSaude="ngModel">
                           </div>
                         </div>
                       </div>
