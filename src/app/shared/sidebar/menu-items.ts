@@ -52,7 +52,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
       },
       {
-        path: '/cadastros/cadastroconvenio',
+        path: '/listagem/listagemconvenio',
         title: 'Convênio',
         icon: '',
         class: '',

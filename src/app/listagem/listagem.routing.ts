@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { ListagemMedicoComponent } from './medico/listagem-medico.component';
 import { ListagemPacienteComponent } from './paciente/listagem-paciente.component';
+import { ListagemConvenioComponent } from './convenio/listagem-convenio.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -26,7 +27,17 @@ export const ListagemRoutes: Routes = [
             { title: 'Pacientes' }
           ]
         }
+      },
+      {      
+      path: 'listagemconvenio',
+      component: ListagemConvenioComponent,
+      data: {
+        title: 'Convênio',
+        urls: [
+          { title: 'Convênio' }
+        ]
       }
+    }
     ]
   }
 ];

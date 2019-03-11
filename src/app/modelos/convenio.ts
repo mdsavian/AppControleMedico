@@ -10,4 +10,5 @@ export class Convenio extends Entidade {
     
     nomeConvenio:string;
     diasRetorno:number;
+    ativo:boolean;
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import * as tableData from './listagem-paciente';
+import * as tableData from './listagem-paciente-settings';
 import { LocalDataSource } from 'ng2-smart-table';
 import { PacienteService } from '../../services/paciente.service';
 import { Paciente } from '../../modelos/paciente';

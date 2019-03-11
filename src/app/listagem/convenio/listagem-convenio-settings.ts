@@ -2,16 +2,12 @@ export const settings = {
   mode:'external',
   noDataMessage:"Não foi encontrado nenhum registro",
   columns: {
-    nomeCompleto: {
+    nomeConvenio: {
       title: 'Nome',
       filter: true
     },
-    email: {
-      title: 'Email',
-      filter: false
-    },
-    celular: {
-      title: 'Celular',
+    diasRetorno: {
+      title: 'Dias Retorno',
       filter: false
     }
   },  

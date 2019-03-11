@@ -6,6 +6,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ListagemRoutes } from './listagem.routing';
 import { ListagemMedicoComponent } from './medico/listagem-medico.component';
 import { ListagemPacienteComponent } from './paciente/listagem-paciente.component';
+import { ListagemConvenioComponent } from './convenio/listagem-convenio.component';
 
 @NgModule({
   imports: [
@@ -14,6 +15,6 @@ import { ListagemPacienteComponent } from './paciente/listagem-paciente.componen
     NgxDatatableModule,
     Ng2SmartTableModule
   ],
-  declarations: [ListagemMedicoComponent, ListagemPacienteComponent]
+  declarations: [ListagemMedicoComponent, ListagemPacienteComponent, ListagemConvenioComponent]
 })
 export class ListagemModule {}

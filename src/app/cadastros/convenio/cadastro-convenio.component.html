@@ -3,32 +3,55 @@
     <div class="card">
       <div class="card-body">
         <form (ngSubmit)="onSubmit()" #convenioForm="ngForm">
-
           <div [hidden]="convenioForm.submitted">
-            <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-              <div class="row"></div>
-              <div class="row rowcadastro">
-                <div class="col-xs-12 col-md-6">
-                  <div class="form-group">
-                    <label class="control-label" for="nomeConvenio">Nome Convênio(*)</label>
-                    <input type="text" id="nomeConvenio" placeholder="Nome Convenio" name="nomeConvenio"
-                      class="form-control" required minlength="4" [(ngModel)]="convenio.nomeConvenio"
-                      #nomeConvenio="ngModel">
-                    <div *ngIf="nomeConvenio.invalid && (nomeConvenio.dirty || nomeConvenio.touched)"
-                      class="alert alert-danger">
-                      <div *ngIf="nomeConvenio.errors.required"> Nome Convênio Obrigatório. </div>
+            <ngb-tabset type="pills">
+              <ngb-tab title="Informações Pessoais">
+                <ng-template ngbTabContent>
+                  <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                    <div class="row"></div>
+                    <div class="row rowcadastro">
+                      <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                          <label class="control-label" for="nomeConvenio">Nome Convênio(*)</label>
+                          <input type="text" id="nomeConvenio" placeholder="Nome Convenio" #nomeConvenio name="nomeConvenio"
+                            class="form-control" required minlength="4" [(ngModel)]="convenio.nomeConvenio"
+                            #nomeConvenio="ngModel">
+                          <div *ngIf="nomeConvenio.invalid && (nomeConvenio.dirty || nomeConvenio.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="nomeConvenio.errors.required"> Nome Convênio Obrigatório. </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="diasRetorno">Dias Retorno</label>
+                          <input type="number" id="diasRetorno" name="diasRetorno" class="form-control"
+                            [(ngModel)]="convenio.diasRetorno" #diasRetorno="ngModel">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row rowcadastro">
+                      <div class="col-xs-4 col-md-2">
+                        <label class="form-check-inline" for="ativo">Ativo</label>
+                        <input class="form-check-inline" [(ngModel)]="convenio.ativo" checked name="ativo" id="ativo"
+                          value="checked" type="checkbox">
+                      </div>
                     </div>
                   </div>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab title="Médicos">
+                <ng-template ngbTabContent>
+                  <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                    <div class="row"></div>
+                    <div class="table table-responsive smart-table">
+                    <ng2-smart-table [(settings)]="settings" [(source)]="source" class="" (edit)="editarMedico($event)">
+                    </ng2-smart-table>
                 </div>
-                <div class="col-xs-6 col-md-3">
-                  <div class="form-group">
-                    <label class="control-label" for="diasRetorno">Dias Retorno</label>
-                    <input type="number" id="diasRetorno" name="diasRetorno" class="form-control"
-                      [(ngModel)]="convenio.diasRetorno" #diasRetorno="ngModel">
                   </div>
-                </div>
-              </div>
-            </div>
+                </ng-template>
+              </ngb-tab>
+            </ngb-tabset>
           </div>
           <div class="panel-footer rowcadastro">
             <div class="form-group">
@@ -36,7 +59,7 @@
                 <!--  -->
                 <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!convenioForm.form.valid"
                   type="submit">Salvar</button>
-                <button style="width:40%" class="btn btn-rounded btn-danger" type="submit">Cancelar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
               </div>
             </div>
           </div>
@@ -45,3 +68,12 @@
     </div>
   </div>
 </div>
+
+<ng-template #modalErro id="modalErro" let-c="close" let-d="dismiss">
+  <div class="modal-header">
+      <h4 class="modal-title">{{mensagemErro}}</h4>
+      <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+</ng-template>

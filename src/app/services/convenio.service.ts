@@ -8,6 +8,10 @@ import { environment } from '../../environments/environment';
 })
 
 export class ConvenioService {
+  
+  public buscarMedicosPorConvenio(convenioId: string): any {
+    return this.http.get<Convenio>(this.accessPointUrl + "buscarMedicosPorConvenio/" + convenioId);
+  }
 
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'convenio/';
@@ -20,12 +24,20 @@ export class ConvenioService {
     return this.http.post<Convenio>(this.accessPointUrl, convenio);
   }
 
+  public buscarPorId(convenioId: string) {
+    return this.http.get<Convenio>(this.accessPointUrl + "buscarPorId/" + convenioId);
+  }
+
   public Todos() {
     return this.http.get<Convenio[]>(this.accessPointUrl);
   }
 
   public TodosFiltrandoMedico(medicoId: string) {
     return this.http.get<Convenio[]>(this.accessPointUrl + "TodosFiltrandoMedico/" + medicoId);
+  }
+
+  public Excluir(convenioId) {
+    return this.http.delete(this.accessPointUrl + "excluirPorId/" + convenioId);
   }
 
 }
