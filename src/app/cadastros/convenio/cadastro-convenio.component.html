@@ -13,13 +13,12 @@
                       <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                           <label class="control-label" for="nomeConvenio">Nome Convênio(*)</label>
-                          <input type="text" id="nomeConvenio" placeholder="Nome Convenio" #nomeConvenio name="nomeConvenio"
-                            class="form-control" required minlength="4" [(ngModel)]="convenio.nomeConvenio"
-                            #nomeConvenio="ngModel">
+                          <input type="text" id="nomeConvenio" placeholder="Nome Convenio" name="nomeConvenio" 
+                          class="form-control" required minlength="4" [(ngModel)]="convenio.nomeConvenio" #nomeConvenio >
                           <div *ngIf="nomeConvenio.invalid && (nomeConvenio.dirty || nomeConvenio.touched)"
                             class="alert alert-danger">
                             <div *ngIf="nomeConvenio.errors.required"> Nome Convênio Obrigatório. </div>
-                          </div>
+                          </div>                          
                         </div>
                       </div>
                       <div class="col-xs-6 col-md-3">
@@ -45,9 +44,10 @@
                   <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                     <div class="row"></div>
                     <div class="table table-responsive smart-table">
-                    <ng2-smart-table [(settings)]="settings" [(source)]="source" class="" (edit)="editarMedico($event)">
-                    </ng2-smart-table>
-                </div>
+                      <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
+                        (edit)="editarMedico($event)">
+                      </ng2-smart-table>
+                    </div>
                   </div>
                 </ng-template>
               </ngb-tab>
@@ -70,10 +70,13 @@
 </div>
 
 <ng-template #modalErro id="modalErro" let-c="close" let-d="dismiss">
-  <div class="modal-header">
-      <h4 class="modal-title">{{mensagemErro}}</h4>
-      <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
-          <span aria-hidden="true">&times;</span>
-      </button>
+  <div class="modal-header" style="background-color: lightcoral">
+    <h4 class="modal-title" style="font-weight: bold">ERRO</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{mensagemErro}}</p>
   </div>
 </ng-template>

@@ -2,12 +2,13 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, TemplateRef } 
 import { Convenio } from '../../modelos/convenio';
 import { Medico } from '../../modelos/medico';
 import * as tableData from './listagem-medico-convenio-settings';
-import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ConvenioService } from '../../services/convenio.service';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 @Component({
   templateUrl: './cadastro-convenio.component.html',
@@ -17,9 +18,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
   @ViewChild('nomeConvenio') private nomeConvenio: ElementRef;
-  @ViewChild('modalErro', {read: TemplateRef}) modalErro: TemplateRef<any>;
+  @ViewChild('convenioForm') private convenioForm: NgForm;
+  @ViewChild('modalErro', { read: TemplateRef }) modalErro: TemplateRef<any>;
 
-  mensagemErro:string;
+  convenios = new Array<Convenio>();
+  mensagemErro: string;
   id: string;
   source: LocalDataSource;
   listaMedicos: Array<Medico>;
@@ -40,6 +43,10 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
     this.id = this.route.snapshot.paramMap.get('id');
 
+    this.convenioService.Todos().subscribe(c => {
+      this.convenios = c;
+    });
+
     if (this.id != null) {
       this.convenioService.buscarPorId(this.id).subscribe(dado => {
         this.convenio = dado;
@@ -52,36 +59,26 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router,  private modalService: NgbModal ) {
+  constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
   }
+
 
   public onSubmit(): void {
-    
-    var convenios = new Array<Convenio>();
-    
-    this.convenioService.Todos().subscribe(c => {
-      
-      convenios = c;
+    if (this.convenios.length > 0 && this.convenios.find(c => c.nomeConvenio === this.convenio.nomeConvenio) != null && this.convenio.id === '') {
+      this.convenioForm.submitted = false;
+      this.mensagemErro = "Já existe um convênio com este nome.";      
+      this.modalService.open(this.modalErro);
+      this.nomeConvenio.nativeElement.focus();
+    }
+    else {
+      this.convenioService.salvar(this.convenio).subscribe(
+        data => {
+          this.router.navigate(["listagem/listagemconvenio"]);
+        },
+        error => {
 
-      if (convenios.length > 0 && convenios.find(c => c.nomeConvenio === this.convenio.nomeConvenio) != null) {
-        this.mensagemErro = "Já existe um convênio com este nome.";
-        this.modalService.open(this.modalErro);
-        return false;
-      }
-      else {
-        console.log("eaasae");
-        this.convenioService.salvar(this.convenio).subscribe(
-          data => {
-            this.router.navigate(["listagem/listagemconvenio"]);
-          },
-          error => {
-  
-          }
-        )
-      }
-      
-    });
-    
+        }
+      )
+    }
   }
-
 }

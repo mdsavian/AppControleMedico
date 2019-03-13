@@ -46,7 +46,6 @@ constructor( private pacienteService: PacienteService, private router: Router, p
   } 
 
   editarRegistro(event) {
-    console.log(event.data.id);
     this.router.navigate(['/cadastros/cadastropaciente', {id:event.data.id}]);
   }
 

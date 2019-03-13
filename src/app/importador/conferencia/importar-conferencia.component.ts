@@ -31,11 +31,8 @@ export class ImportarConferenciaComponent {
       this.dadosRelatorio = response;
     };
     this.uploader.onCompleteAll = () => {
-      console.log("eitchaaa");
-      console.log(this.dadosRelatorio);
       this.importadorService.ArmazenaDados(this.dadosRelatorio);
       this.router.navigate(["relatorio/relatoriounimed"]);
-      console.log("armazenado dados");
     }
   }
   

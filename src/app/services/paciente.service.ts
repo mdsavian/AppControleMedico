@@ -18,7 +18,6 @@ export class PacienteService {
   }
 
   public salvar(paciente: Paciente) {
-    console.log("entrei salvar ", paciente);
     return this.http.post<Paciente>(this.accessPointUrl, paciente);
   }
 

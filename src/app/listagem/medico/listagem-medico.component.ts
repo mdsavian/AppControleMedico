@@ -46,7 +46,6 @@ constructor( private medicoService: MedicoService, private router: Router, priva
   } 
 
   editarRegistro(event) {
-    console.log(event.data.id);
     this.router.navigate(['/cadastros/cadastromedico', {id:event.data.id}]);
   }
 
