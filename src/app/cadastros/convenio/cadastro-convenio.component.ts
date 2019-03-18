@@ -65,7 +65,8 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
   public onSubmit(): void {
     if (this.convenios.length > 0 && this.convenios.find(c => c.nomeConvenio === this.convenio.nomeConvenio) != null && this.convenio.id === '') {
-      this.convenioForm.submitted = false;
+      // this.convenioForm. submitted = false;
+      //resetForm
       this.mensagemErro = "Já existe um convênio com este nome.";      
       this.modalService.open(this.modalErro);
       this.nomeConvenio.nativeElement.focus();

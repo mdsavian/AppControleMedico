@@ -14,7 +14,9 @@ export class PacienteService {
    }
 
    public Todos(){
+    
     return this.http.get<Array<Paciente>>(this.accessPointUrl);
+    
   }
 
   public salvar(paciente: Paciente) {

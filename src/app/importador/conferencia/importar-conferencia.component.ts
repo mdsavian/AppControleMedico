@@ -3,8 +3,10 @@ import { FileUploader, FileItem, ParsedResponseHeaders } from 'ng2-file-upload/n
 import { HttpClient } from '@angular/common/http'
 import { ImportadorService } from '../../services/importador.service';
 import { Router } from '@angular/router';
+import {environment} from '../../../environments/environment';
 
-const URL = 'https://localhost:44307/api/upload/';
+const URL = environment.apiUrl + 'upload/';
+
 @Component({
   templateUrl: './importar-conferencia.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,10 +29,12 @@ export class ImportarConferenciaComponent {
     });
     
     this.uploader.onCompleteItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
-      
+      environment.isLoading = false;
       this.dadosRelatorio = response;
     };
+
     this.uploader.onCompleteAll = () => {
+
       this.importadorService.ArmazenaDados(this.dadosRelatorio);
       this.router.navigate(["relatorio/relatoriounimed"]);
     }

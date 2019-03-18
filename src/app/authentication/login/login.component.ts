@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   onLoggedin() {    
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       data=> {
-        this.router.navigate(["cadastros/cadastropaciente"]);
+        this.router.navigate(["listagem/listagempaciente"]);
       },
       error=>
       {

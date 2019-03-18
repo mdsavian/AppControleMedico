@@ -15,28 +15,27 @@ export class AuthGuard implements CanActivate {
 
         const usuarioCorrente = this.loginService.usuarioCorrenteValor;
         if (usuarioCorrente && this.ValidaUsuario(usuarioCorrente)) {
-            // logged in so return true
             return true;
         }
-        // not logged in so redirect to login page with the return url
-        this.router.navigate(['/authentication/login'], { queryParams: { returnUrl: state.url } });
-        return false;
+        else {
+            // not logged in so redirect to login page with the return url
+            this.router.navigate(['/authentication/login'], { queryParams: { returnUrl: state.url } });
+            return false;
+        }
     }
 
-    ValidaUsuario(usuario:Usuario) : boolean {
+    ValidaUsuario(usuario: Usuario): boolean {
 
-        this.loginService.validaUsuario(usuario).subscribe(c=> {
-            if (c == false)
-            {
+        this.loginService.validaUsuario(usuario).subscribe(c => {
+            if (c == false) {
                 this.loginService.logout();
-                this.router.navigate(['/authentication/login']); 
+                this.router.navigate(['/authentication/login']);
             }
         },
-        error=>
-        {
-            this.router.navigate(['/authentication/login']); 
- 
-        });
+            error => {
+                this.router.navigate(['/authentication/login']);
+
+            });
 
         return true;
     }

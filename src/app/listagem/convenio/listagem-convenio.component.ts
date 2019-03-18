@@ -24,6 +24,7 @@ constructor( private convenioService: ConvenioService, private router: Router, p
   
   buscaConvenios(): void {
     this.convenioService.Todos().subscribe(dados => {
+
       this.listaConvenios = dados;     
       this.source = new LocalDataSource(this.listaConvenios);      
     });

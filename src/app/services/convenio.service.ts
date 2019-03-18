@@ -21,7 +21,7 @@ export class ConvenioService {
   }
 
   public salvar(convenio: Convenio) {
-    return this.http.post<Convenio>(this.accessPointUrl, convenio);
+    return this.http.post<Convenio>(this.accessPointUrl, convenio, {headers: this.headers});
   }
 
   public buscarPorId(convenioId: string) {
