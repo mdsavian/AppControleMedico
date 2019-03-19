@@ -11,9 +11,10 @@ import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.componen
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { ForbiddenValidatorDirective } from '../validadores/valida-nome.directive';
 
 @NgModule({
   imports: [NgbModule,UteisModule, CommonModule, Ng2SmartTableModule,RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
-  declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent]
+  declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent, ForbiddenValidatorDirective]
 })
 export class CadastrosModule { }

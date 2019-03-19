@@ -8,7 +8,7 @@ import { ConvenioService } from '../../services/convenio.service';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 
 @Component({
   templateUrl: './cadastro-convenio.component.html',
@@ -17,9 +17,8 @@ import { NgForm } from '@angular/forms';
 
 export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeConvenio') private nomeConvenio: ElementRef;
+  @ViewChild('nomeConvenio', { read: ElementRef }) private nomeConvenio: ElementRef;
   @ViewChild('convenioForm') private convenioForm: NgForm;
-  @ViewChild('modalErro', { read: TemplateRef }) modalErro: TemplateRef<any>;
 
   convenios = new Array<Convenio>();
   mensagemErro: string;
@@ -28,11 +27,12 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
   listaMedicos: Array<Medico>;
   settings = tableData.settings;
   convenio: Convenio = {
-    id: "", nomeConvenio: "", diasRetorno: 0, ativo: true
+    id: "0", nomeConvenio: "", diasRetorno: 0, ativo: true
   };
 
   ngAfterViewInit(): void {
-    this.nomeConvenio.nativeElement.focus();
+    if (this.nomeConvenio != null)
+      this.nomeConvenio.nativeElement.focus();
   }
 
   editarMedico(event) {
@@ -43,13 +43,15 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
     this.id = this.route.snapshot.paramMap.get('id');
 
-    this.convenioService.Todos().subscribe(c => {
-      this.convenios = c;
-    });
+    this.convenios = this.convenioService.listaConvenio;
 
     if (this.id != null) {
       this.convenioService.buscarPorId(this.id).subscribe(dado => {
-        this.convenio = dado;
+        if (dado != null && dado.nomeConvenio != '') {
+          this.convenio = dado;
+          this.convenioService.convenio = dado;
+          this.nomeConvenio.nativeElement.setAttribute('readonly', true);
+        }
       });
 
       this.convenioService.buscarMedicosPorConvenio(this.id).subscribe(medicos => {
@@ -59,27 +61,18 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
+  constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router) {
   }
 
 
   public onSubmit(): void {
-    if (this.convenios.length > 0 && this.convenios.find(c => c.nomeConvenio === this.convenio.nomeConvenio) != null && this.convenio.id === '') {
-      // this.convenioForm. submitted = false;
-      //resetForm
-      this.mensagemErro = "Já existe um convênio com este nome.";      
-      this.modalService.open(this.modalErro);
-      this.nomeConvenio.nativeElement.focus();
-    }
-    else {
-      this.convenioService.salvar(this.convenio).subscribe(
-        data => {
-          this.router.navigate(["listagem/listagemconvenio"]);
-        },
-        error => {
+    this.convenioService.salvar(this.convenio).subscribe(
+      data => {
+        this.router.navigate(["listagem/listagemconvenio"]);
+      },
+      error => {
 
-        }
-      )
-    }
+      }
+    )
   }
 }

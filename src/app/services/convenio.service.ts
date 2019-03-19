@@ -8,7 +8,10 @@ import { environment } from '../../environments/environment';
 })
 
 export class ConvenioService {
-  
+
+  listaConvenio : Array<Convenio>;
+  convenio:Convenio;
+
   public buscarMedicosPorConvenio(convenioId: string): any {
     return this.http.get<Convenio>(this.accessPointUrl + "buscarMedicosPorConvenio/" + convenioId);
   }
@@ -21,14 +24,14 @@ export class ConvenioService {
   }
 
   public salvar(convenio: Convenio) {
-    return this.http.post<Convenio>(this.accessPointUrl, convenio, {headers: this.headers});
+    return this.http.post<Convenio>(this.accessPointUrl, convenio, { headers: this.headers });
   }
 
   public buscarPorId(convenioId: string) {
     return this.http.get<Convenio>(this.accessPointUrl + "buscarPorId/" + convenioId);
   }
 
-  public Todos() {
+  public Todos() {    
     return this.http.get<Convenio[]>(this.accessPointUrl);
   }
 
