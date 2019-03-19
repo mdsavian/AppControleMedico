@@ -8,16 +8,13 @@
               <ngb-tab title="Informações Pessoais">
                 <ng-template ngbTabContent>
                   <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                    <input type="text" id="_id" #_id name="_id" [(ngModel)]="convenio.id">
                     <div class="row"></div>
                     <div class="row rowcadastro">
                       <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                           <label class="control-label" for="nomeConvenio">Nome Convênio(*)</label>
                           <input type="text" id="nomeConvenio" placeholder="Nome Convenio" name="nomeConvenio" 
-                          class="form-control" appForbiddenName required minlength="4" [(ngModel)]="convenio.nomeConvenio" 
-                          #nomeConvenio="ngModel">
-                                                    
+                          class="form-control" style="text-transform:uppercase" validaNomeConvenio required minlength="4" [(ngModel)]="convenio.nomeConvenio" #nomeConvenio="ngModel">                                                    
                           <div *ngIf="nomeConvenio.invalid && (nomeConvenio.dirty || nomeConvenio.touched) && (nomeConvenio.errors?.forbiddenName)" class="alert alert-danger">
                             <div *ngIf="nomeConvenio.errors.required"> Nome Convênio Obrigatório. </div>
                             <div *ngIf="nomeConvenio.errors?.forbiddenName"> Já existe um convênio com este nome cadastrado. </div>                            

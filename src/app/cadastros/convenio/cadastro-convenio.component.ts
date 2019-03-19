@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, TemplateRef } 
 import { Convenio } from '../../modelos/convenio';
 import { Medico } from '../../modelos/medico';
 import * as tableData from './listagem-medico-convenio-settings';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ConvenioService } from '../../services/convenio.service';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -27,7 +26,7 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
   listaMedicos: Array<Medico>;
   settings = tableData.settings;
   convenio: Convenio = {
-    id: "0", nomeConvenio: "", diasRetorno: 0, ativo: true
+    id: "", nomeConvenio: "", diasRetorno: 0, ativo: true
   };
 
   ngAfterViewInit(): void {
