@@ -14,7 +14,7 @@ import { Convenio } from '../../modelos/convenio';
 })
 export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto') private nomeCompleto: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
   @ViewChild('numero') private numero: ElementRef;
 
   paciente: Paciente = {

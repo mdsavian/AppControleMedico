@@ -1,5 +1,5 @@
 import { Directive } from "@angular/core";
-import { NG_VALIDATORS, Validator, AbstractControl, ValidatorFn } from "@angular/forms"
+import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 import { ConvenioService } from "../services/convenio.service";
 
 @Directive({

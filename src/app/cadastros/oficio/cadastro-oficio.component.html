@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()" #oficioForm="ngForm">
+          <div [hidden]="oficioForm.submitted">
+            <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+              <div class="row"></div>
+              <div class="row rowcadastro">
+                <div class="col-xs-12 col-md-6">
+                  <div class="form-group">
+                    <label class="control-label" for="descricao">Descrição(*)</label>
+                    <input type="text" id="descricao" placeholder="Descrição" name="descricao"
+                      class="form-control" style="text-transform:uppercase" required minlength="4"
+                      [(ngModel)]="oficio.descricao" #descricao="ngModel">
+                    <div
+                      *ngIf="descricao.invalid && (descricao.dirty || descricao.touched) && (descricao.errors?.forbiddenName)"
+                      class="alert alert-danger">
+                      <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
+                      <div *ngIf="descricao.errors?.forbiddenName"> Já existe um ofício com esta descrição cadastrada. </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <!--  -->
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!oficioForm.form.valid"
+                  type="submit">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

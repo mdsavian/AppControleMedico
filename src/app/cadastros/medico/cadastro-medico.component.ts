@@ -8,6 +8,7 @@ import { ConvenioService } from '../../services/convenio.service';
 import { Convenio } from '../../modelos/convenio';
 import { Util } from '../../uteis/Util';
 import { EnderecoService } from '../../services/endereco.service';
+import { Usuario } from '../../modelos/usuario';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -17,7 +18,7 @@ import { EnderecoService } from '../../services/endereco.service';
 
 export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('nomeCompleto') private nomeCompleto: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
   @ViewChild('numero') private numero: ElementRef;
 
   estados = Estados;
@@ -25,7 +26,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   util = new Util();
   convenios: Array<Convenio> = [];
   medico: Medico = {
-    id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "",
+    id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario:new Usuario(),
     cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>()
   };
 

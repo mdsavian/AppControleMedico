@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-
 import {CadastroPacienteComponent } from './paciente/cadastro-paciente.component';
 import {CadastroMedicoComponent } from './medico/cadastro-medico.component';
 import { CadastroConvenioComponent } from './convenio/cadastro-convenio.component';
+import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
+import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -17,6 +18,26 @@ export const CadastrosRoutes: Routes = [
             { title: 'Cadastro Paciente', url: '/cadastros/cadastrar' }            
           ]
         }        
+      },
+      {
+        path: 'cadastrofuncionario',
+        component: CadastroFuncionarioComponent,
+        data: {
+          title: 'Cadastro Funcionário',
+          urls: [
+            { title: 'Cadastro Funcionário', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastrooficio',
+        component: CadastroOficioComponent,
+        data: {
+          title: 'Cadastro Ofício',
+          urls: [
+            { title: 'Cadastro Ofício', url: '/cadastros/cadastrar' }
+          ]
+        }
       },
       {
         path: 'cadastromedico',

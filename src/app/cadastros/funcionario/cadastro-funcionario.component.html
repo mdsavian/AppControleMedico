@@ -2,8 +2,8 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <form (ngSubmit)="onSubmit()" #pacienteForm="ngForm">
-          <div [hidden]="pacienteForm.submitted">
+        <form (ngSubmit)="onSubmit()" #funcionarioForm="ngForm">
+          <div [hidden]="funcionarioForm.submitted">
             <ngb-tabset type="pills">
               <ngb-tab title="Informações Pessoais">
                 <ng-template ngbTabContent>
@@ -15,7 +15,7 @@
                         <div class="form-group">
                           <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                           <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
-                            class="form-control" required minlength="4" [(ngModel)]="paciente.nomeCompleto"
+                            class="form-control" required minlength="4" [(ngModel)]="funcionario.nomeCompleto"
                             #nomeCompleto style="text-transform:uppercase">
                           <div *ngIf="nomeCompleto.invalid && (nomeCompleto.dirty || nomeCompleto.touched)"
                             class="alert alert-danger">
@@ -28,8 +28,8 @@
                         <div class="form-group">
                           <label class="control-label" for="cpf">CPF</label>
                           <input type="text" id="cpf" appValidapf mask="000.000.000-00" placeholder="CPF" name="cpf"
-                            class="form-control" [(ngModel)]="paciente.cpf" #cpf="ngModel">
-                            <div *ngIf="cpf.invalid && cpf.errors?.validaCpf && (cpf.dirty || cpf.touched)"
+                            class="form-control" [(ngModel)]="funcionario.cpf" #cpf="ngModel">
+                          <div *ngIf="cpf.invalid && cpf.errors?.validaCpf && (cpf.dirty || cpf.touched)"
                             class="alert alert-danger">
                             <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
                           </div>
@@ -40,7 +40,7 @@
                         <div class="form-group">
                           <label class="control-label" for="rg">RG</label>
                           <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
-                            [(ngModel)]="paciente.rg" #rg="ngModel">
+                            [(ngModel)]="funcionario.rg" #rg="ngModel">
                         </div>
                       </div>
                     </div>
@@ -67,74 +67,45 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="estadoCivil">Estado Civil(*)</label>
-                          <select class="form-control" [(ngModel)]="paciente.estadoCivil" #estadoCivil="ngModel"
-                            id="estadoCivil" name="estadoCivil" required>
-                            <option>Solteiro(a)</option>
-                            <option>Casado(a)</option>
-                            <option>Divorciado(a)</option>
-                          </select>
-                          <div *ngIf="estadoCivil.invalid && (estadoCivil.dirty || estadoCivil.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="estadoCivil.errors.required"> Estado Civil Obrigatório. </div>
+                          <label class="control-label" for="dataAdmis">Data de Admissão</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <input type="text" mask="00/00/0000" id="dataAdmis" name="dataAdmis"
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataAdmis"
+                              #dataAdmissao="ngModel" (blur)="formataData($event)">
                           </div>
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="tipoSanguineo">Tipo Sanguíneo</label>
-                          <select class="form-control" [(ngModel)]="paciente.tipoSanguineo" #tipoSanguineo="ngModel"
-                            id="tipoSanguineo" name="tipoSanguineo">
-                            <option>O+</option>
-                            <option>A+</option>
-                            <option>B+</option>
-                            <option>AB+</option>
-                            <option>O-</option>
-                            <option>A-</option>
-                            <option>B-</option>
-                            <option>AB-</option>
+                          <label class="control-label" for="dataDemis">Data de Demissão</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <input type="text" mask="00/00/0000" id="dataDemis" name="dataDemis"
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataDemis"
+                              #dataDemissao="ngModel" (blur)="formataData($event)">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="oficio">Ofício(*)</label>
+                          <select class="form-control" [(ngModel)]="funcionario.oficioId" #oficio="ngModel" id="oficio"
+                            name="oficio" >
+                            <option *ngFor="let oficio of oficios | enumToArray">
+                              {{oficio}}
+                            </option>
                           </select>
+                          <div *ngIf="oficio.invalid && (oficio.dirty || oficio.touched)" class="alert alert-danger">
+                            <div *ngIf="oficio.errors.required">Ofício Obrigatório. </div>
+                          </div>
                         </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="ocupacao">Ocupação</label>
-                          <input type="text" id="ocupacao" placeholder="Ocupação" name="ocupacao" class="form-control"
-                            [(ngModel)]="paciente.ocupacao" #ocupacao="ngModel">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row rowcadastro">
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="nomeConjugue">Nome Cônjugue</label>
-                          <input type="text" style="text-transform:uppercase" placeholder="Nome Cônjugue" id="nomeConjugue" name="nomeConjugue"
-                            class="form-control" [(ngModel)]="paciente.nomeConjugue" #nomeConjugue="ngModel">
-                        </div>
-                      </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="nomePai">Nome Pai</label>
-                          <input type="text" style="text-transform:uppercase" placeholder="Nome Pai" id="nomePai" name="nomePai" class="form-control"
-                            [(ngModel)]="paciente.nomePai" #nomePai="ngModel">
-                        </div>
-                      </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="nomeMae">Nome Mãe</label>
-                          <input type="text" style="text-transform:uppercase" placeholder="Nome Mãe" id="nomeMae" name="nomeMae" class="form-control"
-                            [(ngModel)]="paciente.nomeMae" #nomeMae="ngModel">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row rowcadastro">
-                      <div class="col-xs-4 col-md-2">
-                        <label class="form-check-inline" for="ativo">Ativo</label>
-                        <input class="form-check-inline" [(ngModel)]="paciente.ativo" checked name="ativo" id="ativo"
-                          value="checked" type="checkbox">
                       </div>
                     </div>
                   </div>
@@ -155,7 +126,7 @@
                               <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
                             </div>
                             <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
-                              required [(ngModel)]="paciente.celular" mask="(00) 0 0000-0000" #celular="ngModel">
+                              required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel">
                           </div>
                           <div *ngIf="celular.invalid && (celular.dirty || celular.touched)" class="alert alert-danger">
                             <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
@@ -171,31 +142,24 @@
                               <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
                             </div>
                             <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
-                              [(ngModel)]="paciente.telefone" mask="(00) 0000-0000" #telefone="ngModel">
+                              [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
                           </div>
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="email">E-mail</label>
+                          <label class="control-label" for="email">E-mail(*)</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text">@</span>
                             </div>
-                            <input type="email" id="email" placeholder="paciente@email.com" name="email"
-                              class="form-control" email [(ngModel)]="paciente.email" #email="ngModel">
+                            <input type="email" id="email" placeholder="funcionario@email.com" name="email"
+                              class="form-control" required email [(ngModel)]="funcionario.email" #email="ngModel">
                           </div>
                           <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
                             <div *ngIf="email.errors.required"> E-mail Obrigatório. </div>
                           </div>
-                        </div>
-                      </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="responsavel">Responsável</label>
-                          <input type="text" id="responsavel" placeholder="Responsável" name="responsavel"
-                            class="form-control" [(ngModel)]="paciente.responsavel" #responsavel="ngModel">
                         </div>
                       </div>
                     </div>
@@ -210,7 +174,8 @@
                                   width="25" height="22"> </span>
                             </div>
                             <input type="text" id="cep" placeholder="CEP" name="cep" class="form-control"
-                              [(ngModel)]="paciente.cep" required #cep="ngModel" (blur)="buscaCep()" mask="00.000-000">
+                              [(ngModel)]="funcionario.cep" required #cep="ngModel" (blur)="buscaCep()"
+                              mask="00.000-000">
                           </div>
                           <div *ngIf="cep.invalid && (cep.dirty || cep.touched)" class="alert alert-danger">
                             <div *ngIf="cep.errors.required">CEP Obrigatório. </div>
@@ -222,7 +187,7 @@
                         <div class="form-group">
                           <label class="control-label" for="endereco">Endereço(*)</label>
                           <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
-                            [(ngModel)]="paciente.endereco" required #endereco="ngModel">
+                            [(ngModel)]="funcionario.endereco" required #endereco="ngModel">
                           <div *ngIf="endereco.invalid && (endereco.dirty || endereco.touched)"
                             class="alert alert-danger">
                             <div *ngIf="endereco.errors.required">Endereço Obrigatório. </div>
@@ -233,8 +198,8 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="numero">Número</label>
-                          <input type="text" id="numero" placeholder="Número" name="numero" class="form-control"
-                            [(ngModel)]="paciente.numero" #numero>
+                          <input type="text" id="numero" placeholder="Número" required name="numero" class="form-control"
+                            [(ngModel)]="funcionario.numero" #numero>
                         </div>
                       </div>
 
@@ -242,7 +207,7 @@
                         <div class="form-group">
                           <label class="control-label" for="complemento">Complemento</label>
                           <input type="text" id="complemento" placeholder="Complemento" name="complemento"
-                            class="form-control" [(ngModel)]="paciente.complemento" #complemento="ngModel">
+                            class="form-control" [(ngModel)]="funcionario.complemento" #complemento="ngModel">
                         </div>
                       </div>
                     </div>
@@ -253,7 +218,7 @@
                         <div class="form-group">
                           <label class="control-label" for="bairro">Bairro(*)</label>
                           <input type="text" id="bairro" placeholder="Bairro" name="bairro" class="form-control"
-                            [(ngModel)]="paciente.bairro" required #bairro="ngModel">
+                            [(ngModel)]="funcionario.bairro" required #bairro="ngModel">
                           <div *ngIf="bairro.invalid && (bairro.dirty || bairro.touched)" class="alert alert-danger">
                             <div *ngIf="bairro.errors.required">Bairro Obrigatório. </div>
                           </div>
@@ -264,7 +229,7 @@
                         <div class="form-group">
                           <label class="control-label" for="cidade">Cidade(*)</label>
                           <input type="text" id="cidade" placeholder="Cidade" name="cidade" class="form-control"
-                            [(ngModel)]="paciente.cidade" required #cidade="ngModel">
+                            [(ngModel)]="funcionario.cidade" required #cidade="ngModel">
                           <div *ngIf="cidade.invalid && (cidade.dirty || cidade.touched)" class="alert alert-danger">
                             <div *ngIf="cidade.errors.required">Cidade Obrigatório. </div>
                           </div>
@@ -274,7 +239,7 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="uf">Estado(*)</label>
-                          <select class="form-control" [(ngModel)]="paciente.uf" #uf="ngModel" id="uf" name="uf"
+                          <select class="form-control" [(ngModel)]="funcionario.uf" #uf="ngModel" id="uf" name="uf"
                             required>
                             <option *ngFor="let codigo of estados | enumToArray">
                               {{codigo}}
@@ -289,83 +254,13 @@
                   </div>
                 </ng-template>
               </ngb-tab>
-              <ngb-tab title="Convênio">
-                <ng-template ngbTabContent>
-                  <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                    <div class="row"></div>
-
-                    <div class="row rowcadastro">
-                      <div class="col-xs-12 col-md-12">
-                        <div class="form-group">
-                          <label class="control-label" for="convenio">Convênio(*)</label>
-                          <select class="form-control" [(ngModel)]="convenioId" #convenio id="convenio" (change)="trocaConvenio($event)"
-                            name="convenio" required>
-                            <option *ngFor="let codigo of convenios" [ngValue]="codigo.id">
-                              {{codigo.nomeConvenio}}
-                            </option>
-                          </select>
-                          <div *ngIf="convenio.invalid && (convenio.dirty || convenio.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="convenio.errors.required">Convênio Obrigatório. </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row rowcadastro">
-                      <div class="col-xs-8 col-md-4">
-                        <div class="form-group">
-                          <label class="control-label" for="numerocartao">Número Cartão</label>
-                          <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="basic-addon1"><i
-                                  class="fa fa-credit-card-alt"></i></span>
-                            </div>
-                            <input type="number" id="numeroCartao" name="numeroCartao" placeholder="Número Cartão"
-                              class="form-control" [(ngModel)]="paciente.numeroCartao" #numeroCartao="ngModel">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="dataValidadeCartao">Data Validade Cartão</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <input type="text" mask="00/00/0000" id="dataValidadeCartao" name="dataValidadeCartao"
-                              placeholder="dd/mm/yyyy" class="form-control" required [(ngModel)]="dataValidade"
-                              #dataValidadeCartao (blur)="formataData($event)">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-8 col-md-4">
-                        <div class="form-group">
-                          <label class="control-label" for="cartaoNacionalSaude">Cartão Nacional de Saúde</label>
-                          <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="basic-addon1"><i
-                                  class="fa fa-credit-card-alt"></i></span>
-                            </div>
-                            <input type="number" id="cartaoNacionalSaude" name="cartaoNacionalSaude"
-                              placeholder="Cartão Nacional de Saúde" class="form-control"
-                              [(ngModel)]="paciente.cartaoNacionalSaude" #cartaoNacionalSaude="ngModel">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-template>
-              </ngb-tab>
             </ngb-tabset>
           </div>
           <div class="panel-footer rowcadastro">
             <div class="form-group">
               <div class="col-xs-8 col-md-6">
                 <!--  -->
-                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!pacienteForm.form.valid"
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!funcionarioForm.form.valid"
                   type="submit">Salvar</button>
                 <button style="width:40%" class="btn btn-rounded btn-danger" type="submit">Cancelar</button>
               </div>

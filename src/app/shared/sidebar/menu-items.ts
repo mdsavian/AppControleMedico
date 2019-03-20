@@ -42,6 +42,26 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
       },
       {
+        path: '/listagem/listagemfuncionario',
+        title: 'Funcionário',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
+        path: '/listagem/listagemoficio',
+        title: 'Ofício',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
         path: '/listagem/listagemmedico',
         title: 'Médico',
         icon: '',
