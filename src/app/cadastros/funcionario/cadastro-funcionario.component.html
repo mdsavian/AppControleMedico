@@ -152,10 +152,11 @@
                               <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
                             </div>
                             <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
-                              required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel">
+                              required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel" pattern="^[0-9]{11}$">
                           </div>
                           <div *ngIf="celular.invalid && (celular.dirty || celular.touched)" class="alert alert-danger">
                             <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
+                            <div *ngIf="celular.errors.required"> Celular Inválido. </div>
                           </div>
                         </div>
                       </div>
