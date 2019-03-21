@@ -20,7 +20,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   funcionario: Funcionario = {
     id: "", nomeCompleto: "", cpf: "", dataAdmissao: new Date('01/01/0001'), dataDemissao: new Date('01/01/0001'), dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1,
-    celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario()
+    celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador:false, visualizaValoresRelatorios:false
   };
 
   oficios = new Array<Oficio>();
@@ -47,6 +47,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
 
     this.oficioService.Todos().subscribe(c => {
+      console.log(c);
       this.oficios = c;
     })
   }
@@ -75,6 +76,13 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.funcionario.dataAdmissao = this.util.stringParaData(e.target.value);
     else if (e.target.id == "dataDemissao")
       this.funcionario.dataDemissao = this.util.stringParaData(e.target.value);
+  }
+
+
+  public trocaOficio(oficio:Oficio):void
+  {
+    console.log(oficio);
+    this.funcionario.oficio = oficio;
   }
 
   public onSubmit(): void {

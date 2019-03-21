@@ -24,6 +24,7 @@ constructor( private oficioService: OficioService, private router: Router, priva
   buscaOficios(): void {
     this.oficioService.Todos().subscribe(dados => {
       this.listaOficios = dados;     
+      this.oficioService.listaOficio = dados;
       this.source = new LocalDataSource(this.listaOficios);      
     });
   }

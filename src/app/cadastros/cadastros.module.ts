@@ -11,6 +11,7 @@ import { UteisModule } from '../uteis/uteis.module'
 import { CadastrosRoutes } from './cadastros.routing';
 
 import { ValidaNomeConvenioDirective } from '../validadores/valida-nome-convenio.directive';
+import { ValidaNomeOficioDirective } from '../validadores/valida-nome-oficio.directive';
 import { ValidaCpfDirective } from '../validadores/valida-cpf.directive';
 
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
@@ -22,6 +23,6 @@ import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 @NgModule({
   imports: [NgbModule,UteisModule, CommonModule, Ng2SmartTableModule,RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
   declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroOficioComponent,
-                ValidaNomeConvenioDirective,ValidaCpfDirective]
+                ValidaNomeConvenioDirective,ValidaCpfDirective, ValidaNomeOficioDirective]
 })
 export class CadastrosModule { }

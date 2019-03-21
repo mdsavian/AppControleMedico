@@ -11,6 +11,8 @@ export class Funcionario extends Pessoa {
   oficio:Oficio;
   usuario:Usuario;
   dataAdmissao:Date;  
-  dataDemissao:Date;  
+  dataDemissao:Date;
+  permissaoAdministrador : boolean;
+  visualizaValoresRelatorios : boolean;
 
 }

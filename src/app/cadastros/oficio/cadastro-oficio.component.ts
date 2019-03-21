@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export class CadastroOficioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeOficio', { read: ElementRef }) private nomeOficio: ElementRef;
+  @ViewChild('descricao', { read: ElementRef }) private descricao: ElementRef;
 
   oficios = new Array<Oficio>();
   mensagemErro: string;
@@ -20,8 +20,8 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
   };
 
   ngAfterViewInit(): void {
-    if (this.nomeOficio != null)
-      this.nomeOficio.nativeElement.focus();
+    if (this.descricao != null)
+      this.descricao.nativeElement.focus();
   }
 
   public ngOnInit(): void {
@@ -31,7 +31,9 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
     if (this.id != null) {
       this.oficioService.buscarPorId(this.id).subscribe(dado => {
         if (dado != null && dado.descricao != '') {
-          this.nomeOficio.nativeElement.setAttribute('readonly', true);
+          this.descricao.nativeElement.setAttribute('readonly', true);
+          this.oficio = dado;
+          this.oficioService.oficio = dado;
         }
       });
     }

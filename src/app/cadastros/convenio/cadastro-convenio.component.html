@@ -14,10 +14,10 @@
                         <div class="form-group">
                           <label class="control-label" for="nomeConvenio">Nome Convênio(*)</label>
                           <input type="text" id="nomeConvenio" placeholder="Nome Convênio" name="nomeConvenio" 
-                          class="form-control" style="text-transform:uppercase" validaNomeConvenio required minlength="4" [(ngModel)]="convenio.nomeConvenio" #nomeConvenio="ngModel">                                                    
-                          <div *ngIf="nomeConvenio.invalid && (nomeConvenio.dirty || nomeConvenio.touched) && (nomeConvenio.errors?.forbiddenName)" class="alert alert-danger">
+                          class="form-control" style="text-transform:uppercase" appValidaNomeConvenio required minlength="4" [(ngModel)]="convenio.nomeConvenio" #nomeConvenio="ngModel">                                                    
+                          <div *ngIf="nomeConvenio.invalid && (nomeConvenio.dirty || nomeConvenio.touched) && (nomeConvenio.errors?.validaNomeConvenio)" class="alert alert-danger">
                             <div *ngIf="nomeConvenio.errors.required"> Nome Convênio Obrigatório. </div>
-                            <div *ngIf="nomeConvenio.errors?.forbiddenName"> Já existe um convênio com este nome cadastrado. </div>                            
+                            <div *ngIf="nomeConvenio.errors?.validaNomeConvenio"> Já existe um convênio com este nome cadastrado. </div>                            
                           </div>                          
                         </div>
                       </div>

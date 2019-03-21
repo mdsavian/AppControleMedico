@@ -16,7 +16,7 @@
                           <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                           <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
                             class="form-control" required minlength="4" [(ngModel)]="paciente.nomeCompleto"
-                            #nomeCompleto style="text-transform:uppercase">
+                            #nomeCompleto>
                           <div *ngIf="nomeCompleto.invalid && (nomeCompleto.dirty || nomeCompleto.touched)"
                             class="alert alert-danger">
                             <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
@@ -184,10 +184,12 @@
                               <span class="input-group-text">@</span>
                             </div>
                             <input type="email" id="email" placeholder="paciente@email.com" name="email"
-                              class="form-control" email [(ngModel)]="paciente.email" #email="ngModel">
+                              class="form-control" email [(ngModel)]="paciente.email" #emailInput="ngModel">
                           </div>
-                          <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
-                            <div *ngIf="email.errors.required"> E-mail Obrigatório. </div>
+                          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
+                            <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
                           </div>
                         </div>
                       </div>

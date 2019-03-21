@@ -6,8 +6,12 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class OficioService {
+
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'oficio/';
+
+  public oficio:Oficio;
+  public listaOficio :Array<Oficio>;
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
