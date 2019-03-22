@@ -11,12 +11,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CadastroOficioComponent implements OnInit, AfterViewInit {
 
   @ViewChild('descricao', { read: ElementRef }) private descricao: ElementRef;
-
-  oficios = new Array<Oficio>();
+  
   mensagemErro: string;
   id: string;
   oficio: Oficio = {
-    id: "", descricao:""
+    id: "", descricao: ""
   };
 
   ngAfterViewInit(): void {
@@ -36,7 +35,8 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
           this.oficioService.oficio = dado;
         }
       });
-    }
+    }    
+
   }
 
   constructor(private oficioService: OficioService, private route: ActivatedRoute, private router: Router) {

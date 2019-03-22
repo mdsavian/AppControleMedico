@@ -8,6 +8,9 @@ import { EnderecoService } from '../../services/endereco.service';
 import { OficioService } from '../../services/oficio.service';
 import { Oficio } from '../../modelos/oficio';
 import { Usuario } from '../../modelos/usuario';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+
 
 @Component({
   templateUrl: './cadastro-funcionario.component.html',
@@ -20,16 +23,19 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   funcionario: Funcionario = {
     id: "", nomeCompleto: "", cpf: "", dataAdmissao: new Date('01/01/0001'), dataDemissao: new Date('01/01/0001'), dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1,
-    celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador:false, visualizaValoresRelatorios:false
+    celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaValoresRelatorios: false
   };
 
+
+  oficioEscolhido: string = '';
   oficios = new Array<Oficio>();
+  nomeOficios = new Array<string>();
   util = new Util();
   estados = Estados;
   dataNasci: string = "01/01/1901"
   dataAdmis: string = "01/01/1901"
   dataDemis: string = "01/01/1901"
- 
+
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
   }
@@ -47,8 +53,9 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
 
     this.oficioService.Todos().subscribe(c => {
-      console.log(c);
       this.oficios = c;
+      c.forEach(d => this.nomeOficios.push(d.descricao));
+
     })
   }
 
@@ -76,13 +83,18 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.funcionario.dataAdmissao = this.util.stringParaData(e.target.value);
     else if (e.target.id == "dataDemissao")
       this.funcionario.dataDemissao = this.util.stringParaData(e.target.value);
-  }
+  } s
 
 
-  public trocaOficio(oficio:Oficio):void
-  {
-    console.log(oficio);
-    this.funcionario.oficio = oficio;
+  procuraOficio = (text$: Observable<string>) => {
+    if (this.nomeOficios.length > 0) {
+      text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        map(term => term.length < 2 ? []
+          : this.oficios.filter(v => v.descricao.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+      )
+    }
   }
 
   public onSubmit(): void {

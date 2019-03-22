@@ -96,20 +96,21 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="oficio">Ofício(*)</label>
-                          <select class="form-control" [(ngModel)]="funcionario.oficioId" #oficio="ngModel" id="oficio" (change)="trocaOficio($event.target.value)"
+                          <input id="oficio" type="text" required class="form-control" [(ngModel)]="oficioEscolhido" [ngbTypeahead]="procuraOficio"/>
+                          <pre>Model: {{ oficioEscolhido | json }}</pre>
+
+                          <!-- <select class="form-control" [(ngModel)]="funcionario.oficioId"  id="oficio" (change)="trocaOficio($event.target.value)"
                             name="oficio" >
                             <option *ngFor="let oficio of oficios" [value]="oficio">
                               {{oficio.descricao}}
                             </option>
-                          </select>                          
-                          <div *ngIf="oficio.invalid && (oficio.dirty || oficio.touched)" class="alert alert-danger">
+                          </select>                           -->
+                          <!-- <div *ngIf="oficio.invalid && (oficio.dirty || oficio.touched)" class="alert alert-danger">
                             <div *ngIf="oficio.errors.required">Ofício Obrigatório. </div>
-                          </div>
+                          </div> -->
                         </div>
                       </div>
-                      <div class="col-xs-4 col-md-3" style="display:inline-block; vertical-align: middle;">
-                        <input type="button"class="btn btn-rounded" value="teste">
-                      </div>
+                      
                     </div>
 
                     <div class="row rowcadastro">
