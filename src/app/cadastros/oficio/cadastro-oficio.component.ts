@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angula
 import { Oficio } from '../../modelos/oficio';
 import { OficioService } from '../../services/oficio.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   templateUrl: './cadastro-oficio.component.html',
@@ -17,6 +19,9 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
   oficio: Oficio = {
     id: "", descricao: ""
   };
+
+  constructor(private oficioService: OficioService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
+  }
 
   ngAfterViewInit(): void {
     if (this.descricao != null)
@@ -37,10 +42,7 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
       });
     }    
 
-  }
-
-  constructor(private oficioService: OficioService, private route: ActivatedRoute, private router: Router) {
-  }
+  } 
 
   public onSubmit(): void {
     this.oficioService.salvar(this.oficio).subscribe(
@@ -48,6 +50,8 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemoficio"]);
       },
       error => {
+        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
 
       }
     )

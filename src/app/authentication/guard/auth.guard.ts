@@ -14,8 +14,7 @@ export class AuthGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
         const usuarioCorrente = this.loginService.usuarioCorrenteValor;
-
-        console.log("canactivate", usuarioCorrente);
+        
         if (usuarioCorrente && this.ValidaUsuario(usuarioCorrente)) {
             return true;
         }
@@ -27,9 +26,6 @@ export class AuthGuard implements CanActivate {
     }
 
     ValidaUsuario(usuario: Usuario): boolean {
-
-        console.log("validaus", usuario);
-        
         this.loginService.validaUsuario(usuario).subscribe(c => {
             if (c == false) {
                 this.loginService.logout();
@@ -38,7 +34,6 @@ export class AuthGuard implements CanActivate {
         },
             error => {
                 this.router.navigate(['/authentication/login']);
-
             });
 
         return true;

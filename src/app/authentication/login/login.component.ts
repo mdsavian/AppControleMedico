@@ -29,15 +29,16 @@ export class LoginComponent implements OnInit {
       data=> {
         
         if (data == null)
-        {
-          // console.log("easase", ModalErrorComponent);
-          var modal = this.modalService.open(ModalErrorComponent);
+        {          
+          var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";
         }
         this.router.navigate(["listagem/listagempaciente"]);
       },
       error=>
       {
+        var modal = this.modalService.open(ModalErrorComponent);
+        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
         console.log("erro:", error);
       }
     );

@@ -6,7 +6,6 @@ import {
 @Component({
   selector: 'app-modal-error',
   templateUrl: './modal-error.component.html'
-
 })
 
 export class ModalErrorComponent {
@@ -14,6 +13,7 @@ export class ModalErrorComponent {
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit() {    
+  ngOnInit() {
+    console.log("mensagemErro= ", this.mensagemErro);
   }
 }

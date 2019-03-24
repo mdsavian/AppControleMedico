@@ -98,7 +98,7 @@
                     </div>
 
                     <div class="row rowcadastro">
-                      <div class="col-xs-5 col-md-2">
+                      <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="dataNascimento">Data de Nascimento(*)</label>
                           <div class="input-group">
@@ -116,7 +116,7 @@
                         </div>
                       </div>
 
-                      <div class="col-xs-5 col-md-2">
+                      <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="dataAdmis">Data de Admissão</label>
                           <div class="input-group">
@@ -130,7 +130,7 @@
                         </div>
                       </div>
 
-                      <div class="col-xs-5 col-md-2">
+                      <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="dataDemis">Data de Demissão</label>
                           <div class="input-group">
@@ -152,7 +152,7 @@
                               (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
                               #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
                             <div class="input-group-prepend">
-                              <span class="input-group-text" id="img-adiciona-oficio"><i
+                              <span onclick="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
                                   class="fa fa-pencil"></i></span>
                             </div>
                           </div>
@@ -278,7 +278,7 @@
                 <!--  -->
                 <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!funcionarioForm.form.valid"
                   type="submit">Salvar</button>
-                <button style="width:40%" class="btn btn-rounded btn-danger" type="submit">Cancelar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
               </div>
             </div>
           </div>

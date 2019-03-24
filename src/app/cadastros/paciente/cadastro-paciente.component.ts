@@ -7,6 +7,8 @@ import { Util } from '../../uteis/Util';
 import { EnderecoService } from '../../services/endereco.service';
 import { ConvenioService } from '../../services/convenio.service';
 import { Convenio } from '../../modelos/convenio';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -54,7 +56,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
-    private convenioService: ConvenioService, private route: ActivatedRoute) {
+    private convenioService: ConvenioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
   public trocaConvenio(e) {
@@ -90,7 +92,8 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagempaciente"]);
       },
       error => {
-        //show modal erro
+        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }
     )
   }

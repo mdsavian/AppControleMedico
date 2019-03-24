@@ -7,6 +7,8 @@ import { ConvenioService } from '../../services/convenio.service';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 
 @Component({
   templateUrl: './cadastro-convenio.component.html',
@@ -58,7 +60,7 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router) {
+  constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
   }
 
 
@@ -68,7 +70,8 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemconvenio"]);
       },
       error => {
-
+        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }
     )
   }

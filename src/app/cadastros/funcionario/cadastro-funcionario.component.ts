@@ -12,6 +12,8 @@ import { OficioService } from '../../services/oficio.service';
 
 import { Util } from '../../uteis/Util';
 import { Oficio } from '../../modelos/oficio';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -66,7 +68,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     })
   }
 
-  constructor(public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService, private oficioService: OficioService, private route: ActivatedRoute) {
+  constructor(public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService, private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
   search = (text$: Observable<string>) =>
@@ -108,17 +110,20 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.funcionario.dataDemissao = this.util.stringParaData(e.target.value);
   }
 
-
+  public adicionaOficio():void{
+    // var modal = this.modalService.open(ModalAdicionaEntidadeDescricaoComponent);
+    // modal.componentInstance.
+  }
 
   public onSubmit(): void {
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {
-        console.log("opa");
         this.router.navigate(["listagem/listagemfuncionario"]);
       },
       error => {
         console.log(error);
-        //show modal erro
+        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }
     )
   }

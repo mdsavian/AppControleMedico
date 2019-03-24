@@ -49,35 +49,27 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="dataNascimento">Data de Nascimento(*)</label>
+                          <label class="control-label" for="dataNascimento">Data de Nascimento</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                             <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                              placeholder="dd/mm/yyyy" class="form-control" required [(ngModel)]="dataNasci"
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
                               #dataNascimento="ngModel" (blur)="formataData($event)">
-                            <div *ngIf="dataNascimento.invalid && (dataNascimento.dirty || dataNascimento.touched)"
-                              class="alert alert-danger">
-                              <div *ngIf="dataNascimento.errors.required"> Data de Nascimento Obrigatória. </div>
-                            </div>
                           </div>
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="estadoCivil">Estado Civil(*)</label>
+                          <label class="control-label" for="estadoCivil">Estado Civil</label>
                           <select class="form-control" [(ngModel)]="paciente.estadoCivil" #estadoCivil="ngModel"
-                            id="estadoCivil" name="estadoCivil" required>
+                            id="estadoCivil" name="estadoCivil">
                             <option>Solteiro(a)</option>
                             <option>Casado(a)</option>
                             <option>Divorciado(a)</option>
                           </select>
-                          <div *ngIf="estadoCivil.invalid && (estadoCivil.dirty || estadoCivil.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="estadoCivil.errors.required"> Estado Civil Obrigatório. </div>
-                          </div>
                         </div>
                       </div>
 
@@ -189,7 +181,6 @@
                           </div>
                           <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
                             class="alert alert-danger">
-                            <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
                             <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
                           </div>
                         </div>
@@ -206,30 +197,23 @@
                     <div class="row rowcadastro">
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="cep">CEP(*)</label>
+                          <label class="control-label" for="cep">CEP</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"><img src="../../../assets/images/icon/logo-correio.png"
                                   width="25" height="22"> </span>
                             </div>
                             <input type="text" id="cep" placeholder="CEP" name="cep" class="form-control"
-                              [(ngModel)]="paciente.cep" required #cep="ngModel" (blur)="buscaCep()" mask="00.000-000">
-                          </div>
-                          <div *ngIf="cep.invalid && (cep.dirty || cep.touched)" class="alert alert-danger">
-                            <div *ngIf="cep.errors.required">CEP Obrigatório. </div>
+                              [(ngModel)]="paciente.cep" #cep="ngModel" (blur)="buscaCep()" mask="00.000-000">
                           </div>
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="endereco">Endereço(*)</label>
+                          <label class="control-label" for="endereco">Endereço</label>
                           <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
-                            [(ngModel)]="paciente.endereco" required #endereco="ngModel">
-                          <div *ngIf="endereco.invalid && (endereco.dirty || endereco.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="endereco.errors.required">Endereço Obrigatório. </div>
-                          </div>
+                            [(ngModel)]="paciente.endereco" #endereco="ngModel">
                         </div>
                       </div>
 
@@ -254,38 +238,28 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="bairro">Bairro(*)</label>
+                          <label class="control-label" for="bairro">Bairro</label>
                           <input type="text" id="bairro" placeholder="Bairro" name="bairro" class="form-control"
-                            [(ngModel)]="paciente.bairro" required #bairro="ngModel">
-                          <div *ngIf="bairro.invalid && (bairro.dirty || bairro.touched)" class="alert alert-danger">
-                            <div *ngIf="bairro.errors.required">Bairro Obrigatório. </div>
-                          </div>
+                            [(ngModel)]="paciente.bairro" #bairro="ngModel">
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="cidade">Cidade(*)</label>
+                          <label class="control-label" for="cidade">Cidade</label>
                           <input type="text" id="cidade" placeholder="Cidade" name="cidade" class="form-control"
-                            [(ngModel)]="paciente.cidade" required #cidade="ngModel">
-                          <div *ngIf="cidade.invalid && (cidade.dirty || cidade.touched)" class="alert alert-danger">
-                            <div *ngIf="cidade.errors.required">Cidade Obrigatório. </div>
-                          </div>
+                            [(ngModel)]="paciente.cidade" #cidade="ngModel">
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="uf">Estado(*)</label>
-                          <select class="form-control" [(ngModel)]="paciente.uf" #uf="ngModel" id="uf" name="uf"
-                            required>
+                          <label class="control-label" for="uf">Estado</label>
+                          <select class="form-control" [(ngModel)]="paciente.uf" #uf="ngModel" id="uf" name="uf">
                             <option *ngFor="let codigo of estados | enumToArray">
                               {{codigo}}
                             </option>
                           </select>
-                          <div *ngIf="uf.invalid && (uf.dirty || uf.touched)" class="alert alert-danger">
-                            <div *ngIf="uf.errors.required">Estado Obrigatório. </div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -338,7 +312,7 @@
                               <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                             <input type="text" mask="00/00/0000" id="dataValidadeCartao" name="dataValidadeCartao"
-                              placeholder="dd/mm/yyyy" class="form-control" required [(ngModel)]="dataValidade"
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataValidade"
                               #dataValidadeCartao (blur)="formataData($event)">
                           </div>
                         </div>

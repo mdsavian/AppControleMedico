@@ -38,6 +38,9 @@ import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { JwtInterceptor } from './uteis/jwt.interceptor';
 import { ErrorInterceptor } from './uteis/error.interceptor';
+import { ModalErrorComponent } from './shared/modal/modal-error.component';
+
+
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
   wheelSpeed: 2,
@@ -52,7 +55,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     BlankComponent,
     NavigationComponent,
     BreadcrumbComponent,
-    SidebarComponent
+    SidebarComponent,
+    ModalErrorComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +69,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgxMaskModule.forRoot(),
     PerfectScrollbarModule,
     AppRoutingModule,
-    WebcamModule
+    WebcamModule,
   ],
   providers: [      
     { provide: LOCALE_ID, useValue: "pt" },
@@ -80,7 +84,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       useClass: HashLocationStrategy
     },
     UsuarioService
-  ],
+  ],  
+  entryComponents:[ModalErrorComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { 
