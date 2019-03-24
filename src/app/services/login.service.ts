@@ -31,9 +31,9 @@ export class LoginService {
 
   public login(usuario: Usuario) {
     return this.http.post<Usuario>(this.accessPointUrl, usuario, {headers: this.headers}).pipe(map(usuario => {
-      if (usuario.ativo) {
+      if (usuario != null && usuario.ativo) {
         localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
-        this.usuarioCorrenteSubject.next(usuario);
+        this.usuarioCorrenteSubject.next(usuario);        
       }
       return usuario;
     }));

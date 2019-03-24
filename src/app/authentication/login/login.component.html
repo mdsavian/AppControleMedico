@@ -7,7 +7,7 @@
           <div class="col-xs-12 col-md-12">
             <div class="form-group">
               <label class="control-label" for="login">Login</label>
-              <input type="text" id="login" placeholder="Login" name="login" class="form-control" required minlength="4"
+              <input type="text" id="login" placeholder="Login" name="login" class="form-control" required
                 [(ngModel)]="usuario.login" #login="ngModel">
               <div *ngIf="login.invalid && (login.dirty || login.touched)" class="alert alert-danger">
                 <div *ngIf="login.errors.required"> Digite seu Login. </div>
@@ -19,7 +19,7 @@
           <div class="col-xs-12 col-md-12">
             <div class="form-group">
               <label class="control-label" for="senha">Senha</label>
-              <input type="password" id="senha" placeholder="senha" name="senha" class="form-control" required minlength="4"
+              <input type="password" id="senha" placeholder="senha" name="senha" class="form-control" required
                 [(ngModel)]="usuario.senha" #senha="ngModel">
               <div *ngIf="senha.invalid && (senha.dirty || senha.touched)" class="alert alert-danger">
                 <div *ngIf="senha.errors.required"> Digite sua Senha. </div>
@@ -53,3 +53,18 @@
     </div>
   </div>
 </div>
+
+<ng-template #modalErro id="modalErro" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">Erro</h4>
+        <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>{{mensagemErro}}</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="c('Ok')">Ok</button>
+    </div>
+</ng-template>

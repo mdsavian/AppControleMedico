@@ -47,6 +47,57 @@
 
                     <div class="row rowcadastro">
 
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="celular">Celular(*)</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
+                            </div>
+                            <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
+                              required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel"
+                              pattern="^[0-9]{11}$">
+                          </div>
+                          <div *ngIf="celular.invalid && (celular.dirty || celular.touched)" class="alert alert-danger">
+                            <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
+                            <div *ngIf="celular.errors.required"> Celular Inválido. </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="telefone">Telefone</label>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
+                            </div>
+                            <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
+                              [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="email">E-mail(*)</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">@</span>
+                            </div>
+                            <input type="email" id="email" placeholder="funcionario@email.com" name="email"
+                              class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel">
+                          </div>
+                          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
+                            <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row rowcadastro">
                       <div class="col-xs-5 col-md-2">
                         <div class="form-group">
                           <label class="control-label" for="dataNascimento">Data de Nascimento(*)</label>
@@ -95,22 +146,22 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="oficio">Ofício(*)</label>
-                          <input id="oficio" type="text" required class="form-control" [(ngModel)]="oficioEscolhido" [ngbTypeahead]="procuraOficio"/>
-                          <pre>Model: {{ oficioEscolhido | json }}</pre>
-
-                          <!-- <select class="form-control" [(ngModel)]="funcionario.oficioId"  id="oficio" (change)="trocaOficio($event.target.value)"
-                            name="oficio" >
-                            <option *ngFor="let oficio of oficios" [value]="oficio">
-                              {{oficio.descricao}}
-                            </option>
-                          </select>                           -->
-                          <!-- <div *ngIf="oficio.invalid && (oficio.dirty || oficio.touched)" class="alert alert-danger">
-                            <div *ngIf="oficio.errors.required">Ofício Obrigatório. </div>
-                          </div> -->
+                          <label class="control-label" for="oficioSelecionado">Ofício</label>
+                          <div class="input-group">
+                            <input id="oficioSelecionado" name="oficioSelecionado" type="text"
+                              (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
+                              #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="img-adiciona-oficio"><i
+                                  class="fa fa-pencil"></i></span>
+                            </div>
+                          </div>
+                          <div *ngIf="(falhaNaBusca || oficio.invalid) && (oficio.dirty || oficio.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
+                          </div>
                         </div>
                       </div>
-                      
                     </div>
 
                     <div class="row rowcadastro">
@@ -122,14 +173,16 @@
 
                       <div class="col-xs-5 col-md-3">
                         <label class="form-check-inline" for="permissaoAdministrador">Permissão Administrador</label>
-                        <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador" name="permissaoAdministrador" id="permissaoAdministrador"
-                          value="checked" type="checkbox">
+                        <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador"
+                          name="permissaoAdministrador" id="permissaoAdministrador" value="checked" type="checkbox">
                       </div>
 
                       <div class="col-xs-5 col-md-3">
-                        <label class="form-check-inline" for="visualizaValoresRelatorios">Visualiza Valores Relatórios</label>
-                        <input class="form-check-inline" [(ngModel)]="funcionario.visualizaValoresRelatorios" name="visualizaValoresRelatorios" id="visualizaValoresRelatorios"
-                          value="checked" type="checkbox">
+                        <label class="form-check-inline" for="visualizaValoresRelatorios">Visualiza Valores
+                          Relatórios</label>
+                        <input class="form-check-inline" [(ngModel)]="funcionario.visualizaValoresRelatorios"
+                          name="visualizaValoresRelatorios" id="visualizaValoresRelatorios" value="checked"
+                          type="checkbox">
                       </div>
 
 
@@ -143,92 +196,35 @@
                 <ng-template ngbTabContent>
                   <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                     <div class="row"></div>
-                    <div class="row rowcadastro">
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="celular">Celular(*)</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
-                            </div>
-                            <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
-                              required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel" pattern="^[0-9]{11}$">
-                          </div>
-                          <div *ngIf="celular.invalid && (celular.dirty || celular.touched)" class="alert alert-danger">
-                            <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
-                            <div *ngIf="celular.errors.required"> Celular Inválido. </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="telefone">Telefone</label>
-                          <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
-                            </div>
-                            <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
-                              [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="email">E-mail(*)</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">@</span>
-                            </div>
-                            <input type="email" id="email" placeholder="funcionario@email.com" name="email"
-                              class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel">
-                          </div>
-                          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
-                            <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
                     <div class="row rowcadastro">
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="cep">CEP(*)</label>
+                          <label class="control-label" for="cep">CEP</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"><img src="../../../assets/images/icon/logo-correio.png"
                                   width="25" height="22"> </span>
                             </div>
                             <input type="text" id="cep" placeholder="CEP" name="cep" class="form-control"
-                              [(ngModel)]="funcionario.cep" required #cep="ngModel" (blur)="buscaCep()"
-                              mask="00.000-000">
+                              [(ngModel)]="funcionario.cep" #cep="ngModel" (blur)="buscaCep()" mask="00.000-000">
                           </div>
-                          <div *ngIf="cep.invalid && (cep.dirty || cep.touched)" class="alert alert-danger">
-                            <div *ngIf="cep.errors.required">CEP Obrigatório. </div>
-                          </div>
+
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="endereco">Endereço(*)</label>
+                          <label class="control-label" for="endereco">Endereço</label>
                           <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
-                            [(ngModel)]="funcionario.endereco" required #endereco="ngModel">
-                          <div *ngIf="endereco.invalid && (endereco.dirty || endereco.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="endereco.errors.required">Endereço Obrigatório. </div>
-                          </div>
+                            [(ngModel)]="funcionario.endereco" #endereco="ngModel">
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="numero">Número</label>
-                          <input type="text" id="numero" placeholder="Número" required name="numero" class="form-control"
+                          <input type="text" id="numero" placeholder="Número" name="numero" class="form-control"
                             [(ngModel)]="funcionario.numero" #numero>
                         </div>
                       </div>
@@ -246,38 +242,28 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="bairro">Bairro(*)</label>
+                          <label class="control-label" for="bairro">Bairro</label>
                           <input type="text" id="bairro" placeholder="Bairro" name="bairro" class="form-control"
-                            [(ngModel)]="funcionario.bairro" required #bairro="ngModel">
-                          <div *ngIf="bairro.invalid && (bairro.dirty || bairro.touched)" class="alert alert-danger">
-                            <div *ngIf="bairro.errors.required">Bairro Obrigatório. </div>
-                          </div>
+                            [(ngModel)]="funcionario.bairro" #bairro="ngModel">
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="cidade">Cidade(*)</label>
+                          <label class="control-label" for="cidade">Cidade</label>
                           <input type="text" id="cidade" placeholder="Cidade" name="cidade" class="form-control"
-                            [(ngModel)]="funcionario.cidade" required #cidade="ngModel">
-                          <div *ngIf="cidade.invalid && (cidade.dirty || cidade.touched)" class="alert alert-danger">
-                            <div *ngIf="cidade.errors.required">Cidade Obrigatório. </div>
-                          </div>
+                            [(ngModel)]="funcionario.cidade" #cidade="ngModel">
                         </div>
                       </div>
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="uf">Estado(*)</label>
-                          <select class="form-control" [(ngModel)]="funcionario.uf" #uf="ngModel" id="uf" name="uf"
-                            required>
+                          <label class="control-label" for="uf">Estado</label>
+                          <select class="form-control" [(ngModel)]="funcionario.uf" #uf="ngModel" id="uf" name="uf">
                             <option *ngFor="let codigo of estados | enumToArray">
                               {{codigo}}
                             </option>
                           </select>
-                          <div *ngIf="uf.invalid && (uf.dirty || uf.touched)" class="alert alert-danger">
-                            <div *ngIf="uf.errors.required">Estado Obrigatório. </div>
-                          </div>
                         </div>
                       </div>
                     </div>

@@ -2,12 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NgbModule, } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMaskModule } from 'ngx-mask';
 import { DragulaModule } from 'ng2-dragula';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { UteisModule } from '../uteis/uteis.module'
-
 import { CadastrosRoutes } from './cadastros.routing';
 
 import { ValidaNomeConvenioDirective } from '../validadores/valida-nome-convenio.directive';
@@ -19,10 +18,11 @@ import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
+import { ModalErrorComponent } from '../shared/modal/modal-error.component';
 
 @NgModule({
   imports: [NgbModule,UteisModule, CommonModule, Ng2SmartTableModule,RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
   declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroOficioComponent,
-                ValidaNomeConvenioDirective,ValidaCpfDirective, ValidaNomeOficioDirective]
+                ValidaNomeConvenioDirective,ValidaCpfDirective, ValidaNomeOficioDirective, ModalErrorComponent]
 })
 export class CadastrosModule { }

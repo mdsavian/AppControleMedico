@@ -7,7 +7,6 @@ import { ConvenioService } from '../../services/convenio.service';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgForm, NgModel } from '@angular/forms';
 
 @Component({
   templateUrl: './cadastro-convenio.component.html',
@@ -17,7 +16,6 @@ import { NgForm, NgModel } from '@angular/forms';
 export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
   @ViewChild('nomeConvenio', { read: ElementRef }) private nomeConvenio: ElementRef;
-  @ViewChild('convenioForm') private convenioForm: NgForm;
 
   convenios = new Array<Convenio>();
   mensagemErro: string;

@@ -10,6 +10,7 @@ import { LockComponent } from './lock/lock.component';
 import { LoginComponent } from './login/login.component';
 
 import { AuthenticationRoutes } from './authentication.routing';
+import { ModalErrorComponent } from '../shared/modal/modal-error.component';
 
 @NgModule({
   imports: [
@@ -22,6 +23,8 @@ import { AuthenticationRoutes } from './authentication.routing';
     NotFoundComponent,
     LoginComponent,
     LockComponent,
-  ]
+    ModalErrorComponent
+  ],
+  entryComponents:[ModalErrorComponent],
 })
 export class AuthenticationModule {}

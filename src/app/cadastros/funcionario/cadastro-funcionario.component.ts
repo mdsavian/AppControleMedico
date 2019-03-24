@@ -1,15 +1,19 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { Funcionario } from "../../modelos/funcionario";
-import { Estados } from "../../enums/estados";
-import { FuncionarioService } from "../../services/funcionario.service"
-import { Router, ActivatedRoute } from '@angular/router';
-import { Util } from '../../uteis/Util';
-import { EnderecoService } from '../../services/endereco.service';
-import { OficioService } from '../../services/oficio.service';
-import { Oficio } from '../../modelos/oficio';
-import { Usuario } from '../../modelos/usuario';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+
+import { Funcionario } from "../../modelos/funcionario";
+import { Estados } from "../../enums/estados";
+import { Usuario } from '../../modelos/usuario';
+import { FuncionarioService } from "../../services/funcionario.service"
+import { EnderecoService } from '../../services/endereco.service';
+import { OficioService } from '../../services/oficio.service';
+
+import { Util } from '../../uteis/Util';
+import { Oficio } from '../../modelos/oficio';
+
+
 
 
 @Component({
@@ -26,10 +30,10 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaValoresRelatorios: false
   };
 
-
-  oficioEscolhido: string = '';
   oficios = new Array<Oficio>();
-  nomeOficios = new Array<string>();
+  nomeOficios: Array<string>;
+  falhaNaBusca: boolean;
+  oficioSelecionado: string;
   util = new Util();
   estados = Estados;
   dataNasci: string = "01/01/1901"
@@ -49,19 +53,38 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         this.dataNasci = this.util.dataParaString(dado.dataNascimento);
         this.dataAdmis = this.util.dataParaString(dado.dataAdmissao);
         this.dataDemis = this.util.dataParaString(dado.dataDemissao);
+        this.oficioSelecionado = this.funcionario.oficio.descricao;
       });
     }
 
     this.oficioService.Todos().subscribe(c => {
       this.oficios = c;
-      c.forEach(d => this.nomeOficios.push(d.descricao));
-
+      this.nomeOficios = new Array<string>();
+      c.forEach(d => {
+        this.nomeOficios.push(d.descricao);
+      });
     })
   }
 
   constructor(public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService, private oficioService: OficioService, private route: ActivatedRoute) {
   }
 
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => {
+        this.falhaNaBusca = this.nomeOficios.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10).length == 0;
+        return term.length < 2 ? []
+          : this.nomeOficios.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+      })
+    )
+
+  selectedItem(item) {
+    var oficio = this.oficios.find(c => c.descricao === item.item);
+    this.funcionario.oficio = this.oficios.find(c => c.descricao === item.item);
+
+  }
   public buscaCep() {
     if (this.funcionario.cep != "") {
       this.enderecoService.buscarEndereco(this.funcionario.cep).subscribe(c => {
@@ -83,26 +106,18 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.funcionario.dataAdmissao = this.util.stringParaData(e.target.value);
     else if (e.target.id == "dataDemissao")
       this.funcionario.dataDemissao = this.util.stringParaData(e.target.value);
-  } s
-
-
-  procuraOficio = (text$: Observable<string>) => {
-    if (this.nomeOficios.length > 0) {
-      text$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        map(term => term.length < 2 ? []
-          : this.oficios.filter(v => v.descricao.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
-      )
-    }
   }
+
+
 
   public onSubmit(): void {
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {
+        console.log("opa");
         this.router.navigate(["listagem/listagemfuncionario"]);
       },
       error => {
+        console.log(error);
         //show modal erro
       }
     )
