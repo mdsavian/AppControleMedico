@@ -152,7 +152,7 @@
                               (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
                               #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
                             <div class="input-group-prepend">
-                              <span onclick="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
+                              <span (click)="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
                                   class="fa fa-pencil"></i></span>
                             </div>
                           </div>

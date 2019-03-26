@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Funcionario } from "../../modelos/funcionario";
@@ -14,9 +14,7 @@ import { Util } from '../../uteis/Util';
 import { Oficio } from '../../modelos/oficio';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-
-
+import { ModalAdicionaOficioComponent } from '../../shared/modal/modal-adiciona-oficio.component';
 
 @Component({
   templateUrl: './cadastro-funcionario.component.html',
@@ -68,7 +66,8 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     })
   }
 
-  constructor(public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService, private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
+  constructor(public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
+    private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
   search = (text$: Observable<string>) =>
@@ -85,7 +84,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   selectedItem(item) {
     var oficio = this.oficios.find(c => c.descricao === item.item);
     this.funcionario.oficio = this.oficios.find(c => c.descricao === item.item);
-
   }
   public buscaCep() {
     if (this.funcionario.cep != "") {
@@ -110,9 +108,26 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.funcionario.dataDemissao = this.util.stringParaData(e.target.value);
   }
 
-  public adicionaOficio():void{
-    // var modal = this.modalService.open(ModalAdicionaEntidadeDescricaoComponent);
-    // modal.componentInstance.
+  public adicionaOficio(): void {
+
+    var modal = this.modalService.open(ModalAdicionaOficioComponent, { windowClass: "modal-holder" });
+
+    modal.result.then((oficio) => {
+      if (oficio != '') {
+        
+        var oficioExistente = this.oficios.find(c => c.descricao == oficio.descricao);
+        if (oficioExistente != null) {
+          this.funcionario.oficio = oficioExistente;
+          this.oficioSelecionado = oficioExistente.descricao;
+        }
+        else {
+          this.oficioService.salvar(oficio).subscribe(oficioCadastrado => {
+            this.funcionario.oficio = oficioCadastrado;
+            this.oficioSelecionado = oficioCadastrado.descricao;
+          })
+        }
+      }
+    });    
   }
 
   public onSubmit(): void {
@@ -122,7 +137,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       },
       error => {
         console.log(error);
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }
     )

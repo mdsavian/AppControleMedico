@@ -18,12 +18,11 @@ export class OficioService {
   }
 
   public Todos() {
-
     return this.http.get<Array<Oficio>>(this.accessPointUrl);
-
   }
-
+  
   public salvar(oficio: Oficio) {
+    console.log("tosalvandooo");
     return this.http.post<Oficio>(this.accessPointUrl, oficio);
   }
 

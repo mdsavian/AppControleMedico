@@ -9,6 +9,9 @@ import { ConvenioService } from '../../services/convenio.service';
 import { Convenio } from '../../modelos/convenio';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { ModalAdicionaConvenioComponent } from '../../shared/modal/modal-adiciona-convenio.component';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -32,6 +35,9 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   estados = Estados;
   dataNasci: string = "01/01/1901"
   dataValidade: string = "01/01/1901"
+  nomeConvenios: Array<string>;
+  falhaNaBusca: boolean;
+  convenioSelecionado: string;
 
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
@@ -46,13 +52,39 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.dataNasci = this.util.dataParaString(dado.dataNascimento);
         this.dataValidade = this.util.dataParaString(dado.dataValidadeCartao);
         this.convenioId = this.paciente.convenio.id;
+        this.convenioSelecionado = this.paciente.convenio.nomeConvenio;
       });
     }
 
     this.convenioService.Todos().subscribe(dados => {
       this.convenios = dados;
+      this.nomeConvenios = new Array<string>();
+      dados.forEach(d => {
+        this.nomeConvenios.push(d.nomeConvenio);
+      });
     });
+  }
 
+  public adicionaConvenio(): void {
+
+    var modal = this.modalService.open(ModalAdicionaConvenioComponent, { windowClass: "modal-holder" });
+
+    modal.result.then((convenio) => {
+      if (convenio != '') {
+        
+        var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+        if (convenioExistente != null) {
+          this.paciente.convenio = convenioExistente;
+          this.convenioSelecionado = convenioExistente.nomeConvenio;
+        }
+        else {
+          this.convenioService.salvar(convenio).subscribe(conenioCadastrado => {
+            this.paciente.convenio = conenioCadastrado;
+            this.convenioSelecionado = conenioCadastrado.nomeConvenio;
+          })
+        }
+      }
+    });    
   }
 
   constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
@@ -60,9 +92,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   public trocaConvenio(e) {
-
-    this.paciente.convenio = this.convenios.find(c=> c.id === this.convenioId);   
-    
+    this.paciente.convenio = this.convenios.find(c=> c.id === this.convenioId);       
   }
 
   public buscaCep() {
@@ -77,6 +107,22 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.numero.nativeElement.focus();
       });
     }
+  }
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => {
+        this.falhaNaBusca = this.nomeConvenios.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10).length == 0;
+        return term.length < 2 ? []
+          : this.nomeConvenios.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+      })
+    )
+
+  selectedItem(item) {
+    var convenio = this.convenios.find(c => c.nomeConvenio === item.item);
+    this.paciente.convenio = convenio;
   }
 
   public formataData(e): void {
