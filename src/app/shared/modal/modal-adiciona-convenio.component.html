@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title">Adiciona Convênio</h4>
-    <button type="button" class="close" aria-label="Fechar" (click)="activeModal.dismiss()">
+     <button type="button" class="close" aria-label="Fechar" (click)="salvar()">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -16,6 +16,4 @@
 <div class="modal-footer">
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" [disabled]="nomeConvenio.invalid"
         type="submit">Salvar</button>
-    <button type="button" style="width:40%" class="btn btn-rounded btn-danger"
-        (click)="activeModal.close()">Cancelar</button>
 </div>

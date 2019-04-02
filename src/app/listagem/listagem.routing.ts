@@ -5,6 +5,7 @@ import { ListagemPacienteComponent } from './paciente/listagem-paciente.componen
 import { ListagemConvenioComponent } from './convenio/listagem-convenio.component';
 import { ListagemFuncionarioComponent } from './funcionario/listagem-funcionario.component';
 import { ListagemOficioComponent } from './oficio/listagem-oficio.component';
+import { ListagemEspecialidadeComponent } from './especialidade/listagem-especialidade.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -21,6 +22,16 @@ export const ListagemRoutes: Routes = [
         }
       },
       {
+        path: 'listagemespecialidade',
+        component: ListagemEspecialidadeComponent,
+        data: {
+          title: 'Especialidade',
+          urls: [
+            { title: 'Especialidade' }
+          ]
+        }
+      },
+      {
         path: 'listagempaciente',
         component: ListagemPacienteComponent,
         data: {
@@ -30,6 +41,7 @@ export const ListagemRoutes: Routes = [
           ]
         }
       },
+      
       {
         path: 'listagemfuncionario',
         component: ListagemFuncionarioComponent,

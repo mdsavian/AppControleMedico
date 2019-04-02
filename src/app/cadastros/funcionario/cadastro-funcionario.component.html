@@ -100,18 +100,14 @@
                     <div class="row rowcadastro">
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="dataNascimento">Data de Nascimento(*)</label>
+                          <label class="control-label" for="dataNascimento">Data de Nascimento</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                             <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                              placeholder="dd/mm/yyyy" class="form-control" required [(ngModel)]="dataNasci"
-                              #dataNascimento="ngModel" (blur)="formataData($event)">
-                            <div *ngIf="dataNascimento.invalid && (dataNascimento.dirty || dataNascimento.touched)"
-                              class="alert alert-danger">
-                              <div *ngIf="dataNascimento.errors.required"> Data de Nascimento Obrigatória. </div>
-                            </div>
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
+                              #dataNascimento="ngModel" (blur)="formataData($event)">                           
                           </div>
                         </div>
                       </div>

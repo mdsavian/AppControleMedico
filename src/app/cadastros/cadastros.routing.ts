@@ -4,6 +4,7 @@ import {CadastroMedicoComponent } from './medico/cadastro-medico.component';
 import { CadastroConvenioComponent } from './convenio/cadastro-convenio.component';
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
+import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -36,6 +37,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Ofício',
           urls: [
             { title: 'Cadastro Ofício', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastroespecialidade',
+        component: CadastroEspecialidadeComponent,
+        data: {
+          title: 'Cadastro Especialidade',
+          urls: [
+            { title: 'Cadastro Especialidade', url: '/cadastros/cadastrar' }
           ]
         }
       },

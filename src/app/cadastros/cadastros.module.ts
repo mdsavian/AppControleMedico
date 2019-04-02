@@ -18,10 +18,12 @@ import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
+import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
 
 @NgModule({
-  imports: [NgbModule,UteisModule, CommonModule, Ng2SmartTableModule,RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
-  declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroOficioComponent,
-                ValidaNomeConvenioDirective,ValidaCpfDirective, ValidaNomeOficioDirective]
+  imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
+  declarations: [CadastroPacienteComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent,
+    CadastroOficioComponent, CadastroEspecialidadeComponent,
+    ValidaNomeConvenioDirective, ValidaCpfDirective, ValidaNomeOficioDirective]
 })
 export class CadastrosModule { }

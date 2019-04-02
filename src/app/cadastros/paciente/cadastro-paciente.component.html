@@ -103,7 +103,7 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="nomeConjugue">Nome Cônjugue</label>
-                          <input type="text" style="text-transform:uppercase" placeholder="Nome Cônjugue"
+                          <input type="text" placeholder="Nome Cônjugue"
                             id="nomeConjugue" name="nomeConjugue" class="form-control"
                             [(ngModel)]="paciente.nomeConjugue" #nomeConjugue="ngModel">
                         </div>
@@ -111,14 +111,14 @@
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="nomePai">Nome Pai</label>
-                          <input type="text" style="text-transform:uppercase" placeholder="Nome Pai" id="nomePai"
+                          <input type="text" placeholder="Nome Pai" id="nomePai"
                             name="nomePai" class="form-control" [(ngModel)]="paciente.nomePai" #nomePai="ngModel">
                         </div>
                       </div>
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="nomeMae">Nome Mãe</label>
-                          <input type="text" style="text-transform:uppercase" placeholder="Nome Mãe" id="nomeMae"
+                          <input type="text" placeholder="Nome Mãe" id="nomeMae"
                             name="nomeMae" class="form-control" [(ngModel)]="paciente.nomeMae" #nomeMae="ngModel">
                         </div>
                       </div>
@@ -279,16 +279,17 @@
                           <label class="control-label" for="convenio">Convênio(*)</label>
                           <div class="input-group">
                             <input id="convenioSelecionado" name="convenioSelecionado" type="text"
-                              (selectItem)="selectedItem($event)" required [ngbTypeahead]="search" class="form-control"
-                              #convenioInput="ngModel" [(ngModel)]="convenioSelecionado" />
+                              (selectItem)="selecionaConvenio($event)" placeholder="Digite o convênio" required [ngbTypeahead]="buscaConvenio" class="form-control"
+                              #convenio="ngModel" [(ngModel)]="convenioSelecionado" />
                             <div class="input-group-prepend">
                               <span (click)="adicionaConvenio()" class="input-group-text" id="img-adiciona-oficio"><i
                                   class="fa fa-pencil"></i></span>
                             </div>
                           </div>
-                          <div *ngIf="(convenioInput.invalid || falhaNaBusca) && (convenioInput.dirty || convenioInput.touched)"
+                          <div
+                            *ngIf="(convenio.invalid || falhaNaBusca) && (convenio.dirty || convenio.touched)"
                             class="alert alert-danger">
-                            <div *ngIf="convenioInput.errors?.required">Convênio Obrigatório. </div>
+                            <div *ngIf="convenio.errors?.required">Convênio Obrigatório. </div>
                             <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
                           </div>
                         </div>
@@ -336,6 +337,56 @@
                               placeholder="Cartão Nacional de Saúde" class="form-control"
                               [(ngModel)]="paciente.cartaoNacionalSaude" #cartaoNacionalSaude="ngModel">
                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+
+              <ngb-tab title="Obstetrícia" *ngIf="ExibeAbaEspecialidade('obstetrícia')" >
+                <ng-template ngbTabContent>
+                  <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                    <div class="row"></div>
+
+                    <div class="row rowcadastro">
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="dataUltimaMenstruacao">Data Última Menstruação</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <input type="text" mask="00/00/0000" id="dataUltimaMenstruacao" name="dataUltimaMenstruacao"
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataValidade"
+                              #dataUltimaMenstruacao (blur)="formataData($event)">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="semanaIdaDeGestacao">Semana(s) Idade Gestacional Eco</label>
+                            <select class="form-control" [(ngModel)]="paciente.semanaGestacao" #semanaIdaDeGestacao="ngModel"
+                              id="semanaIdaDeGestacao" name="semanaIdaDeGestacao">
+                              <option *ngFor="let semana of semanasGestacao | enumToArray">
+                                  {{semana}}
+                                </option>
+                            </select>
+                        </div>.
+
+                        
+                      </div>
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label" for="diaIdadeGestacao">Dia(s) Idade Gestacional Eco</label>
+                          <select class="form-control" [(ngModel)]="paciente.diaGestacao" #diaIdadeGestacao="ngModel"
+                            id="diaIdadeGestacao" name="diaIdadeGestacao">
+                            <option *ngFor="let dia of diasGestacao | enumToArray">
+                                {{dia}}
+                              </option>
+                          </select>
                         </div>
                       </div>
                     </div>

@@ -27,11 +27,6 @@ export const settings = {
       title:"Tipo Plano",
       filter:true
     },
-    dataNascimento: {
-      title: 'Data De Nascimento',
-      filter: false,
-      valuePrepareFunction: (data) => {return new Util().dataParaString(data) }
-    },
     ativo: {
       title: 'Ativo',
       filter: false,

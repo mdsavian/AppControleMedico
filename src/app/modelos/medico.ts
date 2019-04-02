@@ -1,6 +1,7 @@
 import { Pessoa } from "./pessoa";
 import { Convenio } from "./convenio";
 import { Usuario } from "./usuario";
+import { Especialidade } from "./especialidade";
 
 export class Medico extends Pessoa {
 
@@ -11,4 +12,5 @@ export class Medico extends Pessoa {
   crm : string;  
   convenios :Convenio[];
   usuario:Usuario;
+  especialidade:Especialidade;
 }

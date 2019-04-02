@@ -15,8 +15,8 @@
                         <div class="form-group">
                           <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                           <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
-                            class="form-control inputTexto" required minlength="4" [(ngModel)]="medico.nomeCompleto"
-                            #nomeCompleto>
+                            class="form-control" required minlength="4" [(ngModel)]="medico.nomeCompleto"
+                            #nomeCompleto="ngModel">
                           <div *ngIf="nomeCompleto.invalid && (nomeCompleto.dirty || nomeCompleto.touched)"
                             class="alert alert-danger">
                             <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
@@ -97,9 +97,10 @@
                               <span class="input-group-text">@</span>
                             </div>
                             <input type="email" id="email" placeholder="medico@email.com" name="email"
-                              class="form-control" email [(ngModel)]="medico.email" #emailInput="ngModel">
+                              class="form-control" email required [(ngModel)]="medico.email" #emailInput="ngModel">
                           </div>
-                          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                          <div
+                            *ngIf="(emailInput.invalid || medicoForm.submitted) && (emailInput.dirty || emailInput.touched)"
                             class="alert alert-danger">
                             <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
                             <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
@@ -108,6 +109,21 @@
                       </div>
                     </div>
                     <div class="row rowcadastro">
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="especialidadeSelecionado">Especialidade(*)</label>
+                          <input id="especialidadeSelecionada" name="especialidadeSelecionada" type="text"
+                            (selectItem)="selecionaEspecialidade($event)" required placeholder="Digite a especialidade..." [ngbTypeahead]="buscaEspecialidade" class="form-control"
+                            #especialidade="ngModel" [(ngModel)]="especialidadeSelecionada" />
+                          <div *ngIf="(falhaNaBusca || especialidade.invalid) && (especialidade.dirty || especialidade.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="falhaNaBusca">Não foi possível encontrar uma especialidade com esta descrição.</div>
+                            <div *ngIf="especialidade.errors?.required">Especialidade obrigatória.</div>
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
                           <label class="control-label" for="cep">CEP</label>
@@ -126,7 +142,7 @@
                         <div class="form-group">
                           <label class="control-label" for="endereco">Endereço</label>
                           <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
-                            [(ngModel)]="medico.endereco" #endereco="ngModel">>
+                            [(ngModel)]="medico.endereco" #endereco="ngModel">
                         </div>
                       </div>
 
@@ -137,6 +153,9 @@
                             [(ngModel)]="medico.numero" #numero>
                         </div>
                       </div>
+                    </div>
+
+                    <div class="row rowcadastro">
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
@@ -145,9 +164,6 @@
                             class="form-control" [(ngModel)]="medico.complemento" #complemento="ngModel">
                         </div>
                       </div>
-                    </div>
-
-                    <div class="row rowcadastro">
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
@@ -210,6 +226,18 @@
                   </div>
                 </ng-template>
               </ngb-tab>
+              <ngb-tab id="tabEspecialidadeObstetricia" title="Gestantes" *ngIf="ExibeAbaEspecialidade('obstetrícia')" >
+                  <ng-template ngbTabContent>
+                    <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                      <div class="row"></div>
+                      <div class="table table-responsive smart-table">
+                        <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
+                          (edit)="editarPaciente($event)">
+                        </ng2-smart-table>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ngb-tab>
             </ngb-tabset>
           </div>
           <div class="panel-footer rowcadastro">

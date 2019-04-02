@@ -1,6 +1,3 @@
-import { Medico } from "./medico";
-import { Funcionario } from "./funcionario";
-
 export class Usuario{
 
   constructor()  { }
@@ -10,8 +7,8 @@ export class Usuario{
   senha : string;
   permissaoAdministrador : boolean;
   visualizaValoresRelatorios : boolean;
-  token:string;
-  medico:Medico;
-  funcionario:Funcionario;
+  ultimoLogin:string;
   ativo:boolean;
+  medicoId:string;
+  funcionarioId:string;
 }

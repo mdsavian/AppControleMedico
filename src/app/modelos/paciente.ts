@@ -1,5 +1,7 @@
 import { Pessoa } from "./pessoa";
 import { Convenio } from "./convenio";
+import { EDiasGestacao } from "../enums/EDiasGestacao";
+import { ESemanasGestacao } from "../enums/ESemanasGestacao";
 
 export class Paciente extends Pessoa {
 
@@ -24,4 +26,7 @@ export class Paciente extends Pessoa {
   dataValidadeCartao: Date;
   convenio :Convenio;
   tipoPlano:string;
+  semanaGestacao:string;
+  diaGestacao:string;
+  
 }

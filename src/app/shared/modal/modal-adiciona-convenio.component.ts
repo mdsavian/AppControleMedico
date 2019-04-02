@@ -1,4 +1,4 @@
-import { Component, Output, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import {
   NgbActiveModal
 } from '@ng-bootstrap/ng-bootstrap';

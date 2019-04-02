@@ -22,7 +22,6 @@ export class OficioService {
   }
   
   public salvar(oficio: Oficio) {
-    console.log("tosalvandooo");
     return this.http.post<Oficio>(this.accessPointUrl, oficio);
   }
 

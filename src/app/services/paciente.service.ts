@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class PacienteService {
+  
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'paciente/';
 
@@ -13,10 +14,12 @@ export class PacienteService {
     this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
    }
 
-   public Todos(){
-    
-    return this.http.get<Array<Paciente>>(this.accessPointUrl);
-    
+   public Todos(){    
+    return this.http.get<Array<Paciente>>(this.accessPointUrl);    
+  }
+
+  TodosGestantesFiltrandoMedico(medicoId: string): any {
+    return this.http.get<Array<Paciente>>(this.accessPointUrl + "todosGestantesFiltrandoMedico/" + medicoId)
   }
 
   public salvar(paciente: Paciente) {

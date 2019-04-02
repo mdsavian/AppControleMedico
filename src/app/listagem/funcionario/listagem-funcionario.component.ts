@@ -22,9 +22,7 @@ constructor( private funcionarioService: FuncionarioService, private router: Rou
   }
   
   buscaFuncionarios(): void {
-    console.log("tóis");
     this.funcionarioService.Todos().subscribe(dados => {
-      console.log(dados);
       this.listaFuncionarios = dados;     
       this.source = new LocalDataSource(this.listaFuncionarios);      
     });

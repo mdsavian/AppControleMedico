@@ -1,4 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   NgbModal,
   ModalDismissReasons,
@@ -6,6 +7,7 @@ import {
   NgbCarouselConfig
 } from '@ng-bootstrap/ng-bootstrap';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html'
@@ -13,7 +15,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 export class NavigationComponent implements AfterViewInit {
   name: string;
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal) {}
+  constructor(private modalService: NgbModal, private router: Router, private loginService : LoginService) {}  
 
   // This is for Notifications
   notifications: Object[] = [
@@ -78,6 +80,12 @@ export class NavigationComponent implements AfterViewInit {
       time: '9:00 AM'
     }
   ];
+
+  public logout()
+  {
+    this.loginService.logout();
+    this.router.navigate(["authentication/login"]);
+  }
 
   ngAfterViewInit() {
     const set = function() {

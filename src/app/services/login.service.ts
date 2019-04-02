@@ -41,12 +41,11 @@ export class LoginService {
   }
 
   public logout() {    
-    localStorage.removeItem("usuarioCorrente");
+    localStorage.removeItem("usuarioCorrente");    
     this.usuarioCorrenteSubject.next(null);
   }
 
-  public get usuarioCorrenteValor(): Usuario {
-    
+  public get usuarioCorrenteValor(): Usuario {    
     var usuario = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem('usuarioCorrente'))).value;
     return usuario;
   }

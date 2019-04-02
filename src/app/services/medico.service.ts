@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Medico } from '../modelos/medico';
-import { map } from 'rxjs/operators';
+import { Usuario } from '../modelos/usuario';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
+  
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'medico/';
 
@@ -21,6 +22,10 @@ export class MedicoService {
 
   public buscarPorId(medicoId: string) {
     return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
+    // console.log("opa",medicoId);
+    // let parametros = new HttpParams().set("id",medicoId);
+    // return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/",{headers:this.headers, params:parametros});
+
   }
 
   public Todos() {
@@ -31,5 +36,9 @@ export class MedicoService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + medicoId);
   }
 
+  buscarMedicoUsuario(usuario:Usuario): any {
+    return this.http.post<Medico>(this.accessPointUrl + "buscarMedicoUsuario/", usuario);
+    
+  }
 
 }

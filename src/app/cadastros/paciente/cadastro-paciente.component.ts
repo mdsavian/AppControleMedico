@@ -1,17 +1,28 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ɵCodegenComponentFactoryResolver } from '@angular/core';
+
 import { Paciente } from "../../modelos/paciente";
+import { Convenio } from '../../modelos/convenio'
+import { Medico } from '../../modelos/medico';
+import { ESemanasGestacao } from '../../enums/ESemanasGestacao';
+import { EDiasGestacao } from '../../enums/EDiasGestacao';;
 import { Estados } from "../../enums/estados";
-import { PacienteService } from "../../services/paciente.service"
-import { Router, ActivatedRoute } from '@angular/router';
+
 import { Util } from '../../uteis/Util';
+import { PacienteService } from "../../services/paciente.service"
 import { EnderecoService } from '../../services/endereco.service';
 import { ConvenioService } from '../../services/convenio.service';
-import { Convenio } from '../../modelos/convenio';
+import { LoginService } from '../../services/login.service';
+import { MedicoService } from '../../services/medico.service';
+
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { ModalAdicionaConvenioComponent } from '../../shared/modal/modal-adiciona-convenio.component';
+
+import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { ModalAdicionaConvenioComponent } from '../../shared/modal/modal-adiciona-convenio.component';
+
+
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -26,10 +37,13 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",
     nomePai: "", ocupacao: "", tipoSanguineo: 1, telefone: "", celular: "", email: "", aceitaReceberSms: true, responsavel: "",
     cep: "", endereco: "", numero: "", estadoCivil: 0, complemento: "", bairro: "", cidade: "", uf: "", convenio: new Convenio("", 0, ""),
-    numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: "", tipoPlano:""
+    numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: "", tipoPlano: "", diaGestacao: '', semanaGestacao: ''
   };
 
-  convenioId:string;
+
+  semanasGestacao = ESemanasGestacao;
+  diasGestacao = EDiasGestacao;
+  convenioId: string;
   convenios: Array<Convenio> = [];
   util = new Util();
   estados = Estados;
@@ -38,6 +52,13 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   nomeConvenios: Array<string>;
   falhaNaBusca: boolean;
   convenioSelecionado: string;
+  medico: Medico;
+
+  constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
+    private convenioService: ConvenioService, private route: ActivatedRoute, private modalService: NgbModal,
+
+    private loginService: LoginService, private medicoService: MedicoService) {
+  }
 
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
@@ -51,9 +72,18 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.paciente = dado;
         this.dataNasci = this.util.dataParaString(dado.dataNascimento);
         this.dataValidade = this.util.dataParaString(dado.dataValidadeCartao);
-        this.convenioId = this.paciente.convenio.id;
-        this.convenioSelecionado = this.paciente.convenio.nomeConvenio;
+
+        if (this.paciente.convenio != null) {
+          this.convenioId = this.paciente.convenio.id;
+          this.convenioSelecionado = this.paciente.convenio.nomeConvenio;
+        }
       });
+    }
+
+    var usuario = this.loginService.usuarioCorrenteValor;
+
+    if (usuario.medicoId != "") {
+      this.medicoService.buscarMedicoUsuario(usuario).subscribe(medicoRetorno => this.medico = medicoRetorno);
     }
 
     this.convenioService.Todos().subscribe(dados => {
@@ -70,8 +100,8 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     var modal = this.modalService.open(ModalAdicionaConvenioComponent, { windowClass: "modal-holder" });
 
     modal.result.then((convenio) => {
-      if (convenio != '') {
-        
+      if (convenio != undefined && convenio.descricao != '') {
+
         var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
         if (convenioExistente != null) {
           this.paciente.convenio = convenioExistente;
@@ -84,15 +114,11 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
           })
         }
       }
-    });    
-  }
-
-  constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
-    private convenioService: ConvenioService, private route: ActivatedRoute, private modalService: NgbModal) {
+    }).catch((error) => { })
   }
 
   public trocaConvenio(e) {
-    this.paciente.convenio = this.convenios.find(c=> c.id === this.convenioId);       
+    this.paciente.convenio = this.convenios.find(c => c.id === this.convenioId);
   }
 
   public buscaCep() {
@@ -109,7 +135,15 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     }
   }
 
-  search = (text$: Observable<string>) =>
+  ExibeAbaEspecialidade(especialidade: string): boolean {
+
+    if (this.medico != null && this.medico.especialidade != null) {
+      return this.medico.especialidade.descricao.includes(especialidade);
+    }
+
+    return false;
+  }
+  buscaConvenio = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -120,9 +154,10 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       })
     )
 
-  selectedItem(item) {
+  selecionaConvenio(item) {
     var convenio = this.convenios.find(c => c.nomeConvenio === item.item);
-    this.paciente.convenio = convenio;
+    if (convenio != null)
+      this.paciente.convenio = convenio;
   }
 
   public formataData(e): void {
@@ -138,7 +173,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagempaciente"]);
       },
       error => {
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }
     )
