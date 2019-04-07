@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
-import {CadastroPacienteComponent } from './paciente/cadastro-paciente.component';
-import {CadastroMedicoComponent } from './medico/cadastro-medico.component';
+import { CadastroPacienteComponent } from './paciente/cadastro-paciente.component';
+import { CadastroMedicoComponent } from './medico/cadastro-medico.component';
 import { CadastroConvenioComponent } from './convenio/cadastro-convenio.component';
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
+import { CadastroServicoComponent } from './servico/cadastro-servico.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -16,9 +17,9 @@ export const CadastrosRoutes: Routes = [
         data: {
           title: 'Cadastro Paciente',
           urls: [
-            { title: 'Cadastro Paciente', url: '/cadastros/cadastrar' }            
+            { title: 'Cadastro Paciente', url: '/cadastros/cadastrar' }
           ]
-        }        
+        }
       },
       {
         path: 'cadastrofuncionario',
@@ -67,6 +68,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Convênio',
           urls: [
             { title: 'Cadastro Convênio', url: '/cadastros/cadastrar' }
+          ]
+        },
+      },
+      {
+        path: 'cadastroservico',
+        component: CadastroServicoComponent,
+        data: {
+          title: 'Cadastro Serviço',
+          urls: [
+            { title: 'Cadastro Serviço', url: '/cadastros/cadastrar' }
           ]
         }
       }

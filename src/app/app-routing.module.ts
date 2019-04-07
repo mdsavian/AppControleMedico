@@ -17,6 +17,7 @@ export const routes: Routes = [
       { path: 'listagem', loadChildren: './listagem/listagem.module#ListagemModule', canActivate: [AuthGuard] },
       { path: 'cadastros', loadChildren: './cadastros/cadastros.module#CadastrosModule', canActivate: [AuthGuard] },
       { path: 'importador', loadChildren: './importador/importador.module#ImportadorModule', canActivate: [AuthGuard] },
+      { path: 'agenda', loadChildren: './agenda/agenda.module#AgendaModule', canActivate: [AuthGuard] },
     ]
   },
   {

@@ -10,15 +10,23 @@ import { ListagemConvenioComponent } from './convenio/listagem-convenio.componen
 import { ListagemFuncionarioComponent } from './funcionario/listagem-funcionario.component';
 import { ListagemOficioComponent } from './oficio/listagem-oficio.component';
 import { ListagemEspecialidadeComponent } from './especialidade/listagem-especialidade.component';
+import { ListagemServicoComponent } from './servico/listagem-servico.component';
+import { CorServicoComponent } from './servico/cor-servico-component';
 
 @NgModule({
   imports: [
-    CommonModule,    
+    CommonModule,
     RouterModule.forChild(ListagemRoutes),
     NgxDatatableModule,
     Ng2SmartTableModule
   ],
-  declarations: [ListagemMedicoComponent, ListagemPacienteComponent, ListagemConvenioComponent, 
-    ListagemFuncionarioComponent, ListagemOficioComponent, ListagemEspecialidadeComponent]
+  declarations: [
+    ListagemMedicoComponent, ListagemPacienteComponent, ListagemConvenioComponent,
+    ListagemFuncionarioComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
+    ListagemServicoComponent, CorServicoComponent
+  ],
+  entryComponents: [
+    CorServicoComponent
+  ]
 })
-export class ListagemModule {}
+export class ListagemModule { }

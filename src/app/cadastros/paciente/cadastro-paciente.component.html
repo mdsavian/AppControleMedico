@@ -353,7 +353,7 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="dataUltimaMenstruacao">Data Última Menstruação</label>
+                          <label class="control-label" for="dataUltimaMenstruacao">DUM</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-calendar"></i></span>
@@ -367,7 +367,7 @@
 
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="semanaIdaDeGestacao">Semana(s) Idade Gestacional Eco</label>
+                          <label class="control-label" for="semanaIdaDeGestacao">Semana(s) IG ECO</label>
                             <select class="form-control" [(ngModel)]="paciente.semanaGestacao" #semanaIdaDeGestacao="ngModel"
                               id="semanaIdaDeGestacao" name="semanaIdaDeGestacao">
                               <option *ngFor="let semana of semanasGestacao | enumToArray">
@@ -380,7 +380,7 @@
                       </div>
                       <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                            <label class="control-label" for="diaIdadeGestacao">Dia(s) Idade Gestacional Eco</label>
+                            <label class="control-label" for="diaIdadeGestacao">Dia(s) IG ECO</label>
                           <select class="form-control" [(ngModel)]="paciente.diaGestacao" #diaIdadeGestacao="ngModel"
                             id="diaIdadeGestacao" name="diaIdadeGestacao">
                             <option *ngFor="let dia of diasGestacao | enumToArray">

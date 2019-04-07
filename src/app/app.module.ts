@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { WebcamModule } from 'ngx-webcam';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import {
   CommonModule,
   LocationStrategy,
@@ -49,18 +48,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SpinnerComponent,
-    FullComponent,
-    BlankComponent,
-    NavigationComponent,
-    BreadcrumbComponent,
-    SidebarComponent,
-    ModalErrorComponent,
-    ModalAdicionaOficioComponent,
-    ModalAdicionaConvenioComponent
-  ],
   imports: [
     CommonModule,
     BrowserModule,
@@ -74,6 +61,19 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AppRoutingModule,
     WebcamModule
   ],
+  declarations: [
+    AppComponent,
+    SpinnerComponent,
+    FullComponent,
+    BlankComponent,
+    NavigationComponent,
+    BreadcrumbComponent,
+    SidebarComponent,
+    ModalErrorComponent,
+    ModalAdicionaOficioComponent,
+    ModalAdicionaConvenioComponent
+  ],
+
   providers: [
     { provide: LOCALE_ID, useValue: "pt" },
     {

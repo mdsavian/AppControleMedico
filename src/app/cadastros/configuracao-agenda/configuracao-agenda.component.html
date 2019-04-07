@@ -1,0 +1,152 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()" #pacienteForm="ngForm">
+          <div [hidden]="pacienteForm.submitted">
+            <ngb-tabset type="pills">
+              <ngb-tab title="Informações Pessoais">
+                <ng-template ngbTabContent>
+                  <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                    <div class="row"></div>
+
+                    <div class="row rowcadastro">
+                      <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                          <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
+                          <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
+                            class="form-control" required minlength="4" [(ngModel)]="paciente.nomeCompleto"
+                            #nomeCompleto>
+                          <div *ngIf="nomeCompleto.invalid && (nomeCompleto.dirty || nomeCompleto.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
+                            <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="cpf">CPF</label>
+                          <input type="text" id="cpf" appValidapf mask="000.000.000-00" placeholder="CPF" name="cpf"
+                            class="form-control" [(ngModel)]="paciente.cpf" #cpf="ngModel">
+                          <div *ngIf="cpf.invalid && cpf.errors?.validaCpf && (cpf.dirty || cpf.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="rg">RG</label>
+                          <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
+                            [(ngModel)]="paciente.rg" #rg="ngModel">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row rowcadastro">
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="dataNascimento">Data de Nascimento</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
+                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
+                              #dataNascimento="ngModel" (blur)="formataData($event)">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="estadoCivil">Estado Civil</label>
+                          <select class="form-control" [(ngModel)]="paciente.estadoCivil" #estadoCivil="ngModel"
+                            id="estadoCivil" name="estadoCivil">
+                            <option>Solteiro(a)</option>
+                            <option>Casado(a)</option>
+                            <option>Divorciado(a)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="tipoSanguineo">Tipo Sanguíneo</label>
+                          <select class="form-control" [(ngModel)]="paciente.tipoSanguineo" #tipoSanguineo="ngModel"
+                            id="tipoSanguineo" name="tipoSanguineo">
+                            <option>O+</option>
+                            <option>A+</option>
+                            <option>B+</option>
+                            <option>AB+</option>
+                            <option>O-</option>
+                            <option>A-</option>
+                            <option>B-</option>
+                            <option>AB-</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="ocupacao">Ocupação</label>
+                          <input type="text" id="ocupacao" placeholder="Ocupação" name="ocupacao" class="form-control"
+                            [(ngModel)]="paciente.ocupacao" #ocupacao="ngModel">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row rowcadastro">
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="nomeConjugue">Nome Cônjugue</label>
+                          <input type="text" placeholder="Nome Cônjugue"
+                            id="nomeConjugue" name="nomeConjugue" class="form-control"
+                            [(ngModel)]="paciente.nomeConjugue" #nomeConjugue="ngModel">
+                        </div>
+                      </div>
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="nomePai">Nome Pai</label>
+                          <input type="text" placeholder="Nome Pai" id="nomePai"
+                            name="nomePai" class="form-control" [(ngModel)]="paciente.nomePai" #nomePai="ngModel">
+                        </div>
+                      </div>
+                      <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="nomeMae">Nome Mãe</label>
+                          <input type="text" placeholder="Nome Mãe" id="nomeMae"
+                            name="nomeMae" class="form-control" [(ngModel)]="paciente.nomeMae" #nomeMae="ngModel">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row rowcadastro">
+                      <div class="col-xs-4 col-md-2">
+                        <label class="form-check-inline" for="ativo">Ativo</label>
+                        <input class="form-check-inline" [(ngModel)]="paciente.ativo" checked name="ativo" id="ativo"
+                          value="checked" type="checkbox">
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+            </ngb-tabset>
+          </div>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <!--  -->
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!pacienteForm.form.valid"
+                  type="submit">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
