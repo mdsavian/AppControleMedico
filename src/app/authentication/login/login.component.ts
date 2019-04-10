@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 import { Usuario } from '../../modelos/usuario';
 import { LoginService } from '../../services/login.service';
 import { first } from 'rxjs/operators';
-import { Funcionario } from '../../modelos/funcionario';
-import { Medico } from '../../modelos/medico';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 
