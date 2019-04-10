@@ -40,12 +40,6 @@ class CustomDateFormatter extends CalendarDateFormatter {
           provide: CalendarDateFormatter,
           useClass: CustomDateFormatter}
       })],
-  // CalendarModule.forRoot({
-  //   provide: CalendarDateFormatter,
-  //   useFactory: adapterFactory,
-  //   useClass: CustomDateFormatter
-
-  // })],
   declarations: [AgendaComponent],
   exports: [AgendaComponent]
 })

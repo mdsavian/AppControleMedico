@@ -19,6 +19,7 @@ import { Paciente } from '../../modelos/paciente';
 import { PacienteService } from '../../services/paciente.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as tableData from './listagem-paciente-gestante-settings';
+import { ConfiguracaoAgenda } from '../../modelos/configuracaoAgenda';
 
 
 @Component({
@@ -45,7 +46,8 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   convenios: Array<Convenio> = [];
   medico: Medico = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario: new Usuario(),
-    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade()
+    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),
+    configuracaoAgenda:new ConfiguracaoAgenda(true)
   };
 
   constructor(private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private dragulaService: DragulaService,

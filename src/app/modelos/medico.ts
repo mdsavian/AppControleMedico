@@ -2,6 +2,7 @@ import { Pessoa } from "./pessoa";
 import { Convenio } from "./convenio";
 import { Usuario } from "./usuario";
 import { Especialidade } from "./especialidade";
+import { ConfiguracaoAgenda } from "./configuracaoAgenda";
 
 export class Medico extends Pessoa {
 
@@ -13,4 +14,5 @@ export class Medico extends Pessoa {
   convenios :Convenio[];
   usuario:Usuario;
   especialidade:Especialidade;
+  configuracaoAgenda:ConfiguracaoAgenda;
 }

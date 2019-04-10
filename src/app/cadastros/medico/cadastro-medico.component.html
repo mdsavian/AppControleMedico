@@ -114,11 +114,14 @@
                         <div class="form-group">
                           <label class="control-label" for="especialidadeSelecionado">Especialidade(*)</label>
                           <input id="especialidadeSelecionada" name="especialidadeSelecionada" type="text"
-                            (selectItem)="selecionaEspecialidade($event)" required placeholder="Digite a especialidade..." [ngbTypeahead]="buscaEspecialidade" class="form-control"
-                            #especialidade="ngModel" [(ngModel)]="especialidadeSelecionada" />
-                          <div *ngIf="(falhaNaBusca || especialidade.invalid) && (especialidade.dirty || especialidade.touched)"
+                            (selectItem)="selecionaEspecialidade($event)" required
+                            placeholder="Digite a especialidade..." [ngbTypeahead]="buscaEspecialidade"
+                            class="form-control" #especialidade="ngModel" [(ngModel)]="especialidadeSelecionada" />
+                          <div
+                            *ngIf="(falhaNaBusca || especialidade.invalid) && (especialidade.dirty || especialidade.touched)"
                             class="alert alert-danger">
-                            <div *ngIf="falhaNaBusca">Não foi possível encontrar uma especialidade com esta descrição.</div>
+                            <div *ngIf="falhaNaBusca">Não foi possível encontrar uma especialidade com esta descrição.
+                            </div>
                             <div *ngIf="especialidade.errors?.required">Especialidade obrigatória.</div>
                           </div>
                         </div>
@@ -226,18 +229,132 @@
                   </div>
                 </ng-template>
               </ngb-tab>
-              <ngb-tab id="tabEspecialidadeObstetricia" title="Gestantes" *ngIf="ExibeAbaEspecialidade('obstetrícia')" >
-                  <ng-template ngbTabContent>
-                    <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                      <div class="row"></div>
-                      <div class="table table-responsive smart-table">
-                        <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
-                          (edit)="editarPaciente($event)">
-                        </ng2-smart-table>
-                      </div>
+              <ngb-tab id="tabConfiguracaoAgenda" title="Configuração Agenda">
+                <ng-template ngbTabContent>
+                  <div id="tab_5" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                    <div class="row"></div>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Dia</th>
+                            <th class="text-center">Horário 1</th>
+                            <th class="text-center">Horário 2</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td></td>
+                            <td>Todos</td>
+                            <td>
+                              <div class="row">
+                                <div class="col-xs-3 col-md-4">
+                                  <div class="form-group">
+                                    <input type="text" id="primeiroHorarioInicialTodos"
+                                      name="primeiroHorarioInicialTodos" class="form-control"
+                                      [(ngModel)]="medico.complemento" #primeiroHorarioInicialTodos="ngModel">
+                                  </div>
+                                </div>
+
+                                <div class="col-md-2 text-center">até</div>
+
+                                <div class="col-xs-3 col-md-4">
+                                  <div class="form-group">
+                                    <input type="text" id="primeiroHorarioFinalTodos" name="primeiroHorarioFinalTodos"
+                                      class="form-control" [(ngModel)]="medico.complemento"
+                                      #primeiroHorarioFinalTodos="ngModel">
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="row">
+                                <div class="col-xs-3 col-md-4">
+                                  <div class="form-group">
+                                    <input type="text" id="segundoHorarioInicialTodos" name="segundoHorarioInicialTodos"
+                                      class="form-control" [(ngModel)]="medico.complemento"
+                                      #segundoHorarioInicialTodos="ngModel">
+                                  </div>
+                                </div>
+                                <div class="col-md-2 text-center">até</div>
+                                <div class="col-xs-3 col-md-4">
+                                  <div class="form-group">
+
+                                    <input type="text" id="segundoHorarioFinalTodos" name="segundoHorarioFinalTodos"
+                                      class="form-control" [(ngModel)]="medico.complemento"
+                                      #segundoHorarioFinalTodos="ngModel">
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                          </tr>
+                          <tr>
+                            
+                            <td><input checked="checked" [(ngModel)]="medico.configuracaoAgenda.segunda" id="segunda" name="segunda" type="checkbox"></td>
+                            <td>Segunda</td>
+                            <td>
+                              <div class="row">
+                                <div class="col-xs-3 col-md-4">
+                                  <div class="form-group">
+                                    <input type="text" id="primeiroHorarioInicialSegunda"
+                                      name="primeiroHorarioInicialSegunda" class="form-control"
+                                      [(ngModel)]="medico.configuracaoAgenda.primeiroHorarioInicialSegunda"
+                                      #primeiroHorarioInicialSegunda="ngModel">
+                                  </div>
+                                </div>
+                                <div class="col-md-2 text-center">até</div>
+                                <div class="col-xs-3 col-md-4">
+                                  <div class="form-group">
+                                    <input type="text" id="primeiroHorarioFinalSegunda"
+                                      name="primeiroHorarioFinalSegunda" class="form-control"
+                                      [(ngModel)]="medico.configuracaoAgenda.primeiroHorarioFinalSegunda"
+                                      #primeiroHorarioFinalSegunda="ngModel">
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-xs-3 col-md-4">
+                                      <div class="form-group">
+                                        <input type="text" id="segundoHorarioInicialSegunda"
+                                          name="segundoHorarioInicialSegunda" class="form-control"
+                                          [(ngModel)]="medico.configuracaoAgenda.segundoHorarioInicialSegunda"
+                                           #segundoHorarioInicialSegunda="ngModel">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-2 text-center">até</div>
+                                    <div class="col-xs-3 col-md-4">
+                                      <div class="form-group">
+                                        <input type="text" id="segundoHorarioFinalSegunda"
+                                          name="segundoHorarioFinalSegunda" class="form-control"
+                                          [(ngModel)]="medico.configuracaoAgenda.segundoHorarioFinalSegunda"
+                                          #segundoHorarioFinalSegunda="ngModel">
+                                      </div>
+                                    </div>
+                                  </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                  </ng-template>
-                </ngb-tab>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab id="tabEspecialidadeObstetricia" title="Gestantes" *ngIf="ExibeAbaEspecialidade('obstetrícia')">
+                <ng-template ngbTabContent>
+                  <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                    <div class="row"></div>
+                    <div class="table table-responsive smart-table">
+                      <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
+                        (edit)="editarPaciente($event)">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngb-tab>
             </ngb-tabset>
           </div>
           <div class="panel-footer rowcadastro">
