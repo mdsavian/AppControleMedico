@@ -6,6 +6,7 @@ import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
 import { CadastroServicoComponent } from './servico/cadastro-servico.component';
+import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -78,6 +79,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Serviço',
           urls: [
             { title: 'Cadastro Serviço', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'configuracaoagenda',
+        component: ConfiguracaoAgendaComponent,
+        data: {
+          title: 'Configuração Agenda',
+          urls: [
+            { title: 'Configuração Agenda', url: '/cadastros/cadastrar' }
           ]
         }
       }

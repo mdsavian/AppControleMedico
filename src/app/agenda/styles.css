@@ -10,3 +10,8 @@ pre {
 .cal-day-view .cal-hour-segment.cal-after-hour-start .cal-time {
   display: block;
   }
+
+  .hora-desabilitada, .hora-desabilitada:hover {
+    background-color: grey !important;
+    cursor: not-allowed;
+  }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, ViewEncapsulation,Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, ViewEncapsulation, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
@@ -7,7 +7,10 @@ import { addMinutes, endOfWeek } from 'date-fns';
 import { fromEvent } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-
+import { LoginService } from '../services/login.service';
+import { MedicoService } from '../services/medico.service';
+import { Medico } from '../modelos/medico';
+import { Router } from '@angular/router';
 
 const colors: any = {
   red: {
@@ -30,21 +33,109 @@ const colors: any = {
   styleUrls: ['styles.css'],
   templateUrl: 'agenda-component.html'
 })
-export class AgendaComponent {
+export class AgendaComponent implements OnInit {
   @ViewChild('modalContent') modalContent: TemplateRef<any>;
 
+  CalendarView = CalendarView;
   view: CalendarView = CalendarView.Week;
   dragToCreateActive = false;
-
-  CalendarView = CalendarView;
-
+  activeDayIsOpen = true;
   viewDate: Date = new Date();
-
+  medico: Medico;
   modalData: {
     action: string;
     event: CalendarEvent;
   };
 
+  configuracaoMinutos: number = 3;
+  diasExcluidos: number[] = [];
+  horaInicialCalendario = "07";
+  horaFinalCalendario = "18";
+
+  constructor(private modal: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
+    private medicoService: MedicoService, private router: Router) {
+  }
+
+  ngOnInit() {
+    var usuario = this.loginService.usuarioCorrenteValor;
+
+    if (usuario.medicoId != "") {
+      this.medicoService.buscarPorId(usuario.medicoId).subscribe(medico => {
+        if (medico != null) {
+          this.medico = medico;
+          this.ajustarParametrosCalendario();
+        }
+      });
+    }
+  }
+
+  ajustarParametrosCalendario() {
+
+    if (this.medico != null && this.medico.configuracaoAgenda != null) {
+
+      var configuracaoAgenda = this.medico.configuracaoAgenda;
+      this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
+      this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
+
+      if (this.view == CalendarView.Week) {
+
+        this.horaInicialCalendario = configuracaoAgenda.primeiroHorario;
+        this.horaFinalCalendario = configuracaoAgenda.ultimoHorario;
+      }
+      else if (this.view == CalendarView.Day) {
+        var configuracaoAgendaDias = configuracaoAgenda.configuracaoAgendaDias;
+        var dia = this.viewDate.getDay();
+
+        this.horaInicialCalendario = configuracaoAgendaDias[dia].segundoHorarioInicial != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioInicial) < parseInt(configuracaoAgendaDias[dia].segundoHorarioInicial)
+          ? configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioInicial.substring(0, 2))
+          : configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2);
+
+        this.horaFinalCalendario = configuracaoAgendaDias[dia].segundoHorarioFinal != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioFinal) > parseInt(configuracaoAgendaDias[dia].segundoHorarioFinal)
+          ? configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioFinal.substring(0, 2))
+          : configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2);
+      }
+
+      this.refreshPage();
+    }
+  }
+
+  desabilitaHora(segment: DayViewHourSegment) {
+    var retorno = false;
+
+    if (this.medico != null) {
+      var configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias[segment.date.getDay()]
+
+      if (configuracaoAgendaDias != null) {
+        var horaSegmento = segment.date.getHours() * 60 + segment.date.getMinutes();
+        if (configuracaoAgendaDias.horarioInicioIntervalo != null) {
+
+          var horarioInicioIntervalo = parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(2, 2));
+          var horarioFimIntervalo = parseInt(configuracaoAgendaDias.horarioFimIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioFimIntervalo.substr(2, 2));
+
+          console.log(segment.date.getHours(), segment.date.getMinutes());
+          console.log(horaSegmento, horarioInicioIntervalo, horarioFimIntervalo);
+          console.log(horaSegmento >= horarioInicioIntervalo && horaSegmento <= horarioFimIntervalo);
+          console.log(configuracaoAgendaDias.horarioInicioIntervalo, configuracaoAgendaDias.horarioFimIntervalo);
+
+          retorno = horaSegmento >= horarioInicioIntervalo && horaSegmento <= horarioFimIntervalo;
+        }
+
+        if (retorno)
+          return retorno;
+
+        var horaFim = configuracaoAgendaDias.segundoHorarioFinal == null ? parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(2, 2)) 
+                                                                         : parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(2, 2));
+        retorno = horaSegmento > horaFim;
+        if (retorno)
+          return retorno;
+        var horaInicio = parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(2, 2));
+        retorno = horaSegmento < horaInicio;
+      }
+
+    }
+
+    return retorno;
+  }
   startDragToCreate(
     segment: DayViewHourSegment,
     mouseDownEvent: MouseEvent,
@@ -113,9 +204,10 @@ export class AgendaComponent {
     }
   ];
 
-  private refreshPage(){
+  private refreshPage() {
+
     this.events = [...this.events];
-    this.cdr.detectChanges();  
+    this.cdr.detectChanges();
   }
 
   refresh: Subject<any> = new Subject();
@@ -161,12 +253,6 @@ export class AgendaComponent {
     }
   ];
 
-  activeDayIsOpen: boolean = true;
-
-  constructor(private modal: NgbModal, private cdr: ChangeDetectorRef) {
-    console.log("entrei");
-  }
-
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       this.viewDate = date;
@@ -180,7 +266,6 @@ export class AgendaComponent {
       }
     }
   }
-
 
   eventTimesChanged({
     event,
@@ -228,10 +313,15 @@ export class AgendaComponent {
 
   setView(view: CalendarView) {
     this.view = view;
+    this.ajustarParametrosCalendario();
   }
 
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
+  }
+
+  configurarAgendaMedico() {
+    this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
   }
 }
 

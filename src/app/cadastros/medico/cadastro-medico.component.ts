@@ -42,12 +42,12 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   especialidadeSelecionada: string;
   pacientesGestantes: Array<Paciente>;
   data: string = "01/01/1901"
-  util = new Util();  
+  util = new Util();
   convenios: Array<Convenio> = [];
   medico: Medico = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario: new Usuario(),
     cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),
-    configuracaoAgenda:new ConfiguracaoAgenda(true)
+    configuracaoAgenda: new ConfiguracaoAgenda()
   };
 
   constructor(private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private dragulaService: DragulaService,
@@ -90,7 +90,6 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
       });
 
       this.pacienteService.TodosGestantesFiltrandoMedico(id).subscribe(gestantes => {
-        console.log(gestantes);
         this.pacientesGestantes = gestantes;
         this.source = new LocalDataSource(this.pacientesGestantes);
       })
@@ -117,7 +116,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     this.router.navigate(['/cadastros/cadastropaciente', { id: event.data.id }]);
   }
 
-  ExibeAbaEspecialidade(especialidade: string) : boolean{
+  ExibeAbaEspecialidade(especialidade: string): boolean {
     if (this.medico != null && this.medico.especialidade.descricao != null) {
       return this.medico.especialidade.descricao.includes(especialidade);
     }

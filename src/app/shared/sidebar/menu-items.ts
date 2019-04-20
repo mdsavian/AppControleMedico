@@ -5,7 +5,7 @@ export const ROUTES: RouteInfo[] = [
     path: '',
     title: 'Cadastros',
     icon: 'icon-Double-Circle',
-    class: '',
+    class: 'has-arrow',
     label: '',
     labelClass: '',
     extralink: false,
@@ -83,6 +83,16 @@ export const ROUTES: RouteInfo[] = [
           {
             path: '/listagem/listagemservico',
             title: 'Serviço',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          },
+          {
+            path: '/cadastros/configuracaoagenda',
+            title: 'Configuração Agenda',
             icon: '',
             class: '',
             label: '',

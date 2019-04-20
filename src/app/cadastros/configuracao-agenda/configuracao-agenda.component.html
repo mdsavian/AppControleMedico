@@ -2,145 +2,677 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <form (ngSubmit)="onSubmit()" #pacienteForm="ngForm">
-          <div [hidden]="pacienteForm.submitted">
-            <ngb-tabset type="pills">
-              <ngb-tab title="Informações Pessoais">
-                <ng-template ngbTabContent>
-                  <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                    <div class="row"></div>
-
-                    <div class="row rowcadastro">
-                      <div class="col-xs-12 col-md-6">
-                        <div class="form-group">
-                          <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
-                          <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
-                            class="form-control" required minlength="4" [(ngModel)]="paciente.nomeCompleto"
-                            #nomeCompleto>
-                          <div *ngIf="nomeCompleto.invalid && (nomeCompleto.dirty || nomeCompleto.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
-                            <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="cpf">CPF</label>
-                          <input type="text" id="cpf" appValidapf mask="000.000.000-00" placeholder="CPF" name="cpf"
-                            class="form-control" [(ngModel)]="paciente.cpf" #cpf="ngModel">
-                          <div *ngIf="cpf.invalid && cpf.errors?.validaCpf && (cpf.dirty || cpf.touched)"
-                            class="alert alert-danger">
-                            <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="rg">RG</label>
-                          <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
-                            [(ngModel)]="paciente.rg" #rg="ngModel">
-                        </div>
-                      </div>
+        <form (ngSubmit)="onSubmit()" #configuracaoAgendaForm="ngForm">
+          <div id="tab" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+            <div class="row">
+              <div class="col-xs-6 col-md-3">
+                <div class="form-group">
+                  <label class="control-label" for="medicoSelecionado">Médico</label>
+                  <input id="medicoSelecionado" name="medicoSelecionado" type="text"
+                    (selectItem)="selecionaMedico($event)" required placeholder="Digite o nome do médico"
+                    [ngbTypeahead]="buscaMedico" class="form-control" #medico="ngModel"
+                    [(ngModel)]="medicoSelecionado" />
+                  <div *ngIf="(falhaNaBusca || medico.invalid) && (medico.dirty || medico.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="falhaNaBusca">Não foi possível encontrar um médico com este nome.
                     </div>
-
-                    <div class="row rowcadastro">
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="dataNascimento">Data de Nascimento</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
-                              #dataNascimento="ngModel" (blur)="formataData($event)">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="estadoCivil">Estado Civil</label>
-                          <select class="form-control" [(ngModel)]="paciente.estadoCivil" #estadoCivil="ngModel"
-                            id="estadoCivil" name="estadoCivil">
-                            <option>Solteiro(a)</option>
-                            <option>Casado(a)</option>
-                            <option>Divorciado(a)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="tipoSanguineo">Tipo Sanguíneo</label>
-                          <select class="form-control" [(ngModel)]="paciente.tipoSanguineo" #tipoSanguineo="ngModel"
-                            id="tipoSanguineo" name="tipoSanguineo">
-                            <option>O+</option>
-                            <option>A+</option>
-                            <option>B+</option>
-                            <option>AB+</option>
-                            <option>O-</option>
-                            <option>A-</option>
-                            <option>B-</option>
-                            <option>AB-</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="ocupacao">Ocupação</label>
-                          <input type="text" id="ocupacao" placeholder="Ocupação" name="ocupacao" class="form-control"
-                            [(ngModel)]="paciente.ocupacao" #ocupacao="ngModel">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row rowcadastro">
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="nomeConjugue">Nome Cônjugue</label>
-                          <input type="text" placeholder="Nome Cônjugue"
-                            id="nomeConjugue" name="nomeConjugue" class="form-control"
-                            [(ngModel)]="paciente.nomeConjugue" #nomeConjugue="ngModel">
-                        </div>
-                      </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="nomePai">Nome Pai</label>
-                          <input type="text" placeholder="Nome Pai" id="nomePai"
-                            name="nomePai" class="form-control" [(ngModel)]="paciente.nomePai" #nomePai="ngModel">
-                        </div>
-                      </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="nomeMae">Nome Mãe</label>
-                          <input type="text" placeholder="Nome Mãe" id="nomeMae"
-                            name="nomeMae" class="form-control" [(ngModel)]="paciente.nomeMae" #nomeMae="ngModel">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row rowcadastro">
-                      <div class="col-xs-4 col-md-2">
-                        <label class="form-check-inline" for="ativo">Ativo</label>
-                        <input class="form-check-inline" [(ngModel)]="paciente.ativo" checked name="ativo" id="ativo"
-                          value="checked" type="checkbox">
-                      </div>
-                    </div>
+                    <div *ngIf="medico.errors?.required">Medico obrigatório.</div>
                   </div>
-                </ng-template>
-              </ngb-tab>
-            </ngb-tabset>
+                </div>
+              </div>
+
+              <div class="col-xs-6 col-md-3">
+                <div class="form-group">
+                  <label class="control-label" for="configuracaoMinutosAgenda">Tempo Consulta</label>
+                  <select class="form-control" (change)="selecionaConfiguracaoMinutos($event.target.value)" [(ngModel)]="configMinutos" 
+                  #configuracaoMinutosAgenda="ngModel" id="configuracaoMinutosAgenda" name="configuracaoMinutosAgenda">
+                    <option *ngFor="let codigo of configuracaoMinutosAgendaEnum | enumToArray">
+                      {{codigo}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Dia</th>
+                    <th class="text-center">Horário 1</th>
+                    <th class="text-center">Horário 2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td>Todos</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialTodos"
+                              name="primeiroHorarioInicialTodos" (keyup)="alteraHora($event)" class="form-control">
+                          </div>
+                        </div>
+
+                        <div class="col-md-2 text-center">até</div>
+
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalTodos"
+                              name="primeiroHorarioFinalTodos" (blur)="alteraHora($event)" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialTodos"
+                              name="segundoHorarioInicialTodos" (blur)="alteraHora($event)" class="form-control">
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalTodos"
+                              name="segundoHorarioFinalTodos" (blur)="alteraHora($event)" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input checked="checked" checked [(ngModel)]="configuracaoAgendaDias[1].configurado" id="segunda" name="segunda"
+                        #segunda="ngModel" type="checkbox"></td>
+                    <td>Segunda</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialSegunda"
+                              name="primeiroHorarioInicialSegunda" class="form-control" [required]="segunda.value"
+                              [(ngModel)]="configuracaoAgendaDias[1].primeiroHorarioInicial"
+                              #primeiroHorarioInicialSegunda="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialSegunda.invalid && (primeiroHorarioInicialSegunda.dirty || primeiroHorarioInicialSegunda.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialSegunda.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialSegunda.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalSegunda"
+                              name="primeiroHorarioFinalSegunda" class="form-control" [required]="segunda.value"
+                              [(ngModel)]="configuracaoAgendaDias[1].primeiroHorarioFinal"
+                              #primeiroHorarioFinalSegunda="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalSegunda.invalid && (primeiroHorarioFinalSegunda.dirty || primeiroHorarioFinalSegunda.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalSegunda.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalSegunda.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialSegunda"
+                              name="segundoHorarioInicialSegunda" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[1].segundoHorarioInicial"
+                              #segundoHorarioInicialSegunda="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioInicialSegunda.invalid && (segundoHorarioInicialSegunda.dirty || segundoHorarioInicialSegunda.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialSegunda.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalSegunda"
+                              name="segundoHorarioFinalSegunda" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[1].segundoHorarioFinal"
+                              #segundoHorarioFinalSegunda="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioFinalSegunda.invalid && (segundoHorarioFinalSegunda.dirty || segundoHorarioFinalSegunda.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalSegunda.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td><input checked="checked" [(ngModel)]="configuracaoAgendaDias[2].configurado" id="terca" name="terca"
+                        #terca="ngModel" checked type="checkbox"></td>
+                    <td>Terça</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialTerca"
+                              name="primeiroHorarioInicialTerca" class="form-control" [required]="terca.value"
+                              [(ngModel)]="configuracaoAgendaDias[2].primeiroHorarioInicial"
+                              #primeiroHorarioInicialTerca="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialTerca.invalid && (primeiroHorarioInicialTerca.dirty || primeiroHorarioInicialTerca.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialTerca.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialTerca.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalTerca"
+                              name="primeiroHorarioFinalTerca" class="form-control" [required]="terca.value"
+                              [(ngModel)]="configuracaoAgendaDias[2].primeiroHorarioFinal"
+                              #primeiroHorarioFinalTerca="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalTerca.invalid && (primeiroHorarioFinalTerca.dirty || primeiroHorarioFinalTerca.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalTerca.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalTerca.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialTerca"
+                              name="segundoHorarioInicialTerca" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[2].segundoHorarioInicial"
+                              #segundoHorarioInicialTerca="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioInicialTerca.invalid && (segundoHorarioInicialTerca.dirty || segundoHorarioInicialTerca.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialTerca.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalTerca"
+                              name="segundoHorarioFinalTerca" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[2].segundoHorarioFinal"
+                              #segundoHorarioFinalTerca="ngModel">
+
+
+                            <div
+                              *ngIf="segundoHorarioFinalTerca.invalid && (segundoHorarioFinalTerca.dirty || segundoHorarioFinalTerca.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalTerca.errors.pattern"> Horário Inválido.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+
+                    <td><input checked="checked" checked [(ngModel)]="configuracaoAgendaDias[3].configurado" id="quarta" name="quarta"
+                        #quarta="ngModel" type="checkbox"></td>
+                    <td>Quarta</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialQuarta"
+                              name="primeiroHorarioInicialQuarta" class="form-control" [required]="quarta.value"
+                              [(ngModel)]="configuracaoAgendaDias[3].primeiroHorarioInicial"
+                              #primeiroHorarioInicialQuarta="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialQuarta.invalid && (primeiroHorarioInicialQuarta.dirty || primeiroHorarioInicialQuarta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialQuarta.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialQuarta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalQuarta"
+                              name="primeiroHorarioFinalQuarta" class="form-control" [required]="quarta.value"
+                              [(ngModel)]="configuracaoAgendaDias[3].primeiroHorarioFinal"
+                              #primeiroHorarioFinalQuarta="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalQuarta.invalid && (primeiroHorarioFinalQuarta.dirty || primeiroHorarioFinalQuarta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalQuarta.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalQuarta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialQuarta"
+                              name="segundoHorarioInicialQuarta" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[3].segundoHorarioInicial"
+                              #segundoHorarioInicialQuarta="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioInicialQuarta.invalid && (segundoHorarioInicialQuarta.dirty || segundoHorarioInicialQuarta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialQuarta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalQuarta"
+                              name="segundoHorarioFinalQuarta" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[3].segundoHorarioFinal"
+                              #segundoHorarioFinalQuarta="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioFinalQuarta.invalid && (segundoHorarioFinalQuarta.dirty || segundoHorarioFinalQuarta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalQuarta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+
+                    <td><input checked="checked" checked [(ngModel)]="configuracaoAgendaDias[4].configurado" id="quinta" name="quinta"
+                        #quinta="ngModel" type="checkbox"></td>
+                    <td>Quinta</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialQuinta"
+                              name="primeiroHorarioInicialQuinta" class="form-control" [required]="quinta.value"
+                              [(ngModel)]="configuracaoAgendaDias[4].primeiroHorarioInicial"
+                              #primeiroHorarioInicialQuinta="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialQuinta.invalid && (primeiroHorarioInicialQuinta.dirty || primeiroHorarioInicialQuinta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialQuinta.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialQuinta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalQuinta"
+                              name="primeiroHorarioFinalQuinta" class="form-control" [required]="quinta.value"
+                              [(ngModel)]="configuracaoAgendaDias[4].primeiroHorarioFinal"
+                              #primeiroHorarioFinalQuinta="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalQuinta.invalid && (primeiroHorarioFinalQuinta.dirty || primeiroHorarioFinalQuinta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalQuinta.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalQuinta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialQuinta"
+                              name="segundoHorarioInicialQuinta" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[4].segundoHorarioInicial"
+                              #segundoHorarioInicialQuinta="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioInicialQuinta.invalid && (segundoHorarioInicialQuinta.dirty || segundoHorarioInicialQuinta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialQuinta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalQuinta"
+                              name="segundoHorarioFinalQuinta" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[4].segundoHorarioFinal"
+                              #segundoHorarioFinalQuinta="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioFinalQuinta.invalid && (segundoHorarioFinalQuinta.dirty || segundoHorarioFinalQuinta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalQuinta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+
+                    <td><input checked="checked" checked [(ngModel)]="configuracaoAgendaDias[5].configurado" id="sexta" name="sexta"
+                        #sexta="ngModel" type="checkbox"></td>
+                    <td>Sexta</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialSexta"
+                              name="primeiroHorarioInicialSexta" class="form-control" [required]="sexta.value"
+                              [(ngModel)]="configuracaoAgendaDias[5].primeiroHorarioInicial"
+                              #primeiroHorarioInicialSexta="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialSexta.invalid && (primeiroHorarioInicialSexta.dirty || primeiroHorarioInicialSexta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialSexta.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialSexta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalSexta"
+                              name="primeiroHorarioFinalSexta" class="form-control" [required]="sexta.value"
+                              [(ngModel)]="configuracaoAgendaDias[5].primeiroHorarioFinal"
+                              #primeiroHorarioFinalSexta="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalSexta.invalid && (primeiroHorarioFinalSexta.dirty || primeiroHorarioFinalSexta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalSexta.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalSexta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialSexta"
+                              name="segundoHorarioInicialSexta" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[5].segundoHorarioInicial"
+                              #segundoHorarioInicialSexta="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioInicialSexta.invalid && (segundoHorarioInicialSexta.dirty || segundoHorarioInicialSexta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialSexta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalSexta"
+                              name="segundoHorarioFinalSexta" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[5].segundoHorarioFinal"
+                              #segundoHorarioFinalSexta="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioFinalSexta.invalid && (segundoHorarioFinalSexta.dirty || segundoHorarioFinalSexta.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalSexta.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+
+                    <td><input [(ngModel)]="configuracaoAgendaDias[6].configurado" id="sabado" name="sabado" #sabado="ngModel"
+                        type="checkbox"></td>
+                    <td>Sábado</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialSabado"
+                              name="primeiroHorarioInicialSabado" class="form-control" [required]="sabado.value"
+                              [(ngModel)]="configuracaoAgendaDias[6].primeiroHorarioInicial"
+                              #primeiroHorarioInicialSabado="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialSabado.invalid && (primeiroHorarioInicialSabado.dirty || primeiroHorarioInicialSabado.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialSabado.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialSabado.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalSabado"
+                              name="primeiroHorarioFinalSabado" class="form-control" [required]="sabado.value"
+                              [(ngModel)]="configuracaoAgendaDias[6].primeiroHorarioFinal"
+                              #primeiroHorarioFinalSabado="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalSabado.invalid && (primeiroHorarioFinalSabado.dirty || primeiroHorarioFinalSabado.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalSabado.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalSabado.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialSabado"
+                              name="segundoHorarioInicialSabado" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[6].segundoHorarioInicial"
+                              #segundoHorarioInicialSabado="ngModel">
+
+
+                            <div
+                              *ngIf="segundoHorarioInicialSabado.invalid && (segundoHorarioInicialSabado.dirty || segundoHorarioInicialSabado.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialSabado.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalSabado"
+                              name="segundoHorarioFinalSabado" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[6].segundoHorarioFinal"
+                              #segundoHorarioFinalSabado="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioFinalSabado.invalid && (segundoHorarioFinalSabado.dirty || segundoHorarioFinalSabado.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalSabado.errors.pattern"> Horário Inválido.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td><input [(ngModel)]="configuracaoAgendaDias[0].configurado" id="domingo" name="domingo" #domingo="ngModel"
+                        type="checkbox"></td>
+                    <td>Domingo</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioInicialDomingo"
+                              name="primeiroHorarioInicialDomingo" class="form-control" [required]="domingo.value"
+                              [(ngModel)]="configuracaoAgendaDias[0].primeiroHorarioInicial"
+                              #primeiroHorarioInicialDomingo="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioInicialDomingo.invalid && (primeiroHorarioInicialDomingo.dirty || primeiroHorarioInicialDomingo.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioInicialDomingo.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioInicialDomingo.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="primeiroHorarioFinalDomingo"
+                              name="primeiroHorarioFinalDomingo" class="form-control" [required]="domingo.value"
+                              [(ngModel)]="configuracaoAgendaDias[0].primeiroHorarioFinal"
+                              #primeiroHorarioFinalDomingo="ngModel">
+
+                            <div
+                              *ngIf="primeiroHorarioFinalDomingo.invalid && (primeiroHorarioFinalDomingo.dirty || primeiroHorarioFinalDomingo.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="primeiroHorarioFinalDomingo.errors.required"> Horário Obrigatório.
+                              </div>
+                              <div *ngIf="primeiroHorarioFinalDomingo.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioInicialDomingo"
+                              name="segundoHorarioInicialDomingo" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[0].segundoHorarioInicial"
+                              #segundoHorarioInicialDomingo="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioInicialDomingo.invalid && (segundoHorarioInicialDomingo.dirty || segundoHorarioInicialDomingo.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioInicialDomingo.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-2 text-center">até</div>
+                        <div class="col-xs-3 col-md-4">
+                          <div class="form-group">
+                            <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="segundoHorarioFinalDomingo"
+                              name="segundoHorarioFinalDomingo" class="form-control"
+                              [(ngModel)]="configuracaoAgendaDias[0].segundoHorarioFinal"
+                              #segundoHorarioFinalDomingo="ngModel">
+
+                            <div
+                              *ngIf="segundoHorarioFinalDomingo.invalid && (segundoHorarioFinalDomingo.dirty || segundoHorarioFinalDomingo.touched)"
+                              class="alert alert-danger">
+                              <div *ngIf="segundoHorarioFinalDomingo.errors.pattern"> Horário Inválido.</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="panel-footer rowcadastro">
             <div class="form-group">
               <div class="col-xs-8 col-md-6">
                 <!--  -->
-                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!pacienteForm.form.valid"
-                  type="submit">Salvar</button>
+                <button style="width:40%" class="btn btn-rounded btn-success"
+                  [disabled]="!configuracaoAgendaForm.form.valid" type="submit">Salvar</button>
                 <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
               </div>
             </div>
@@ -150,3 +682,12 @@
     </div>
   </div>
 </div>
+
+<ng-template #modalSalvouComSucesso id="modalSalvouComSucesso" let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Registro Salvo Com Sucesso</h4>
+    <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</ng-template>
