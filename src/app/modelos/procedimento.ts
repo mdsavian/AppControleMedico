@@ -1,6 +1,6 @@
 import { Entidade } from "./entidade";
 
-export class Servico extends Entidade {
+export class Procedimento extends Entidade {
 
     constructor(descricao:string, cor:string, id:string) {
         super();

@@ -11,6 +11,7 @@ import { LoginService } from '../services/login.service';
 import { MedicoService } from '../services/medico.service';
 import { Medico } from '../modelos/medico';
 import { Router } from '@angular/router';
+import { ModalAdicionaConsultaComponent } from './modal-adiciona-consulta.component';
 
 const colors: any = {
   red: {
@@ -35,12 +36,15 @@ const colors: any = {
 })
 export class AgendaComponent implements OnInit {
   @ViewChild('modalContent') modalContent: TemplateRef<any>;
+  @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+
 
   CalendarView = CalendarView;
   view: CalendarView = CalendarView.Week;
   dragToCreateActive = false;
   activeDayIsOpen = true;
   viewDate: Date = new Date();
+
   medico: Medico;
   modalData: {
     action: string;
@@ -52,7 +56,7 @@ export class AgendaComponent implements OnInit {
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
 
-  constructor(private modal: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
+  constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
     private medicoService: MedicoService, private router: Router) {
   }
 
@@ -99,7 +103,7 @@ export class AgendaComponent implements OnInit {
     }
   }
 
-  desabilitaHora(segment: DayViewHourSegment) {
+  validaHoraIntervalo(segment: DayViewHourSegment) {
     var retorno = false;
 
     if (this.medico != null) {
@@ -112,19 +116,14 @@ export class AgendaComponent implements OnInit {
           var horarioInicioIntervalo = parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(2, 2));
           var horarioFimIntervalo = parseInt(configuracaoAgendaDias.horarioFimIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioFimIntervalo.substr(2, 2));
 
-          console.log(segment.date.getHours(), segment.date.getMinutes());
-          console.log(horaSegmento, horarioInicioIntervalo, horarioFimIntervalo);
-          console.log(horaSegmento >= horarioInicioIntervalo && horaSegmento <= horarioFimIntervalo);
-          console.log(configuracaoAgendaDias.horarioInicioIntervalo, configuracaoAgendaDias.horarioFimIntervalo);
-
           retorno = horaSegmento >= horarioInicioIntervalo && horaSegmento <= horarioFimIntervalo;
         }
 
         if (retorno)
           return retorno;
 
-        var horaFim = configuracaoAgendaDias.segundoHorarioFinal == null ? parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(2, 2)) 
-                                                                         : parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(2, 2));
+        var horaFim = configuracaoAgendaDias.segundoHorarioFinal == null ? parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(2, 2))
+          : parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(2, 2));
         retorno = horaSegmento > horaFim;
         if (retorno)
           return retorno;
@@ -136,13 +135,10 @@ export class AgendaComponent implements OnInit {
 
     return retorno;
   }
-  startDragToCreate(
-    segment: DayViewHourSegment,
-    mouseDownEvent: MouseEvent,
-    segmentElement: HTMLElement
-  ) {
+
+  criarEventoNoCalendario(segment: DayViewHourSegment, segmentElement: HTMLElement): CalendarEvent {
     const dragToSelectEvent: CalendarEvent = {
-      id: this.events.length,
+      id: this.eventos.length,
       title: 'Nova Consulta',
       start: segment.date,
       meta: {
@@ -154,7 +150,7 @@ export class AgendaComponent implements OnInit {
       },
       draggable: true
     };
-    this.events = [...this.events, dragToSelectEvent];
+
     const segmentPosition = segmentElement.getBoundingClientRect();
     this.dragToCreateActive = true;
     const endOfView = endOfWeek(this.viewDate);
@@ -186,9 +182,27 @@ export class AgendaComponent implements OnInit {
         }
         this.refreshPage();
       });
+
+    return dragToSelectEvent;
   }
 
-  actions: CalendarEventAction[] = [
+  startDragToCreate(segment: DayViewHourSegment, mouseDownEvent: MouseEvent, segmentElement: HTMLElement) {
+    var evento = this.criarEventoNoCalendario(segment, segmentElement);
+    if (this.validaHoraIntervalo(segment)) {
+      this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+        result => {
+          console.log(result);
+          if (result == 'Ok') {
+            this.eventos = [...this.eventos, evento];
+          }
+        }, () => { });
+    }
+    else {
+      this.eventos = [...this.eventos, evento];
+    }
+  }
+
+  acoesEventosCalendario: CalendarEventAction[] = [
     {
       label: '<i class="fa fa-fw fa-pencil"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
@@ -198,27 +212,28 @@ export class AgendaComponent implements OnInit {
     {
       label: '<i class="fa fa-fw fa-times"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter(iEvent => iEvent !== event);
+        this.eventos = this.eventos.filter(iEvent => iEvent !== event);
         this.handleEvent('Deleted', event);
       }
+
     }
   ];
 
   private refreshPage() {
 
-    this.events = [...this.events];
+    this.eventos = [...this.eventos];
     this.cdr.detectChanges();
   }
 
   refresh: Subject<any> = new Subject();
 
-  events: CalendarEvent[] = [
+  eventos: CalendarEvent[] = [
     {
       start: subDays(startOfDay(new Date()), 1),
       end: addDays(new Date(), 1),
       title: 'A 3 day event',
       color: colors.red,
-      actions: this.actions,
+      actions: this.acoesEventosCalendario,
       allDay: true,
       resizable: {
         beforeStart: true,
@@ -230,7 +245,7 @@ export class AgendaComponent implements OnInit {
       start: startOfDay(new Date()),
       title: 'An event with no end date',
       color: colors.yellow,
-      actions: this.actions
+      actions: this.acoesEventosCalendario
     },
     {
       start: subDays(endOfMonth(new Date()), 3),
@@ -244,7 +259,7 @@ export class AgendaComponent implements OnInit {
       end: new Date(),
       title: 'A draggable and resizable event',
       color: colors.yellow,
-      actions: this.actions,
+      actions: this.acoesEventosCalendario,
       resizable: {
         beforeStart: true,
         afterEnd: true
@@ -253,12 +268,12 @@ export class AgendaComponent implements OnInit {
     }
   ];
 
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  dayClicked({ date, eventos }: { date: Date; eventos: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       this.viewDate = date;
       if (
         (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-        events.length === 0
+        eventos.length === 0
       ) {
         this.activeDayIsOpen = false;
       } else {
@@ -272,7 +287,7 @@ export class AgendaComponent implements OnInit {
     newStart,
     newEnd
   }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map(iEvent => {
+    this.eventos = this.eventos.map(iEvent => {
       if (iEvent === event) {
         return {
           ...event,
@@ -287,12 +302,12 @@ export class AgendaComponent implements OnInit {
 
   handleEvent(action: string, event: CalendarEvent): void {
     this.modalData = { event, action };
-    this.modal.open(this.modalContent, { size: 'lg' });
+    this.modalService.open(this.modalContent, { size: 'lg' });
   }
 
   addEvent(): void {
-    this.events = [
-      ...this.events,
+    this.eventos = [
+      ...this.eventos,
       {
         title: 'New event',
         start: startOfDay(new Date()),
@@ -308,7 +323,7 @@ export class AgendaComponent implements OnInit {
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter(event => event !== eventToDelete);
+    this.eventos = this.eventos.filter(event => event !== eventToDelete);
   }
 
   setView(view: CalendarView) {
@@ -322,6 +337,11 @@ export class AgendaComponent implements OnInit {
 
   configurarAgendaMedico() {
     this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
+  }
+
+  adicionarNovaConsulta() {
+    var modal = this.modalService.open(ModalAdicionaConsultaComponent, { size: "lg" });
+
   }
 }
 

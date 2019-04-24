@@ -1,6 +1,6 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
-import { OficioService } from "../services/oficio.service";
+import { ProcedimentoService } from "../services/procedimento.service";
 
 @Directive({
   selector: '[appValidaDescricaoServico]',
@@ -9,13 +9,13 @@ import { OficioService } from "../services/oficio.service";
 
 export class ValidaDescricaoServicoDirective implements Validator {
 
-  constructor(private oficioService: OficioService) { };
+  constructor(private procedimentoService: ProcedimentoService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
-    var listaOficio = this.oficioService.listaOficio;
-    var oficioRegente = this.oficioService.oficio;
+    var listaProcedimento = this.procedimentoService.listaProcedimento;
+    var procedimentoRegente = this.procedimentoService.procedimento;
 
-    if (oficioRegente == null && listaOficio != null && listaOficio.length > 0 && listaOficio.find(c => c.descricao === control.value) != null) {    
+    if (procedimentoRegente == null && listaProcedimento != null && listaProcedimento.length > 0 && listaProcedimento.find(c => c.descricao === control.value) != null) {    
     return { 'validaDescricaoServico': { value: control.value } } ;        
     }
     return null;    

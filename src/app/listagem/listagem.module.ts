@@ -10,8 +10,11 @@ import { ListagemConvenioComponent } from './convenio/listagem-convenio.componen
 import { ListagemFuncionarioComponent } from './funcionario/listagem-funcionario.component';
 import { ListagemOficioComponent } from './oficio/listagem-oficio.component';
 import { ListagemEspecialidadeComponent } from './especialidade/listagem-especialidade.component';
-import { ListagemServicoComponent } from './servico/listagem-servico.component';
-import { CorServicoComponent } from './servico/cor-servico-component';
+import { ListagemProcedimentoComponent } from './procedimento/listagem-procedimento.component';
+import { ListagemExameComponent } from './exame/listagem-exame.component';
+import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.component';
+import { ListagemLocalComponent } from './local/listagem-local.component';
+import { CorComponent } from './shared/cor-component';
 
 @NgModule({
   imports: [
@@ -21,12 +24,12 @@ import { CorServicoComponent } from './servico/cor-servico-component';
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent, ListagemConvenioComponent,
-    ListagemFuncionarioComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
-    ListagemServicoComponent, CorServicoComponent
+    ListagemMedicoComponent, ListagemPacienteComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
+    ListagemProcedimentoComponent, CorComponent
   ],
   entryComponents: [
-    CorServicoComponent
+    CorComponent
   ]
 })
 export class ListagemModule { }

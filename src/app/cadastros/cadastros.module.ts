@@ -19,13 +19,16 @@ import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.componen
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
-import { CadastroServicoComponent } from './servico/cadastro-servico.component';
+import { CadastroProcedimentoComponent } from './procedimento/cadastro-procedimento.component';
+import { CadastroExameComponent } from './exame/cadastro-exame.component';
+import { CadastroLocalComponent } from './local/cadastro-local.component';
+import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 
 
 @NgModule({
   imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
-  declarations: [CadastroPacienteComponent, ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroServicoComponent,
+  declarations: [CadastroLocalComponent,CadastroCirurgiaComponent,CadastroExameComponent,CadastroPacienteComponent, ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent,
     ValidaNomeConvenioDirective, ValidaCpfDirective, ValidaNomeOficioDirective]
 })

@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()" #procedimentoForm="ngForm">
+          <div [hidden]="procedimentoForm.submitted">
+            <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+              <div class="row"></div>
+              <div class="row rowcadastro">
+                <div class="col-xs-12 col-md-6">
+                  <div class="form-group">
+                    <label class="control-label" for="descricao">Descrição(*)</label>
+                    <input type="text" id="descricao" placeholder="Descrição" name="descricao" class="form-control"
+                      appValidaDescricaoProcedimento required minlength="4" [(ngModel)]="procedimento.descricao"
+                      #descricao="ngModel">
+                    <div
+                      *ngIf="descricao.invalid && (descricao.dirty || descricao.touched) && (descricao.errors?.validaDescricaoProcedimento)"
+                      class="alert alert-danger">
+                      <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
+                      <div *ngIf="descricao.errors?.validaDescricaoProcedimento"> Já existe um procedimento com esta descrição
+                        cadastrada. </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-6 col-md-3">
+                  <div class="form-group">
+                    <label class="control-label" for="cor">Cor</label>
+                    <input type="color" required class="form-control" [(ngModel)]="procedimento.cor" #cor="ngModel" id="cor"
+                      name="cor">
+                    <div
+                      *ngIf="cor.invalid && (cor.dirty || cor.touched)"
+                      class="alert alert-danger">
+                      <div *ngIf="descricao.errors.required"> Cor Obrigatória. </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <!--  -->
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!procedimentoForm.form.valid"
+                  type="submit">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlatpickrModule } from 'angularx-flatpickr';
@@ -8,7 +9,7 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgendaComponent } from './agenda.component';
 import { AgendaRoutes } from './agenda.routing';
 import { RouterModule } from '@angular/router';
-
+import { ModalAdicionaConsultaComponent } from './modal-adiciona-consulta.component'
 
 class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -38,10 +39,12 @@ class CustomDateFormatter extends CalendarDateFormatter {
       {
         dateFormatter: {
           provide: CalendarDateFormatter,
-          useClass: CustomDateFormatter}
+          useClass: CustomDateFormatter
+        }
       })],
-  declarations: [AgendaComponent],
-  exports: [AgendaComponent]
+  declarations: [AgendaComponent, ModalAdicionaConsultaComponent],
+  exports: [AgendaComponent],
+  entryComponents: [ModalAdicionaConsultaComponent]
 })
 
 export class AgendaModule { }

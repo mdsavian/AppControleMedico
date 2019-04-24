@@ -1,6 +1,7 @@
 import { Entidade } from "./entidade";
+import { ETipoAgendamento } from "../enums/ETipoAgendamento";
 
-export class Consulta extends Entidade {
+export class Agendamento extends Entidade {
 
     constructor() {
         super();
@@ -12,4 +13,5 @@ export class Consulta extends Entidade {
     horaInicial:string;
     horaFinal:string;
     observacao:string;
+    tipoAgendamento:ETipoAgendamento;
 }

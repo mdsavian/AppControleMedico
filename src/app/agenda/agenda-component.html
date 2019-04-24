@@ -30,8 +30,8 @@
   </div>
   <div class="col-md-3">
     <div class="btn-group">
-      <div class="btn btn-primary" (click)=configurarAgendaMedico();> Configurar Agenda </div>
-      <div class="btn btn-primary" (click)="adicionarNovaConsulta">Nova Consulta</div>
+      <div class="btn btn-warning" (click)=configurarAgendaMedico()> Configurar Agenda </div>
+      <div class="btn btn-success" (click)="adicionarNovaConsulta()">Nova Consulta</div>
     </div>
   </div>
 </div>
@@ -39,15 +39,17 @@
 <div [ngSwitch]="view">
 
   <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [dayStartHour]="horaInicialCalendario"
-    [dayEndHour]="horaFinalCalendario" [events]="events" [refresh]="refresh"
+    [dayEndHour]="horaFinalCalendario" [events]="eventos" [refresh]="refresh"
     (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)"
-    [hourSegmentTemplate]="weekViewHourSegmentTemplate" [excludeDays]="diasExcluidos" [hourSegments]="configuracaoMinutos">
+    [hourSegmentTemplate]="weekViewHourSegmentTemplate" [excludeDays]="diasExcluidos"
+    [hourSegments]="configuracaoMinutos">
   </mwl-calendar-week-view>
 
   <ng-template #weekViewHourSegmentTemplate let-segment="segment" let-locale="locale" let-segmentHeight="segmentHeight"
     let-isTimeLabel="isTimeLabel">
-    <div #segmentElement class="cal-hour-segment  hora-desabilitada" [class.hora-desabilitada]="desabilitaHora(segment)" [style.height.px]="segmentHeight" [class.cal-hour-start]="true"
-      [class.cal-after-hour-start]="false" [ngClass]="segment.cssClass"
+    <div #segmentElement class="cal-hour-segment hora-desabilitada"
+      [class.hora-desabilitada]="validaHoraIntervalo(segment)" [style.height.px]="segmentHeight"
+      [class.cal-hour-start]="true" [class.cal-after-hour-start]="false" [ngClass]="segment.cssClass"
       (mousedown)="startDragToCreate(segment, $event, segmentElement)">
       <div class="cal-time" *ngIf="isTimeLabel">
         {{ segment.date | calendarDate:'weekViewHour':locale }}
@@ -56,7 +58,7 @@
   </ng-template>
 
   <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [dayStartHour]="horaInicialCalendario"
-    [dayEndHour]="horaFinalCalendario" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+    [dayEndHour]="horaFinalCalendario" [viewDate]="viewDate" [events]="eventos" [refresh]="refresh"
     (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)"
     [hourSegments]="configuracaoMinutos" [hourSegmentTemplate]="dayViewHourSegmentTemplate">
   </mwl-calendar-day-view>
@@ -64,7 +66,7 @@
   <ng-template #dayViewHourSegmentTemplate let-segment="segment" let-locale="locale" let-segmentHeight="segmentHeight">
     <div #segmentElement class="cal-hour-segment hora-desabilitada" [style.height.px]="segmentHeight"
       [class.cal-hour-start]="true" [class.cal-after-hour-start]="false"
-      [class.hora-desabilitada]="desabilitaHora(segment)" [ngClass]="segment.cssClass"
+      [class.hora-desabilitada]="validaHoraIntervalo(segment)" [ngClass]="segment.cssClass"
       (mousedown)="startDragToCreate(segment, $event, segmentElement)">
       <div class="cal-time">
         {{ segment.date | calendarDate:'dayViewHour':locale }}
@@ -72,3 +74,19 @@
     </div>
   </ng-template>
 </div>
+
+<ng-template #modalConsultaEmHorarioIntervalo id="modalConsultaEmHorarioIntervalo" let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Horário Intervalo</h4>
+    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="c('Fechar')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>Consulta em horário intervalo, deseja prosseguir?</strong></p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="c('Cancelar')">Cancel</button>
+    <button type="button" class="btn btn-warning" (click)="c('Ok')">Ok</button>
+  </div>  
+</ng-template>

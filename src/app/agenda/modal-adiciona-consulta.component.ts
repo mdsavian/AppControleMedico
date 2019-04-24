@@ -2,28 +2,27 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import {
   NgbActiveModal
 } from '@ng-bootstrap/ng-bootstrap';
-import { Convenio } from '../modelos/convenio';
-import { ConvenioService } from '../services/convenio.service';
-// import { ValidaNomeConvenioDirective } from '../../validadores/valida-nome-convenio.directive';
+// import { consulta } from '../modelos/consulta';
+// import { consultaService } from '../services/consulta.service';
+// import { ValidaNomeconsultaDirective } from '../../validadores/valida-nome-consulta.directive';
 
 
 @Component({
-  selector: 'app-modal-adiciona-convenio.component',
-  templateUrl: './modal-adiciona-convenio.component.html'
+  selector: 'app-modal-adiciona-consulta.component',
+  templateUrl: './modal-adiciona-consulta.component.html'
 })
 
 export class ModalAdicionaConsultaComponent {
-  public convenio: Convenio = new Convenio("", 0, "");
 
-  @ViewChild('nomeConvenio', { read: ElementRef }) private nomeConvenio: ElementRef;
+  // @ViewChild('nomeconsulta', { read: ElementRef }) private nomeconsulta: ElementRef;
 
-  constructor(public activeModal: NgbActiveModal, public convenioService: ConvenioService) { }
+  constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit() {
-    this.nomeConvenio.nativeElement.focus();
+    // this.nomeconsulta.nativeElement.focus();
   }
 
   salvar() {
-    this.activeModal.close(this.convenio);
+    this.activeModal.close();
   }
 }

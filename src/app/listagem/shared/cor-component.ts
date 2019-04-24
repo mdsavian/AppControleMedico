@@ -6,7 +6,7 @@ import { ViewCell } from 'ng2-smart-table';
     <input type="text" [ngStyle]="{'background-color': cor}" size="10">
   `,
 })
-export class CorServicoComponent implements ViewCell, OnInit {
+export class CorComponent implements ViewCell, OnInit {
 
     cor: string;
 

@@ -1,4 +1,4 @@
-import { CorServicoComponent } from "./cor-servico-component";
+import { CorComponent } from "../shared/cor-component";
 
 export const settings = {
   mode: 'external',
@@ -7,12 +7,6 @@ export const settings = {
     descricao: {
       title: 'Descrição',
       filter: true
-    },
-    cor: {
-      title: 'Cor',
-      type: "custom",
-      filter: false,
-      renderComponent: CorServicoComponent,
     }
   },
   actions:

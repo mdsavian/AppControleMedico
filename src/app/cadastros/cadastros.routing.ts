@@ -5,8 +5,11 @@ import { CadastroConvenioComponent } from './convenio/cadastro-convenio.componen
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
-import { CadastroServicoComponent } from './servico/cadastro-servico.component';
+import { CadastroProcedimentoComponent } from './procedimento/cadastro-procedimento.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component';
+import { CadastroExameComponent } from './exame/cadastro-exame.component';
+import { CadastroLocalComponent } from './local/cadastro-local.component';
+import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -73,12 +76,12 @@ export const CadastrosRoutes: Routes = [
         },
       },
       {
-        path: 'cadastroservico',
-        component: CadastroServicoComponent,
+        path: 'cadastroprocedimento',
+        component: CadastroProcedimentoComponent,
         data: {
-          title: 'Cadastro Serviço',
+          title: 'Cadastro Procedimento',
           urls: [
-            { title: 'Cadastro Serviço', url: '/cadastros/cadastrar' }
+            { title: 'Cadastro Procedimento', url: '/cadastros/cadastrar' }
           ]
         }
       },
@@ -91,7 +94,38 @@ export const CadastrosRoutes: Routes = [
             { title: 'Configuração Agenda', url: '/cadastros/cadastrar' }
           ]
         }
-      }
+      },
+      {
+        path: 'cadastroexame',
+        component: CadastroExameComponent,
+        data: {
+          title: 'Cadastro Exame',
+          urls: [
+            { title: 'Cadastro Exame', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastrolocal',
+        component: CadastroLocalComponent,
+        data: {
+          title: 'Cadastro Local',
+          urls: [
+            { title: 'Cadastro Local', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastrocirurgia',
+        component: CadastroCirurgiaComponent,
+        data: {
+          title: 'Cadastro Cirurgia',
+          urls: [
+            { title: 'Cadastro Cirurgia', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+
     ]
   }
 ];

@@ -3,7 +3,7 @@ import { RouteInfo } from './sidebar.metadata';
 export const ROUTES: RouteInfo[] = [
   {
     path: '',
-    title: 'Cadastros',
+    title: 'Cadastro',
     icon: 'icon-Double-Circle',
     class: 'has-arrow',
     label: '',
@@ -22,7 +22,7 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '',
-        title: 'Funcionários',
+        title: 'Funcionário',
         icon: '',
         class: 'has-arrow',
         label: '',
@@ -53,7 +53,7 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/listagem/listagemmedico',
-        title: 'Médicos',
+        title: 'Médico',
         icon: '',
         class: 'has-arrow',
         label: '',
@@ -81,16 +81,6 @@ export const ROUTES: RouteInfo[] = [
             submenu: []
           },
           {
-            path: '/listagem/listagemservico',
-            title: 'Serviço',
-            icon: '',
-            class: '',
-            label: '',
-            labelClass: '',
-            extralink: false,
-            submenu: []
-          },
-          {
             path: '/cadastros/configuracaoagenda',
             title: 'Configuração Agenda',
             icon: '',
@@ -101,6 +91,46 @@ export const ROUTES: RouteInfo[] = [
             submenu: []
           },
         ]
+      },
+      {
+        path: '/listagem/listagemprocedimento',
+        title: 'Procedimento',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },     
+      {
+        path: '/listagem/listagemexame',
+        title: 'Exame',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
+        path: '/listagem/listagemcirurgia',
+        title: 'Cirurgia',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
+        path: '/listagem/listagemlocal',
+        title: 'Local',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
       },
       {
         path: '/listagem/listagemconvenio',
