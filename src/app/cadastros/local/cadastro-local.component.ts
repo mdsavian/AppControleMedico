@@ -4,8 +4,9 @@ import { LocalService } from '../../services/local.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
+  selector: 'app-modal-cadastro-local.component',
   templateUrl: './cadastro-local.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
 })
@@ -13,7 +14,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class CadastroLocalComponent implements OnInit, AfterViewInit {
 
   @ViewChild('descricao', { read: ElementRef }) private descricao: ElementRef;
-  
+
   mensagemErro: string;
   id: string;
   local: Local = {
@@ -40,9 +41,9 @@ export class CadastroLocalComponent implements OnInit, AfterViewInit {
           this.localService.local = dado;
         }
       });
-    }    
+    }
 
-  } 
+  }
 
   public onSubmit(): void {
     this.localService.salvar(this.local).subscribe(
@@ -50,7 +51,7 @@ export class CadastroLocalComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemlocal"]);
       },
       error => {
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
 
       }

@@ -40,7 +40,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: "", tipoPlano: "", diaGestacao: '', semanaGestacao: ''
   };
 
-
   semanasGestacao = ESemanasGestacao;
   diasGestacao = EDiasGestacao;
   convenioId: string;

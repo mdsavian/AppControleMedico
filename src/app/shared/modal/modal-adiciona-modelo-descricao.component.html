@@ -1,0 +1,28 @@
+<div class="modal-header">
+    <h4 class="modal-title">Adiciona Convênio</h4>
+    <button type="button" class="close" aria-label="Fechar" (click)="salvar()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <label class="control-label" for="nomeDescricao">{{labelDescricao}}(*)</label>
+    <input type="text" id="nomeDescricao" placeholder="{{labelDescricao}}" name="nomeDescricao" class="form-control"
+        required [(ngModel)]="modeloDescricao.descricao" #nomeDescricao="ngModel">
+    <div *ngIf="nomeDescricao.invalid && (nomeDescricao.dirty || nomeDescricao.touched)" class="alert alert-danger">
+        <div *ngIf="nomeDescricao.errors?.required"> {{descricaoErro}}</div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" for="cor">Cor</label>
+        <input type="color" required class="form-control" [(ngModel)]="modeloDescricao.cor" #cor="ngModel" id="cor"
+            name="cor">
+        <div *ngIf="cor.invalid && (cor.dirty || cor.touched)" class="alert alert-danger">
+            <div *ngIf="cor.errors.required"> Cor Obrigatória. </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" [disabled]="nomeDescricao.invalid"
+        type="submit">Salvar</button>
+</div>

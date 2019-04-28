@@ -9,9 +9,19 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoginService } from '../services/login.service';
 import { MedicoService } from '../services/medico.service';
+import { PacienteService } from '../services/paciente.service';
+import { ProcedimentoService } from '../services/procedimento.service';
+import { ExameService } from '../services/exame.service';
+import { LocalService } from '../services/local.service';
+import { CirurgiaService } from '../services/cirurgia.service';
 import { Medico } from '../modelos/medico';
+import { Local } from '../modelos/local';
+import { Exame } from '../modelos/exame';
+import { Cirurgia } from '../modelos/cirurgia';
+import { Procedimento } from '../modelos/procedimento';
 import { Router } from '@angular/router';
-import { ModalAdicionaConsultaComponent } from './modal-adiciona-consulta.component';
+import { Paciente } from '../modelos/paciente';
+import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component';
 
 const colors: any = {
   red: {
@@ -44,24 +54,37 @@ export class AgendaComponent implements OnInit {
   dragToCreateActive = false;
   activeDayIsOpen = true;
   viewDate: Date = new Date();
+  
+  nomePacientes: Array<string>;
+  descricaoCirurgia: Array<string>;
+  descricaoLocal: Array<string>;
+  descricaoExame: Array<string>;
+  pacientes: Array<Paciente> = [];
+  locais: Array<Local> = [];
+  exames: Array<Exame> = [];
+  cirurgias: Array<Cirurgia> = [];
+  procedimentos: Array<Procedimento> = [];
 
   medico: Medico;
   modalData: {
     action: string;
     event: CalendarEvent;
   };
-
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
 
   constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
-    private medicoService: MedicoService, private router: Router) {
+    private medicoService: MedicoService, private router: Router, private pacienteService: PacienteService,
+    private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService, private procedimentoService: ProcedimentoService
+    ) {
   }
 
   ngOnInit() {
     var usuario = this.loginService.usuarioCorrenteValor;
+
+    this.buscarModelosNovoAgendamento();
 
     if (usuario.medicoId != "") {
       this.medicoService.buscarPorId(usuario.medicoId).subscribe(medico => {
@@ -71,6 +94,32 @@ export class AgendaComponent implements OnInit {
         }
       });
     }
+  }
+
+  buscarModelosNovoAgendamento() {
+    this.pacienteService.Todos().subscribe(dados => {
+      this.pacientes = dados;
+      this.nomePacientes = new Array<string>();
+      dados.forEach(d => {
+        this.nomePacientes.push(d.nomeCompleto);
+      });
+    });
+
+    this.exameService.Todos().subscribe(dados => {
+      this.exames = dados;
+    });
+
+    this.localService.Todos().subscribe(dados => {
+      this.locais = dados;
+    });
+
+    this.cirurgiaService.Todos().subscribe(dados => {
+      this.cirurgias = dados;      
+    });
+
+    this.procedimentoService.Todos().subscribe(dados => {
+      this.procedimentos = dados;
+    });
   }
 
   ajustarParametrosCalendario() {
@@ -139,7 +188,7 @@ export class AgendaComponent implements OnInit {
   criarEventoNoCalendario(segment: DayViewHourSegment, segmentElement: HTMLElement): CalendarEvent {
     const dragToSelectEvent: CalendarEvent = {
       id: this.eventos.length,
-      title: 'Nova Consulta',
+      title: 'Novo Agendamento',
       start: segment.date,
       meta: {
         tmpEvent: true
@@ -191,7 +240,6 @@ export class AgendaComponent implements OnInit {
     if (this.validaHoraIntervalo(segment)) {
       this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
         result => {
-          console.log(result);
           if (result == 'Ok') {
             this.eventos = [...this.eventos, evento];
           }
@@ -340,7 +388,13 @@ export class AgendaComponent implements OnInit {
   }
 
   adicionarNovaConsulta() {
-    var modal = this.modalService.open(ModalAdicionaConsultaComponent, { size: "lg" });
+    var modal = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg" });
+    modal.componentInstance.nomePacientes = this.nomePacientes;
+    modal.componentInstance.pacientes = this.pacientes;
+    modal.componentInstance.procedimentos = this.procedimentos;
+    modal.componentInstance.exames = this.exames;
+    modal.componentInstance.locais = this.locais;
+    modal.componentInstance.cirurgias = this.cirurgias;
 
   }
 }

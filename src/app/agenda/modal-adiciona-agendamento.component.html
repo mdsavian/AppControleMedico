@@ -1,0 +1,151 @@
+<form #adicionaAgendamento="ngForm">
+    <div class="modal-header">
+        <h4 class="modal-title">Adiciona Agendamento </h4>
+        <button type="button" class="close" aria-label="Fechar" (click)="salvar()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="tipoAgendamento">Tipo Agendamento</label>
+                    <select class="form-control" (change)="selecionaTipoAgendamento($event.target.value)"
+                        [(ngModel)]="tipoAgenda" #tipoAgendamento="ngModel" id="tipoAgendamento" name="tipoAgendamento">
+                        <option *ngFor="let codigo of tipoAgendamentoEnum | enumToArray">
+                            {{codigo}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="tipoAgendamento.value=='Bloqueio'">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="paciente">Paciente(*)</label>
+                    <div class="input-group">
+                        <input id="pacienteSelecionado" name="pacienteSelecionado" type="text"
+                            (selectItem)="selecionaPaciente($event)" placeholder="Digite o nome do paciente"
+                            [required]="tipoAgendamento.value!='Bloqueio'" [ngbTypeahead]="buscaPaciente"
+                            class="form-control" minlength="3" #paciente="ngModel" [(ngModel)]="pacienteSelecionado">
+                        <div class="input-group-prepend">
+                                <ng-template #tipPaciente>Adiciona Paciente</ng-template>
+                            <span (click)="adicionaPaciente()" [ngbTooltip]="tipPaciente" class="input-group-text" id="img-adiciona-oficio">
+                                <i class="fa fa-pencil"></i></span>
+                        </div>
+                    </div>
+                    <div *ngIf="(falhaNaBusca || paciente.invalid) && tipoAgendamento.value!='Bloqueio'"
+                        class="alert alert-danger">
+                        <div *ngIf="paciente.errors?.required">Paciente Obrigatório. </div>
+                        <div *ngIf="falhaNaBusca">Não foi possível encontrar um paciente com este nome.</div>
+                        <div *ngIf="paciente.errors?.minlength"> Nome precisa ter no mínimo 3 caracteres</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="tipoAgendamento.value!='Procedimento'">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="tipoProcedimento">Procedimento</label>
+                    <div class="input-group">
+                        <select class="form-control" [(ngModel)]="procedimento" #tipoProcedimento="ngModel"
+                            id="tipoProcedimento" name="tipoProcedimento"
+                            [required]="tipoAgendamento.value=='Procedimento'">
+                            <option *ngFor="let procedimento of procedimentos" [ngValue]="procedimento">
+                                {{procedimento.descricao}}
+                            </option>
+                        </select>
+                        <div class="input-group-prepend">
+                                <ng-template #tipProcedimento>Adiciona Procedimento</ng-template>
+                            <span (click)="chamaModalAdiciona('Procedimento')" [ngbTooltip]="tipProcedimento" class="input-group-text"
+                                id="img-adiciona-oficio">
+                                <i class="fa fa-pencil"></i></span>
+                        </div>
+                    </div>
+                    <div *ngIf="(tipoProcedimento.invalid || tipoProcedimento == null) && tipoAgendamento.value=='Procedimento'"
+                        class="alert alert-danger">
+                        <div *ngIf="tipoProcedimento.errors?.required">Procedimento Obrigatório. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="tipoAgendamento.value!='Exame'">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="tipoExame">Exame</label>
+                    <div class="input-group">
+                        <select class="form-control" [(ngModel)]="exame" #tipoExame="ngModel" id="tipoExame"
+                            name="tipoExame" [required]="tipoAgendamento.value=='Exame'">
+                            <option *ngFor="let exame of exames" [ngValue]="exame">
+                                {{exame.descricao}}
+                            </option>
+                        </select>
+                        <div class="input-group-prepend">
+                                <ng-template #tipExame>Adiciona Exame</ng-template>
+                            <span (click)="chamaModalAdiciona('Exame')" class="input-group-text" [ngbTooltip]="tipExame"
+                                id="img-adiciona-oficio">
+                                <i class="fa fa-pencil"></i></span>
+                        </div>
+                    </div>
+                    <div *ngIf="(tipoExame == null || tipoExame.invalid) && tipoAgendamento.value=='Exame'"
+                        class="alert alert-danger">
+                        <div *ngIf="tipoExame.errors?.required">Exame Obrigatório. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="tipoAgendamento.value!='Cirurgia'">
+            <div class="col-xs-6 col-md-6">
+                <div class="form-group">
+                    <label class="control-label" for="tipoCirurgia">Cirurgia</label>
+                    <div class="input-group">
+                        <select class="form-control" [(ngModel)]="cirurgia" #tipoCirurgia="ngModel" id="tipoCirurgia"
+                            name="tipoCirurgia" [required]="tipoAgendamento.value=='Cirurgia'">
+                            <option *ngFor="let cirurgia of cirurgias" [ngValue]="cirurgia">
+                                {{cirurgia.descricao}}
+                            </option>
+                        </select>
+                        <div class="input-group-prepend">
+                            <ng-template #tipCirurgia>Adiciona Cirurgia</ng-template>
+                            <span (click)="chamaModalAdiciona('Cirurgia')" class="input-group-text" [ngbTooltip]="tipCirurgia"
+                                id="img-adiciona-oficio">
+                                <i class="fa fa-pencil"></i></span>
+                        </div>
+                    </div>
+                    <div *ngIf="(tipoCirurgia == null || tipoCirurgia.invalid) && tipoAgendamento.value=='Cirurgia'"
+                        class="alert alert-danger">
+                        <div *ngIf="tipoCirurgia.errors?.required">Cirurgia Obrigatória. </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-6">
+                <div class="form-group">
+                    <label class="control-label" for="tipoLocal">Local Cirurgia</label>
+                    <div class="input-group">
+                        <select class="form-control" [(ngModel)]="local" #tipoLocal="ngModel" id="tipoLocal"
+                            name="tipoLocal" [required]="tipoAgendamento.value=='Cirurgia'">
+                            <option *ngFor="let local of locais" [ngValue]="local">
+                                {{local.descricao}}
+                            </option>
+                        </select>
+                        <div class="input-group-prepend">
+                            <ng-template #tipLocal>Adiciona Local</ng-template>
+                            <span (click)="chamaModalAdiciona('Local')" [ngbTooltip]="tipLocal" class="input-group-text"
+                                id="img-adiciona-oficio">
+                                <i class="fa fa-pencil"></i></span>
+                        </div>
+                    </div>
+                    <div *ngIf="(tipoLocal == null || tipoLocal.invalid) && tipoAgendamento.value=='Cirurgia'"
+                        class="alert alert-danger">
+                        <div *ngIf="tipoLocal.errors?.required">Local Obrigatório. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal-footer">
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
+        [disabled]="!adicionaAgendamento.form.valid" type="submit">Salvar</button>
+</div>

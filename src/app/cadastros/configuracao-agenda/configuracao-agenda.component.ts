@@ -2,7 +2,6 @@ import { Component, OnInit, ElementRef, ViewChild, TemplateRef } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConfiguracaoAgendaService } from '../../services/configuracaoAgenda.service';
 import { MedicoService } from '../../services/medico.service';
 import { ConfiguracaoAgenda } from '../../modelos/configuracaoAgenda';
 import { Medico } from '../../modelos/medico';
@@ -28,7 +27,7 @@ export class ConfiguracaoAgendaComponent implements OnInit {
   medicoSelecionado: string;
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   configuracaoMinutosAgendaEnum = EConfiguracaoMinutosAgenda;
-  configMinutos: string = EConfiguracaoMinutosAgenda["20 Minutos"].toString();
+  configMinutos: string = EConfiguracaoMinutosAgenda[3].toString();
 
   constructor(private medicoService: MedicoService,
     private router: Router, private modalService: NgbModal, private route: ActivatedRoute, ) {

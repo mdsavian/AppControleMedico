@@ -1,4 +1,8 @@
 import { Entidade } from "./entidade";
+import { Exame } from "./exame";
+import { Local } from "./local";
+import { Cirurgia} from "./cirurgia";
+import { Paciente} from "./paciente";
 import { ETipoAgendamento } from "../enums/ETipoAgendamento";
 
 export class Agendamento extends Entidade {
@@ -7,11 +11,14 @@ export class Agendamento extends Entidade {
         super();
     }
     
-    pacienteId:string;
+    paciente:Paciente;
     servicoId:string;
     dataAgenda:string;
     horaInicial:string;
     horaFinal:string;
     observacao:string;
     tipoAgendamento:ETipoAgendamento;
+    exame:Exame;
+    local:Local;
+    cirurgia:Cirurgia;
 }

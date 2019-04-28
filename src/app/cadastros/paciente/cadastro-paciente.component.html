@@ -279,7 +279,7 @@
                           <label class="control-label" for="convenio">Convênio(*)</label>
                           <div class="input-group">
                             <input id="convenioSelecionado" name="convenioSelecionado" type="text"
-                              (selectItem)="selecionaConvenio($event)" placeholder="Digite o convênio" required [ngbTypeahead]="buscaConvenio" class="form-control"
+                              (selectItem)="selecionaConvenio($event)" placeholder="Digite o convênio" required [ngbTypeahead]="buscabuscaConvenio" class="form-control"
                               #convenio="ngModel" [(ngModel)]="convenioSelecionado" />
                             <div class="input-group-prepend">
                               <span (click)="adicionaConvenio()" class="input-group-text" id="img-adiciona-oficio"><i
@@ -290,7 +290,7 @@
                             *ngIf="(convenio.invalid || falhaNaBusca) && (convenio.dirty || convenio.touched)"
                             class="alert alert-danger">
                             <div *ngIf="convenio.errors?.required">Convênio Obrigatório. </div>
-                            <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
+                            <div *ngIf="falhaNaBusca">Não foi possível encontrar um convênio com esta descrição.</div>
                           </div>
                         </div>
                       </div>

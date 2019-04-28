@@ -9,7 +9,10 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgendaComponent } from './agenda.component';
 import { AgendaRoutes } from './agenda.routing';
 import { RouterModule } from '@angular/router';
-import { ModalAdicionaConsultaComponent } from './modal-adiciona-consulta.component'
+import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component'
+import { UteisModule } from '../uteis/uteis.module'
+import {ModalAdicionaModeloDescricaoComponent} from '../shared/modal/modal-adiciona-modelo-descricao.component';
+
 
 class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -30,7 +33,7 @@ class CustomDateFormatter extends CalendarDateFormatter {
 }
 
 @NgModule({
-  imports: [CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
+  imports: [NgbModule, UteisModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
     CalendarModule.forRoot(
       {
         provide: DateAdapter,
@@ -42,9 +45,9 @@ class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalAdicionaConsultaComponent],
+  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalAdicionaConsultaComponent]
+  entryComponents: [ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent]
 })
 
 export class AgendaModule { }
