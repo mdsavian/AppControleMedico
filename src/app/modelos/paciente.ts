@@ -1,7 +1,5 @@
 import { Pessoa } from "./pessoa";
 import { Convenio } from "./convenio";
-import { EDiasGestacao } from "../enums/EDiasGestacao";
-import { ESemanasGestacao } from "../enums/ESemanasGestacao";
 
 export class Paciente extends Pessoa {
 

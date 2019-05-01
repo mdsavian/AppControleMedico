@@ -58,7 +58,12 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
         return source.id === 'convenios';
       },
       copyItem: (convenio: Convenio) => {
-        return new Convenio(convenio.nomeConvenio, convenio.diasRetorno, convenio.id);
+        var novoConvenio = new Convenio();
+        novoConvenio.nomeConvenio = convenio.nomeConvenio;
+        novoConvenio.diasRetorno = convenio.diasRetorno;
+        novoConvenio.id = convenio.id;
+
+        return novoConvenio;
       },
       accepts: (el, target, source, sibling) => {
         return target.id !== 'conveniosMedico';

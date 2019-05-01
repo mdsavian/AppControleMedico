@@ -6,12 +6,14 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 import { CalendarModule, DateAdapter, DateFormatterParams, CalendarDateFormatter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxMaskModule } from 'ngx-mask';
 import { AgendaComponent } from './agenda.component';
 import { AgendaRoutes } from './agenda.routing';
 import { RouterModule } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component'
 import { UteisModule } from '../uteis/uteis.module'
-import {ModalAdicionaModeloDescricaoComponent} from '../shared/modal/modal-adiciona-modelo-descricao.component';
+import { ModalAdicionaModeloDescricaoComponent } from '../shared/modal/modal-adiciona-modelo-descricao.component';
+import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
 
 
 class CustomDateFormatter extends CalendarDateFormatter {
@@ -33,7 +35,7 @@ class CustomDateFormatter extends CalendarDateFormatter {
 }
 
 @NgModule({
-  imports: [NgbModule, UteisModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
+  imports: [NgbModule, UteisModule, NgxMaskModule.forRoot(), CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
     CalendarModule.forRoot(
       {
         provide: DateAdapter,
@@ -45,9 +47,9 @@ class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent],
+  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalCadastroPacienteComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent]
+  entryComponents: [ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalCadastroPacienteComponent]
 })
 
 export class AgendaModule { }

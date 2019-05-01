@@ -4,6 +4,7 @@ import { Local } from "./local";
 import { Cirurgia} from "./cirurgia";
 import { Paciente} from "./paciente";
 import { ETipoAgendamento } from "../enums/ETipoAgendamento";
+import { Procedimento } from "./procedimento";
 
 export class Agendamento extends Entidade {
 
@@ -21,4 +22,5 @@ export class Agendamento extends Entidade {
     exame:Exame;
     local:Local;
     cirurgia:Cirurgia;
+    procedimento:Procedimento;
 }

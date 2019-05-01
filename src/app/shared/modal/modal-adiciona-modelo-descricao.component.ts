@@ -10,8 +10,9 @@ import { ModeloDescricao } from '../../modelos/naoPersistidos/modeloDescricao';
 
 export class ModalAdicionaModeloDescricaoComponent {
   public modeloDescricao: ModeloDescricao = new ModeloDescricao();
-  public descricaoErro: string;
-  public labelDescricao: string;
+  descricaoErro: string;
+  labelDescricao: string;
+  mostrarCor = false;
 
   @ViewChild('nomeDescricao', { read: ElementRef }) private nomeDescricao: ElementRef;
 
@@ -23,5 +24,9 @@ export class ModalAdicionaModeloDescricaoComponent {
 
   salvar() {
     this.activeModal.close(this.modeloDescricao);
+  }
+
+  fechar() {
+    this.activeModal.close();
   }
 }

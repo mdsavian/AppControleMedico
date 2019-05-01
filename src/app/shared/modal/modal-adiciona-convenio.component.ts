@@ -14,7 +14,7 @@ import { ValidaNomeConvenioDirective } from '../../validadores/valida-nome-conve
 })
 
 export class ModalAdicionaConvenioComponent {
-  public convenio: Convenio = new Convenio("", 0, "");
+  public convenio: Convenio = new Convenio();
 
   @ViewChild('nomeConvenio', { read: ElementRef }) private nomeConvenio: ElementRef;
 

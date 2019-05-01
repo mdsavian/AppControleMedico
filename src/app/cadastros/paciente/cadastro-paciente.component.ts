@@ -22,8 +22,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
-
-
 @Component({
   templateUrl: './cadastro-paciente.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
@@ -36,7 +34,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   paciente: Paciente = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",
     nomePai: "", ocupacao: "", tipoSanguineo: 1, telefone: "", celular: "", email: "", aceitaReceberSms: true, responsavel: "",
-    cep: "", endereco: "", numero: "", estadoCivil: 0, complemento: "", bairro: "", cidade: "", uf: "", convenio: new Convenio("", 0, ""),
+    cep: "", endereco: "", numero: "", estadoCivil: 0, complemento: "", bairro: "", cidade: "", uf: "", convenio: new Convenio(),
     numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: "", tipoPlano: "", diaGestacao: '', semanaGestacao: ''
   };
 
@@ -55,7 +53,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
   constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private route: ActivatedRoute, private modalService: NgbModal,
-
     private loginService: LoginService, private medicoService: MedicoService) {
   }
 

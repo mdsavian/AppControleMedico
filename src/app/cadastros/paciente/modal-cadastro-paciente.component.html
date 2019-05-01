@@ -1,0 +1,96 @@
+<form #adicionaPaciente="ngForm">
+    <div class="modal-header">
+        <h4 class="modal-title">Adiciona Paciente</h4>
+        <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
+                    <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
+                        class="form-control" required minlength="4" [(ngModel)]="paciente.nomeCompleto"
+                        #nomeCompleto="ngModel">
+
+                    <div *ngIf="nomeCompleto.invalid" class="alert alert-danger">
+                        <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
+                        <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-10 col-md-6">
+                <label class="control-label" for="celular">Celular(*)</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
+                    </div>
+                    <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control" required
+                        [(ngModel)]="paciente.celular" mask="(00) 0 0000-0000" #celular="ngModel" pattern="^[0-9]{11}$">
+                </div>
+                <div *ngIf="celular.invalid" class="alert alert-danger">
+                    <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
+                    <div *ngIf="celular.errors.pattern"> Celular Inválido. </div>
+                </div>
+            </div>
+
+            <div class="col-xs-10 col-md-6">
+                <label class="control-label" for="dataNascimento">Data de Nascimento</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
+                        placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci" #dataNascimento="ngModel"
+                        (blur)="formataData($event)">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-md-6">
+
+                <label class="control-label" for="tipoConvenio">Convenio</label>
+                <div class="input-group">
+                    <select class="form-control" [(ngModel)]="convenio" #tipoConvenio="ngModel" id="tipoConvenio"
+                        name="tipoConvenio" required>
+                        <option *ngFor="let convenio of convenios" [ngValue]="convenio">
+                            {{convenio.nomeConvenio}}asas
+                        </option>
+                    </select>
+                    <div class="input-group-prepend">
+                        <ng-template #tipConvenio>Adiciona Convenio</ng-template>
+                        <span (click)="adicionaConvenio()" class="input-group-text" [ngbTooltip]="tipConvenio"
+                            id="img-adiciona-convenio">
+                            <i class="fa fa-pencil"></i></span>
+                    </div>
+                </div>
+                <div *ngIf="(tipoConvenio == null || tipoConvenio.invalid)" class="alert alert-danger">
+                    <div *ngIf="tipoConvenio.errors?.required">Convenio Obrigatório. </div>
+                </div>
+
+            </div>
+            <div class="col-xs-10 col-md-6">
+
+                <label class="control-label" for="numerocartao">Número Cartão</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-credit-card-alt"></i></span>
+                    </div>
+                    <input type="number" id="numeroCartao" name="numeroCartao" placeholder="Número Cartão"
+                        class="form-control" [(ngModel)]="paciente.numeroCartao" #numeroCartao="ngModel">
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</form>
+<div class="modal-footer">
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" type="submit"
+        [disabled]="!adicionaPaciente.form.valid">Salvar</button>
+</div>
