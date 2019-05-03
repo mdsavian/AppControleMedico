@@ -15,48 +15,81 @@ import { Cirurgia } from '../modelos/cirurgia';
 import { Procedimento } from '../modelos/procedimento';
 import { ModalAdicionaModeloDescricaoComponent } from '../shared/modal/modal-adiciona-modelo-descricao.component';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
+import { PacienteService } from '../services/paciente.service';
+import { Convenio } from '../modelos/convenio';
+import { ConvenioService } from '../services/convenio.service';
+import { ModeloDescricao } from '../modelos/naoPersistidos/modeloDescricao';
+import { Util } from '../uteis/Util';
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
-  templateUrl: './modal-adiciona-agendamento.component.html'
+  templateUrl: './modal-adiciona-agendamento.component.html',
+  styleUrls: ["./styles.css"]
 })
 
 export class ModalAdicionaAgendamentoComponent {
   agendamento: Agendamento = new Agendamento();
+  paciente: Paciente = new Paciente;
   tipoAgendamentoEnum = ETipoAgendamento;
   tipoAgenda: string = ETipoAgendamento[1].toString();
   nomePacientes: Array<string>;
   pacientes: Array<Paciente> = [];
-
+  pacienteSelecionado: string;
   locais: Array<Local> = [];
   local: Local;
-
+  dataAgenda = new Date().toString();
   procedimentos: Array<Procedimento> = [];
   procedimento: Procedimento;
-
   exames: Array<Exame> = [];
   exame: Exame;
-
+  util = new Util();
+  convenio: Convenio;
+  convenios: Array<Convenio> = [];
   cirurgias: Array<Cirurgia> = [];
   cirurgia: Cirurgia;
-  falhaNaBusca: boolean;
+  falhaNaBusca = true;
 
   @ViewChild('tipoAgendamento', { read: ElementRef }) private tipoAgendamento: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, public modalService: NgbModal, private localService: LocalService,
-    private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService) { }
+    private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
+    private pacienteService: PacienteService, private convenioService: ConvenioService) { }
 
   salvar() {
     //validar se registros preenchidos existem
-    this.activeModal.close();
+    //validar horario data agendamento se pertence a configuração do médico 
+
+    this.activeModal.close(this.agendamento);
   }
 
   fechar() {
     this.activeModal.close();
   }
 
+  public formataData(e): void {
+    if (e.target.id == "'dataAgendamento'")
+      this.agendamento.dataAgendamento = this.util.stringParaData(e.target.value);
+  }
+
   ngOnInit() {
     this.tipoAgendamento.nativeElement.focus();
+    this.buscarModelosNovoAgendamento();
+  }
+
+  buscarModelosNovoAgendamento() {
+    this.pacienteService.Todos().subscribe(dados => {
+      this.pacientes = dados;
+      this.nomePacientes = new Array<string>();
+      dados.forEach(d => {
+        this.nomePacientes.push(d.nomeCompleto);
+      });
+    });
+
+    this.exameService.Todos().subscribe(dados => { this.exames = dados; });
+    this.localService.Todos().subscribe(dados => { this.locais = dados; });
+    this.cirurgiaService.Todos().subscribe(dados => { this.cirurgias = dados; });
+    this.procedimentoService.Todos().subscribe(dados => { this.procedimentos = dados; });
+    this.convenioService.Todos().subscribe(c => this.convenios = c);
   }
 
   selecionaTipoAgendamento(value: string) {
@@ -64,17 +97,69 @@ export class ModalAdicionaAgendamentoComponent {
   }
   adicionaPaciente() {
     var modalNovoPaciente = this.modalService.open(ModalCadastroPacienteComponent, { size: 'lg' })
+
+    modalNovoPaciente.result.then((paciente: Paciente) => {
+      if (paciente != null && paciente.nomeCompleto != '') {
+
+        var pacienteExistente = this.pacientes.find(c => c.nomeCompleto == paciente.nomeCompleto);
+        if (pacienteExistente != null) {
+          this.agendamento.paciente = pacienteExistente;
+        }
+        else {
+
+          this.pacientes.push(paciente);
+          this.nomePacientes.push(paciente.nomeCompleto);
+          this.pacienteSelecionado = paciente.nomeCompleto;
+
+          this.pacienteService.salvar(paciente).subscribe(pacienteCadastrado => {
+            this.agendamento.paciente = pacienteCadastrado;
+          });
+        }
+      }
+    }).catch((error) => { })
+
   }
   chamaModalAdiciona(nome: string) {
     var modalAdiciona = this.modalService.open(ModalAdicionaModeloDescricaoComponent);
 
     switch (nome) {
+      case "Convenio":
+        {
+          modalAdiciona.componentInstance.descricaoErro = "Convênio obrigatório.";
+          modalAdiciona.componentInstance.labelDescricao = "Convênio";
+          modalAdiciona.componentInstance.mostrarCor = false;
+
+          modalAdiciona.result.then((convenio: ModeloDescricao) => {
+            if (convenio != null && convenio.descricao != '') {
+
+              var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+              if (convenioExistente != null) {
+                this.agendamento.convenio = convenioExistente;
+                this.convenio = convenioExistente;
+              }
+              else {
+
+                this.convenio = new Convenio();
+                this.convenio.nomeConvenio = convenio.descricao;
+                this.convenios.push(this.convenio);
+
+                this.convenioService.salvar(this.convenio).subscribe(convenioCadastrado => {
+                  this.agendamento.convenio = convenioCadastrado;
+                });
+
+                this.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+              }
+            }
+          }).catch((error) => { })
+
+          break;
+        }
       case "Local": {
         modalAdiciona.componentInstance.descricaoErro = "Local obrigatório.";
         modalAdiciona.componentInstance.labelDescricao = "Local";
         modalAdiciona.componentInstance.mostrarCor = false;
 
-        modalAdiciona.result.then((local) => {
+        modalAdiciona.result.then((local: ModeloDescricao) => {
           if (local != null && local.descricao != '') {
 
             var localExistente = this.locais.find(c => c.descricao == local.descricao);
@@ -103,7 +188,7 @@ export class ModalAdicionaAgendamentoComponent {
         modalAdiciona.componentInstance.labelDescricao = "Cirurgia";
         modalAdiciona.componentInstance.mostrarCor = true;
 
-        modalAdiciona.result.then((cirurgia) => {
+        modalAdiciona.result.then((cirurgia: ModeloDescricao) => {
           if (cirurgia != null && cirurgia.descricao != '') {
 
             var cirurgiaExistente = this.cirurgias.find(c => c.descricao == cirurgia.descricao);
@@ -133,7 +218,7 @@ export class ModalAdicionaAgendamentoComponent {
         modalAdiciona.componentInstance.labelDescricao = "Procedimento";
         modalAdiciona.componentInstance.mostrarCor = true;
 
-        modalAdiciona.result.then((procedimento) => {
+        modalAdiciona.result.then((procedimento: ModeloDescricao) => {
           if (procedimento != null && procedimento.descricao != '') {
 
             var procedimentoExistente = this.procedimentos.find(c => c.descricao == procedimento.descricao);
@@ -163,7 +248,7 @@ export class ModalAdicionaAgendamentoComponent {
         modalAdiciona.componentInstance.labelDescricao = "Exame";
         modalAdiciona.componentInstance.mostrarCor = true;
 
-        modalAdiciona.result.then((exame) => {
+        modalAdiciona.result.then((exame: ModeloDescricao) => {
           if (exame != null && exame.descricao != '') {
 
             var exameExistente = this.exames.find(c => c.descricao == exame.descricao);
@@ -196,11 +281,12 @@ export class ModalAdicionaAgendamentoComponent {
       debounceTime(200),
       distinctUntilChanged(),
       map(term => {
+
         if (this.nomePacientes == null) {
           this.falhaNaBusca = true;
           return false;
         }
-
+        
         if (term.length < 2) {
           this.falhaNaBusca = true;
           return false;
@@ -214,8 +300,13 @@ export class ModalAdicionaAgendamentoComponent {
 
   selecionaPaciente(item) {
     var paciente = this.pacientes.find(c => c.nomeCompleto === item.item);
-    if (paciente != null)
+    if (paciente != null) {
+      this.paciente = paciente;
       this.agendamento.paciente = paciente;
+      if (paciente.convenio != null)
+        this.convenio = this.convenios.find(c => c.id == paciente.convenio.id);
+    }
+
   }
 
 }

@@ -5,6 +5,7 @@ import { Cirurgia} from "./cirurgia";
 import { Paciente} from "./paciente";
 import { ETipoAgendamento } from "../enums/ETipoAgendamento";
 import { Procedimento } from "./procedimento";
+import { Convenio } from "./convenio";
 
 export class Agendamento extends Entidade {
 
@@ -14,7 +15,7 @@ export class Agendamento extends Entidade {
     
     paciente:Paciente;
     servicoId:string;
-    dataAgenda:string;
+    dataAgendamento:Date;
     horaInicial:string;
     horaFinal:string;
     observacao:string;
@@ -22,5 +23,6 @@ export class Agendamento extends Entidade {
     exame:Exame;
     local:Local;
     cirurgia:Cirurgia;
+    convenio:Convenio;
     procedimento:Procedimento;
 }

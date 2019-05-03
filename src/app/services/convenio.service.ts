@@ -24,9 +24,7 @@ export class ConvenioService {
   }
 
   public salvar(convenio: Convenio) {
-    var xx = this.http.post<Convenio>(this.accessPointUrl, convenio, { headers: this.headers }); 
-    console.log("opa", xx);
-    return xx;
+    return this.http.post<Convenio>(this.accessPointUrl, convenio, { headers: this.headers });
   }
 
   public buscarPorId(convenioId: string) {

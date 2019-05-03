@@ -12,9 +12,8 @@ import { AgendaRoutes } from './agenda.routing';
 import { RouterModule } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component'
 import { UteisModule } from '../uteis/uteis.module'
-import { ModalAdicionaModeloDescricaoComponent } from '../shared/modal/modal-adiciona-modelo-descricao.component';
+import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
-
 
 class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -35,7 +34,7 @@ class CustomDateFormatter extends CalendarDateFormatter {
 }
 
 @NgModule({
-  imports: [NgbModule, UteisModule, NgxMaskModule.forRoot(), CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
+  imports: [SharedModalModule,NgbModule, UteisModule, NgxMaskModule.forRoot(), CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
     CalendarModule.forRoot(
       {
         provide: DateAdapter,
@@ -47,9 +46,9 @@ class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalCadastroPacienteComponent],
+  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalAdicionaAgendamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalCadastroPacienteComponent]
+  entryComponents: [ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent]
 })
 
 export class AgendaModule { }

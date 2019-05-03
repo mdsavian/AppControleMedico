@@ -14,7 +14,7 @@ import { Util } from '../../uteis/Util';
 import { Oficio } from '../../modelos/oficio';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalAdicionaOficioComponent } from '../../shared/modal/modal-adiciona-oficio.component';
+import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-adiciona-modelo-descricao.component';
 
 @Component({
   templateUrl: './cadastro-funcionario.component.html',
@@ -110,24 +110,32 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   public adicionaOficio(): void {
 
-    var modal = this.modalService.open(ModalAdicionaOficioComponent, { windowClass: "modal-holder" });
+    var modal = this.modalService.open(ModalAdicionaModeloDescricaoComponent, { windowClass: "modal-holder" });
+    modal.componentInstance.descricaoErro = "Ofício obrigatório.";
+    modal.componentInstance.labelDescricao = "Ofício";
 
     modal.result.then((oficio) => {
       if (oficio != '') {
-        
+
         var oficioExistente = this.oficios.find(c => c.descricao == oficio.descricao);
         if (oficioExistente != null) {
           this.funcionario.oficio = oficioExistente;
           this.oficioSelecionado = oficioExistente.descricao;
         }
         else {
-          this.oficioService.salvar(oficio).subscribe(oficioCadastrado => {
+          var novoOficio = new Oficio()
+          novoOficio.descricao = oficio.descricao;
+          this.oficios.push(novoOficio);
+          this.nomeOficios.push(novoOficio.descricao);
+
+
+          this.oficioService.salvar(novoOficio).subscribe(oficioCadastrado => {
             this.funcionario.oficio = oficioCadastrado;
             this.oficioSelecionado = oficioCadastrado.descricao;
           })
         }
       }
-    });    
+    });
   }
 
   public onSubmit(): void {

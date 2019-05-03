@@ -29,9 +29,6 @@ import { BreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
 import { SpinnerComponent } from './shared/spinner.component';
 
 import { ModalErrorComponent } from './shared/modal/modal-error.component';
-import { ModalAdicionaOficioComponent } from './shared/modal/modal-adiciona-oficio.component';
-import { ModalAdicionaConvenioComponent } from './shared/modal/modal-adiciona-convenio.component';
-
 import { environment } from '../environments/environment';
 import { UsuarioService } from './services/usuario.service';
 
@@ -69,9 +66,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NavigationComponent,
     BreadcrumbComponent,
     SidebarComponent,
-    ModalErrorComponent,
-    ModalAdicionaOficioComponent,
-    ModalAdicionaConvenioComponent
+    ModalErrorComponent
   ],
 
   providers: [
@@ -88,7 +83,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     },
     UsuarioService
   ],
-  entryComponents: [ModalErrorComponent, ModalAdicionaOficioComponent, ModalAdicionaConvenioComponent],
+  entryComponents: [ModalErrorComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

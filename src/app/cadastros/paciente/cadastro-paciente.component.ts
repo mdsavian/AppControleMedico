@@ -15,12 +15,11 @@ import { LoginService } from '../../services/login.service';
 import { MedicoService } from '../../services/medico.service';
 
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
-import { ModalAdicionaConvenioComponent } from '../../shared/modal/modal-adiciona-convenio.component';
-
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-adiciona-modelo-descricao.component';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -84,6 +83,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
     this.convenioService.Todos().subscribe(dados => {
       this.convenios = dados;
+      console.log(dados);
       this.nomeConvenios = new Array<string>();
       dados.forEach(d => {
         this.nomeConvenios.push(d.nomeConvenio);
@@ -93,10 +93,13 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
   public adicionaConvenio(): void {
 
-    var modal = this.modalService.open(ModalAdicionaConvenioComponent, { windowClass: "modal-holder" });
+    var modal = this.modalService.open(ModalAdicionaModeloDescricaoComponent, { windowClass: "modal-holder" });
+    modal.componentInstance.descricaoErro = "Convênio obrigatório.";
+    modal.componentInstance.labelDescricao = "Convênio";
 
     modal.result.then((convenio) => {
       if (convenio != undefined && convenio.descricao != '') {
+        console.log(convenio.descricao);
 
         var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
         if (convenioExistente != null) {
@@ -104,9 +107,21 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
           this.convenioSelecionado = convenioExistente.nomeConvenio;
         }
         else {
-          this.convenioService.salvar(convenio).subscribe(conenioCadastrado => {
+          
+          var novoConvenio = new Convenio();
+          novoConvenio.nomeConvenio = convenio.descricao;
+          novoConvenio.ativo = true;
+
+          this.convenios.push(novoConvenio);
+          this.nomeConvenios.push(novoConvenio.nomeConvenio, convenio.descricao);
+
+          console.log(novoConvenio);
+
+          this.convenioService.salvar(novoConvenio).subscribe(conenioCadastrado => {
+            console.log(conenioCadastrado.nomeConvenio);
             this.paciente.convenio = conenioCadastrado;
             this.convenioSelecionado = conenioCadastrado.nomeConvenio;
+            
           })
         }
       }
