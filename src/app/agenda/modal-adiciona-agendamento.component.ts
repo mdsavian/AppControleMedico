@@ -20,6 +20,7 @@ import { Convenio } from '../modelos/convenio';
 import { ConvenioService } from '../services/convenio.service';
 import { ModeloDescricao } from '../modelos/naoPersistidos/modeloDescricao';
 import { Util } from '../uteis/Util';
+import{ModalErrorComponent} from '../shared/modal/modal-error.component';
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
@@ -29,6 +30,9 @@ import { Util } from '../uteis/Util';
 
 export class ModalAdicionaAgendamentoComponent {
   agendamento: Agendamento = new Agendamento();
+  horaInicial: string;
+  horaFinal: string;
+
   paciente: Paciente = new Paciente;
   tipoAgendamentoEnum = ETipoAgendamento;
   tipoAgenda: string = ETipoAgendamento[1].toString();
@@ -37,13 +41,12 @@ export class ModalAdicionaAgendamentoComponent {
   pacienteSelecionado: string;
   locais: Array<Local> = [];
   local: Local;
-  dataAgenda = new Date().toString();
   procedimentos: Array<Procedimento> = [];
   procedimento: Procedimento;
   exames: Array<Exame> = [];
   exame: Exame;
   util = new Util();
-  convenio: Convenio;
+  dataAgenda = this.util.dataParaString(new Date());
   convenios: Array<Convenio> = [];
   cirurgias: Array<Cirurgia> = [];
   cirurgia: Cirurgia;
@@ -59,6 +62,11 @@ export class ModalAdicionaAgendamentoComponent {
     //validar se registros preenchidos existem
     //validar horario data agendamento se pertence a configuração do médico 
 
+    if (this.agendamento.dataAgendamentoInicial == null || this.agendamento.dataAgendamentoFinal == null)
+    {
+      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
+    }
     this.activeModal.close(this.agendamento);
   }
 
@@ -67,12 +75,29 @@ export class ModalAdicionaAgendamentoComponent {
   }
 
   public formataData(e): void {
-    if (e.target.id == "'dataAgendamento'")
-      this.agendamento.dataAgendamento = this.util.stringParaData(e.target.value);
+    if (e.target.id == "dataAgendamento") {
+      var data = this.util.stringParaData(e.target.value);
+      this.agendamento.dataAgendamentoInicial.setDate(data.getDate());
+      this.agendamento.dataAgendamentoFinal.setDate(data.getDate());
+    }
+  }
+
+  public concatenaHora(event): void {
+
+    if (event.target.id == "horaInicial") {
+      if (this.agendamento.dataAgendamentoInicial != null)
+        this.agendamento.dataAgendamentoInicial.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
+    }
+    else if (event.target.id == "horaFinal") {
+      if (this.agendamento.dataAgendamentoFinal != null)
+        this.agendamento.dataAgendamentoFinal.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
+    }
   }
 
   ngOnInit() {
     this.tipoAgendamento.nativeElement.focus();
+    this.agendamento.dataAgendamentoInicial = new Date();
+    this.agendamento.dataAgendamentoFinal = new Date();
     this.buscarModelosNovoAgendamento();
   }
 
@@ -135,19 +160,18 @@ export class ModalAdicionaAgendamentoComponent {
               var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
               if (convenioExistente != null) {
                 this.agendamento.convenio = convenioExistente;
-                this.convenio = convenioExistente;
               }
               else {
 
-                this.convenio = new Convenio();
-                this.convenio.nomeConvenio = convenio.descricao;
-                this.convenios.push(this.convenio);
+                var convenioNovo = new Convenio();
+                convenioNovo.nomeConvenio = convenio.descricao;
+                this.convenios.push(convenioNovo);
 
-                this.convenioService.salvar(this.convenio).subscribe(convenioCadastrado => {
+                this.convenioService.salvar(convenioNovo).subscribe(convenioCadastrado => {
                   this.agendamento.convenio = convenioCadastrado;
                 });
 
-                this.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+                this.agendamento.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
               }
             }
           }).catch((error) => { })
@@ -278,7 +302,7 @@ export class ModalAdicionaAgendamentoComponent {
 
   buscaPaciente = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(200),
+      debounceTime(100),
       distinctUntilChanged(),
       map(term => {
 
@@ -286,15 +310,14 @@ export class ModalAdicionaAgendamentoComponent {
           this.falhaNaBusca = true;
           return false;
         }
-        
+
         if (term.length < 2) {
           this.falhaNaBusca = true;
           return false;
         }
 
         this.falhaNaBusca = this.nomePacientes.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10).length == 0;
-        return term.length < 2 ? []
-          : this.nomePacientes.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+        return this.nomePacientes.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
       })
     )
 
@@ -303,8 +326,9 @@ export class ModalAdicionaAgendamentoComponent {
     if (paciente != null) {
       this.paciente = paciente;
       this.agendamento.paciente = paciente;
+
       if (paciente.convenio != null)
-        this.convenio = this.convenios.find(c => c.id == paciente.convenio.id);
+        this.agendamento.convenio = this.convenios.find(c => c.id == paciente.convenio.id);
     }
 
   }

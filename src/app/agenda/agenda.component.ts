@@ -17,6 +17,8 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { Medico } from '../modelos/medico';
 import { Router } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component';
+import { Agendamento } from '../modelos/agendamento';
+import { Util } from '../uteis/Util';
 
 const colors: any = {
   red: {
@@ -49,7 +51,7 @@ export class AgendaComponent implements OnInit {
   dragToCreateActive = false;
   activeDayIsOpen = true;
   viewDate: Date = new Date();
-
+  util = new Util();
   medico: Medico;
   modalData: {
     action: string;
@@ -143,6 +145,7 @@ export class AgendaComponent implements OnInit {
   }
 
   criarEventoNoCalendarioClicado(segment: DayViewHourSegment, segmentElement: HTMLElement): CalendarEvent {
+    console.log(segment.date);
     const dragToSelectEvent: CalendarEvent = {
       id: this.eventos.length,
       title: 'Novo Agendamento',
@@ -184,10 +187,14 @@ export class AgendaComponent implements OnInit {
 
         const newEnd = addDays(addMinutes(segment.date, minutesDiff), daysDiff);
         if (newEnd > segment.date && newEnd < endOfView) {
+
+          console.log("new ewn", newEnd);
           dragToSelectEvent.end = newEnd;
         }
         this.refreshPage();
       });
+
+      console.log("drag end ",dragToSelectEvent, dragToSelectEvent.end);
 
     return dragToSelectEvent;
   }
@@ -245,31 +252,6 @@ export class AgendaComponent implements OnInit {
         afterEnd: true
       },
       draggable: true
-    },
-    {
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
-      color: colors.yellow,
-      actions: this.acoesEventosCalendario
-    },
-    {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
-      title: 'A long event that spans 2 months',
-      color: colors.blue,
-      allDay: true
-    },
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: new Date(),
-      title: 'A draggable and resizable event',
-      color: colors.yellow,
-      actions: this.acoesEventosCalendario,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true
-      },
-      draggable: true
     }
   ];
 
@@ -306,6 +288,7 @@ export class AgendaComponent implements OnInit {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
+    console.log("clique evento", event);
     this.modalData = { event, action };
     this.modalService.open(this.modalContent, { size: 'lg' });
   }
@@ -344,20 +327,31 @@ export class AgendaComponent implements OnInit {
     this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
   }
 
-  adicionarNovaConsulta() {
+  adicionarNovoAgendamento() {
     var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg" });
 
-    modalAdicionaAgendamento.result.then((agendamento) => {
-
-      console.log("eae",agendamento);
+    modalAdicionaAgendamento.result.then((agendamento:Agendamento) => {
+      console.log(agendamento);
       if (agendamento != null) {
-        // console.log(addHours(startOfDay(new Date()), 2));
 
-        var novoEvento: CalendarEvent = {
-          start: addHours(startOfDay(new Date()), 2),
-          end: new Date(),
-          title: 'A draggable and resizable event',
-          color: colors.yellow,
+        // console.log(agendamento.dataAgendamento, agendamento.horaInicial, agendamento.horaFinal);
+        // var dataHoraInicial = this.util.dataHoraParaString(agendamento.dataAgendamento, agendamento.horaInicial);
+        // var dataHoraFinal = this.util.dataHoraParaString(agendamento.dataAgendamento, agendamento.horaFinal);
+
+        // console.log("eitcha",dataHoraInicial, dataHoraFinal);
+
+        var cor:any;
+
+        switch (agendamento.tipoAgendamento)
+        {
+
+        }
+        this.eventos = [...this.eventos,
+          {
+          start: agendamento.dataAgendamentoInicial,
+          end: agendamento.dataAgendamentoFinal,
+          title: 'Evento teste da data do xurupita',
+          color: colors.red,
           actions: this.acoesEventosCalendario,
           resizable: {
             beforeStart: true,
@@ -365,9 +359,9 @@ export class AgendaComponent implements OnInit {
           },
           draggable: true
 
-        };
+        }];
       }
-    });
+    }).catch((error) => { })
   }
 }
 

@@ -1,7 +1,7 @@
 <form #adicionaAgendamento="ngForm">
     <div class="modal-header">
         <h4 class="modal-title">Adiciona Agendamento </h4>
-        <button type="button" class="close" aria-label="Fechar" (click)="salvar()">
+        <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -146,8 +146,8 @@
                 <div class="form-group">
                     <label class="control-label" for="convenioModel">Convênio(*)</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.convenio" #convenioModel="ngModel" id="convenioModel"
-                            name="convenioModel" [required]="tipoAgendamento.value!='Bloqueio'">
+                        <select class="form-control" [(ngModel)]="agendamento.convenio" #convenioModel="ngModel"
+                            id="convenioModel" name="convenioModel" [required]="tipoAgendamento.value!='Bloqueio'">
                             <option *ngFor="let convenio of convenios" [ngValue]="convenio">
                                 {{convenio.nomeConvenio}}
                             </option>
@@ -186,12 +186,12 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" required id="dataAgendamento" name="dataAgendamento"
-                        placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataAgenda"
-                        #dataAgendamento="ngModel" (blur)="formataData($event)">
-                    <div *ngIf="dataAgendamento.invalid"
-                        class="alert alert-danger">
-                        <div *ngIf="dataAgendamento.errors.required"> Data Obrigatória.</div>
-                    </div>
+                        placeholder="dd/mm/aaaa" class="form-control"
+                        [(ngModel)]="dataAgenda" #dataAgendamento="ngModel" (blur)="formataData($event)">
+                </div>
+                <div *ngIf="dataAgendamento.invalid" class="alert alert-danger">
+                    <div *ngIf="dataAgendamento.errors.required"> Data Obrigatória.</div>
+                    <div *ngIf="dataAgendamento.errors.pattern"> Data Inválida.</div>
                 </div>
             </div>
 
@@ -199,13 +199,11 @@
                 <div class="form-group">
                     <label class="control-label" for="horaInicial">Hora Inicial(*)</label>
                     <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaInicial"
-                        name="horaInicial" placeholder="HH:mm" class="form-control" required [(ngModel)]="agendamento.horaInicial"
-                        #horaInicial="ngModel">
-                    <div *ngIf="horaInicial.invalid"
-                        class="alert alert-danger">
-                        <div *ngIf="horaInicial.errors.required"> Horário Obrigatório.
-                        </div>
-                        <div *ngIf="horaInicial.errors.pattern"> Horário Inválido.</div>
+                        name="horaInicial" placeholder="HH:mm" class="form-control" (blur)="concatenaHora($event)"
+                        required [(ngModel)]="horaInicial" #horaInicialModel="ngModel">
+                    <div *ngIf="horaInicialModel.invalid" class="alert alert-danger">
+                        <div *ngIf="horaInicialModel.errors.required"> Horário Obrigatório.</div>
+                        <div *ngIf="horaInicialModel.errors.pattern"> Horário Inválido.</div>
                     </div>
 
                 </div>
@@ -214,12 +212,11 @@
                 <div class="form-group">
                     <label class="control-label" for="horaFinal">Hora Final(*)</label>
                     <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaFinal"
-                        name="horaFinal" placeholder="HH:mm" class="form-control" required [(ngModel)]="agendamento.horaFinal"
-                        #horaFinal="ngModel">
-                    <div *ngIf="horaFinal.invalid" class="alert alert-danger">
-                        <div *ngIf="horaFinal.errors.required"> Horário Obrigatório.
-                        </div>
-                        <div *ngIf="horaFinal.errors.pattern"> Horário Inválido.</div>
+                        name="horaFinal" placeholder="HH:mm" class="form-control" (blur)="concatenaHora($event)"
+                        required [(ngModel)]="horaFinal" #horaFinalModel="ngModel">
+                    <div *ngIf="horaFinalModel.invalid" class="alert alert-danger">
+                        <div *ngIf="horaFinalModel.errors.required"> Horário Obrigatório.</div>
+                        <div *ngIf="horaFinalModel.errors.pattern"> Horário Inválido.</div>
                     </div>
 
                 </div>
@@ -228,7 +225,7 @@
         <div class="row rowcadastro">
             <div class="col-xs-12 col-md-12">
                 <label class="control-label" for="observacao">Observação</label>
-                <textarea  id="observacao" name="observacao" placeholder="observação" class="form-control"
+                <textarea id="observacao" name="observacao" placeholder="observação" class="form-control"
                     [(ngModel)]="agendamento.observacao" #observacao="ngModel"></textarea>
             </div>
         </div>

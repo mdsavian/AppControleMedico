@@ -1,6 +1,5 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
-import { ConvenioService } from "../services/convenio.service";
 
 @Directive({
   selector: '[appValidapf]',
@@ -9,7 +8,7 @@ import { ConvenioService } from "../services/convenio.service";
 
 export class ValidaCpfDirective implements Validator {
 
-  constructor(private convenioService: ConvenioService) { };
+  constructor() { };
   validate(control: AbstractControl): { [key: string]: any } | null {
     
     if (control.value == '')

@@ -15,9 +15,9 @@ export class Agendamento extends Entidade {
     
     paciente:Paciente;
     servicoId:string;
-    dataAgendamento:Date;
-    horaInicial:string;
-    horaFinal:string;
+    dataAgendamentoInicial:Date;
+    dataAgendamentoFinal:Date;
+    
     observacao:string;
     tipoAgendamento:ETipoAgendamento;
     exame:Exame;
