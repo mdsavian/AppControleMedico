@@ -11,6 +11,7 @@ import { ProcedimentoService } from '../services/procedimento.service';
 import { ExameService } from '../services/exame.service';
 import { CirurgiaService } from '../services/cirurgia.service';
 import { Exame } from '../modelos/exame';
+import { Medico } from '../modelos/medico';
 import { Cirurgia } from '../modelos/cirurgia';
 import { Procedimento } from '../modelos/procedimento';
 import { ModalAdicionaModeloDescricaoComponent } from '../shared/modal/modal-adiciona-modelo-descricao.component';
@@ -20,7 +21,9 @@ import { Convenio } from '../modelos/convenio';
 import { ConvenioService } from '../services/convenio.service';
 import { ModeloDescricao } from '../modelos/naoPersistidos/modeloDescricao';
 import { Util } from '../uteis/Util';
-import{ModalErrorComponent} from '../shared/modal/modal-error.component';
+import { ModalErrorComponent } from '../shared/modal/modal-error.component';
+import { ValidadorAgendamento } from './validadorAgendamento';
+import { AgendamentoService } from '../services/agendamento.service';
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
@@ -32,7 +35,8 @@ export class ModalAdicionaAgendamentoComponent {
   agendamento: Agendamento = new Agendamento();
   horaInicial: string;
   horaFinal: string;
-
+  validadorAgendamento = new ValidadorAgendamento();
+  medico: Medico;
   paciente: Paciente = new Paciente;
   tipoAgendamentoEnum = ETipoAgendamento;
   tipoAgenda: string = ETipoAgendamento[1].toString();
@@ -40,33 +44,73 @@ export class ModalAdicionaAgendamentoComponent {
   pacientes: Array<Paciente> = [];
   pacienteSelecionado: string;
   locais: Array<Local> = [];
-  local: Local;
   procedimentos: Array<Procedimento> = [];
-  procedimento: Procedimento;
   exames: Array<Exame> = [];
-  exame: Exame;
   util = new Util();
   dataAgenda = this.util.dataParaString(new Date());
   convenios: Array<Convenio> = [];
   cirurgias: Array<Cirurgia> = [];
-  cirurgia: Cirurgia;
   falhaNaBusca = true;
+  nomeMedico: string; s
 
   @ViewChild('tipoAgendamento', { read: ElementRef }) private tipoAgendamento: ElementRef;
 
-  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal, private localService: LocalService,
+  constructor(public activeModal: NgbActiveModal, private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
     private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) { }
 
   salvar() {
-    //validar se registros preenchidos existem
-    //validar horario data agendamento se pertence a configuração do médico 
 
-    if (this.agendamento.dataAgendamentoInicial == null || this.agendamento.dataAgendamentoFinal == null)
-    {
-      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
+    if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
+      if (this.agendamento.paciente == null) {
+        var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modalErro.componentInstance.mensagemErro = "Paciente inválido.";
+        return;
+      }
+      if (this.agendamento.dataAgendamentoInicial == null || this.agendamento.dataAgendamentoFinal == null) {
+        var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
+        return;
+      }
     }
+
+    var erroHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
+      this.agendamento.dataAgendamentoInicial, this.agendamento.dataAgendamentoFinal, this.agendamento.tipoAgendamento);
+    if (erroHoras != "") {
+      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modalErro.componentInstance.mensagemErro = erroHoras;
+      return;
+    }
+
+    switch (this.agendamento.tipoAgendamento) {
+      case ETipoAgendamento.Bloqueio.valueOf(): {
+        this.agendamento.cor = "#EE0000"; //red2
+        break;
+      }
+      case ETipoAgendamento.Cirurgia.valueOf():{
+        this.agendamento.cor = this.agendamento.cirurgia.cor;
+        break;
+      }
+      case ETipoAgendamento.Consulta.valueOf():{
+        this.agendamento.cor = "#A2B5CD"; // LightSteelBlue3
+        break;
+      }
+      case ETipoAgendamento.Exame.valueOf():{
+        this.agendamento.cor = this.agendamento.exame.cor;
+        break;
+      }
+      case ETipoAgendamento.Procedimento.valueOf():{
+        this.agendamento.cor = this.agendamento.procedimento.corFundo;
+        break;
+      }
+      case ETipoAgendamento.Retorno.valueOf():{
+        this.agendamento.cor = "#CAE1FF"; //LightSteelBlue1
+        break;
+      }
+    }
+
+    console.log(this.agendamento.cor);
+
     this.activeModal.close(this.agendamento);
   }
 
@@ -75,22 +119,26 @@ export class ModalAdicionaAgendamentoComponent {
   }
 
   public formataData(e): void {
-    if (e.target.id == "dataAgendamento") {
+
+    if (e.target.id == "dataAgendamento" && e.target.value.length == 10) {
       var data = this.util.stringParaData(e.target.value);
       this.agendamento.dataAgendamentoInicial.setDate(data.getDate());
       this.agendamento.dataAgendamentoFinal.setDate(data.getDate());
+
     }
   }
 
   public concatenaHora(event): void {
+    if (event.target.value.toString().length == 5) {
 
-    if (event.target.id == "horaInicial") {
-      if (this.agendamento.dataAgendamentoInicial != null)
-        this.agendamento.dataAgendamentoInicial.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
-    }
-    else if (event.target.id == "horaFinal") {
-      if (this.agendamento.dataAgendamentoFinal != null)
-        this.agendamento.dataAgendamentoFinal.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
+      if (event.target.id == "horaInicial") {
+        if (this.agendamento.dataAgendamentoInicial != null)
+          this.agendamento.dataAgendamentoInicial.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
+      }
+      else if (event.target.id == "horaFinal") {
+        if (this.agendamento.dataAgendamentoFinal != null)
+          this.agendamento.dataAgendamentoFinal.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
+      }
     }
   }
 
@@ -98,6 +146,8 @@ export class ModalAdicionaAgendamentoComponent {
     this.tipoAgendamento.nativeElement.focus();
     this.agendamento.dataAgendamentoInicial = new Date();
     this.agendamento.dataAgendamentoFinal = new Date();
+
+    this.nomeMedico = this.medico.nomeCompleto;
     this.buscarModelosNovoAgendamento();
   }
 
@@ -119,7 +169,13 @@ export class ModalAdicionaAgendamentoComponent {
 
   selecionaTipoAgendamento(value: string) {
     this.agendamento.tipoAgendamento = ETipoAgendamento[value];
+
+    this.agendamento.procedimento = null;
+    this.agendamento.cirurgia = null;
+    this.agendamento.local = null;
+    this.agendamento.exame = null;
   }
+
   adicionaPaciente() {
     var modalNovoPaciente = this.modalService.open(ModalCadastroPacienteComponent, { size: 'lg' })
 
@@ -168,10 +224,8 @@ export class ModalAdicionaAgendamentoComponent {
                 this.convenios.push(convenioNovo);
 
                 this.convenioService.salvar(convenioNovo).subscribe(convenioCadastrado => {
-                  this.agendamento.convenio = convenioCadastrado;
+                  this.agendamento.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
                 });
-
-                this.agendamento.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
               }
             }
           }).catch((error) => { })
@@ -189,19 +243,16 @@ export class ModalAdicionaAgendamentoComponent {
             var localExistente = this.locais.find(c => c.descricao == local.descricao);
             if (localExistente != null) {
               this.agendamento.local = localExistente;
-              this.local = localExistente;
             }
             else {
 
-              this.local = new Local();
-              this.local.descricao = local.descricao;
-              this.locais.push(this.local);
+              var localNovo = new Local();
+              localNovo.descricao = local.descricao;
+              this.locais.push(localNovo);
 
-              this.localService.salvar(this.local).subscribe(localCadastrado => {
-                this.agendamento.local = localCadastrado;
+              this.localService.salvar(localNovo).subscribe(localCadastrado => {
+                this.agendamento.local = this.locais.find(c => c.descricao == localCadastrado.descricao);
               });
-
-              this.local = this.locais.find(c => c.descricao == local.descricao);
             }
           }
         }).catch((error) => { })
@@ -219,18 +270,18 @@ export class ModalAdicionaAgendamentoComponent {
 
             if (cirurgiaExistente != null) {
               this.agendamento.cirurgia = cirurgiaExistente;
-              this.cirurgia = cirurgiaExistente;
+
             }
             else {
 
-              this.cirurgia = new Cirurgia();
-              this.cirurgia.descricao = cirurgia.descricao;
-              this.cirurgia.cor = cirurgia.cor;
-              this.cirurgias.push(this.cirurgia);
+              var cirurgiaNova = new Cirurgia();
+              cirurgiaNova.descricao = cirurgia.descricao;
+              cirurgiaNova.cor = cirurgia.cor;
+              this.cirurgias.push(cirurgiaNova);
 
-              this.cirurgia = this.cirurgias.find(c => c.descricao == cirurgia.descricao);
-              this.cirurgiaService.salvar(this.cirurgia).subscribe(cirurgiaCadastrado => {
-                this.agendamento.cirurgia = cirurgiaCadastrado;
+              this.cirurgiaService.salvar(cirurgiaNova).subscribe(cirurgiaCadastrado => {
+                this.agendamento.cirurgia = this.cirurgias.find(c => c.descricao == cirurgiaCadastrado.descricao);
+                ;
               });
             }
           }
@@ -249,18 +300,16 @@ export class ModalAdicionaAgendamentoComponent {
 
             if (procedimentoExistente != null) {
               this.agendamento.procedimento = procedimentoExistente;
-              this.procedimento = procedimentoExistente;
             }
             else {
-              this.procedimento = new Cirurgia();
-              this.procedimento.descricao = procedimento.descricao;
-              this.procedimento.cor = procedimento.cor;
+              var procedimentoNovo = new Procedimento();
+              procedimentoNovo.descricao = procedimento.descricao;
+              procedimentoNovo.corFundo = procedimento.cor;
 
-              this.procedimentos.push(this.procedimento);
-              this.procedimento = this.procedimentos.find(c => c.descricao == procedimento.descricao);
+              this.procedimentos.push(procedimentoNovo);
 
-              this.procedimentoService.salvar(this.procedimento).subscribe(procedimentoCadastrado => {
-                this.agendamento.procedimento = procedimentoCadastrado;
+              this.procedimentoService.salvar(procedimentoNovo).subscribe(procedimentoCadastrado => {
+                this.agendamento.procedimento = this.procedimentos.find(c => c.descricao == procedimentoCadastrado.descricao);
               })
             }
           }
@@ -279,18 +328,16 @@ export class ModalAdicionaAgendamentoComponent {
 
             if (exameExistente != null) {
               this.agendamento.exame = exameExistente;
-              this.exame = exameExistente;
             }
             else {
-              this.exame = new Cirurgia();
-              this.exame.descricao = exame.descricao;
-              this.exame.cor = exame.cor;
+              var exameNovo = new Exame();
+              exameNovo.descricao = exame.descricao;
+              exameNovo.cor = exame.cor;
 
-              this.exames.push(this.exame);
-              this.exame = this.exames.find(c => c.descricao == exame.descricao);
+              this.exames.push(exameNovo);
 
-              this.exameService.salvar(this.exame).subscribe(exameCadastrado => {
-                this.agendamento.exame = exameCadastrado;
+              this.exameService.salvar(exameNovo).subscribe(exameCadastrado => {
+                this.agendamento.exame = this.exames.find(c => c.descricao == exameCadastrado.descricao);
               })
             }
           }
@@ -302,7 +349,6 @@ export class ModalAdicionaAgendamentoComponent {
 
   buscaPaciente = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(100),
       distinctUntilChanged(),
       map(term => {
 

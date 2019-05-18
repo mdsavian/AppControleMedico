@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, ViewEncapsulation, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, ViewEncapsulation, Component, OnInit, NgModuleFactoryLoader, ɵbypassSanitizationTrustStyle } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
@@ -9,16 +9,13 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoginService } from '../services/login.service';
 import { MedicoService } from '../services/medico.service';
-import { PacienteService } from '../services/paciente.service';
-import { ProcedimentoService } from '../services/procedimento.service';
-import { ExameService } from '../services/exame.service';
-import { LocalService } from '../services/local.service';
-import { CirurgiaService } from '../services/cirurgia.service';
 import { Medico } from '../modelos/medico';
 import { Router } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component';
 import { Agendamento } from '../modelos/agendamento';
 import { Util } from '../uteis/Util';
+import { AgendamentoService } from '../services/agendamento.service';
+import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 
 const colors: any = {
   red: {
@@ -61,10 +58,10 @@ export class AgendaComponent implements OnInit {
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
+  msgteste: string;
 
-  constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
-    private medicoService: MedicoService, private router: Router, private pacienteService: PacienteService,
-    private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService, private procedimentoService: ProcedimentoService
+  constructor(private agendamentoService: AgendamentoService, private modalService: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
+    private medicoService: MedicoService, private router: Router
   ) {
   }
 
@@ -83,7 +80,7 @@ export class AgendaComponent implements OnInit {
 
   ajustarParametrosCalendario() {
 
-    if (this.medico != null && this.medico.configuracaoAgenda != null) {
+    if (this.medico != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
 
       var configuracaoAgenda = this.medico.configuracaoAgenda;
       this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
@@ -150,6 +147,7 @@ export class AgendaComponent implements OnInit {
       id: this.eventos.length,
       title: 'Novo Agendamento',
       start: segment.date,
+      actions: this.acoesEventosCalendario,
       meta: {
         tmpEvent: true
       },
@@ -189,18 +187,22 @@ export class AgendaComponent implements OnInit {
         if (newEnd > segment.date && newEnd < endOfView) {
 
           console.log("new ewn", newEnd);
+          //validarHoraIntervalo
           dragToSelectEvent.end = newEnd;
+          //
         }
         this.refreshPage();
       });
 
-      console.log("drag end ",dragToSelectEvent, dragToSelectEvent.end);
+    console.log("drag end ", dragToSelectEvent, dragToSelectEvent.end);
 
     return dragToSelectEvent;
   }
 
   startDragToCreate(segment: DayViewHourSegment, mouseDownEvent: MouseEvent, segmentElement: HTMLElement) {
     var evento = this.criarEventoNoCalendarioClicado(segment, segmentElement);
+    console.log("evento criado", evento);
+
     if (this.validaHoraIntervalo(segment)) {
       this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
         result => {
@@ -329,29 +331,17 @@ export class AgendaComponent implements OnInit {
 
   adicionarNovoAgendamento() {
     var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg" });
-
-    modalAdicionaAgendamento.result.then((agendamento:Agendamento) => {
+    modalAdicionaAgendamento.componentInstance.medico = this.medico;
+    modalAdicionaAgendamento.result.then((agendamento: Agendamento) => {
       console.log(agendamento);
       if (agendamento != null) {
-
-        // console.log(agendamento.dataAgendamento, agendamento.horaInicial, agendamento.horaFinal);
-        // var dataHoraInicial = this.util.dataHoraParaString(agendamento.dataAgendamento, agendamento.horaInicial);
-        // var dataHoraFinal = this.util.dataHoraParaString(agendamento.dataAgendamento, agendamento.horaFinal);
-
-        // console.log("eitcha",dataHoraInicial, dataHoraFinal);
-
-        var cor:any;
-
-        switch (agendamento.tipoAgendamento)
-        {
-
-        }
+        
         this.eventos = [...this.eventos,
-          {
+        {
           start: agendamento.dataAgendamentoInicial,
           end: agendamento.dataAgendamentoFinal,
-          title: 'Evento teste da data do xurupita',
-          color: colors.red,
+          title: agendamento.paciente.nomeCompleto + "  " + agendamento.dataAgendamentoInicial.toTimeString(),
+          color: {primary: agendamento.cor, secondary: agendamento.cor},
           actions: this.acoesEventosCalendario,
           resizable: {
             beforeStart: true,

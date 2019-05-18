@@ -17,20 +17,29 @@
                       *ngIf="descricao.invalid && (descricao.dirty || descricao.touched) && (descricao.errors?.validaDescricaoProcedimento)"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
-                      <div *ngIf="descricao.errors?.validaDescricaoProcedimento"> Já existe um procedimento com esta descrição
+                      <div *ngIf="descricao.errors?.validaDescricaoProcedimento"> Já existe um procedimento com esta
+                        descrição
                         cadastrada. </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-xs-6 col-md-3">
                   <div class="form-group">
-                    <label class="control-label" for="cor">Cor</label>
-                    <input type="color" required class="form-control" [(ngModel)]="procedimento.cor" #cor="ngModel" id="cor"
-                      name="cor">
-                    <div
-                      *ngIf="cor.invalid && (cor.dirty || cor.touched)"
-                      class="alert alert-danger">
-                      <div *ngIf="cor.errors.required"> Cor Obrigatória. </div>
+                    <label class="control-label" for="corFundo">Cor Fundo</label>
+                    <input type="color" required class="form-control" [(ngModel)]="procedimento.corFundo"
+                      #corFundo="ngModel" id="corFundo" name="corFundo">
+                    <div *ngIf="corFundo.invalid && (corFundo.dirty || corFundo.touched)" class="alert alert-danger">
+                      <div *ngIf="corFundo.errors.required"> Cor Fundo Obrigatória. </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-6 col-md-3">
+                  <div class="form-group">
+                    <label class="control-label" for="corLetra">Cor Letra</label>
+                    <input type="color" required class="form-control" [(ngModel)]="procedimento.corLetra"
+                      #corLetra="ngModel" id="corLetra" name="corLetra">
+                    <div *ngIf="corLetra.invalid && (corLetra.dirty || corLetra.touched)" class="alert alert-danger">
+                      <div *ngIf="corLetra.errors.required"> Cor Letra Obrigatória. </div>
                     </div>
                   </div>
                 </div>

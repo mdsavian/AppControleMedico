@@ -17,7 +17,7 @@ export class CadastroExameComponent implements OnInit, AfterViewInit {
   mensagemErro: string;
   id: string;
   exame: Exame = {
-    id: "", descricao: "",cor:""
+    id: "", descricao: "", corFundo:"#000000", corLetra:"#ffffff"
   };
 
   constructor(private exameService: ExameService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {

@@ -17,7 +17,7 @@ export class CadastroCirurgiaComponent implements OnInit, AfterViewInit {
   mensagemErro: string;
   id: string;
   cirurgia: Cirurgia = {
-    id: "", descricao: "",cor:""
+    id: "", descricao: "", corFundo:"#000000", corLetra:"#ffffff"
   };
 
   constructor(private cirurgiaService: CirurgiaService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {

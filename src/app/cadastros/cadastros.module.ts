@@ -10,6 +10,11 @@ import { UteisModule } from '../uteis/uteis.module'
 import { CadastrosRoutes } from './cadastros.routing';
 
 import { ValidaNomeConvenioDirective } from '../validadores/valida-nome-convenio.directive';
+import { ValidaDescricaoCirurgiaDirective } from '../validadores/valida-descricao-cirurgia.directive';
+import { ValidaDescricaoLocalDirective } from '../validadores/valida-descricao-local.directive';
+import { ValidaDescricaoServicoDirective } from '../validadores/valida-descricao-procedimento.directive';
+import { ValidaDescricaoExameDirective } from '../validadores/valida-descricao-exame.directive';
+import { ValidaDescricaoEspecialidadeDirective } from '../validadores/valida-descricao-especialidade.directive';
 import { ValidaNomeOficioDirective } from '../validadores/valida-nome-oficio.directive';
 import { ValidaCpfDirective } from '../validadores/valida-cpf.directive';
 
@@ -31,6 +36,6 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
   declarations: [CadastroLocalComponent,CadastroCirurgiaComponent,CadastroExameComponent,CadastroPacienteComponent, ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent,
-    ValidaNomeConvenioDirective, ValidaCpfDirective, ValidaNomeOficioDirective]
+    ValidaNomeConvenioDirective, ValidaCpfDirective, ValidaNomeOficioDirective,ValidaDescricaoEspecialidadeDirective,ValidaDescricaoExameDirective,ValidaDescricaoServicoDirective,ValidaDescricaoCirurgiaDirective,ValidaDescricaoLocalDirective,]
 })
 export class CadastrosModule { }

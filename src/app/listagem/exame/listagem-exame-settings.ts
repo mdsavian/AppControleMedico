@@ -8,8 +8,14 @@ export const settings = {
       title: 'Descrição',
       filter: true
     },
-    cor: {
-      title: 'Cor',
+    corFundo: {
+      title: 'Cor Fundo',
+      type: "custom",
+      filter: false,
+      renderComponent: CorComponent,
+    },
+    corLetra: {
+      title: 'Cor Letra',
       type: "custom",
       filter: false,
       renderComponent: CorComponent,

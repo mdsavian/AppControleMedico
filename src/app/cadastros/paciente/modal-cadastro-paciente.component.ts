@@ -20,6 +20,7 @@ export class ModalCadastroPacienteComponent {
   convenio: Convenio;
   convenios: Array<Convenio>;
   nomeCompletoModel: string;
+  dataNasci:string;
 
   constructor(public activeModal: NgbActiveModal, private convenioService: ConvenioService, private modalService: NgbModal) { }
 

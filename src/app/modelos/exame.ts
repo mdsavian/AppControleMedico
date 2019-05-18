@@ -6,8 +6,9 @@ export class Exame extends Entidade {
     super();
   }
 
-  descricao:string;
-  cor:string;
+  descricao:string; 
+  corFundo:string;
+  corLetra:string;
 
   
 }

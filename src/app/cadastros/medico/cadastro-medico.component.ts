@@ -75,6 +75,11 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     this.medico.dataNascimento = this.util.stringParaData(e.target.value);
   }
 
+  configurarAgendaMedico() {
+    if (this.medico.id != '')
+      this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
+  }
+
   public ngAfterViewInit(): void {
 
     this.nomeCompleto.nativeElement.focus();

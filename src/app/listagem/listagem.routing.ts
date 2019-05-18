@@ -39,9 +39,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemprocedimento',
         component: ListagemProcedimentoComponent,
         data: {
-          title: 'Serviço',
+          title: 'Procedimento',
           urls: [
-            { title: 'Serviço' }
+            { title: 'Procedimento' }
           ]
         }
       },

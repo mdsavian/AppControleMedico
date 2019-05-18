@@ -17,7 +17,7 @@ export class CadastroProcedimentoComponent implements OnInit, AfterViewInit {
   mensagemErro: string;
   id: string;
   procedimento: Procedimento = {
-    id: "", descricao: "", cor:""
+    id: "", descricao: "", corFundo:"#000000", corLetra:"#ffffff"
   };
 
   constructor(private procedimentoService: ProcedimentoService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {

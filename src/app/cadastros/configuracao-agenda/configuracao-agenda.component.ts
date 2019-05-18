@@ -38,13 +38,16 @@ export class ConfiguracaoAgendaComponent implements OnInit {
     for (var i = 0; i < 7; i++) {
       this.configuracaoAgendaDias.push(new ConfiguracaoAgendaDias(i));
     }
+    
     var id = this.route.snapshot.paramMap.get('id');
     if (id != null) {
       this.medicoService.buscarPorId(id).subscribe(dado => {
         this.medico = dado;
         this.medicoSelecionado = dado.nomeCompleto;
-        this.configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias;
-        this.configMinutos = EConfiguracaoMinutosAgenda[this.medico.configuracaoAgenda.configuracaoMinutosAgenda];
+        if (this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
+          this.configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias;
+          this.configMinutos = EConfiguracaoMinutosAgenda[this.medico.configuracaoAgenda.configuracaoMinutosAgenda];
+        }
       });
     }
 
@@ -112,9 +115,18 @@ export class ConfiguracaoAgendaComponent implements OnInit {
 
   selecionaMedico(item: any) {
     var medico = this.medicos.find(c => c.nomeCompleto === item.item);
-    if (medico != null && medico.configuracaoAgenda.configuracaoAgendaDias != null) {
+    if (medico != null && medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
       this.medico = medico;
       this.configuracaoAgendaDias = medico.configuracaoAgenda.configuracaoAgendaDias;
+      this.configMinutos = EConfiguracaoMinutosAgenda[this.medico.configuracaoAgenda.configuracaoMinutosAgenda];
+
+    }
+    else
+    {
+      for (var i = 0; i < 7; i++) {
+        this.configuracaoAgendaDias.push(new ConfiguracaoAgendaDias(i));
+      }
+      this.configMinutos = EConfiguracaoMinutosAgenda[3].toString();
     }
   }
 

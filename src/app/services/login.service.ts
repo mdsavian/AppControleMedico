@@ -30,6 +30,7 @@ export class LoginService {
   }
 
   public login(usuario: Usuario) {
+    console.log("opa");
     return this.http.post<Usuario>(this.accessPointUrl, usuario, {headers: this.headers}).pipe(map(usuario => {
       if (usuario != null && usuario.ativo) {
         localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))

@@ -15,7 +15,7 @@ import { UteisModule } from '../uteis/uteis.module'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
 
-class CustomDateFormatter extends CalendarDateFormatter {
+export class CustomDateFormatter extends CalendarDateFormatter {
 
   public dayViewHour({ date, locale }: DateFormatterParams): string {
     return new Intl.DateTimeFormat('ca', {

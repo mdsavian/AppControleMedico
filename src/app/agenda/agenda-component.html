@@ -1,3 +1,4 @@
+
 <div class="row text-center">
   <div class="col-md-3">
     <div class="btn-group">
@@ -16,7 +17,7 @@
     </div>
   </div>
   <div class="col-md-3">
-    <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'pt-br':weekStartsOn:diasExcluidos}}</h3>
+    <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'pt-br'}}</h3>
   </div>
   <div class="col-md-3">
     <div class="btn-group">
@@ -74,7 +75,6 @@
     </div>
   </ng-template>
 </div>
-
 <ng-template #modalConsultaEmHorarioIntervalo id="modalConsultaEmHorarioIntervalo" let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Horário Intervalo</h4>

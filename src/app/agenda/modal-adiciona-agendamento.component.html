@@ -1,6 +1,6 @@
 <form #adicionaAgendamento="ngForm">
     <div class="modal-header">
-        <h4 class="modal-title">Adiciona Agendamento </h4>
+        <h4 class="modal-title">Adiciona Agendamento - {{nomeMedico}}</h4>
         <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -100,7 +100,7 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoCirurgia">Cirurgia</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="cirurgia" #tipoCirurgia="ngModel" id="tipoCirurgia"
+                        <select class="form-control" [(ngModel)]="agendamento.cirurgia" #tipoCirurgia="ngModel" id="tipoCirurgia"
                             name="tipoCirurgia" [required]="tipoAgendamento.value=='Cirurgia'">
                             <option *ngFor="let cirurgia of cirurgias" [ngValue]="cirurgia">
                                 {{cirurgia.descricao}}
@@ -235,5 +235,5 @@
     <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
     <ng-template #tipInvalidos>Verifique os campos inválidos</ng-template>
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-        [disabled]="!adicionaAgendamento.form.valid" type="submit">Salvar</button>
+        [disabled]="(!adicionaAgendamento.form.valid || falhaNaBusca) && tipoAgendamento.value!='Bloqueio'" type="submit">Salvar</button>
 </div>

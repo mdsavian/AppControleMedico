@@ -7,5 +7,6 @@ export class Procedimento extends Entidade {
     }
     
     descricao:string;
-    cor:string;
+    corFundo:string;
+    corLetra:string;
 }
