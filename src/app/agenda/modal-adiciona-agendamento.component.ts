@@ -60,58 +60,63 @@ export class ModalAdicionaAgendamentoComponent {
     private pacienteService: PacienteService, private convenioService: ConvenioService) { }
 
   salvar() {
-
+    
+    this.agendamento.medico = this.medico;
     if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
       if (this.agendamento.paciente == null) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Paciente inválido.";
         return;
       }
-      if (this.agendamento.dataAgendamentoInicial == null || this.agendamento.dataAgendamentoFinal == null) {
+      if (this.agendamento.dataAgendamento == null) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
         return;
       }
     }
 
-    var erroHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
-      this.agendamento.dataAgendamentoInicial, this.agendamento.dataAgendamentoFinal, this.agendamento.tipoAgendamento);
-    if (erroHoras != "") {
+    var validaHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
+      this.util.stringParaData(this.agendamento.dataAgendamento), this.agendamento.horaInicial, this.agendamento.horaFinal,  this.agendamento.tipoAgendamento);
+    if (validaHoras != "") {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modalErro.componentInstance.mensagemErro = erroHoras;
+      modalErro.componentInstance.mensagemErro = validaHoras;
       return;
     }
 
     switch (this.agendamento.tipoAgendamento) {
       case ETipoAgendamento.Bloqueio.valueOf(): {
-        this.agendamento.cor = "#EE0000"; //red2
+        this.agendamento.corFundo = "#EE0000"; 
+        this.agendamento.corLetra = "#EE0000"; 
         break;
       }
-      case ETipoAgendamento.Cirurgia.valueOf():{
-        this.agendamento.cor = this.agendamento.cirurgia.cor;
+      case ETipoAgendamento.Cirurgia.valueOf(): {
+        this.agendamento.corFundo = this.agendamento.cirurgia.corFundo;
+        this.agendamento.corLetra = this.agendamento.cirurgia.corLetra;
         break;
       }
-      case ETipoAgendamento.Consulta.valueOf():{
-        this.agendamento.cor = "#A2B5CD"; // LightSteelBlue3
+      case ETipoAgendamento.Consulta.valueOf(): {
+        this.agendamento.corFundo = "#5F9EA0";
+        this.agendamento.corLetra = "#EFF5F5";
         break;
       }
-      case ETipoAgendamento.Exame.valueOf():{
-        this.agendamento.cor = this.agendamento.exame.cor;
+      case ETipoAgendamento.Exame.valueOf(): {
+        this.agendamento.corFundo = this.agendamento.exame.corFundo;
+        this.agendamento.corLetra = this.agendamento.exame.corLetra;
         break;
       }
-      case ETipoAgendamento.Procedimento.valueOf():{
-        this.agendamento.cor = this.agendamento.procedimento.corFundo;
+      case ETipoAgendamento.Procedimento.valueOf(): {
+        this.agendamento.corFundo = this.agendamento.procedimento.corFundo;
+        this.agendamento.corLetra = this.agendamento.procedimento.corLetra;
         break;
       }
-      case ETipoAgendamento.Retorno.valueOf():{
-        this.agendamento.cor = "#CAE1FF"; //LightSteelBlue1
+      case ETipoAgendamento.Retorno.valueOf(): {
+        this.agendamento.corFundo = "#CAE1FF"; 
+        this.agendamento.corLetra = "#F4F9FF"; 
         break;
       }
     }
 
-    console.log(this.agendamento.cor);
-
-    this.activeModal.close(this.agendamento);
+    this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => this.activeModal.close(novoAgendamento));
   }
 
   fechar() {
@@ -121,31 +126,15 @@ export class ModalAdicionaAgendamentoComponent {
   public formataData(e): void {
 
     if (e.target.id == "dataAgendamento" && e.target.value.length == 10) {
-      var data = this.util.stringParaData(e.target.value);
-      this.agendamento.dataAgendamentoInicial.setDate(data.getDate());
-      this.agendamento.dataAgendamentoFinal.setDate(data.getDate());
+      
+      this.agendamento.dataAgendamento = e.target.value;
 
     }
   }
-
-  public concatenaHora(event): void {
-    if (event.target.value.toString().length == 5) {
-
-      if (event.target.id == "horaInicial") {
-        if (this.agendamento.dataAgendamentoInicial != null)
-          this.agendamento.dataAgendamentoInicial.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
-      }
-      else if (event.target.id == "horaFinal") {
-        if (this.agendamento.dataAgendamentoFinal != null)
-          this.agendamento.dataAgendamentoFinal.setHours(parseInt(event.target.value.toString().substring(0, 2)), parseInt(event.target.value.toString().substring(3, 5)));
-      }
-    }
-  }
-
+  
   ngOnInit() {
     this.tipoAgendamento.nativeElement.focus();
-    this.agendamento.dataAgendamentoInicial = new Date();
-    this.agendamento.dataAgendamentoFinal = new Date();
+    this.agendamento.dataAgendamento = new Date().toDateString();
 
     this.nomeMedico = this.medico.nomeCompleto;
     this.buscarModelosNovoAgendamento();
@@ -252,6 +241,8 @@ export class ModalAdicionaAgendamentoComponent {
 
               this.localService.salvar(localNovo).subscribe(localCadastrado => {
                 this.agendamento.local = this.locais.find(c => c.descricao == localCadastrado.descricao);
+                this.agendamento.corFundo = local.corFundo
+                this.agendamento.corLetra = local.corLetra
               });
             }
           }
@@ -276,11 +267,14 @@ export class ModalAdicionaAgendamentoComponent {
 
               var cirurgiaNova = new Cirurgia();
               cirurgiaNova.descricao = cirurgia.descricao;
-              cirurgiaNova.cor = cirurgia.cor;
+              cirurgiaNova.corFundo = cirurgia.corFundo;
+              cirurgiaNova.corLetra = cirurgia.corLetra;
               this.cirurgias.push(cirurgiaNova);
 
               this.cirurgiaService.salvar(cirurgiaNova).subscribe(cirurgiaCadastrado => {
                 this.agendamento.cirurgia = this.cirurgias.find(c => c.descricao == cirurgiaCadastrado.descricao);
+                this.agendamento.corFundo = cirurgia.corFundo
+                this.agendamento.corLetra = cirurgia.corLetra
                 ;
               });
             }
@@ -304,12 +298,15 @@ export class ModalAdicionaAgendamentoComponent {
             else {
               var procedimentoNovo = new Procedimento();
               procedimentoNovo.descricao = procedimento.descricao;
-              procedimentoNovo.corFundo = procedimento.cor;
+              procedimentoNovo.corFundo = procedimento.corFundo;
+              procedimentoNovo.corLetra = procedimento.corLetra;
 
               this.procedimentos.push(procedimentoNovo);
 
               this.procedimentoService.salvar(procedimentoNovo).subscribe(procedimentoCadastrado => {
                 this.agendamento.procedimento = this.procedimentos.find(c => c.descricao == procedimentoCadastrado.descricao);
+                this.agendamento.corFundo = procedimento.corFundo
+                this.agendamento.corLetra = procedimento.corLetra
               })
             }
           }
@@ -332,12 +329,15 @@ export class ModalAdicionaAgendamentoComponent {
             else {
               var exameNovo = new Exame();
               exameNovo.descricao = exame.descricao;
-              exameNovo.cor = exame.cor;
+              exameNovo.corFundo = exame.corFundo;
+              exameNovo.corLetra = exame.corLetra;
 
               this.exames.push(exameNovo);
 
               this.exameService.salvar(exameNovo).subscribe(exameCadastrado => {
                 this.agendamento.exame = this.exames.find(c => c.descricao == exameCadastrado.descricao);
+                this.agendamento.corFundo = exame.corFundo
+                this.agendamento.corLetra = exame.corLetra
               })
             }
           }

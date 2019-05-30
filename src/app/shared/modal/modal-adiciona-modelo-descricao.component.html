@@ -14,13 +14,22 @@
     </div>
 
     <div class="form-group" [hidden]="!mostrarCor">
-        <label class="control-label" for="cor">Cor</label>
-        <input type="color" [required]="mostrarCor" class="form-control" [(ngModel)]="modeloDescricao.cor"
-            #cor="ngModel" id="cor" name="cor">
-        <div *ngIf="cor.invalid && (cor.dirty || cor.touched)" class="alert alert-danger">
-            <div *ngIf="cor.errors.required"> Cor Obrigatória. </div>
+        <label class="control-label" for="corFundo">Cor Fundo</label>
+        <input type="color" [required]="mostrarCor" class="form-control" [(ngModel)]="modeloDescricao.corFundo"
+            #corFundo="ngModel" id="corFundo" name="corFundo">
+        <div *ngIf="corFundo.invalid && (corFundo.dirty || corFundo.touched)" class="alert alert-danger">
+            <div *ngIf="corFundo.errors.required"> Cor Fundo Obrigatória. </div>
         </div>
     </div>
+
+    <div class="form-group" [hidden]="!mostrarCor">
+            <label class="control-label" for="corLetra">Cor Letra</label>
+            <input type="color" [required]="mostrarCor" class="form-control" [(ngModel)]="modeloDescricao.corLetra"
+                #corLetra="ngModel" id="corLetra" name="corLetra">
+            <div *ngIf="corLetra.invalid && (corLetra.dirty || corLetra.touched)" class="alert alert-danger">
+                <div *ngIf="corLetra.errors.required"> Cor Letra Obrigatória. </div>
+            </div>
+        </div>
 </div>
 <div class="modal-footer">
     <button style="width:40%" (click)="fechar()" id="btnCancelar" class="btn btn-rounded btn-warning">Cancelar</button>

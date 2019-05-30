@@ -32,7 +32,7 @@
   <div class="col-md-3">
     <div class="btn-group">
       <div class="btn btn-warning" (click)=configurarAgendaMedico()> Configurar Agenda </div>
-      <div class="btn btn-success" (click)="adicionarNovoAgendamento()">Nova Consulta</div>
+      <div class="btn btn-success" (click)="adicionarNovoAgendamentoCliqueBotao()">Nova Consulta</div>
     </div>
   </div>
 </div>
@@ -49,7 +49,7 @@
   <ng-template #weekViewHourSegmentTemplate let-segment="segment" let-locale="locale" let-segmentHeight="segmentHeight"
     let-isTimeLabel="isTimeLabel">
     <div #segmentElement class="cal-hour-segment hora-desabilitada"
-      [class.hora-desabilitada]="validaHoraIntervalo(segment)" [style.height.px]="segmentHeight"
+      [class.hora-desabilitada]="validaHoraIntervaloComponente(segment.date)" [style.height.px]="segmentHeight"
       [class.cal-hour-start]="true" [class.cal-after-hour-start]="false" [ngClass]="segment.cssClass"
       (mousedown)="startDragToCreate(segment, $event, segmentElement)">
       <div class="cal-time" *ngIf="isTimeLabel">
@@ -67,7 +67,7 @@
   <ng-template #dayViewHourSegmentTemplate let-segment="segment" let-locale="locale" let-segmentHeight="segmentHeight">
     <div #segmentElement class="cal-hour-segment hora-desabilitada" [style.height.px]="segmentHeight"
       [class.cal-hour-start]="true" [class.cal-after-hour-start]="false"
-      [class.hora-desabilitada]="validaHoraIntervalo(segment)" [ngClass]="segment.cssClass"
+      [class.hora-desabilitada]="validaHoraIntervaloComponente(segment.date)" [ngClass]="segment.cssClass"
       (mousedown)="startDragToCreate(segment, $event, segmentElement)">
       <div class="cal-time">
         {{ segment.date | calendarDate:'dayViewHour':locale }}
@@ -75,6 +75,7 @@
     </div>
   </ng-template>
 </div>
+
 <ng-template #modalConsultaEmHorarioIntervalo id="modalConsultaEmHorarioIntervalo" let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Horário Intervalo</h4>
@@ -89,4 +90,20 @@
     <button type="button" class="btn btn-outline-secondary" (click)="c('Cancelar')">Cancel</button>
     <button type="button" class="btn btn-warning" (click)="c('Ok')">Ok</button>
   </div>  
+</ng-template>
+
+<ng-template #modalExcluir id="modalExcluir" let-c="close" let-d="dismiss">
+  <div class="modal-header">
+      <h4 class="modal-title">Excluir Registro</h4>
+      <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+      <p>Deseja excluir o registro?</p>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="c('Sim')">Sim</button>
+      <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
+  </div>
 </ng-template>

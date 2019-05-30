@@ -1,4 +1,5 @@
 export class ModeloDescricao {
     descricao: string;
-    cor: string;
+    corFundo: string;
+    corLetra: string;
 }

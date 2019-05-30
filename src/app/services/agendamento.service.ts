@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Agendamento } from '../modelos/agendamento'
 import { environment } from '../../environments/environment';
 
@@ -24,12 +24,17 @@ export class AgendamentoService {
   }
 
   public salvar(agendamento: Agendamento) {
-    console.log(agendamento);
     return this.http.post<Agendamento>(this.accessPointUrl, agendamento);
   }
 
   public buscarPorId(agendamentoId: string) {
     return this.http.get<Agendamento>(this.accessPointUrl + "buscarPorId/" + agendamentoId);
+  }
+
+  public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario:string) {
+
+    let parametros = new HttpParams().set("medicoId",medicoId).set("data", data).set("tipoCalendario",tipoCalendario);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
   }
 
   public Excluir(agendamentoId) {

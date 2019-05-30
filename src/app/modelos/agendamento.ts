@@ -12,11 +12,13 @@ export class Agendamento extends Entidade {
 
     constructor() {
         super();
-        this.cor = "#5F9EA0";
+        this.corFundo = "#5F9EA0";
+        this.corLetra = "#EFF5F5";
     }
        
-    dataAgendamentoInicial:Date;
-    dataAgendamentoFinal:Date;    
+    dataAgendamento:string;
+    horaInicial:string;
+    horaFinal:string;
     observacao:string;
     paciente:Paciente;
     medico:Medico;
@@ -26,5 +28,6 @@ export class Agendamento extends Entidade {
     cirurgia:Cirurgia;
     convenio:Convenio;
     procedimento:Procedimento;
-    cor:string;
+    corFundo:string;
+    corLetra:string;
 }

@@ -3,13 +3,13 @@ import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 
 export class ValidadorAgendamento {
 
-    public validaHorasAgendamento(medicoConfiguracaoAgenda: ConfiguracaoAgenda, dataInicial: Date, dataFinal: Date,
+    public validaHorasAgendamento(medicoConfiguracaoAgenda: ConfiguracaoAgenda, data: Date, horaInicial: string, horaFinal: string,
         tipoAgendamento: ETipoAgendamento): string {
 
         var erro: string = "";
 
-        var horasMinutosInicialAgendamento = dataInicial.getHours() * 60 + dataInicial.getMinutes();
-        var horasMinutosFinalAgendamento = dataFinal.getHours() * 60 + dataFinal.getMinutes();
+        var horasMinutosInicialAgendamento = this.converteHorarioParaMinutos(horaInicial);
+        var horasMinutosFinalAgendamento = this.converteHorarioParaMinutos(horaFinal);
 
         if (horasMinutosInicialAgendamento >= horasMinutosFinalAgendamento) {
             erro = "Hora de agendamento inválida";
@@ -17,7 +17,7 @@ export class ValidadorAgendamento {
         }
 
         if (medicoConfiguracaoAgenda != null) {
-            var configuracaoAgendaDias = medicoConfiguracaoAgenda.configuracaoAgendaDias[dataInicial.getDay()];
+            var configuracaoAgendaDias = medicoConfiguracaoAgenda.configuracaoAgendaDias[data.getDay()];
 
             if (configuracaoAgendaDias != null) {
 
@@ -40,7 +40,6 @@ export class ValidadorAgendamento {
                     erro = "Hora de fim do agendamento maior que a hora final configurada neste dia.";
                     return erro;
                 }
-
                 if (tipoAgendamento != ETipoAgendamento.Bloqueio && ((horasMinutosInicialAgendamento >= horarioInicioIntervalo && horasMinutosInicialAgendamento <= horarioFimIntervalo)
                     || (horasMinutosFinalAgendamento >= horarioInicioIntervalo && horasMinutosFinalAgendamento <= horarioFimIntervalo)
                     || (horasMinutosInicialAgendamento <= horarioInicioIntervalo && horasMinutosFinalAgendamento >= horarioFimIntervalo))) {
@@ -55,6 +54,7 @@ export class ValidadorAgendamento {
     }
 
     converteHorarioParaMinutos(horario: string): number {
+        horario = horario.replace(':',"");
         return parseInt(horario.substr(0, 2)) * 60 + parseInt(horario.substr(2, 2));
     }
 

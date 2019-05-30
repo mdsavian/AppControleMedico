@@ -8,6 +8,16 @@ export class Util {
         return dataNova;
     }
 
+    public concatenaDataHora(dataString:string, horaMinuto:string)
+    {        
+        var hora = parseInt(horaMinuto.substring(0, 2));
+        var minutos = parseInt(horaMinuto.substring(2, 4));
+    
+        var data = this.stringParaData(dataString);
+        var novaData = new Date(data.getFullYear(), data.getMonth(), data.getDate(), hora, minutos, 0);
+        return novaData;
+    }
+
     public stringParaData(dataString: string): Date {
 
         if (dataString.length > 8) {
@@ -33,15 +43,6 @@ export class Util {
         return data;
     }
 
-    public dataHoraParaString(data: Date, horaMinuto: string): Date {
-        console.log("opa ", horaMinuto);
-        
-        var hora = parseInt(horaMinuto.substring(0, 2));
-        var minutos = parseInt(horaMinuto.substring(2, 4));
-
-        data.setHours(hora, minutos);
-        return data;
-    }
     public formataCelular(celular: string) {
         celular = celular.replace(/\D/g, "");             //Remove tudo o que não é dígito
         celular = celular.replace(/^(\d{2})(\d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
@@ -52,6 +53,11 @@ export class Util {
     public dataParaString(data: Date): string {
         var datepipe: DatePipe = new DatePipe('pt-BR');
         return datepipe.transform(data, "dd/MM/yyyy");
+    }
 
+    
+    public dataHoraParaString(data: Date, ): string {
+        var datepipe: DatePipe = new DatePipe('pt-BR');
+        return datepipe.transform(data, "dd/MM/yyyy");
     }
 }

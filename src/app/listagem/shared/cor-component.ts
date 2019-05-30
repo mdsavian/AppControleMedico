@@ -3,7 +3,7 @@ import { ViewCell } from 'ng2-smart-table';
 
 @Component({
     template: `
-    <input type="text" [ngStyle]="{'background-color': cor}" size="10">
+    <input type="text" [ngStyle]="{'background-color': cor}" readonly size="10">
   `,
 })
 export class CorComponent implements ViewCell, OnInit {

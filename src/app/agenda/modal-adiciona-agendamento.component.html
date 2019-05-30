@@ -199,8 +199,8 @@
                 <div class="form-group">
                     <label class="control-label" for="horaInicial">Hora Inicial(*)</label>
                     <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaInicial"
-                        name="horaInicial" placeholder="HH:mm" class="form-control" (blur)="concatenaHora($event)"
-                        required [(ngModel)]="horaInicial" #horaInicialModel="ngModel">
+                        name="horaInicial" placeholder="HH:mm" class="form-control" 
+                        required [(ngModel)]="agendamento.horaInicial" #horaInicialModel="ngModel">
                     <div *ngIf="horaInicialModel.invalid" class="alert alert-danger">
                         <div *ngIf="horaInicialModel.errors.required"> Horário Obrigatório.</div>
                         <div *ngIf="horaInicialModel.errors.pattern"> Horário Inválido.</div>
@@ -212,8 +212,8 @@
                 <div class="form-group">
                     <label class="control-label" for="horaFinal">Hora Final(*)</label>
                     <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaFinal"
-                        name="horaFinal" placeholder="HH:mm" class="form-control" (blur)="concatenaHora($event)"
-                        required [(ngModel)]="horaFinal" #horaFinalModel="ngModel">
+                        name="horaFinal" placeholder="HH:mm" class="form-control" 
+                        required [(ngModel)]="agendamento.horaFinal" #horaFinalModel="ngModel">
                     <div *ngIf="horaFinalModel.invalid" class="alert alert-danger">
                         <div *ngIf="horaFinalModel.errors.required"> Horário Obrigatório.</div>
                         <div *ngIf="horaFinalModel.errors.pattern"> Horário Inválido.</div>

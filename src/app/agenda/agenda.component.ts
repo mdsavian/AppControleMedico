@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, ViewEncapsulation, Component, OnInit, NgModuleFactoryLoader, ɵbypassSanitizationTrustStyle } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
-import { startOfDay, endOfDay, subDays, addDays, endOfMonth, isSameDay, isSameMonth, addHours } from 'date-fns';
+import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { addMinutes, endOfWeek } from 'date-fns';
 import { fromEvent } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -15,22 +15,8 @@ import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.
 import { Agendamento } from '../modelos/agendamento';
 import { Util } from '../uteis/Util';
 import { AgendamentoService } from '../services/agendamento.service';
+import { ValidadorAgendamento } from './validadorAgendamento';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
-
-const colors: any = {
-  red: {
-    primary: '#ad2121',
-    secondary: '#FAE3E3'
-  },
-  blue: {
-    primary: '#1e90ff',
-    secondary: '#D1E8FF'
-  },
-  yellow: {
-    primary: '#e3bc08',
-    secondary: '#FDF1BA'
-  }
-};
 
 @Component({
   selector: 'mwl-demo-component',
@@ -39,10 +25,11 @@ const colors: any = {
   templateUrl: 'agenda-component.html'
 })
 export class AgendaComponent implements OnInit {
-  @ViewChild('modalContent') modalContent: TemplateRef<any>;
   @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+  @ViewChild('modalExcluir') modalExcluir: TemplateRef<any>;
 
-
+  eventosBanco: Agendamento[];
+  validadorAgendamento = new ValidadorAgendamento();
   CalendarView = CalendarView;
   view: CalendarView = CalendarView.Week;
   dragToCreateActive = false;
@@ -73,49 +60,70 @@ export class AgendaComponent implements OnInit {
         if (medico != null) {
           this.medico = medico;
           this.ajustarParametrosCalendario();
+
         }
       });
+
+
     }
+  }
+
+  carregarAgendamentosMedico() {
+    this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
+      .subscribe(dados => {
+        this.eventos = [];
+        this.eventosBanco = dados;
+        this.converteEAdicionaAgendamentoEvento(dados);
+      })
   }
 
   ajustarParametrosCalendario() {
 
-    if (this.medico != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
+    if (this.medico != null) {
 
-      var configuracaoAgenda = this.medico.configuracaoAgenda;
-      this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
-      this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
+      this.carregarAgendamentosMedico();
 
-      if (this.view == CalendarView.Week) {
+      if (this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
 
-        this.horaInicialCalendario = configuracaoAgenda.primeiroHorario;
-        this.horaFinalCalendario = configuracaoAgenda.ultimoHorario;
-      }
-      else if (this.view == CalendarView.Day) {
-        var configuracaoAgendaDias = configuracaoAgenda.configuracaoAgendaDias;
-        var dia = this.viewDate.getDay();
+        var configuracaoAgenda = this.medico.configuracaoAgenda;
+        this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
+        this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
 
-        this.horaInicialCalendario = configuracaoAgendaDias[dia].segundoHorarioInicial != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioInicial) < parseInt(configuracaoAgendaDias[dia].segundoHorarioInicial)
-          ? configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioInicial.substring(0, 2))
-          : configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2);
+        if (this.view == CalendarView.Week) {
 
-        this.horaFinalCalendario = configuracaoAgendaDias[dia].segundoHorarioFinal != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioFinal) > parseInt(configuracaoAgendaDias[dia].segundoHorarioFinal)
-          ? configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioFinal.substring(0, 2))
-          : configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2);
+          this.horaInicialCalendario = configuracaoAgenda.primeiroHorario;
+          this.horaFinalCalendario = configuracaoAgenda.ultimoHorario;
+        }
+        else if (this.view == CalendarView.Day) {
+          var configuracaoAgendaDias = configuracaoAgenda.configuracaoAgendaDias;
+          var dia = this.viewDate.getDay();
+
+          this.horaInicialCalendario = configuracaoAgendaDias[dia].segundoHorarioInicial != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioInicial) < parseInt(configuracaoAgendaDias[dia].segundoHorarioInicial)
+            ? configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioInicial.substring(0, 2))
+            : configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2);
+
+          this.horaFinalCalendario = configuracaoAgendaDias[dia].segundoHorarioFinal != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioFinal) > parseInt(configuracaoAgendaDias[dia].segundoHorarioFinal)
+            ? configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioFinal.substring(0, 2))
+            : configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2);
+        }
       }
 
       this.refreshPage();
     }
   }
 
-  validaHoraIntervalo(segment: DayViewHourSegment) {
+  validaHoraIntervaloComponente(data: Date) {
+
     var retorno = false;
+    let dia = data.getDay();
+    let hora = data.getHours();
+    let minutos = data.getMinutes();
 
     if (this.medico != null) {
-      var configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias[segment.date.getDay()]
+      var configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias[dia]
 
       if (configuracaoAgendaDias != null) {
-        var horaSegmento = segment.date.getHours() * 60 + segment.date.getMinutes();
+        var horaSegmento = hora * 60 + minutos;
         if (configuracaoAgendaDias.horarioInicioIntervalo != null) {
 
           var horarioInicioIntervalo = parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(2, 2));
@@ -127,11 +135,15 @@ export class AgendaComponent implements OnInit {
         if (retorno)
           return retorno;
 
+        //valida maior que hora fim do dia 
         var horaFim = configuracaoAgendaDias.segundoHorarioFinal == null ? parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(2, 2))
           : parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(2, 2));
         retorno = horaSegmento > horaFim;
+
         if (retorno)
           return retorno;
+
+        //valida menor que hora inicio do dia 
         var horaInicio = parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(2, 2));
         retorno = horaSegmento < horaInicio;
       }
@@ -142,8 +154,7 @@ export class AgendaComponent implements OnInit {
   }
 
   criarEventoNoCalendarioClicado(segment: DayViewHourSegment, segmentElement: HTMLElement): CalendarEvent {
-    console.log(segment.date);
-    const dragToSelectEvent: CalendarEvent = {
+    const eventoClicado: CalendarEvent = {
       id: this.eventos.length,
       title: 'Novo Agendamento',
       start: segment.date,
@@ -151,10 +162,10 @@ export class AgendaComponent implements OnInit {
       meta: {
         tmpEvent: true
       },
-      resizable: {
-        beforeStart: true,
-        afterEnd: true
-      },
+      // resizable: {
+      //   beforeStart: true,
+      //   afterEnd: true
+      // },
       draggable: true
     };
 
@@ -165,7 +176,7 @@ export class AgendaComponent implements OnInit {
     fromEvent(document, 'mousemove')
       .pipe(
         finalize(() => {
-          delete dragToSelectEvent.meta.tmpEvent;
+          delete eventoClicado.meta.tmpEvent;
           this.dragToCreateActive = false;
           this.refreshPage();
         }),
@@ -188,22 +199,19 @@ export class AgendaComponent implements OnInit {
 
           console.log("new ewn", newEnd);
           //validarHoraIntervalo
-          dragToSelectEvent.end = newEnd;
+          eventoClicado.end = newEnd;
           //
         }
         this.refreshPage();
       });
 
-    console.log("drag end ", dragToSelectEvent, dragToSelectEvent.end);
-
-    return dragToSelectEvent;
+    return eventoClicado;
   }
 
   startDragToCreate(segment: DayViewHourSegment, mouseDownEvent: MouseEvent, segmentElement: HTMLElement) {
-    var evento = this.criarEventoNoCalendarioClicado(segment, segmentElement);
-    console.log("evento criado", evento);
 
-    if (this.validaHoraIntervalo(segment)) {
+    var evento = this.criarEventoNoCalendarioClicado(segment, segmentElement);
+    if (this.validaHoraIntervaloComponente(segment.date)) {
       this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
         result => {
           if (result == 'Ok') {
@@ -226,8 +234,7 @@ export class AgendaComponent implements OnInit {
     {
       label: '<i class="fa fa-fw fa-times"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.eventos = this.eventos.filter(iEvent => iEvent !== event);
-        this.handleEvent('Deleted', event);
+        this.deletarAgendamento(event);
       }
 
     }
@@ -241,21 +248,7 @@ export class AgendaComponent implements OnInit {
 
   refresh: Subject<any> = new Subject();
 
-  eventos: CalendarEvent[] = [
-    {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
-      color: colors.red,
-      actions: this.acoesEventosCalendario,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true
-      },
-      draggable: true
-    }
-  ];
+  eventos: CalendarEvent[] = [];
 
   dayClicked({ date, eventos }: { date: Date; eventos: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -278,6 +271,8 @@ export class AgendaComponent implements OnInit {
   }: CalendarEventTimesChangedEvent): void {
     this.eventos = this.eventos.map(iEvent => {
       if (iEvent === event) {
+        event.start = newStart;
+        event.end = newEnd;
         return {
           ...event,
           start: newStart,
@@ -286,34 +281,77 @@ export class AgendaComponent implements OnInit {
       }
       return iEvent;
     });
-    this.handleEvent('Dropped or resized', event);
+    this.handleEvent('Dropped', event);
   }
+
 
   handleEvent(action: string, event: CalendarEvent): void {
-    console.log("clique evento", event);
-    this.modalData = { event, action };
-    this.modalService.open(this.modalContent, { size: 'lg' });
-  }
+    console.log("ação ", action);
 
-  addEvent(): void {
-    this.eventos = [
-      ...this.eventos,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors.red,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true
+    let agendamentoAntigo = this.eventosBanco.find(c => c.id == event.id);
+
+    if (action == 'Dropped') {
+
+      let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
+        event.start, event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
+
+      if (retornoValidacao != "") {
+        if (retornoValidacao.indexOf("intervalo") > 0) {
+          this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+            result => {
+              console.log(result);
+              if (result == 'Ok') {
+
+                this.modalData = { event, action };
+
+                agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
+                agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
+                agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
+                this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+              }
+              else {
+                this.eventos = this.eventos.filter(e => e.id !== event.id);
+                if (agendamentoAntigo != null)
+                  this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoAntigo));
+              }
+            }, (erro) => {
+              this.eventos = this.eventos.filter(e => e.id !== event.id);
+              if (agendamentoAntigo != null)
+                this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoAntigo));
+            });
         }
       }
-    ];
+      else {
+        agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
+        agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
+        agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
+        this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+      }
+    }
+    else if (action == "Edited") {
+
+      // this.modalService.open(this.modalContent, { size: 'lg' });
+    }
+
   }
 
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.eventos = this.eventos.filter(event => event !== eventToDelete);
+  deletarAgendamento(eventToDelete: CalendarEvent) {
+    console.log("")
+    this.modalService.open(this.modalExcluir).result.then(
+      result => {
+        if (result == 'Sim') {
+          var agendamento = this.eventosBanco.find(c => c.id == eventToDelete.id);
+          if (agendamento != null) {
+            this.agendamentoService.Excluir(agendamento).subscribe(retorno => {
+              if (retorno) {
+                this.carregarAgendamentosMedico();
+              }
+            });
+          }
+        }
+      }
+    );
+
   }
 
   setView(view: CalendarView) {
@@ -329,29 +367,46 @@ export class AgendaComponent implements OnInit {
     this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
   }
 
-  adicionarNovoAgendamento() {
+  converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
+    lista.forEach(agendamento => {
+      var dataHoraInicial = this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaInicial);
+
+      this.eventos = [...this.eventos,
+      {
+        id: agendamento.id,
+        start: dataHoraInicial,
+        end: this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaFinal),
+        title: this.montaTituloAgendamento(agendamento),
+        color: { primary: agendamento.corFundo, secondary: agendamento.corLetra },
+        actions: this.acoesEventosCalendario,
+        // resizable: {
+        //   beforeStart: true,
+        //   afterEnd: true
+        // },
+        draggable: true
+
+      }];
+    });
+
+    this.refreshPage();
+  }
+
+  adicionarNovoAgendamentoCliqueBotao() {
     var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg" });
     modalAdicionaAgendamento.componentInstance.medico = this.medico;
     modalAdicionaAgendamento.result.then((agendamento: Agendamento) => {
-      console.log(agendamento);
       if (agendamento != null) {
-        
-        this.eventos = [...this.eventos,
-        {
-          start: agendamento.dataAgendamentoInicial,
-          end: agendamento.dataAgendamentoFinal,
-          title: agendamento.paciente.nomeCompleto + "  " + agendamento.dataAgendamentoInicial.toTimeString(),
-          color: {primary: agendamento.cor, secondary: agendamento.cor},
-          actions: this.acoesEventosCalendario,
-          resizable: {
-            beforeStart: true,
-            afterEnd: true
-          },
-          draggable: true
-
-        }];
+        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamento));
       }
     }).catch((error) => { })
+  }
+
+  montaTituloAgendamento(agendamento: Agendamento): string {
+    return agendamento.paciente.nomeCompleto.split(' ')[0] + "  " +
+      agendamento.dataAgendamento + " " +
+      agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " - " +
+      agendamento.horaFinal.substring(0, 2) + ":" + agendamento.horaFinal.substring(2, 4);;
+
   }
 }
 
