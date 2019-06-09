@@ -24,9 +24,7 @@ export class ConfiguracaoAgendaService {
   }
 
   public salvar(configuracaoAgenda: ConfiguracaoAgenda) {
-    var xx = this.http.post<ConfiguracaoAgenda>(this.accessPointUrl, configuracaoAgenda, { headers: this.headers }); 
-    console.log("opa", xx);
-    return xx;
+    return this.http.post<ConfiguracaoAgenda>(this.accessPointUrl, configuracaoAgenda, { headers: this.headers }); 
   }
 
   public buscarPorId(configuracaoAgendaId: string) {

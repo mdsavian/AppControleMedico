@@ -25,7 +25,6 @@ export class ModalCadastroPacienteComponent {
   constructor(public activeModal: NgbActiveModal, private convenioService: ConvenioService, private modalService: NgbModal) { }
 
   public formataData(e): void {
-    console.log(this.util.stringParaData(e.target.value));
     if (e.target.id == "dataNascimento")
       this.paciente.dataNascimento = this.util.stringParaData(e.target.value);
   }
@@ -38,7 +37,6 @@ export class ModalCadastroPacienteComponent {
 
     modalAdiciona.result.then((convenio) => {
       if (convenio != null && convenio.descricao != '') {
-        console.log(convenio.descricao);
 
         var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
         if (convenioExistente != null) {

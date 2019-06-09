@@ -22,9 +22,6 @@ export class MedicoService {
 
   public buscarPorId(medicoId: string) {
     return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
-    // console.log("opa",medicoId);
-    // let parametros = new HttpParams().set("id",medicoId);
-    // return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/",{headers:this.headers, params:parametros});
 
   }
 

@@ -1,12 +1,10 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { Usuario } from '../../modelos/usuario';
 import { LoginService } from '../../services/login.service';
 import { first } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
-import { MedicoService } from '../../services/medico.service';
 
 @Component({
   selector: 'app-login',
@@ -46,7 +44,6 @@ export class LoginComponent implements OnInit {
       error => {
         var modal = this.modalService.open(ModalErrorComponent);
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
-        console.log("erro:", error);
       }
     );
   }

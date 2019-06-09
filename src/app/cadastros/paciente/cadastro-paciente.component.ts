@@ -83,7 +83,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
     this.convenioService.Todos().subscribe(dados => {
       this.convenios = dados;
-      console.log(dados);
       this.nomeConvenios = new Array<string>();
       dados.forEach(d => {
         this.nomeConvenios.push(d.nomeConvenio);
@@ -99,7 +98,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
     modal.result.then((convenio) => {
       if (convenio != undefined && convenio.descricao != '') {
-        console.log(convenio.descricao);
 
         var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
         if (convenioExistente != null) {
@@ -115,10 +113,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
           this.convenios.push(novoConvenio);
           this.nomeConvenios.push(novoConvenio.nomeConvenio, convenio.descricao);
 
-          console.log(novoConvenio);
-
           this.convenioService.salvar(novoConvenio).subscribe(conenioCadastrado => {
-            console.log(conenioCadastrado.nomeConvenio);
             this.paciente.convenio = conenioCadastrado;
             this.convenioSelecionado = conenioCadastrado.nomeConvenio;
             

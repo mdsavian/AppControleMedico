@@ -144,7 +144,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemfuncionario"]);
       },
       error => {
-        console.log(error);
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }

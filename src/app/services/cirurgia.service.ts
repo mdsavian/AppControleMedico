@@ -22,7 +22,6 @@ export class CirurgiaService {
   }
   
   public salvar(cirurgia: Cirurgia) {
-    console.log(cirurgia);
     return this.http.post<Cirurgia>(this.accessPointUrl, cirurgia);
   }
 

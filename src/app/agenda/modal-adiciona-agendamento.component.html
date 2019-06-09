@@ -1,11 +1,16 @@
 <form #adicionaAgendamento="ngForm">
-    <div class="modal-header">
-        <h4 class="modal-title">Adiciona Agendamento - {{nomeMedico}}</h4>
+    <div class="spinner" *ngIf=isSpinnerVisible>
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+
+    <div class="modal-header" [hidden]=isSpinnerVisible>
+        <h4 class="modal-title">{{tituloTela}}</h4>
         <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" [hidden]=isSpinnerVisible>
         <div class="row rowcadastro">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
@@ -100,8 +105,8 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoCirurgia">Cirurgia</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.cirurgia" #tipoCirurgia="ngModel" id="tipoCirurgia"
-                            name="tipoCirurgia" [required]="tipoAgendamento.value=='Cirurgia'">
+                        <select class="form-control" [(ngModel)]="agendamento.cirurgia" #tipoCirurgia="ngModel"
+                            id="tipoCirurgia" name="tipoCirurgia" [required]="tipoAgendamento.value=='Cirurgia'">
                             <option *ngFor="let cirurgia of cirurgias" [ngValue]="cirurgia">
                                 {{cirurgia.descricao}}
                             </option>
@@ -186,8 +191,8 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" required id="dataAgendamento" name="dataAgendamento"
-                        placeholder="dd/mm/aaaa" class="form-control"
-                        [(ngModel)]="dataAgenda" #dataAgendamento="ngModel" (blur)="formataData($event)">
+                        placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataAgenda"
+                        #dataAgendamento="ngModel" (blur)="formataData($event)">
                 </div>
                 <div *ngIf="dataAgendamento.invalid" class="alert alert-danger">
                     <div *ngIf="dataAgendamento.errors.required"> Data Obrigatória.</div>
@@ -199,8 +204,8 @@
                 <div class="form-group">
                     <label class="control-label" for="horaInicial">Hora Inicial(*)</label>
                     <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaInicial"
-                        name="horaInicial" placeholder="HH:mm" class="form-control" 
-                        required [(ngModel)]="agendamento.horaInicial" #horaInicialModel="ngModel">
+                        name="horaInicial" placeholder="HH:mm" class="form-control" required
+                        [(ngModel)]="agendamento.horaInicial" #horaInicialModel="ngModel">
                     <div *ngIf="horaInicialModel.invalid" class="alert alert-danger">
                         <div *ngIf="horaInicialModel.errors.required"> Horário Obrigatório.</div>
                         <div *ngIf="horaInicialModel.errors.pattern"> Horário Inválido.</div>
@@ -212,8 +217,8 @@
                 <div class="form-group">
                     <label class="control-label" for="horaFinal">Hora Final(*)</label>
                     <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaFinal"
-                        name="horaFinal" placeholder="HH:mm" class="form-control" 
-                        required [(ngModel)]="agendamento.horaFinal" #horaFinalModel="ngModel">
+                        name="horaFinal" placeholder="HH:mm" class="form-control" required
+                        [(ngModel)]="agendamento.horaFinal" #horaFinalModel="ngModel">
                     <div *ngIf="horaFinalModel.invalid" class="alert alert-danger">
                         <div *ngIf="horaFinalModel.errors.required"> Horário Obrigatório.</div>
                         <div *ngIf="horaFinalModel.errors.pattern"> Horário Inválido.</div>
@@ -230,10 +235,11 @@
             </div>
         </div>
     </div>
+
+    <div class="modal-footer" [hidden]=isSpinnerVisible>
+        <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
+        <ng-template #tipInvalidos>Verifique os campos inválidos</ng-template>
+        <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
+            [disabled]="(!adicionaAgendamento.form.valid || falhaNaBusca)" type="submit">Salvar</button>
+    </div>
 </form>
-<div class="modal-footer">
-    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
-    <ng-template #tipInvalidos>Verifique os campos inválidos</ng-template>
-    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-        [disabled]="(!adicionaAgendamento.form.valid || falhaNaBusca) && tipoAgendamento.value!='Bloqueio'" type="submit">Salvar</button>
-</div>

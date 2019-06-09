@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
@@ -24,6 +24,9 @@ import { Util } from '../uteis/Util';
 import { ModalErrorComponent } from '../shared/modal/modal-error.component';
 import { ValidadorAgendamento } from './validadorAgendamento';
 import { AgendamentoService } from '../services/agendamento.service';
+import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/operator/map';
+
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
@@ -31,10 +34,11 @@ import { AgendamentoService } from '../services/agendamento.service';
   styleUrls: ["./styles.css"]
 })
 
-export class ModalAdicionaAgendamentoComponent {
-  agendamento: Agendamento = new Agendamento();
-  horaInicial: string;
-  horaFinal: string;
+export class ModalAdicionaAgendamentoComponent implements OnInit {
+
+  isSpinnerVisible = false;
+  editando = false;
+  agendamento = new Agendamento();
   validadorAgendamento = new ValidadorAgendamento();
   medico: Medico;
   paciente: Paciente = new Paciente;
@@ -51,16 +55,62 @@ export class ModalAdicionaAgendamentoComponent {
   convenios: Array<Convenio> = [];
   cirurgias: Array<Cirurgia> = [];
   falhaNaBusca = true;
-  nomeMedico: string; s
+  tituloTela: string = "";
 
   @ViewChild('tipoAgendamento', { read: ElementRef }) private tipoAgendamento: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
     private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
-    private pacienteService: PacienteService, private convenioService: ConvenioService) { }
+    private pacienteService: PacienteService, private convenioService: ConvenioService) {
+  }
+
+  ngOnInit() {
+
+    this.buscarModelosNovoAgendamento().subscribe(c => {
+      this.isSpinnerVisible = false;
+      this.tipoAgendamento.nativeElement.focus();
+      if (this.editando) {
+
+        this.tituloTela = "Editar Agendamento - ";
+        this.falhaNaBusca = false;
+
+
+        this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
+        if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
+          this.pacienteSelecionado = this.nomePacientes.find(c => c == this.agendamento.paciente.nomeCompleto);
+          this.paciente = this.pacientes.find(c => c.id == this.agendamento.paciente.id);
+
+
+          this.agendamento.convenio = this.convenios.find(c => c.id == this.agendamento.convenio.id);
+
+          if (this.agendamento.exame != null)
+            this.agendamento.exame = this.exames.find(c => c.id == this.agendamento.exame.id);
+
+          if (this.agendamento.cirurgia != null)
+            this.agendamento.cirurgia = this.cirurgias.find(c => c.id == this.agendamento.cirurgia.id);
+
+          if (this.agendamento.local != null)
+            this.agendamento.local = this.locais.find(c => c.id == this.agendamento.local.id);
+
+          if (this.agendamento.procedimento != null)
+            this.agendamento.procedimento = this.procedimentos.find(c => c.id == this.agendamento.procedimento.id);
+        }
+
+        this.dataAgenda = this.agendamento.dataAgendamento;
+
+      }
+      else {
+        this.tituloTela = "Novo Agendamento - ";
+        this.agendamento.dataAgendamento = new Date().toDateString();
+      }
+
+      this.tituloTela += this.medico.nomeCompleto;
+    });
+
+  }
 
   salvar() {
-    
+
     this.agendamento.medico = this.medico;
     if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
       if (this.agendamento.paciente == null) {
@@ -76,45 +126,14 @@ export class ModalAdicionaAgendamentoComponent {
     }
 
     var validaHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
-      this.util.stringParaData(this.agendamento.dataAgendamento), this.agendamento.horaInicial, this.agendamento.horaFinal,  this.agendamento.tipoAgendamento);
+      this.util.stringParaData(this.agendamento.dataAgendamento), this.agendamento.horaInicial, this.agendamento.horaFinal, this.agendamento.tipoAgendamento);
     if (validaHoras != "") {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modalErro.componentInstance.mensagemErro = validaHoras;
       return;
     }
 
-    switch (this.agendamento.tipoAgendamento) {
-      case ETipoAgendamento.Bloqueio.valueOf(): {
-        this.agendamento.corFundo = "#EE0000"; 
-        this.agendamento.corLetra = "#EE0000"; 
-        break;
-      }
-      case ETipoAgendamento.Cirurgia.valueOf(): {
-        this.agendamento.corFundo = this.agendamento.cirurgia.corFundo;
-        this.agendamento.corLetra = this.agendamento.cirurgia.corLetra;
-        break;
-      }
-      case ETipoAgendamento.Consulta.valueOf(): {
-        this.agendamento.corFundo = "#5F9EA0";
-        this.agendamento.corLetra = "#EFF5F5";
-        break;
-      }
-      case ETipoAgendamento.Exame.valueOf(): {
-        this.agendamento.corFundo = this.agendamento.exame.corFundo;
-        this.agendamento.corLetra = this.agendamento.exame.corLetra;
-        break;
-      }
-      case ETipoAgendamento.Procedimento.valueOf(): {
-        this.agendamento.corFundo = this.agendamento.procedimento.corFundo;
-        this.agendamento.corLetra = this.agendamento.procedimento.corLetra;
-        break;
-      }
-      case ETipoAgendamento.Retorno.valueOf(): {
-        this.agendamento.corFundo = "#CAE1FF"; 
-        this.agendamento.corLetra = "#F4F9FF"; 
-        break;
-      }
-    }
+    this.agendamento = this.validadorAgendamento.tratarCorAgendamento(this.agendamento);    
 
     this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => this.activeModal.close(novoAgendamento));
   }
@@ -126,22 +145,15 @@ export class ModalAdicionaAgendamentoComponent {
   public formataData(e): void {
 
     if (e.target.id == "dataAgendamento" && e.target.value.length == 10) {
-      
+
       this.agendamento.dataAgendamento = e.target.value;
 
     }
   }
-  
-  ngOnInit() {
-    this.tipoAgendamento.nativeElement.focus();
-    this.agendamento.dataAgendamento = new Date().toDateString();
-
-    this.nomeMedico = this.medico.nomeCompleto;
-    this.buscarModelosNovoAgendamento();
-  }
 
   buscarModelosNovoAgendamento() {
-    this.pacienteService.Todos().subscribe(dados => {
+    this.isSpinnerVisible = true;
+    let reqPaciente = this.pacienteService.Todos().map(dados => {
       this.pacientes = dados;
       this.nomePacientes = new Array<string>();
       dados.forEach(d => {
@@ -149,15 +161,22 @@ export class ModalAdicionaAgendamentoComponent {
       });
     });
 
-    this.exameService.Todos().subscribe(dados => { this.exames = dados; });
-    this.localService.Todos().subscribe(dados => { this.locais = dados; });
-    this.cirurgiaService.Todos().subscribe(dados => { this.cirurgias = dados; });
-    this.procedimentoService.Todos().subscribe(dados => { this.procedimentos = dados; });
-    this.convenioService.Todos().subscribe(c => this.convenios = c);
+    let reqExames = this.exameService.Todos().map(dados => { this.exames = dados; });
+    let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
+    let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
+    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
+    let reqConvenios = this.convenioService.Todos().map(c => this.convenios = c);
+
+    return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqConvenios]);
   }
 
   selecionaTipoAgendamento(value: string) {
     this.agendamento.tipoAgendamento = ETipoAgendamento[value];
+
+    if (ETipoAgendamento[value] == ETipoAgendamento.Bloqueio)
+      this.falhaNaBusca = false;
+    else if (this.pacienteSelecionado == "")
+      this.falhaNaBusca = true;
 
     this.agendamento.procedimento = null;
     this.agendamento.cirurgia = null;
@@ -275,7 +294,7 @@ export class ModalAdicionaAgendamentoComponent {
                 this.agendamento.cirurgia = this.cirurgias.find(c => c.descricao == cirurgiaCadastrado.descricao);
                 this.agendamento.corFundo = cirurgia.corFundo
                 this.agendamento.corLetra = cirurgia.corLetra
-                ;
+                  ;
               });
             }
           }

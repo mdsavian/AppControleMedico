@@ -1,8 +1,45 @@
 import { ConfiguracaoAgenda } from "../modelos/configuracaoAgenda";
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
+import { Agendamento } from "../modelos/agendamento";
 
 export class ValidadorAgendamento {
 
+    public tratarCorAgendamento(agendamento:Agendamento)
+    {
+        switch (agendamento.tipoAgendamento) {
+            case ETipoAgendamento.Bloqueio.valueOf(): {
+              agendamento.corFundo = "#000000";
+              agendamento.corLetra = "#EE0000";
+              break;
+            }
+            case ETipoAgendamento.Cirurgia.valueOf(): {
+              agendamento.corFundo = agendamento.cirurgia.corFundo;
+              agendamento.corLetra = agendamento.cirurgia.corLetra;
+              break;
+            }
+            case ETipoAgendamento.Consulta.valueOf(): {
+              agendamento.corFundo = "#5F9EA0";
+              agendamento.corLetra = "#EFF5F5";
+              break;
+            }
+            case ETipoAgendamento.Exame.valueOf(): {
+              agendamento.corFundo = agendamento.exame.corFundo;
+              agendamento.corLetra = agendamento.exame.corLetra;
+              break;
+            }
+            case ETipoAgendamento.Procedimento.valueOf(): {
+              agendamento.corFundo = agendamento.procedimento.corFundo;
+              agendamento.corLetra = agendamento.procedimento.corLetra;
+              break;
+            }
+            case ETipoAgendamento.Retorno.valueOf(): {
+              agendamento.corFundo = "#CAE1FF";
+              agendamento.corLetra = "#F4F9FF";
+              break;
+            }
+          }
+          return agendamento;
+    }
     public validaHorasAgendamento(medicoConfiguracaoAgenda: ConfiguracaoAgenda, data: Date, horaInicial: string, horaFinal: string,
         tipoAgendamento: ETipoAgendamento): string {
 

@@ -16,7 +16,9 @@ import { Agendamento } from '../modelos/agendamento';
 import { Util } from '../uteis/Util';
 import { AgendamentoService } from '../services/agendamento.service';
 import { ValidadorAgendamento } from './validadorAgendamento';
+import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
+import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda';
 
 @Component({
   selector: 'mwl-demo-component',
@@ -26,21 +28,19 @@ import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 })
 export class AgendaComponent implements OnInit {
   @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
-  @ViewChild('modalExcluir') modalExcluir: TemplateRef<any>;
+  @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
 
+  acaoAgendamento = "";
   eventosBanco: Agendamento[];
   validadorAgendamento = new ValidadorAgendamento();
   CalendarView = CalendarView;
-  view: CalendarView = CalendarView.Week;
+  view: CalendarView = CalendarView.Day;
   dragToCreateActive = false;
   activeDayIsOpen = true;
   viewDate: Date = new Date();
   util = new Util();
   medico: Medico;
-  modalData: {
-    action: string;
-    event: CalendarEvent;
-  };
+
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
@@ -48,9 +48,7 @@ export class AgendaComponent implements OnInit {
   msgteste: string;
 
   constructor(private agendamentoService: AgendamentoService, private modalService: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
-    private medicoService: MedicoService, private router: Router
-  ) {
-  }
+    private medicoService: MedicoService, private router: Router) { }
 
   ngOnInit() {
     var usuario = this.loginService.usuarioCorrenteValor;
@@ -63,9 +61,58 @@ export class AgendaComponent implements OnInit {
 
         }
       });
-
-
     }
+  }
+
+  converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
+    var novoAgendamento = new Agendamento();
+
+    novoAgendamento.dataAgendamento = this.util.dataParaString(evento.start);
+    if (evento.start != null)
+      novoAgendamento.horaInicial = evento.start.toTimeString().substr(0, 5).replace(":", "");
+
+    if (evento.end != null)
+      novoAgendamento.horaFinal = evento.end.toTimeString().substr(0, 5).replace(":", "");
+    else {
+
+      var minutosFinal = 0;
+
+      var horaFinal = new Date();
+      horaFinal.setDate(evento.start.getDate());
+
+      switch (this.medico.configuracaoAgenda.configuracaoMinutosAgenda) {
+        case (EConfiguracaoMinutosAgenda["1 Hora"]):
+          minutosFinal = 60;
+          break;
+        case (EConfiguracaoMinutosAgenda["5 Minutos"]):
+          minutosFinal = 5;
+          break;
+        case (EConfiguracaoMinutosAgenda["10 Minutos"]):
+          minutosFinal = 10;
+          break;
+        case (EConfiguracaoMinutosAgenda["15 Minutos"]):
+          minutosFinal = 15;
+          break;
+        case (EConfiguracaoMinutosAgenda["20 Minutos"]):
+          minutosFinal = 20;
+          break;
+        case (EConfiguracaoMinutosAgenda["30 Minutos"]):
+          minutosFinal = 30;
+          break;
+      }
+
+      if (minutosFinal == 60) {
+        horaFinal.setHours(evento.start.getHours() + 1);
+        horaFinal.setMinutes(evento.start.getMinutes(), 0);
+      }
+      else {
+        horaFinal.setHours(evento.start.getHours());
+        horaFinal.setMinutes(evento.start.getMinutes() + minutosFinal, 0);
+      }
+      novoAgendamento.horaFinal = horaFinal.toTimeString().substr(0, 5).replace(":", "");
+    }
+    return novoAgendamento;
+
   }
 
   carregarAgendamentosMedico() {
@@ -74,7 +121,7 @@ export class AgendaComponent implements OnInit {
         this.eventos = [];
         this.eventosBanco = dados;
         this.converteEAdicionaAgendamentoEvento(dados);
-      })
+      });
   }
 
   ajustarParametrosCalendario() {
@@ -162,23 +209,70 @@ export class AgendaComponent implements OnInit {
       meta: {
         tmpEvent: true
       },
-      // resizable: {
-      //   beforeStart: true,
-      //   afterEnd: true
-      // },
-      draggable: true
+      resizable: {
+        beforeStart: true,
+        afterEnd: true
+      }
+      // draggable: true
     };
 
     const segmentPosition = segmentElement.getBoundingClientRect();
     this.dragToCreateActive = true;
     const endOfView = endOfWeek(this.viewDate);
-
+    let criadoEvento = false;
     fromEvent(document, 'mousemove')
       .pipe(
         finalize(() => {
+
           delete eventoClicado.meta.tmpEvent;
           this.dragToCreateActive = false;
+
+          if (eventoClicado.end != null) {
+            let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
+              eventoClicado.start, eventoClicado.start.toTimeString().substr(0, 5), eventoClicado.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
+
+            if (retornoValidacao != "") {
+              if (retornoValidacao.indexOf("intervalo") > 0) {
+                this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+                  result => {
+                    if (result == 'Ok') {
+                      // this.eventos = [...this.eventos, eventoClicado];
+                      var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
+                      this.chamarModalAdicionaAgendamento(novoAgendamento);
+                    }
+                  }, (erro) => {
+                  });
+              }
+            }
+            else {
+              // this.eventos = [...this.eventos, eventoClicado];
+              criadoEvento = true;
+            }
+          }
+          else { //só tem data inicial - utiliza o validador do component, mesmo utilizado em tela para os horários
+
+            if (this.validaHoraIntervaloComponente(segment.date)) {
+              this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+                result => {
+                  if (result == 'Ok') {
+                    // this.eventos = [...this.eventos, eventoClicado];
+                    var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
+                    this.chamarModalAdicionaAgendamento(novoAgendamento);
+                  }
+                }, () => { });
+            }
+            else {
+              // this.eventos = [...this.eventos, eventoClicado];
+              criadoEvento = true;
+            }
+          }
+
           this.refreshPage();
+
+          if (criadoEvento) {
+            var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
+            this.chamarModalAdicionaAgendamento(novoAgendamento);
+          }
         }),
         takeUntil(fromEvent(document, 'mouseup'))
       )
@@ -196,11 +290,7 @@ export class AgendaComponent implements OnInit {
 
         const newEnd = addDays(addMinutes(segment.date, minutesDiff), daysDiff);
         if (newEnd > segment.date && newEnd < endOfView) {
-
-          console.log("new ewn", newEnd);
-          //validarHoraIntervalo
           eventoClicado.end = newEnd;
-          //
         }
         this.refreshPage();
       });
@@ -209,36 +299,122 @@ export class AgendaComponent implements OnInit {
   }
 
   startDragToCreate(segment: DayViewHourSegment, mouseDownEvent: MouseEvent, segmentElement: HTMLElement) {
-
-    var evento = this.criarEventoNoCalendarioClicado(segment, segmentElement);
-    if (this.validaHoraIntervaloComponente(segment.date)) {
-      this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
-        result => {
-          if (result == 'Ok') {
-            this.eventos = [...this.eventos, evento];
-          }
-        }, () => { });
-    }
-    else {
-      this.eventos = [...this.eventos, evento];
-    }
+    this.criarEventoNoCalendarioClicado(segment, segmentElement);
   }
 
   acoesEventosCalendario: CalendarEventAction[] = [
     {
-      label: '<i class="fa fa-fw fa-pencil"></i>',
+      label: '<i class="fa fa-fw fa-calendar-check-o" title="Confirmar"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
+        this.actionAgendamento(event, "Confirmar");
       }
     },
     {
-      label: '<i class="fa fa-fw fa-times"></i>',
+      label: '<i class="fa fa-fw fa-money" title="Pagar e Finalizar"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.deletarAgendamento(event);
+        this.actionAgendamento(event, "PagarFinalizar");
       }
+    },
+    {
+      label: '<i class="fa fa-fw fa-pencil" title="Editar"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.actionAgendamento(event, "Editar");
 
+      }
+    },
+    {
+      label: '<i class="fa fa-fw fa-times" title="Cancelar"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.actionAgendamento(event, "Cancelar");
+
+      }
+    },
+    {
+      label: '<i class="fa fa-fw fa-trash" title="Excluir"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.actionAgendamento(event, "Excluir");
+
+      }
     }
   ];
+
+  private actionAgendamento(evento: CalendarEvent, acao: string) {
+    switch (acao) {
+      case ("Editar"):
+        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          this.chamarModalAdicionaAgendamento(agendamento, "editar");
+        });
+        break;
+      case ("Confirmar"):
+        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          this.acaoAgendamento = "Confirmar";
+          this.modalService.open(this.modalAcaoAgendamento).result.then(
+            result => {
+              if (result == 'Sim') {
+                agendamento = this.validadorAgendamento.tratarCorAgendamento(agendamento);
+                agendamento.situacaoAgendamento = ESituacaoAgendamento["Confirmado"];
+                this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                  if (retorno) {
+                    this.carregarAgendamentosMedico();
+                  }
+                });
+              }
+            },
+            (() => { })
+          );
+
+
+
+        });
+        break;
+      case ("PagarFinalizar"):
+
+        // this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+        //   this.chamarModalAdicionaAgendamento(agendamento);
+        // });        
+        break;
+      case ("Cancelar"):
+        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          this.acaoAgendamento = "Cancelar";
+          this.modalService.open(this.modalAcaoAgendamento).result.then(
+            result => {
+              if (result == 'Sim') {
+                agendamento.situacaoAgendamento = ESituacaoAgendamento["Cancelado"];
+                agendamento.corFundo = "#000000";
+                agendamento.corLetra = "#EE0000";
+                this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                  if (retorno) {
+                    this.carregarAgendamentosMedico();
+                  }
+                });
+              }
+            },
+            (() => { })
+          );
+        });
+
+        break;
+      case ("Excluir"):
+        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          this.acaoAgendamento = "Excluir";
+          this.modalService.open(this.modalAcaoAgendamento).result.then(
+            result => {
+              if (result == 'Sim') {
+                this.agendamentoService.Excluir(agendamento.id).subscribe(retorno => {
+                  if (retorno) {
+                    this.carregarAgendamentosMedico();
+                  }
+                });
+              }
+            },
+            (() => { })
+          );
+        });
+        break;
+    }
+
+
+  }
 
   private refreshPage() {
 
@@ -281,76 +457,45 @@ export class AgendaComponent implements OnInit {
       }
       return iEvent;
     });
-    this.handleEvent('Dropped', event);
+    this.DroppedResizedEvent(event);
   }
 
 
-  handleEvent(action: string, event: CalendarEvent): void {
-    console.log("ação ", action);
+  DroppedResizedEvent(event: CalendarEvent): void {
 
+    
     let agendamentoAntigo = this.eventosBanco.find(c => c.id == event.id);
-
-    if (action == 'Dropped') {
-
-      let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
-        event.start, event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
-
-      if (retornoValidacao != "") {
-        if (retornoValidacao.indexOf("intervalo") > 0) {
-          this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
-            result => {
-              console.log(result);
-              if (result == 'Ok') {
-
-                this.modalData = { event, action };
-
-                agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
-                agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
-                agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
-                this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
-              }
-              else {
-                this.eventos = this.eventos.filter(e => e.id !== event.id);
-                if (agendamentoAntigo != null)
-                  this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoAntigo));
-              }
-            }, (erro) => {
+    let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
+      event.start, event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
+    
+    if (retornoValidacao != "") {
+      if (retornoValidacao.indexOf("intervalo") > 0) {
+        this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+          result => {
+            if (result == 'Ok') {
+              agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
+              agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
+              agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
+              this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+            }
+            else {
               this.eventos = this.eventos.filter(e => e.id !== event.id);
               if (agendamentoAntigo != null)
                 this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoAntigo));
-            });
-        }
-      }
-      else {
-        agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
-        agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
-        agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
-        this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+            }
+          }, (erro) => {
+            this.eventos = this.eventos.filter(e => e.id !== event.id);
+            if (agendamentoAntigo != null)
+              this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoAntigo));
+          });
       }
     }
-    else if (action == "Edited") {
-
-      // this.modalService.open(this.modalContent, { size: 'lg' });
+    else {
+      agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
+      agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
+      agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
+      this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
     }
-
-  }
-
-  deletarAgendamento(eventToDelete: CalendarEvent) {
-    console.log("")
-    this.modalService.open(this.modalExcluir).result.then(
-      result => {
-        if (result == 'Sim') {
-          var agendamento = this.eventosBanco.find(c => c.id == eventToDelete.id);
-          if (agendamento != null) {
-            this.agendamentoService.Excluir(agendamento).subscribe(retorno => {
-              if (retorno) {
-                this.carregarAgendamentosMedico();
-              }
-            });
-          }
-        }
-      }
-    );
 
   }
 
@@ -371,6 +516,12 @@ export class AgendaComponent implements OnInit {
     lista.forEach(agendamento => {
       var dataHoraInicial = this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaInicial);
 
+      var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
+      if (eventoVelho != null) {
+        var index = this.eventos.indexOf(eventoVelho);
+        this.eventos.splice(index, 1);
+      }
+
       this.eventos = [...this.eventos,
       {
         id: agendamento.id,
@@ -379,21 +530,29 @@ export class AgendaComponent implements OnInit {
         title: this.montaTituloAgendamento(agendamento),
         color: { primary: agendamento.corFundo, secondary: agendamento.corLetra },
         actions: this.acoesEventosCalendario,
-        // resizable: {
-        //   beforeStart: true,
-        //   afterEnd: true
-        // },
-        draggable: true
-
+        resizable: {
+          beforeStart: true,
+          afterEnd: true
+        }
+        // draggable: true
       }];
     });
 
     this.refreshPage();
   }
 
-  adicionarNovoAgendamentoCliqueBotao() {
+  chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
+
     var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg" });
     modalAdicionaAgendamento.componentInstance.medico = this.medico;
+
+    if (agendamento != null)
+      modalAdicionaAgendamento.componentInstance.agendamento = agendamento;
+
+    if (acao == "editar") {
+      modalAdicionaAgendamento.componentInstance.editando = true;
+    }
+
     modalAdicionaAgendamento.result.then((agendamento: Agendamento) => {
       if (agendamento != null) {
         this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamento));
@@ -402,10 +561,17 @@ export class AgendaComponent implements OnInit {
   }
 
   montaTituloAgendamento(agendamento: Agendamento): string {
-    return agendamento.paciente.nomeCompleto.split(' ')[0] + "  " +
-      agendamento.dataAgendamento + " " +
-      agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " - " +
-      agendamento.horaFinal.substring(0, 2) + ":" + agendamento.horaFinal.substring(2, 4);;
+
+    if (agendamento.paciente != null) {
+      return agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
+        agendamento.convenio.nomeConvenio.toUpperCase() + " - " +
+        agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " até " +
+        agendamento.horaFinal.substring(0, 2) + ":" + agendamento.horaFinal.substring(2, 4) + " - " +
+        ESituacaoAgendamento[agendamento.situacaoAgendamento].toUpperCase();
+    }
+    else if (agendamento.tipoAgendamento == ETipoAgendamento.Bloqueio)
+      return "AGENDA BLOQUEADA";
+    return "";
 
   }
 }
