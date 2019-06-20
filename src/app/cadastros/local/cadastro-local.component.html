@@ -14,7 +14,7 @@
                       class="form-control" appValidaDescricaoLocal required minlength="4"
                       [(ngModel)]="local.descricao" #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.dirty || descricao.touched) && (descricao.errors?.validaDescricaoLocal)"
+                      *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoLocal)"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoLocal"> Já existe um local com esta descrição cadastrado. </div>

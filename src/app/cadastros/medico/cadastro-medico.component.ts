@@ -20,12 +20,14 @@ import { PacienteService } from '../../services/paciente.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as tableData from './listagem-paciente-gestante-settings';
 import { ConfiguracaoAgenda } from '../../modelos/configuracaoAgenda';
-
+import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha.component';
+import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
+import { UsuarioService } from '../../services/usuario.service';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
-  styleUrls: ['./cadastro-medico.component.scss', '../../cadastros/cadastros.scss'],
-
+  styleUrls: ['./cadastro-medico.component.scss', '../../cadastros/cadastros.scss']
 })
 
 export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -49,8 +51,11 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),
     configuracaoAgenda: new ConfiguracaoAgenda()
   };
+  usuario: Usuario;
+  permiteAlterarSenha = false;
 
-  constructor(private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private dragulaService: DragulaService,
+
+  constructor(private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private dragulaService: DragulaService,
     private convenioService: ConvenioService, private route: ActivatedRoute, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
 
     this.dragulaService.createGroup('CONVENIOS', {
@@ -80,10 +85,36 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
       this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
   }
 
+  alterarSenhaMedico() {
+
+    if (this.alterarSenhaMedico) {
+      var modal = this.modalService.open(ModalAlteraSenhaComponent, { windowClass: "modal-holder" });
+
+      modal.result.then((alteraSenha) => {
+        alteraSenha.usuarioId = this.usuario.id;
+        this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {
+          console.log(c);
+          if (c == null) {
+            var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+            modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente.";
+          }
+          else {
+            var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder" });
+            modal.componentInstance.mensagem = "Senha alterada com sucesso";
+            modal.componentInstance.titulo = "Alterado com sucesso";
+            modal.result.then(() => this.loginService.logout());
+          }
+        });
+      },
+        error => {
+
+        });
+    }
+  }
+
+
   public ngAfterViewInit(): void {
-
     this.nomeCompleto.nativeElement.focus();
-
   }
   public ngOnDestroy(): void {
     this.dragulaService.destroy("CONVENIOS");
@@ -91,12 +122,15 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
 
   public ngOnInit(): void {
     var id = this.route.snapshot.paramMap.get('id');
+    this.usuario = this.util.retornarUsuarioCorrente();
 
     if (id != null) {
       this.medicoService.buscarPorId(id).subscribe(dado => {
         this.medico = dado;
         this.data = this.util.dataParaString(dado.dataNascimento);
         this.especialidadeSelecionada = dado.especialidade.descricao;
+        this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
+
       });
 
       this.pacienteService.TodosGestantesFiltrandoMedico(id).subscribe(gestantes => {
@@ -167,7 +201,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  public onSubmit(): void {
+  public salvar(): void {
     this.medicoService.salvar(this.medico).subscribe(
       data => {
         this.router.navigate(["listagem/listagemmedico"]);

@@ -34,8 +34,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ["./styles.css"]
 })
 
-export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit {
-  
+export class ModalAdicionaAgendamentoComponent implements OnInit {
 
   isSpinnerVisible = false;
   editando = false;
@@ -65,16 +64,11 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
 
-  ngAfterViewInit(): void {
-    this.tipoAgendamento.nativeElement.focus();
-  }
-
-
   ngOnInit() {
 
     this.buscarModelosNovoAgendamento().subscribe(c => {
       this.isSpinnerVisible = false;
-
+      this.tipoAgendamento.nativeElement.focus();
       if (this.editando) {
 
         this.tituloTela = "Editar Agendamento - ";

@@ -1,0 +1,58 @@
+<form id="formAlteraSenha">
+    <div class="modal-header">
+        <h4 class="modal-title">Alterar Senha</h4>
+        <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12 col-md-10" style="height: auto;margin: 0 auto;padding: 10px;position: relative;">
+                <div class="form-group">
+                    <label class="control-label" for="senhaAtual">Senha Atual</label>
+                    <input type="password" id="senhaAtual" required placeholder="Senha Atual" name="senhaAtual"
+                        [(ngModel)]="alteraSenha.senhaAtual" #senhaAtual="ngModel" class="form-control">
+                    <div *ngIf="senhaAtual.invalid" class="alert alert-danger">
+                        <div *ngIf="senhaAtual.errors.required"> Senha Atual Obrigatória. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-xs-12 col-md-10" style=" height: auto;margin: 0 auto;padding: 10px;position: relative;">
+                <div class="form-group">
+                    <label class="control-label" for="novaSenha">Nova Senha</label>
+                    <input type="password" id="novaSenha" required placeholder="Nova Senha" name="novaSenha"
+                        class="form-control" [(ngModel)]="alteraSenha.novaSenha" #novaSenha="ngModel">
+                    <div *ngIf="novaSenha.invalid" class="alert alert-danger">
+                        <div *ngIf="novaSenha.errors.required"> Nova Senha Obrigatória. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-xs-12 col-md-10" style=" height: auto;margin: 0 auto;padding: 10px;position: relative;">
+                <div class="form-group">
+                    <label class="control-label" for="confirmacaoNovaSenha">Confirmação Nova Senha</label>
+                    <input type="password" required id="confirmacaoNovaSenha" placeholder="Confirmação Nova Senha"
+                        name="confirmacaoNovaSenha" [(ngModel)]="alteraSenha.confirmacaoNovaSenha"
+                        #confirmacaoNovaSenha="ngModel" class="form-control">
+                    <div *ngIf="confirmacaoNovaSenha.invalid" class="alert alert-danger">
+                        <div *ngIf="confirmacaoNovaSenha.errors.required"> Confirmação da Nova Senha Obrigatória. </div>
+                    </div>
+                    <div *ngIf="!confirmacaoNovaSenha.invalid && novaSenha.value != confirmacaoNovaSenha.value"
+                        class="alert alert-danger">
+                        <div>As senhas não são iguais, verifique. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
+            [disabled]="senhaAtual.invalid || alteraSenha.invalid || confirmacaoNovaSenha.invalid ||novaSenha.value != confirmacaoNovaSenha.value"
+            type="submit">Salvar</button>
+        <button style="width:40%" (click)="fechar()" id="btnCancelar"
+            class="btn btn-rounded btn-warning">Cancelar</button>
+    </div>
+</form>

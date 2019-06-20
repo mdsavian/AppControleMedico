@@ -1,5 +1,7 @@
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
+import { Usuario } from "../modelos/usuario";
+import { LoginService } from "../services/login.service";
 
 export class Util {
 
@@ -8,14 +10,25 @@ export class Util {
         return dataNova;
     }
 
-    public concatenaDataHora(dataString:string, horaMinuto:string)
-    {        
+    public concatenaDataHora(dataString: string, horaMinuto: string) {
         var hora = parseInt(horaMinuto.substring(0, 2));
         var minutos = parseInt(horaMinuto.substring(2, 4));
-    
+
         var data = this.stringParaData(dataString);
         var novaData = new Date(data.getFullYear(), data.getMonth(), data.getDate(), hora, minutos, 0);
         return novaData;
+    }
+
+    public retornarUsuarioAdministrador(): boolean {
+        console.log("pa");
+        var usuario = new LoginService(null).usuarioCorrenteValor;
+        console.log(usuario.medicoId == "" ,"op", usuario.medicoId == null, "op1",usuario.funcionarioId == null ,"op2", usuario.funcionarioId == "");
+        return ((usuario.medicoId == "" || usuario.medicoId == null) && (usuario.funcionarioId == null || usuario.funcionarioId == ""));
+    }
+
+    public retornarUsuarioCorrente(): Usuario {
+        var usuario = new LoginService(null).usuarioCorrenteValor;
+        return usuario;
     }
 
     public stringParaData(dataString: string): Date {
@@ -55,7 +68,7 @@ export class Util {
         return datepipe.transform(data, "dd/MM/yyyy");
     }
 
-    
+
     public dataHoraParaString(data: Date, ): string {
         var datepipe: DatePipe = new DatePipe('pt-BR');
         return datepipe.transform(data, "dd/MM/yyyy");

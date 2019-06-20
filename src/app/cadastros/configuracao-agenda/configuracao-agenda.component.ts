@@ -60,6 +60,14 @@ export class ConfiguracaoAgendaComponent implements OnInit {
     });
   }
 
+  public marcaTodos(e:any)
+  {
+
+    this.configuracaoAgendaDias.forEach(config => {
+      config.configurado = e.target.checked;
+    });
+  }
+
   public onSubmit(): void {
     if (this.medico.configuracaoAgenda == null)
       this.medico.configuracaoAgenda = new ConfiguracaoAgenda();

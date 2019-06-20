@@ -13,14 +13,13 @@ export class AppComponent {
   title = 'app';
 
   constructor(
-    public router: Router, 
+    public router: Router,
     private loginService: LoginService) {
-    this.loginService.usuarioCorrente.subscribe(c => this.usuarioCorrent = c)
+    this.usuarioCorrent = this.loginService.usuarioCorrenteValor;
   }
 
-  logout()
-  {
-    this.loginService.logout();  
-    this.router.navigate(['../authentication/login']);  
+  logout() {
+    this.loginService.logout();
+    this.router.navigate(['../authentication/login']);
   }
 }

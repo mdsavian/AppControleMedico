@@ -1,6 +1,8 @@
-export class Usuario{
+import { Entidade } from "./entidade";
 
-  constructor()  { }
+export class Usuario extends Entidade{
+
+  constructor()  {super(); }
 
   tipoUsuario : number;
   login : string;

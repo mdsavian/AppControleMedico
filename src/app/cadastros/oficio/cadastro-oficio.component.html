@@ -14,7 +14,7 @@
                       class="form-control" appValidaNomeOficio required minlength="4"
                       [(ngModel)]="oficio.descricao" #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.dirty || descricao.touched) && (descricao.errors?.validaNomeOficio)"
+                      *ngIf="descricao.invalid && (descricao.errors?.validaNomeOficio)"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
                       <div *ngIf="descricao.errors?.validaNomeOficio"> Já existe um ofício com esta descrição cadastrada. </div>

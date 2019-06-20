@@ -6,7 +6,7 @@ export class ConfiguracaoAgendaDias extends Entidade {
         super();
 
         this.dia = dia;
-        this.configurado = false;
+        this.configurado = true;
         this.primeiroHorarioInicial = "08:00";
         this.primeiroHorarioFinal = "12:00";
         this.segundoHorarioInicial = "13:30";

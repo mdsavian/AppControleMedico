@@ -14,7 +14,7 @@
                       appValidaDescricaoCirurgia required minlength="4" [(ngModel)]="cirurgia.descricao"
                       #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.dirty || descricao.touched) && (descricao.errors?.validaDescricaoCirurgia)"
+                      *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoCirurgia)"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoCirurgia"> Já existe um cirurgia com esta descrição
@@ -24,15 +24,15 @@
                 </div>
                 <div class="col-xs-6 col-md-3">
                   <div class="form-group">
-                    <label class="control-label" for="corFundo">Cor Fundo</label>
+                    <label class="control-label" for="corFundo">Cor</label>
                     <input type="color" required class="form-control" [(ngModel)]="cirurgia.corFundo"
                       #corFundo="ngModel" id="corFundo" name="corFundo">
                     <div *ngIf="corFundo.invalid && (corFundo.dirty || corFundo.touched)" class="alert alert-danger">
-                      <div *ngIf="corFundo.errors.required"> Cor Fundo Obrigatória. </div>
+                      <div *ngIf="corFundo.errors.required"> Cor Obrigatória. </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-xs-6 col-md-3">
+                <!-- <div class="col-xs-6 col-md-3">
                   <div class="form-group">
                     <label class="control-label" for="corLetra">Cor Letra</label>
                     <input type="color" required class="form-control" [(ngModel)]="cirurgia.corLetra"
@@ -41,7 +41,7 @@
                       <div *ngIf="corLetra.errors.required"> Cor Letra Obrigatória. </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>

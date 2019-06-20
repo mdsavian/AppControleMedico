@@ -8,6 +8,7 @@ import { Usuario } from '../modelos/usuario';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +18,15 @@ import { environment } from '../../environments/environment';
 export class LoginService {
 
   private usuarioCorrenteSubject: BehaviorSubject<Usuario>;
-  public usuarioCorrente: Observable<Usuario>;
+  public usuarioCorrenteObservable: Observable<Usuario>;
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'login/';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private router: Router) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
 
     this.usuarioCorrenteSubject = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem('usuarioCorrente')));
-    this.usuarioCorrente = this.usuarioCorrenteSubject.asObservable();
-
+    this.usuarioCorrenteObservable = this.usuarioCorrenteSubject.asObservable();
   }
 
   public login(usuario: Usuario) {
@@ -40,9 +40,11 @@ export class LoginService {
 
   }
 
-  public logout() {    
+  public logout() {
+
     localStorage.removeItem("usuarioCorrente");    
     this.usuarioCorrenteSubject.next(null);
+    this.router.navigate(["authentication/login"]);
   }
 
   public get usuarioCorrenteValor(): Usuario {    

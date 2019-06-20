@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
@@ -29,6 +29,7 @@ import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda'
 export class AgendaComponent implements OnInit {
   @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
+  @ViewChild('modalAcoes') modalAcoes: TemplateRef<any>;
 
   acaoAgendamento = "";
   eventosBanco: Agendamento[];
@@ -303,117 +304,118 @@ export class AgendaComponent implements OnInit {
   }
 
   acoesEventosCalendario: CalendarEventAction[] = [
-    {
-      label: '<i class="fa fa-fw fa-calendar-check-o" title="Confirmar"></i>',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.actionAgendamento(event, "Confirmar");
-      }
-    },
-    {
-      label: '<i class="fa fa-fw fa-money" title="Pagar e Finalizar"></i>',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.actionAgendamento(event, "PagarFinalizar");
-      }
-    },
-    {
-      label: '<i class="fa fa-fw fa-pencil" title="Editar"></i>',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.actionAgendamento(event, "Editar");
+    // {
+    //   label: '<i class="fa fa-fw fa-calendar-check-o" title="Confirmar"></i>',
+    //   onClick: ({ event }: { event: CalendarEvent }): void => {
+    //     this.actionAgendamento(event, "Confirmar");
+    //   }
+    // },
+    // {
+    //   label: '<i class="fa fa-fw fa-money" title="Pagar e Finalizar"></i>',
+    //   onClick: ({ event }: { event: CalendarEvent }): void => {
+    //     this.actionAgendamento(event, "PagarFinalizar");
+    //   }
+    // },
+    // {
+    //   label: '<i class="fa fa-fw fa-pencil" title="Editar"></i>',
+    //   onClick: ({ event }: { event: CalendarEvent }): void => {
+    //     this.actionAgendamento(event, "Editar");
 
-      }
-    },
-    {
-      label: '<i class="fa fa-fw fa-times" title="Cancelar"></i>',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.actionAgendamento(event, "Cancelar");
+    //   }
+    // },
+    // {
+    //   label: '<i class="fa fa-fw fa-times" title="Cancelar"></i>',
+    //   onClick: ({ event }: { event: CalendarEvent }): void => {
+    //     this.actionAgendamento(event, "Cancelar");
 
-      }
-    },
-    {
-      label: '<i class="fa fa-fw fa-trash" title="Excluir"></i>',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.actionAgendamento(event, "Excluir");
+    //   }
+    // },
+    // {
+    //   label: '<i class="fa fa-fw fa-trash" title="Excluir"></i>',
+    //   onClick: ({ event }: { event: CalendarEvent }): void => {
+    //     this.actionAgendamento(event, "Excluir");
 
-      }
-    }
+    //   }
+    // }
   ];
 
   private actionAgendamento(evento: CalendarEvent, acao: string) {
-    switch (acao) {
-      case ("Editar"):
-        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
-          this.chamarModalAdicionaAgendamento(agendamento, "editar");
-        });
-        break;
-      case ("Confirmar"):
-        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
-          this.acaoAgendamento = "Confirmar";
-          this.modalService.open(this.modalAcaoAgendamento).result.then(
-            result => {
-              if (result == 'Sim') {
-                agendamento = this.validadorAgendamento.tratarCorAgendamento(agendamento);
-                agendamento.situacaoAgendamento = ESituacaoAgendamento["Confirmado"];
-                this.agendamentoService.salvar(agendamento).subscribe(retorno => {
-                  if (retorno) {
-                    this.carregarAgendamentosMedico();
-                  }
-                });
-              }
-            },
-            (() => { })
-          );
+    console.log(acao);
+    this.modalService.open(this.modalAcoes).result.then(result => {
+      switch (result) {
+        case ("Editar"):
+          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+            this.chamarModalAdicionaAgendamento(agendamento, "editar");
+          });
+          break;
+        case ("Confirmar"):
+          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+            this.acaoAgendamento = "Confirmar";
+            this.modalService.open(this.modalAcaoAgendamento).result.then(
+              result => {
+                if (result == 'Sim') {
+                  agendamento = this.validadorAgendamento.tratarCorAgendamento(agendamento);
+                  agendamento.situacaoAgendamento = ESituacaoAgendamento["Confirmado"];
+                  this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                    if (retorno) {
+                      this.carregarAgendamentosMedico();
+                    }
+                  });
+                }
+              },
+              (() => { })
+            );
 
 
 
-        });
-        break;
-      case ("PagarFinalizar"):
+          });
+          break;
+        case ("PagarFinalizar"):
 
-        // this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
-        //   this.chamarModalAdicionaAgendamento(agendamento);
-        // });        
-        break;
-      case ("Cancelar"):
-        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
-          this.acaoAgendamento = "Cancelar";
-          this.modalService.open(this.modalAcaoAgendamento).result.then(
-            result => {
-              if (result == 'Sim') {
-                agendamento.situacaoAgendamento = ESituacaoAgendamento["Cancelado"];
-                agendamento.corFundo = "#000000";
-                agendamento.corLetra = "#EE0000";
-                this.agendamentoService.salvar(agendamento).subscribe(retorno => {
-                  if (retorno) {
-                    this.carregarAgendamentosMedico();
-                  }
-                });
-              }
-            },
-            (() => { })
-          );
-        });
+          // this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          //   this.chamarModalAdicionaAgendamento(agendamento);
+          // });        
+          break;
+        case ("Cancelar"):
+          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+            this.acaoAgendamento = "Cancelar";
+            this.modalService.open(this.modalAcaoAgendamento).result.then(
+              result => {
+                if (result == 'Sim') {
+                  agendamento.situacaoAgendamento = ESituacaoAgendamento["Cancelado"];
+                  agendamento.corFundo = "#000000";
+                  this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                    if (retorno) {
+                      this.carregarAgendamentosMedico();
+                    }
+                  });
+                }
+              },
+              (() => { })
+            );
+          });
 
-        break;
-      case ("Excluir"):
-        this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
-          this.acaoAgendamento = "Excluir";
-          this.modalService.open(this.modalAcaoAgendamento).result.then(
-            result => {
-              if (result == 'Sim') {
-                this.agendamentoService.Excluir(agendamento.id).subscribe(retorno => {
-                  if (retorno) {
-                    this.carregarAgendamentosMedico();
-                  }
-                });
-              }
-            },
-            (() => { })
-          );
-        });
-        break;
-    }
-
-
+          break;
+        case ("Excluir"):
+          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+            this.acaoAgendamento = "Excluir";
+            this.modalService.open(this.modalAcaoAgendamento).result.then(
+              result => {
+                if (result == 'Sim') {
+                  this.agendamentoService.Excluir(agendamento.id).subscribe(retorno => {
+                    if (retorno) {
+                      this.carregarAgendamentosMedico();
+                    }
+                  });
+                }
+              },
+              (() => { })
+            );
+          });
+          break;
+      }
+    },
+    (() => { }));
   }
 
   private refreshPage() {
@@ -463,11 +465,11 @@ export class AgendaComponent implements OnInit {
 
   DroppedResizedEvent(event: CalendarEvent): void {
 
-    
+
     let agendamentoAntigo = this.eventosBanco.find(c => c.id == event.id);
     let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
       event.start, event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
-    
+
     if (retornoValidacao != "") {
       if (retornoValidacao.indexOf("intervalo") > 0) {
         this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
@@ -528,7 +530,7 @@ export class AgendaComponent implements OnInit {
         start: dataHoraInicial,
         end: this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaFinal),
         title: this.montaTituloAgendamento(agendamento),
-        color: { primary: agendamento.corFundo, secondary: agendamento.corLetra },
+        color: { primary: agendamento.corFundo, secondary: agendamento.corFundo },
         actions: this.acoesEventosCalendario,
         resizable: {
           beforeStart: true,

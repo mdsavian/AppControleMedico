@@ -9,7 +9,7 @@
     <label class="control-label" for="nomeDescricao">{{labelDescricao}}(*)</label>
     <input type="text" id="nomeDescricao" placeholder="{{labelDescricao}}" name="nomeDescricao" class="form-control"
         required [(ngModel)]="modeloDescricao.descricao" #nomeDescricao="ngModel">
-    <div *ngIf="nomeDescricao.invalid && (nomeDescricao.dirty || nomeDescricao.touched)" class="alert alert-danger">
+    <div *ngIf="nomeDescricao.invalid" class="alert alert-danger">
         <div *ngIf="nomeDescricao.errors?.required"> {{descricaoErro}}</div>
     </div>
 
@@ -17,7 +17,7 @@
         <label class="control-label" for="corFundo">Cor Fundo</label>
         <input type="color" [required]="mostrarCor" class="form-control" [(ngModel)]="modeloDescricao.corFundo"
             #corFundo="ngModel" id="corFundo" name="corFundo">
-        <div *ngIf="corFundo.invalid && (corFundo.dirty || corFundo.touched)" class="alert alert-danger">
+        <div *ngIf="corFundo.invalid" class="alert alert-danger">
             <div *ngIf="corFundo.errors.required"> Cor Fundo Obrigatória. </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
             <label class="control-label" for="corLetra">Cor Letra</label>
             <input type="color" [required]="mostrarCor" class="form-control" [(ngModel)]="modeloDescricao.corLetra"
                 #corLetra="ngModel" id="corLetra" name="corLetra">
-            <div *ngIf="corLetra.invalid && (corLetra.dirty || corLetra.touched)" class="alert alert-danger">
+            <div *ngIf="corLetra.invalid" class="alert alert-danger">
                 <div *ngIf="corLetra.errors.required"> Cor Letra Obrigatória. </div>
             </div>
         </div>

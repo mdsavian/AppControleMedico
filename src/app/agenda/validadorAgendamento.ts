@@ -6,9 +6,10 @@ export class ValidadorAgendamento {
 
     public tratarCorAgendamento(agendamento:Agendamento)
     {
+      console.log(agendamento.tipoAgendamento);
         switch (agendamento.tipoAgendamento) {
             case ETipoAgendamento.Bloqueio.valueOf(): {
-              agendamento.corFundo = "#000000";
+              agendamento.corFundo = "#EE0000";
               agendamento.corLetra = "#EE0000";
               break;
             }
@@ -18,7 +19,7 @@ export class ValidadorAgendamento {
               break;
             }
             case ETipoAgendamento.Consulta.valueOf(): {
-              agendamento.corFundo = "#5F9EA0";
+              agendamento.corFundo = "#EFF5F5";
               agendamento.corLetra = "#EFF5F5";
               break;
             }
@@ -34,7 +35,7 @@ export class ValidadorAgendamento {
             }
             case ETipoAgendamento.Retorno.valueOf(): {
               agendamento.corFundo = "#CAE1FF";
-              agendamento.corLetra = "#F4F9FF";
+              agendamento.corLetra = "#CAE1FF";
               break;
             }
           }
