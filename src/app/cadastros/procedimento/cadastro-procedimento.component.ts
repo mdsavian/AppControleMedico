@@ -13,11 +13,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class CadastroProcedimentoComponent implements OnInit, AfterViewInit {
 
   @ViewChild('descricao', { read: ElementRef }) private descricao: ElementRef;
-  
+
   mensagemErro: string;
   id: string;
   procedimento: Procedimento = {
-    id: "", descricao: "", corFundo:"#000000", corLetra:"#ffffff"
+    id: "", descricao: "", corFundo: "#000000", corLetra: "#ffffff"
   };
 
   constructor(private procedimentoService: ProcedimentoService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
@@ -29,20 +29,12 @@ export class CadastroProcedimentoComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
+    if (this.procedimentoService.procedimento != null) {
+      this.descricao.nativeElement.setAttribute('readonly', true);
+      this.procedimento = this.procedimentoService.procedimento;
+    }
 
-    this.id = this.route.snapshot.paramMap.get('id');
-
-    if (this.id != null) {
-      this.procedimentoService.buscarPorId(this.id).subscribe(dado => {
-        if (dado != null && dado.descricao != '') {
-          this.descricao.nativeElement.setAttribute('readonly', true);
-          this.procedimento = dado;
-          this.procedimentoService.procedimento = dado;
-        }
-      });
-    }    
-
-  } 
+  }
 
   public onSubmit(): void {
     this.procedimentoService.salvar(this.procedimento).subscribe(
@@ -50,7 +42,7 @@ export class CadastroProcedimentoComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemprocedimento"]);
       },
       error => {
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
 
       }

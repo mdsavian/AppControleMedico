@@ -13,7 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class CadastroEspecialidadeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('descricao', { read: ElementRef }) private descricao: ElementRef;
-  
+
   mensagemErro: string;
   id: string;
   especialidade: Especialidade = {
@@ -29,20 +29,11 @@ export class CadastroEspecialidadeComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-
-    this.id = this.route.snapshot.paramMap.get('id');
-
-    if (this.id != null) {
-      this.especialidadeService.buscarPorId(this.id).subscribe(dado => {
-        if (dado != null && dado.descricao != '') {
-          this.descricao.nativeElement.setAttribute('readonly', true);
-          this.especialidade = dado;
-          this.especialidadeService.especialidade = dado;
-        }
-      });
-    }    
-
-  } 
+    if (this.especialidadeService.especialidade != null) {
+      this.descricao.nativeElement.setAttribute('readonly', true);
+      this.especialidade = this.especialidadeService.especialidade;
+    }
+  }
 
   public onSubmit(): void {
     this.especialidadeService.salvar(this.especialidade).subscribe(
@@ -50,7 +41,7 @@ export class CadastroEspecialidadeComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemespecialidade"]);
       },
       error => {
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
 
       }

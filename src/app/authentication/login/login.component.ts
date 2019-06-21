@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
 
   usuario: Usuario = {
     login: "", senha: "", ultimoLogin: "", permissaoAdministrador: false, ativo: true, visualizaValoresRelatorios: false, tipoUsuario: 0,
-    medicoId: "", funcionarioId: "", id:""
+    medicoId: "", funcionarioId: "", id: ""
   };
 
   onLoggedin() {
@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
           var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";
         }
-        if (data.medicoId != "") {
-          
+        else if (data.medicoId != "") {
+
           this.router.navigate(['/agenda/agenda']);
         }
         else

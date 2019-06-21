@@ -31,18 +31,11 @@ export class CadastroLocalComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
 
-    this.id = this.route.snapshot.paramMap.get('id');
-
-    if (this.id != null) {
-      this.localService.buscarPorId(this.id).subscribe(dado => {
-        if (dado != null && dado.descricao != '') {
-          this.descricao.nativeElement.setAttribute('readonly', true);
-          this.local = dado;
-          this.localService.local = dado;
-        }
-      });
+    if (this.localService.local != null) {
+      this.descricao.nativeElement.setAttribute('readonly', true);
+      this.local = this.localService.local;
+      this.localService.local = this.localService.local;
     }
-
   }
 
   public onSubmit(): void {

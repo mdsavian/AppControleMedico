@@ -2,7 +2,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <form (ngSubmit)="onSubmit()" #funcionarioForm="ngForm">
+        <form #funcionarioForm="ngForm">
           <div [hidden]="funcionarioForm.submitted">
             <ngb-tabset type="pills">
               <ngb-tab title="Informações Pessoais">
@@ -268,14 +268,16 @@
               </ngb-tab>
             </ngb-tabset>
           </div>
-          <div class="panel-footer rowcadastro">
-            <div class="form-group">
-              <div class="col-xs-8 col-md-6">
-                <!--  -->
-                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!funcionarioForm.form.valid"
-                  type="submit">Salvar</button>
-                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
-              </div>
+          <div class="panel-footer row rowcadastro">
+            <div class="col-xs-6 col-md-6">
+              <button class="btn btn-rounded btn-danger" style="width:30%" [disabled]="!permiteAlterarSenha"
+                (click)="alterarSenha()">Alterar Senha</button>
+            </div>
+            <div class="col-xs-6 col-md-6">
+              <button class="btn btn-rounded btn-success" style="width:30%;right:200px;  position: absolute;"
+                [disabled]="!funcionarioForm.form.valid" (click)="salvar()">Salvar</button>
+              <a href="javascript:history.back()" style="width:30%; right:0px; position: absolute;"
+                class="btn btn-rounded btn-danger">Cancelar</a>
             </div>
           </div>
         </form>

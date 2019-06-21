@@ -87,7 +87,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
 
   alterarSenhaMedico() {
 
-    if (this.alterarSenhaMedico) {
+    if (this.permiteAlterarSenha) {
       var modal = this.modalService.open(ModalAlteraSenhaComponent, { windowClass: "modal-holder" });
 
       modal.result.then((alteraSenha) => {
@@ -121,24 +121,24 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   public ngOnInit(): void {
-    var id = this.route.snapshot.paramMap.get('id');
+    
     this.usuario = this.util.retornarUsuarioCorrente();
 
-    if (id != null) {
-      this.medicoService.buscarPorId(id).subscribe(dado => {
-        this.medico = dado;
-        this.data = this.util.dataParaString(dado.dataNascimento);
-        this.especialidadeSelecionada = dado.especialidade.descricao;
+    if (this.medicoService.medico != null) {
+      
+        this.medico = this.medicoService.medico;
+        this.data = this.util.dataParaString(this.medico .dataNascimento);
+        this.especialidadeSelecionada = this.medico .especialidade.descricao;
         this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
 
-      });
+      
 
-      this.pacienteService.TodosGestantesFiltrandoMedico(id).subscribe(gestantes => {
+      this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
         this.pacientesGestantes = gestantes;
         this.source = new LocalDataSource(this.pacientesGestantes);
       })
 
-      this.convenioService.TodosFiltrandoMedico(id).subscribe(dados => {
+      this.convenioService.TodosFiltrandoMedico(this.medico.id).subscribe(dados => {
         this.convenios = dados;
       });
     }

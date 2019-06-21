@@ -45,10 +45,12 @@ export class ListagemExameComponent {
   }
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastroexame', { id: event.data.id }]);
+    this.exameService.exame = this.listaExames.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastroexame']);
   }
 
   criarRegistro(event) {
+    this.exameService.exame =null;
     this.router.navigate(['/cadastros/cadastroexame']);
   }
 

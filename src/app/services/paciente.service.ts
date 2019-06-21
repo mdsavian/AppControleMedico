@@ -9,6 +9,7 @@ export class PacienteService {
   
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'paciente/';
+  public paciente :Paciente;
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});

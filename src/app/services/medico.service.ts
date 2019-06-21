@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class MedicoService {
-  
+  public medico:Medico;
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'medico/';
 

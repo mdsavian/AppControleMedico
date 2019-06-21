@@ -46,10 +46,12 @@ constructor( private funcionarioService: FuncionarioService, private router: Rou
   } 
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastrofuncionario', {id:event.data.id}]);
+    this.funcionarioService.funcionario = this.listaFuncionarios.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastrofuncionario']);
   }
 
   criarRegistro(event) {
+    this.funcionarioService.funcionario =null;
     this.router.navigate(['/cadastros/cadastrofuncionario']);
   }
 }

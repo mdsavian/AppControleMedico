@@ -47,10 +47,12 @@ constructor( private especialidadeService: EspecialidadeService, private router:
   } 
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastroespecialidade', {id:event.data.id}]);
+    this.especialidadeService.especialidade = this.listaEspecialidades.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastroespecialidade']);
   }
 
   criarRegistro(event) {
+    this.especialidadeService.especialidade =null;
     this.router.navigate(['/cadastros/cadastroespecialidade']);
   }
 }

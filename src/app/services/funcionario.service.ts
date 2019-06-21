@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 export class FuncionarioService {
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'funcionario/';
+  public funcionario:Funcionario;
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });

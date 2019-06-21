@@ -93,10 +93,12 @@ export class ListagemMedicoComponent {
   }
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastromedico', { id: event.data.id }]);
+    this.medicoService.medico = this.listaMedicos.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastromedico']);
   }
 
   criarRegistro(event) {
+    this.medicoService.medico = null;
     this.router.navigate(['/cadastros/cadastromedico']);
   }
 

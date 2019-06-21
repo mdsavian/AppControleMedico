@@ -19,15 +19,13 @@ export class Util {
         return novaData;
     }
 
-    public retornarUsuarioAdministrador(): boolean {
-        console.log("pa");
-        var usuario = new LoginService(null).usuarioCorrenteValor;
-        console.log(usuario.medicoId == "" ,"op", usuario.medicoId == null, "op1",usuario.funcionarioId == null ,"op2", usuario.funcionarioId == "");
+    public retornarUsuarioAdministrador(): boolean {        
+        var usuario = new LoginService(null,null).usuarioCorrenteValor;        
         return ((usuario.medicoId == "" || usuario.medicoId == null) && (usuario.funcionarioId == null || usuario.funcionarioId == ""));
     }
 
     public retornarUsuarioCorrente(): Usuario {
-        var usuario = new LoginService(null).usuarioCorrenteValor;
+        var usuario = new LoginService(null,null).usuarioCorrenteValor;
         return usuario;
     }
 

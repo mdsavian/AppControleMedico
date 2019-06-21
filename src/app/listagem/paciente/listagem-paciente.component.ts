@@ -46,10 +46,12 @@ constructor( private pacienteService: PacienteService, private router: Router, p
   } 
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastropaciente', {id:event.data.id}]);
+    this.pacienteService.paciente = this.listaPacientes.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastropaciente']);
   }
 
   criarRegistro(event) {
+    this.pacienteService.paciente = null;
     this.router.navigate(['/cadastros/cadastropaciente']);
   }
 }

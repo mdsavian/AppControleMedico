@@ -60,19 +60,17 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    var id = this.route.snapshot.paramMap.get('id');
+    
+    if (this.pacienteService.paciente != null) {
 
-    if (id != null) {
-      this.pacienteService.buscarPorId(id).subscribe(dado => {
-        this.paciente = dado;
-        this.dataNasci = this.util.dataParaString(dado.dataNascimento);
-        this.dataValidade = this.util.dataParaString(dado.dataValidadeCartao);
+      this.paciente = this.pacienteService.paciente;
+      this.dataNasci = this.util.dataParaString(this.paciente.dataNascimento);
+      this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
 
-        if (this.paciente.convenio != null) {
-          this.convenioId = this.paciente.convenio.id;
-          this.convenioSelecionado = this.paciente.convenio.nomeConvenio;
-        }
-      });
+      if (this.paciente.convenio != null) {
+        this.convenioId = this.paciente.convenio.id;
+        this.convenioSelecionado = this.paciente.convenio.nomeConvenio;
+      }
     }
 
     var usuario = this.loginService.usuarioCorrenteValor;
@@ -105,7 +103,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
           this.convenioSelecionado = convenioExistente.nomeConvenio;
         }
         else {
-          
+
           var novoConvenio = new Convenio();
           novoConvenio.nomeConvenio = convenio.descricao;
           novoConvenio.ativo = true;
@@ -116,7 +114,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
           this.convenioService.salvar(novoConvenio).subscribe(conenioCadastrado => {
             this.paciente.convenio = conenioCadastrado;
             this.convenioSelecionado = conenioCadastrado.nomeConvenio;
-            
+
           })
         }
       }

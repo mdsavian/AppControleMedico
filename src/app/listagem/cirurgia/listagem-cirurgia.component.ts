@@ -45,10 +45,12 @@ export class ListagemCirurgiaComponent {
   }
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastrocirurgia', { id: event.data.id }]);
+    this.cirurgiaService.cirurgia = this.listaCirurgias.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastrocirurgia']);
   }
 
   criarRegistro(event) {
+    this.cirurgiaService.cirurgia = null;
     this.router.navigate(['/cadastros/cadastrocirurgia']);
   }
 

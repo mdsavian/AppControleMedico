@@ -11,7 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ListagemLocalComponent {
   source: LocalDataSource;
-  listaLocals: Array<Local>;
+  listaLocais: Array<Local>;
   public isSpinnerVisible = false;
   closeResult: string;
   settings = tableData.settings;
@@ -24,9 +24,9 @@ export class ListagemLocalComponent {
 
   buscaLocals(): void {
     this.localService.Todos().subscribe(dados => {
-      this.listaLocals = dados;
-      this.localService.listaLocal = this.listaLocals;
-      this.source = new LocalDataSource(this.listaLocals);
+      this.listaLocais = dados;
+      this.localService.listaLocal = this.listaLocais;
+      this.source = new LocalDataSource(this.listaLocais);
     });
   }
 
@@ -45,10 +45,12 @@ export class ListagemLocalComponent {
   }
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastrolocal', { id: event.data.id }]);
+    this.localService.local = this.listaLocais.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastrolocal']);
   }
 
   criarRegistro(event) {
+    this.localService.local=null;
     this.router.navigate(['/cadastros/cadastrolocal']);
   }
 

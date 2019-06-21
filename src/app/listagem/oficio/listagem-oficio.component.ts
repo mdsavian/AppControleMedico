@@ -47,10 +47,12 @@ constructor( private oficioService: OficioService, private router: Router, priva
   } 
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastrooficio', {id:event.data.id}]);
+    this.oficioService.oficio = this.listaOficios.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastrooficio']);
   }
 
   criarRegistro(event) {
+    this.oficioService.oficio =null;
     this.router.navigate(['/cadastros/cadastrooficio']);
   }
 }

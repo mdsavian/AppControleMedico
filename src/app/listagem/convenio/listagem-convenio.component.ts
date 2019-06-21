@@ -47,10 +47,12 @@ constructor( private convenioService: ConvenioService, private router: Router, p
   } 
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastroconvenio', {id:event.data.id}]);
+    this.convenioService.convenio = this.listaConvenios.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastroconvenio']);
   }
 
   criarRegistro(event) {
+    this.convenioService.convenio =null;
     this.router.navigate(['/cadastros/cadastroconvenio']);
   }
 }

@@ -13,7 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class CadastroOficioComponent implements OnInit, AfterViewInit {
 
   @ViewChild('descricao', { read: ElementRef }) private descricao: ElementRef;
-  
+
   mensagemErro: string;
   id: string;
   oficio: Oficio = {
@@ -29,20 +29,11 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-
-    this.id = this.route.snapshot.paramMap.get('id');
-
-    if (this.id != null) {
-      this.oficioService.buscarPorId(this.id).subscribe(dado => {
-        if (dado != null && dado.descricao != '') {
-          this.descricao.nativeElement.setAttribute('readonly', true);
-          this.oficio = dado;
-          this.oficioService.oficio = dado;
-        }
-      });
-    }    
-
-  } 
+    if (this.oficioService.oficio != null) {
+      this.descricao.nativeElement.setAttribute('readonly', true);
+      this.oficio = this.oficioService.oficio;
+    }
+  }
 
   public onSubmit(): void {
     this.oficioService.salvar(this.oficio).subscribe(
@@ -50,7 +41,7 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemoficio"]);
       },
       error => {
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
 
       }

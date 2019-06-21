@@ -45,10 +45,12 @@ export class ListagemProcedimentoComponent {
   }
 
   editarRegistro(event) {
-    this.router.navigate(['/cadastros/cadastroprocedimento', { id: event.data.id }]);
+    this.procedimentoService.procedimento = this.listaProcedimentos.find(c=> c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastroprocedimento']);
   }
 
   criarRegistro(event) {
+    this.procedimentoService.procedimento =null;
     this.router.navigate(['/cadastros/cadastroprocedimento']);
   }
 

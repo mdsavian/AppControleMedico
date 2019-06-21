@@ -9,12 +9,15 @@ import { Usuario } from '../../modelos/usuario';
 import { FuncionarioService } from "../../services/funcionario.service"
 import { EnderecoService } from '../../services/endereco.service';
 import { OficioService } from '../../services/oficio.service';
-
+import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha.component';
 import { Util } from '../../uteis/Util';
 import { Oficio } from '../../modelos/oficio';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-adiciona-modelo-descricao.component';
+import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
+import { LoginService } from '../../services/login.service';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   templateUrl: './cadastro-funcionario.component.html',
@@ -30,6 +33,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaValoresRelatorios: false
   };
 
+  permiteAlterarSenha = false;
   oficios = new Array<Oficio>();
   nomeOficios: Array<string>;
   falhaNaBusca: boolean;
@@ -39,22 +43,53 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   dataNasci: string = "01/01/1901"
   dataAdmis: string = "01/01/1901"
   dataDemis: string = "01/01/1901"
-
+  usuario:Usuario;
+  
+  constructor(private loginService:LoginService,private usuarioService: UsuarioService,public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
+    private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
+  }
+  
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
   }
 
-  public ngOnInit(): void {
-    var id = this.route.snapshot.paramMap.get('id');
+  alterarSenha() {
 
-    if (id != null) {
-      this.funcionarioService.buscarPorId(id).subscribe(dado => {
-        this.funcionario = dado;
-        this.dataNasci = this.util.dataParaString(dado.dataNascimento);
-        this.dataAdmis = this.util.dataParaString(dado.dataAdmissao);
-        this.dataDemis = this.util.dataParaString(dado.dataDemissao);
-        this.oficioSelecionado = this.funcionario.oficio.descricao;
-      });
+    if (this.permiteAlterarSenha) {
+      var modal = this.modalService.open(ModalAlteraSenhaComponent, { windowClass: "modal-holder" });
+
+      modal.result.then((alteraSenha) => {
+        alteraSenha.usuarioId = this.usuario.id;
+        this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {          
+          if (c == null) {
+            var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+            modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente.";
+          }
+          else {
+            var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder" });
+            modal.componentInstance.mensagem = "Senha alterada com sucesso";
+            modal.componentInstance.titulo = "Alterado com sucesso";
+            modal.result.then(() => this.loginService.logout());
+          }
+        });
+      },
+        error => {
+
+        });
+    }
+  }
+
+  public ngOnInit(): void {
+    this.usuario = this.util.retornarUsuarioCorrente();
+    
+    if (this.funcionarioService.funcionario != null) {
+      
+        this.funcionario = this.funcionarioService.funcionario;
+        this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
+        this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
+        this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);        
+        this.oficioSelecionado = this.funcionario.oficio.descricao;        
+        this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
     }
 
     this.oficioService.Todos().subscribe(c => {
@@ -64,10 +99,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         this.nomeOficios.push(d.descricao);
       });
     })
-  }
-
-  constructor(public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
-    private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
   search = (text$: Observable<string>) =>
@@ -138,7 +169,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public onSubmit(): void {
+  public salvar(): void {
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {
         this.router.navigate(["listagem/listagemfuncionario"]);

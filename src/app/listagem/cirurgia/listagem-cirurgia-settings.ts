@@ -13,13 +13,13 @@ export const settings = {
       type: "custom",
       filter: false,
       renderComponent: CorComponent,
-    },
-    corLetra: {
-      title: 'Cor Letra',
-      type: "custom",
-      filter: false,
-      renderComponent: CorComponent,
     }
+    // corLetra: {
+    //   title: 'Cor Letra',
+    //   type: "custom",
+    //   filter: false,
+    //   renderComponent: CorComponent,
+    // }
   },
   actions:
   {

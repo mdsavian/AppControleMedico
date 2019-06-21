@@ -40,24 +40,18 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
 
-    this.id = this.route.snapshot.paramMap.get('id');
-
     this.convenios = this.convenioService.listaConvenio;
 
-    if (this.id != null) {
-      this.convenioService.buscarPorId(this.id).subscribe(dado => {
-        if (dado != null && dado.nomeConvenio != '') {
-          this.convenio = dado;
-          this.convenioService.convenio = dado;
-          this.nomeConvenio.nativeElement.setAttribute('readonly', true);
-        }
-      });
-
-      this.convenioService.buscarMedicosPorConvenio(this.id).subscribe(medicos => {
-        this.listaMedicos = medicos;
-        this.source = new LocalDataSource(this.listaMedicos);
-      });
+    if (this.convenioService.convenio != null) {
+      this.convenio = this.convenioService.convenio;
+      this.nomeConvenio.nativeElement.setAttribute('readonly', true);
     }
+    
+    this.convenioService.buscarMedicosPorConvenio(this.id).subscribe(medicos => {
+      this.listaMedicos = medicos;
+      this.source = new LocalDataSource(this.listaMedicos);
+    });
+
   }
 
   constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
@@ -70,7 +64,7 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
         this.router.navigate(["listagem/listagemconvenio"]);
       },
       error => {
-        var modal = this.modalService.open(ModalErrorComponent, {windowClass:"modal-holder modal-error"});
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
       }
     )
