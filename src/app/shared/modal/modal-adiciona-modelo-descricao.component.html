@@ -21,15 +21,6 @@
             <div *ngIf="corFundo.errors.required"> Cor Fundo Obrigatória. </div>
         </div>
     </div>
-
-    <div class="form-group" [hidden]="!mostrarCor">
-            <label class="control-label" for="corLetra">Cor Letra</label>
-            <input type="color" [required]="mostrarCor" class="form-control" [(ngModel)]="modeloDescricao.corLetra"
-                #corLetra="ngModel" id="corLetra" name="corLetra">
-            <div *ngIf="corLetra.invalid" class="alert alert-danger">
-                <div *ngIf="corLetra.errors.required"> Cor Letra Obrigatória. </div>
-            </div>
-        </div>
 </div>
 <div class="modal-footer">
     <button style="width:40%" (click)="fechar()" id="btnCancelar" class="btn btn-rounded btn-warning">Cancelar</button>

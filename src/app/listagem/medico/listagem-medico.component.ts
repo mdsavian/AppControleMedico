@@ -61,7 +61,7 @@ export class ListagemMedicoComponent {
         },
         add:
         {
-          addButtonContent: this.administrador ? 'Criar Novo' : ''
+          addButtonContent: this.administrador ? 'Novo' : ''
         }
       };
     });
@@ -71,7 +71,7 @@ export class ListagemMedicoComponent {
   }
 
   buscaMedicos(): void {
-    this.medicoService.Todos().subscribe(dados => {
+    this.medicoService.todos().subscribe(dados => {
       this.listaMedicos = dados;
       this.source = new LocalDataSource(this.listaMedicos);
       this.isSpinnerVisible = false;

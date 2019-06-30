@@ -15,4 +15,5 @@ export class Medico extends Pessoa {
   usuario:Usuario;
   especialidade:Especialidade;
   configuracaoAgenda:ConfiguracaoAgenda;
+  administrador:boolean;
 }

@@ -10,6 +10,7 @@ import { ListagemProcedimentoComponent } from './procedimento/listagem-procedime
 import { ListagemExameComponent } from './exame/listagem-exame.component';
 import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.component';
 import { ListagemLocalComponent } from './local/listagem-local.component';
+import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -113,6 +114,16 @@ export const ListagemRoutes: Routes = [
           title: 'Cirurgia',
           urls: [
             { title: 'Cirurgia' }
+          ]
+        }
+      },
+      {
+        path: 'listagemclinica',
+        component: ListagemClinicaComponent,
+        data: {
+          title: 'Clínica',
+          urls: [
+            { title: 'Clínica' }
           ]
         }
       }

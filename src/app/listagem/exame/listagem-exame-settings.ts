@@ -37,6 +37,6 @@ export const settings = {
   },
   add:
   {
-    addButtonContent: 'Criar Novo'
+    addButtonContent: 'Novo'
   }
 };

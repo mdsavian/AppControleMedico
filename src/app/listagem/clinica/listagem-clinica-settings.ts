@@ -1,38 +1,31 @@
+import { CorComponent } from "../shared/cor-component";
 import { Util } from "../../uteis/Util";
 
 export const settings = {
-  mode:'external',
-  noDataMessage:"Não foi encontrado nenhum registro",
+  mode: 'external',
+  noDataMessage: "Não foi encontrado nenhum registro",
   columns: {
-    nomeCompleto: {
-      title: 'Nome',
+    razaoSocial: {
+      title: 'Razão Social',
       filter: true
     },
-    celular: {
-      title: 'Celular',
-      filter: false,
-      valuePrepareFunction: (celular)=> {return celular === null ? "" : new Util().formataCelular(celular)}
-    },
-    convenio: {
-      title: 'Convênio',
+    cnpj: {
+      title: 'CNPJ',      
       filter: true,
-      valuePrepareFunction: (convenio) => { return convenio === null ? "" : convenio.nomeConvenio} 
+      valuePrepareFunction: (cnpj)=> {return cnpj === null ? "" : new Util().formataCnpj(cnpj)}
     },
-    tipoPlano:
-    {
-      title:"Tipo Plano",
-      filter:true
+    telefone: {
+      title: 'Telefone',
+      valuePrepareFunction: (celular)=> {return celular === null ? "" : new Util().formataCelular(celular)}
+
     },
     ativo: {
-      title: 'Ativo',
-      filter: false,
-      valuePrepareFunction: (valor) => { return valor === true ? 'Sim' : 'false' }
+      title: 'ativo'
     }
-
-  },  
+  },
   actions:
   {
-    columnTitle:''
+    columnTitle: ''
   },
   delete: {
     deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',

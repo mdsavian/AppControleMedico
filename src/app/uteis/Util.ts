@@ -54,6 +54,24 @@ export class Util {
         return data;
     }
 
+    public formataCnpj(cnpj: string) {
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g,"\$1.\$2.\$3\/\$4\-\$5");
+
+    }   
+    
+    public formataCpf(cpf: string) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g,"\$1.\$2.\$3\-\$4");
+    }   
+    
+
+
+    public formataTelefone(telefone: string) {
+        telefone = telefone.replace(/\D/g, "");             //Remove tudo o que não é dígito
+        telefone = telefone.replace(/^(\d{2})(\d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
+        telefone = telefone.replace(/(\d)(\d{4})$/, "$1-$2");
+        return telefone;
+    }
+
     public formataCelular(celular: string) {
         celular = celular.replace(/\D/g, "");             //Remove tudo o que não é dígito
         celular = celular.replace(/^(\d{2})(\d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos

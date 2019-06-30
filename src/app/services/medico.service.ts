@@ -22,10 +22,13 @@ export class MedicoService {
 
   public buscarPorId(medicoId: string) {
     return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
-
   }
 
-  public Todos() {
+  todosFiltrandoMedico(medicoId: string) {
+    return this.http.get<Array<Medico>>(this.accessPointUrl + "todosFiltrandoMedico/"+ medicoId);
+  }
+
+  public todos() {
     return this.http.get<Array<Medico>>(this.accessPointUrl);
   }
 

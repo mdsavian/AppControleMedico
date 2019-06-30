@@ -13,6 +13,6 @@ export class Funcionario extends Pessoa {
   dataAdmissao:Date;  
   dataDemissao:Date;
   permissaoAdministrador : boolean;
-  visualizaValoresRelatorios : boolean;
+  visualizaAgenda : boolean;
 
 }

@@ -28,6 +28,7 @@ import { CadastroProcedimentoComponent } from './procedimento/cadastro-procedime
 import { CadastroExameComponent } from './exame/cadastro-exame.component';
 import { CadastroLocalComponent } from './local/cadastro-local.component';
 import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.component';
+import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
@@ -35,7 +36,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 @NgModule({
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
   declarations: [CadastroLocalComponent,CadastroCirurgiaComponent,CadastroExameComponent,CadastroPacienteComponent, ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroProcedimentoComponent,
-    CadastroOficioComponent, CadastroEspecialidadeComponent,
+    CadastroOficioComponent, CadastroEspecialidadeComponent,CadastroClinicaComponent,
     ValidaNomeConvenioDirective, ValidaCpfDirective, ValidaNomeOficioDirective,ValidaDescricaoEspecialidadeDirective,ValidaDescricaoExameDirective,ValidaDescricaoServicoDirective,ValidaDescricaoCirurgiaDirective,ValidaDescricaoLocalDirective,]
 })
 export class CadastrosModule { }

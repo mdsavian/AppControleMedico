@@ -37,7 +37,7 @@ export class UsuarioService {
   }
 
   errorHandler(error:HttpErrorResponse)
-  {console.log("erro",error);
+  {
     return Observable.throw(error.message);
   }
 

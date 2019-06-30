@@ -11,6 +11,16 @@ export const ROUTES: RouteInfo[] = [
     extralink: false,
     submenu: [
       {
+        path: '/listagem/listagemclinica',
+        title: 'Clínica',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
         path: '/listagem/listagempaciente',
         title: 'Paciente',
         icon: '',

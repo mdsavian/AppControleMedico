@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   }
 
   usuario: Usuario = {
-    login: "", senha: "", ultimoLogin: "", permissaoAdministrador: false, ativo: true, visualizaValoresRelatorios: false, tipoUsuario: 0,
+    login: "", senha: "", ultimoLogin: "", ativo: true, tipoUsuario: 0,
     medicoId: "", funcionarioId: "", id: ""
   };
 

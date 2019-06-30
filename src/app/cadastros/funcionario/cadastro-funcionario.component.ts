@@ -30,7 +30,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   funcionario: Funcionario = {
     id: "", nomeCompleto: "", cpf: "", dataAdmissao: new Date('01/01/0001'), dataDemissao: new Date('01/01/0001'), dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1,
-    celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaValoresRelatorios: false
+    celular: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaAgenda: false
   };
 
   permiteAlterarSenha = false;

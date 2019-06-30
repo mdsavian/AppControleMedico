@@ -50,7 +50,7 @@
     </div>
     <div class="modal-footer">
         <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-            [disabled]="senhaAtual.invalid || alteraSenha.invalid || confirmacaoNovaSenha.invalid ||novaSenha.value != confirmacaoNovaSenha.value"
+            [disabled]="senhaAtual.invalid || novaSenha.invalid || confirmacaoNovaSenha.invalid || novaSenha.value != confirmacaoNovaSenha.value"
             type="submit">Salvar</button>
         <button style="width:40%" (click)="fechar()" id="btnCancelar"
             class="btn btn-rounded btn-warning">Cancelar</button>

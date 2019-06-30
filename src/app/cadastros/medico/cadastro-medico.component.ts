@@ -48,10 +48,11 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   convenios: Array<Convenio> = [];
   medico: Medico = {
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario: new Usuario(),
-    cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),
+    administrador :false,cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),
     configuracaoAgenda: new ConfiguracaoAgenda()
   };
   usuario: Usuario;
+  usuarioAdministrador = false;
   permiteAlterarSenha = false;
 
 
@@ -93,7 +94,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
       modal.result.then((alteraSenha) => {
         alteraSenha.usuarioId = this.usuario.id;
         this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {
-          console.log(c);
+          
           if (c == null) {
             var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
             modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente.";
@@ -123,15 +124,14 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   public ngOnInit(): void {
     
     this.usuario = this.util.retornarUsuarioCorrente();
-
+    this.usuarioAdministrador = this.util.retornarUsuarioAdministrador();
     if (this.medicoService.medico != null) {
       
         this.medico = this.medicoService.medico;
         this.data = this.util.dataParaString(this.medico .dataNascimento);
         this.especialidadeSelecionada = this.medico .especialidade.descricao;
         this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
-
-      
+        this.usuarioAdministrador = this.usuario.medicoId == "" && this.usuario.funcionarioId == "";
 
       this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
         this.pacientesGestantes = gestantes;

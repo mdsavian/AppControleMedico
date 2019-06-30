@@ -14,6 +14,7 @@ import { ListagemProcedimentoComponent } from './procedimento/listagem-procedime
 import { ListagemExameComponent } from './exame/listagem-exame.component';
 import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.component';
 import { ListagemLocalComponent } from './local/listagem-local.component';
+import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
 import { CorComponent } from './shared/cor-component';
 
 @NgModule({
@@ -25,7 +26,7 @@ import { CorComponent } from './shared/cor-component';
   ],
   declarations: [
     ListagemMedicoComponent, ListagemPacienteComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
-    ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
+    ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemClinicaComponent,ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent, CorComponent
   ],
   entryComponents: [

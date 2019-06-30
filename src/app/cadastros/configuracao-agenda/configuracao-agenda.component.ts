@@ -51,7 +51,7 @@ export class ConfiguracaoAgendaComponent implements OnInit {
       });
     }
 
-    this.medicoService.Todos().subscribe(medicos => {
+    this.medicoService.todos().subscribe(medicos => {
       this.medicos = medicos;
       this.nomeMedicos = new Array<string>();
       medicos.forEach(d => {

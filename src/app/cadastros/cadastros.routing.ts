@@ -10,6 +10,7 @@ import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-
 import { CadastroExameComponent } from './exame/cadastro-exame.component';
 import { CadastroLocalComponent } from './local/cadastro-local.component';
 import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.component';
+import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -82,6 +83,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Procedimento',
           urls: [
             { title: 'Cadastro Procedimento', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastroclinica',
+        component: CadastroClinicaComponent,
+        data: {
+          title: 'Cadastro Clínica',
+          urls: [
+            { title: 'Cadastro Clínica', url: '/cadastros/cadastrar' }
           ]
         }
       },

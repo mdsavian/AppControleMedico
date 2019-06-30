@@ -19,18 +19,20 @@ import { ValidadorAgendamento } from './validadorAgendamento';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda';
+import { Funcionario } from '../modelos/funcionario';
+import { FuncionarioService } from '../services/funcionario.service';
 
 @Component({
   selector: 'mwl-demo-component',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['styles.css'],
-  templateUrl: 'agenda-component.html'
+  templateUrl: 'agenda.component.html'
 })
 export class AgendaComponent implements OnInit {
   @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
   @ViewChild('modalAcoes') modalAcoes: TemplateRef<any>;
-
+  
   acaoAgendamento = "";
   eventosBanco: Agendamento[];
   validadorAgendamento = new ValidadorAgendamento();
@@ -41,28 +43,43 @@ export class AgendaComponent implements OnInit {
   viewDate: Date = new Date();
   util = new Util();
   medico: Medico;
-
+  funcionario:Funcionario;
+  medicos: Medico[];
+  visualizaBotoesAberturaFechamentoCaixa= false;
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
   msgteste: string;
 
-  constructor(private agendamentoService: AgendamentoService, private modalService: NgbModal, private cdr: ChangeDetectorRef, private loginService: LoginService,
-    private medicoService: MedicoService, private router: Router) { }
+  constructor(private agendamentoService: AgendamentoService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
+     private loginService: LoginService, private funcionarioService:FuncionarioService, private medicoService: MedicoService, private router: Router) {
+  }
 
   ngOnInit() {
     var usuario = this.loginService.usuarioCorrenteValor;
 
-    if (usuario.medicoId != "") {
-      this.medicoService.buscarPorId(usuario.medicoId).subscribe(medico => {
-        if (medico != null) {
-          this.medico = medico;
-          this.ajustarParametrosCalendario();
-
+    if (usuario.medicoId != "" && usuario.medicoId != null){
+      this.medicoService.todosFiltrandoMedico(usuario.medicoId).subscribe(medicos => {
+        this.medicos = medicos;
+        if (usuario.medicoId != "") {
+          this.medico = this.medicos.find(d => d.id === usuario.medicoId);
         }
+        this.ajustarParametrosCalendario();
       });
+
     }
+    else if (usuario.funcionarioId != "" && usuario.funcionarioId != null)
+    {
+      this.funcionarioService.buscarPorId(usuario.funcionarioId).subscribe(func=> {
+        console.log(func, func.visualizaAgenda);
+        this.funcionario = func;
+        this.visualizaBotoesAberturaFechamentoCaixa = func.visualizaAgenda;
+      });
+
+      
+    }
+    
   }
 
   converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
@@ -126,7 +143,6 @@ export class AgendaComponent implements OnInit {
   }
 
   ajustarParametrosCalendario() {
-
     if (this.medico != null) {
 
       this.carregarAgendamentosMedico();
@@ -339,8 +355,7 @@ export class AgendaComponent implements OnInit {
     // }
   ];
 
-  private actionAgendamento(evento: CalendarEvent, acao: string) {
-    console.log(acao);
+  actionAgendamento(evento: CalendarEvent, acao: string) {
     this.modalService.open(this.modalAcoes).result.then(result => {
       switch (result) {
         case ("Editar"):
@@ -365,8 +380,6 @@ export class AgendaComponent implements OnInit {
               },
               (() => { })
             );
-
-
 
           });
           break;
@@ -415,7 +428,7 @@ export class AgendaComponent implements OnInit {
           break;
       }
     },
-    (() => { }));
+      (() => { }));
   }
 
   private refreshPage() {
