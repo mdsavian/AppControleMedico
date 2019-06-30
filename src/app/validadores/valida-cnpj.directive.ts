@@ -2,7 +2,7 @@ import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 
 @Directive({
-  selector: '[appValidacnpj]',
+  selector: '[appValidaCnpj]',
   providers: [{ provide: NG_VALIDATORS, useExisting: ValidaCnpjDirective, multi: true }]
 })
 
@@ -11,18 +11,23 @@ export class ValidaCnpjDirective implements Validator {
   constructor() { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
-    if (control.value == '')
+    if (control.value == '' || control.value == null)
       return null;
+
     if (!this.validaCnpj(control.value)) return { 'validaCnpj': { value: control.value } };
     else return null;
   }
 
   public validaCnpj(cnpj: string): boolean {
 
+    if ( cnpj == null) return false;
     cnpj = cnpj.replace(/[^\d]+/g, '');
-    if (cnpj == '') return false;
+
+    if (cnpj == '') return false;  
+
     if (cnpj.length != 14)
       return false;
+
     // LINHA 10 - Elimina CNPJs invalidos conhecidos
     if (cnpj == "00000000000000" ||
       cnpj == "11111111111111" ||
@@ -52,7 +57,7 @@ export class ValidaCnpjDirective implements Validator {
       return false;
 
     tamanho = tamanho + 1;
-    numeros = cnpj.substring(0, tamanho); 
+    numeros = cnpj.substring(0, tamanho);
     soma = 0;
     pos = tamanho - 7;
     for (i = tamanho; i >= 1; i--) {

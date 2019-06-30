@@ -20,7 +20,7 @@ export class ValidaCpfDirective implements Validator {
   public validaCpf(cpf: string): boolean {    
 
     if (cpf == null) {
-      return true;
+      return false;
     }
 
     if (cpf.length != 11) {

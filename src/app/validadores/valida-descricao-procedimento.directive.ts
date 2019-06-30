@@ -15,7 +15,8 @@ export class ValidaDescricaoServicoDirective implements Validator {
     var listaProcedimento = this.procedimentoService.listaProcedimento;
     var procedimentoRegente = this.procedimentoService.procedimento;
 
-    if (procedimentoRegente == null && listaProcedimento != null && listaProcedimento.length > 0 && listaProcedimento.find(c => c.descricao === control.value) != null) {    
+    if (procedimentoRegente == null && listaProcedimento != null && listaProcedimento.length > 0 
+      && listaProcedimento.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaDescricaoServico': { value: control.value } } ;        
     }
     return null;    

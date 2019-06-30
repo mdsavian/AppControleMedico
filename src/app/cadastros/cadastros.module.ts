@@ -17,6 +17,7 @@ import { ValidaDescricaoExameDirective } from '../validadores/valida-descricao-e
 import { ValidaDescricaoEspecialidadeDirective } from '../validadores/valida-descricao-especialidade.directive';
 import { ValidaNomeOficioDirective } from '../validadores/valida-nome-oficio.directive';
 import { ValidaCpfDirective } from '../validadores/valida-cpf.directive';
+import { ValidaCnpjDirective } from '../validadores/valida-cnpj.directive';
 
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
@@ -35,8 +36,12 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
 @NgModule({
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
-  declarations: [CadastroLocalComponent,CadastroCirurgiaComponent,CadastroExameComponent,CadastroPacienteComponent, ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, CadastroFuncionarioComponent, CadastroProcedimentoComponent,
+  declarations: [CadastroLocalComponent,CadastroCirurgiaComponent,CadastroExameComponent,CadastroPacienteComponent, 
+    ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, 
+    CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent,CadastroClinicaComponent,
-    ValidaNomeConvenioDirective, ValidaCpfDirective, ValidaNomeOficioDirective,ValidaDescricaoEspecialidadeDirective,ValidaDescricaoExameDirective,ValidaDescricaoServicoDirective,ValidaDescricaoCirurgiaDirective,ValidaDescricaoLocalDirective,]
+    ValidaNomeConvenioDirective,ValidaCnpjDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
+    ValidaDescricaoEspecialidadeDirective,ValidaDescricaoExameDirective,ValidaDescricaoServicoDirective,
+    ValidaDescricaoCirurgiaDirective,ValidaDescricaoLocalDirective]
 })
 export class CadastrosModule { }

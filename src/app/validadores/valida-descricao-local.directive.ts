@@ -15,7 +15,8 @@ export class ValidaDescricaoLocalDirective implements Validator {
     var listaLocal = this.localService.listaLocal;
     var localRegente = this.localService.local;
 
-    if (localRegente == null && listaLocal != null && listaLocal.length > 0 && listaLocal.find(c => c.descricao === control.value) != null) {    
+    if (localRegente == null && listaLocal != null && listaLocal.length > 0 
+      && listaLocal.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaDescricaoLocal': { value: control.value } } ;        
     }
     return null;    

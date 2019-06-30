@@ -15,7 +15,8 @@ export class ValidaDescricaoExameDirective implements Validator {
     var listaExame = this.exameService.listaExame;
     var exameRegente = this.exameService.exame;
 
-    if (exameRegente == null && listaExame != null && listaExame.length > 0 && listaExame.find(c => c.descricao === control.value) != null) {    
+    if (exameRegente == null && listaExame != null && listaExame.length > 0
+       && listaExame.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaDescricaoExame': { value: control.value } } ;        
     }
     return null;    

@@ -15,7 +15,8 @@ export class ValidaNomeOficioDirective implements Validator {
     var listaOficio = this.oficioService.listaOficio;
     var oficioRegente = this.oficioService.oficio;
 
-    if (oficioRegente == null && listaOficio != null && listaOficio.length > 0 && listaOficio.find(c => c.descricao === control.value) != null) {    
+    if (oficioRegente == null && listaOficio != null && listaOficio.length > 0 
+      && listaOficio.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaNomeOficio': { value: control.value } } ;        
     }
     return null;    

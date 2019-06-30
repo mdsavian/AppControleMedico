@@ -1,6 +1,6 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
-import { OficioService } from "../services/oficio.service";
+import { EspecialidadeService } from "../services/especialidade.service";
 
 @Directive({
   selector: '[appValidaDescricaoEspecialidade]',
@@ -9,13 +9,14 @@ import { OficioService } from "../services/oficio.service";
 
 export class ValidaDescricaoEspecialidadeDirective implements Validator {
 
-  constructor(private oficioService: OficioService) { };
+  constructor(private especialidadeService: EspecialidadeService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
-    var listaOficio = this.oficioService.listaOficio;
-    var oficioRegente = this.oficioService.oficio;
+    var listaEspecialidade = this.especialidadeService.listaEspecialidade;
+    var especialidadeRegente = this.especialidadeService.especialidade;
 
-    if (oficioRegente == null && listaOficio != null && listaOficio.length > 0 && listaOficio.find(c => c.descricao === control.value) != null) {    
+    if (especialidadeRegente == null && listaEspecialidade != null && listaEspecialidade.length > 0 
+      && listaEspecialidade.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaDescricaoEspecialidade': { value: control.value } } ;        
     }
     return null;    

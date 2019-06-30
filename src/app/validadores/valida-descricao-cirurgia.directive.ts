@@ -15,7 +15,8 @@ export class ValidaDescricaoCirurgiaDirective implements Validator {
     var listaCirurgia = this.cirurgiaService.listaCirurgia;
     var cirurgiaRegente = this.cirurgiaService.cirurgia;
 
-    if (cirurgiaRegente == null && listaCirurgia != null && listaCirurgia.length > 0 && listaCirurgia.find(c => c.descricao === control.value) != null) {    
+    if (cirurgiaRegente == null && listaCirurgia != null && listaCirurgia.length > 0 && 
+      listaCirurgia.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaDescricaoCirurgia': { value: control.value } } ;        
     }
     return null;    
