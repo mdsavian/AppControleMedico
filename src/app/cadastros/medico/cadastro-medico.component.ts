@@ -24,6 +24,7 @@ import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
 import { UsuarioService } from '../../services/usuario.service';
 import { LoginService } from '../../services/login.service';
+import { Clinica } from '../../modelos/clinica';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -46,15 +47,15 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   data: string = "01/01/1901"
   util = new Util();
   convenios: Array<Convenio> = [];
-  medico: Medico = {
+  medico: Medico = { 
+    clinicasId:new Array<string>(), clinicas:new Array<Clinica>(),usuarioId:"",configuracaoAgendaId:"",conveniosId:new Array<string>(),
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario: new Usuario(),
-    administrador :false,cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),
+    administrador: false, cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),especialidadeId:"",
     configuracaoAgenda: new ConfiguracaoAgenda()
   };
   usuario: Usuario;
   usuarioAdministrador = false;
   permiteAlterarSenha = false;
-
 
   constructor(private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private dragulaService: DragulaService,
     private convenioService: ConvenioService, private route: ActivatedRoute, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
@@ -77,6 +78,45 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     });
   }
 
+
+  public ngOnInit(): void {
+
+    this.usuario = this.util.retornarUsuarioCorrente();
+    this.usuarioAdministrador = this.util.retornarUsuarioAdministrador();
+    console.log(this.medicoService.medico)
+    if (this.medicoService.medico != null) {
+
+      this.medico = this.medicoService.medico;
+      this.data = this.util.dataParaString(this.medico.dataNascimento);
+
+      if (this.medico.especialidade != null)
+        this.especialidadeSelecionada = this.medico.especialidade.descricao;
+
+      this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
+
+      this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
+        this.pacientesGestantes = gestantes;
+        this.source = new LocalDataSource(this.pacientesGestantes);
+      })
+
+      this.convenioService.TodosFiltrandoMedico(this.medico.id).subscribe(dados => {
+        this.convenios = dados;
+      });
+    }
+    else {
+      this.convenioService.Todos().subscribe(dados => {
+        this.convenios = dados;
+      });
+    }
+    this.especialidadeService.Todos().subscribe(c => {
+      this.especialidades = c;
+      this.nomeEspecialidades = new Array<string>();
+      c.forEach(d => {
+        this.nomeEspecialidades.push(d.descricao);
+      });
+    })
+  }
+
   public formataData(e): void {
     this.medico.dataNascimento = this.util.stringParaData(e.target.value);
   }
@@ -94,7 +134,7 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
       modal.result.then((alteraSenha) => {
         alteraSenha.usuarioId = this.usuario.id;
         this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {
-          
+
           if (c == null) {
             var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
             modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente.";
@@ -121,47 +161,12 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
     this.dragulaService.destroy("CONVENIOS");
   }
 
-  public ngOnInit(): void {
-    
-    this.usuario = this.util.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.util.retornarUsuarioAdministrador();
-    if (this.medicoService.medico != null) {
-      
-        this.medico = this.medicoService.medico;
-        this.data = this.util.dataParaString(this.medico .dataNascimento);
-        this.especialidadeSelecionada = this.medico .especialidade.descricao;
-        this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
-        this.usuarioAdministrador = this.usuario.medicoId == "" && this.usuario.funcionarioId == "";
-
-      this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
-        this.pacientesGestantes = gestantes;
-        this.source = new LocalDataSource(this.pacientesGestantes);
-      })
-
-      this.convenioService.TodosFiltrandoMedico(this.medico.id).subscribe(dados => {
-        this.convenios = dados;
-      });
-    }
-    else {
-      this.convenioService.Todos().subscribe(dados => {
-        this.convenios = dados;
-      });
-    }
-    this.especialidadeService.Todos().subscribe(c => {
-      this.especialidades = c;
-      this.nomeEspecialidades = new Array<string>();
-      c.forEach(d => {
-        this.nomeEspecialidades.push(d.descricao);
-      });
-    })
-  }
-
   editarPaciente(event) {
     this.router.navigate(['/cadastros/cadastropaciente', { id: event.data.id }]);
   }
 
   ExibeAbaEspecialidade(especialidade: string): boolean {
-    if (this.medico != null && this.medico.especialidade.descricao != null) {
+    if (this.medico != null && this.medico.especialidade != null && this.medico.especialidade.descricao != null) {
       return this.medico.especialidade.descricao.includes(especialidade);
     }
     return false;

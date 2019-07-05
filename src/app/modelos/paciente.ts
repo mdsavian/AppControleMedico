@@ -12,19 +12,19 @@ export class Paciente extends Pessoa {
   nomePai: string;
   nomeMae: string;    
   estadoCivil: number;
-  tipoSanguineo: number;
-  
-  ocupacao: string;
-    
+  tipoSanguineo: number;  
+  ocupacao: string;    
   telefone: string;    
   aceitaReceberSms: boolean;
   responsavel: string;
   numeroCartao: number;
   cartaoNacionalSaude: number;
-  dataValidadeCartao: Date;
-  convenio :Convenio;
+  dataValidadeCartao: Date;  
   tipoPlano:string;
   semanaGestacao:string;
   diaGestacao:string;
+
+  convenioId:string;
+  convenio :Convenio;
   
 }

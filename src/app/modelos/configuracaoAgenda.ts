@@ -12,9 +12,11 @@ export class ConfiguracaoAgenda extends Entidade {
         this.ultimoHorario = "";
         this.configuracaoMinutosAgenda = EConfiguracaoMinutosAgenda["20 Minutos"];
     }
+    
     configuracaoMinutosAgenda:EConfiguracaoMinutosAgenda;
     diasNaoConfigurados: number[];
     primeiroHorario: string;
     ultimoHorario: string;
+    configuracaoAgendaDiasId:string[];
     configuracaoAgendaDias: Array<ConfiguracaoAgendaDias>;
 }

@@ -8,6 +8,9 @@ export class Funcionario extends Pessoa {
     super();
   }
 
+  oficioId:string;
+  usuarioId:string;
+  
   oficio:Oficio;
   usuario:Usuario;
   dataAdmissao:Date;  
