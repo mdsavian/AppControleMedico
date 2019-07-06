@@ -229,18 +229,18 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
           modalAdiciona.result.then((convenio: ModeloDescricao) => {
             if (convenio != null && convenio.descricao != '') {
 
-              var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+              var convenioExistente = this.convenios.find(c => c.descricao == convenio.descricao);
               if (convenioExistente != null) {
                 this.agendamento.convenio = convenioExistente;
               }
               else {
 
                 var convenioNovo = new Convenio();
-                convenioNovo.nomeConvenio = convenio.descricao;
+                convenioNovo.descricao = convenio.descricao;
                 this.convenios.push(convenioNovo);
 
                 this.convenioService.salvar(convenioNovo).subscribe(convenioCadastrado => {
-                  this.agendamento.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+                  this.agendamento.convenio = this.convenios.find(c => c.descricao == convenio.descricao);
                 });
               }
             }

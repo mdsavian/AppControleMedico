@@ -6,7 +6,7 @@ export class Convenio extends Entidade {
         super();      
     }
     
-    nomeConvenio:string;
+    descricao:string;
     diasRetorno:number;
     ativo:boolean;
 }

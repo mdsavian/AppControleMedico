@@ -45,7 +45,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   estados = Estados;
   dataNasci: string = "01/01/1901"
   dataValidade: string = "01/01/1901"
-  nomeConvenios: Array<string>;
+  descricaos: Array<string>;
   falhaNaBusca: boolean;
   convenioSelecionado: string;
   medico: Medico;
@@ -69,7 +69,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
       if (this.paciente.convenio != null) {
         this.convenioId = this.paciente.convenio.id;
-        this.convenioSelecionado = this.paciente.convenio.nomeConvenio;
+        this.convenioSelecionado = this.paciente.convenio.descricao;
       }
     }
 
@@ -81,9 +81,9 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
     this.convenioService.Todos().subscribe(dados => {
       this.convenios = dados;
-      this.nomeConvenios = new Array<string>();
+      this.descricaos = new Array<string>();
       dados.forEach(d => {
-        this.nomeConvenios.push(d.nomeConvenio);
+        this.descricaos.push(d.descricao);
       });
     });
   }
@@ -97,23 +97,23 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     modal.result.then((convenio) => {
       if (convenio != undefined && convenio.descricao != '') {
 
-        var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+        var convenioExistente = this.convenios.find(c => c.descricao == convenio.descricao);
         if (convenioExistente != null) {
           this.paciente.convenio = convenioExistente;
-          this.convenioSelecionado = convenioExistente.nomeConvenio;
+          this.convenioSelecionado = convenioExistente.descricao;
         }
         else {
 
           var novoConvenio = new Convenio();
-          novoConvenio.nomeConvenio = convenio.descricao;
+          novoConvenio.descricao = convenio.descricao;
           novoConvenio.ativo = true;
 
           this.convenios.push(novoConvenio);
-          this.nomeConvenios.push(novoConvenio.nomeConvenio, convenio.descricao);
+          this.descricaos.push(novoConvenio.descricao, convenio.descricao);
 
           this.convenioService.salvar(novoConvenio).subscribe(conenioCadastrado => {
             this.paciente.convenio = conenioCadastrado;
-            this.convenioSelecionado = conenioCadastrado.nomeConvenio;
+            this.convenioSelecionado = conenioCadastrado.descricao;
 
           })
         }
@@ -152,14 +152,14 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       debounceTime(200),
       distinctUntilChanged(),
       map(term => {
-        this.falhaNaBusca = this.nomeConvenios.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10).length == 0;
+        this.falhaNaBusca = this.descricaos.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10).length == 0;
         return term.length < 2 ? []
-          : this.nomeConvenios.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+          : this.descricaos.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
       })
     )
 
   selecionaConvenio(item) {
-    var convenio = this.convenios.find(c => c.nomeConvenio === item.item);
+    var convenio = this.convenios.find(c => c.descricao === item.item);
     if (convenio != null)
       this.paciente.convenio = convenio;
   }

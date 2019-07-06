@@ -9,7 +9,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { UteisModule } from '../uteis/uteis.module'
 import { CadastrosRoutes } from './cadastros.routing';
 
-import { ValidaNomeConvenioDirective } from '../validadores/valida-nome-convenio.directive';
+import { ValidaDescricaoConvenioDirective } from '../validadores/valida-descricao-convenio.directive';
 import { ValidaDescricaoCirurgiaDirective } from '../validadores/valida-descricao-cirurgia.directive';
 import { ValidaDescricaoLocalDirective } from '../validadores/valida-descricao-local.directive';
 import { ValidaDescricaoServicoDirective } from '../validadores/valida-descricao-procedimento.directive';
@@ -22,6 +22,7 @@ import { ValidaCnpjDirective } from '../validadores/valida-cnpj.directive';
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
+import { ModalAdicionaConvenioComponent } from "./convenio/modal-adiciona-convenio.component";
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
@@ -33,15 +34,15 @@ import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
-
 @NgModule({
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
   declarations: [CadastroLocalComponent,CadastroCirurgiaComponent,CadastroExameComponent,CadastroPacienteComponent, 
-    ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, 
+    ConfiguracaoAgendaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent,CadastroClinicaComponent,
-    ValidaNomeConvenioDirective,ValidaCnpjDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
+    ValidaDescricaoConvenioDirective,ValidaCnpjDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective,ValidaDescricaoExameDirective,ValidaDescricaoServicoDirective,
-    ValidaDescricaoCirurgiaDirective,ValidaDescricaoLocalDirective]
+    ValidaDescricaoCirurgiaDirective,ValidaDescricaoLocalDirective],
+    entryComponents:[ModalAdicionaConvenioComponent]
 })
 export class CadastrosModule { }

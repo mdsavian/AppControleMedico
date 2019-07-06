@@ -5,19 +5,21 @@
         <form (ngSubmit)="onSubmit()" #convenioForm="ngForm">
           <div [hidden]="convenioForm.submitted">
             <ngb-tabset type="pills">
-              <ngb-tab title="Informações Pessoais">
+              <ngb-tab title="Dados">
                 <ng-template ngbTabContent>
                   <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                     <div class="row"></div>
                     <div class="row rowcadastro">
                       <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                          <label class="control-label" for="nomeConvenio">Nome Convênio(*)</label>
-                          <input type="text" id="nomeConvenio" placeholder="Nome Convênio" name="nomeConvenio" 
-                          class="form-control" appValidaNomeConvenio required [(ngModel)]="convenio.nomeConvenio" #nomeConvenio="ngModel">                                                    
-                          <div *ngIf="nomeConvenio.invalid && (nomeConvenio.errors?.validaNomeConvenio)" class="alert alert-danger">
-                            <div *ngIf="nomeConvenio.errors.required"> Nome Convênio Obrigatório. </div>
-                            <div *ngIf="nomeConvenio.errors?.validaNomeConvenio"> Já existe um convênio com este nome cadastrado. </div>                            
+                          <label class="control-label" for="descricao">Descrição Convênio(*)</label>
+                          <input type="text" id="descricao" placeholder="Descrição Convênio" name="descricao"  
+                          class="form-control" appValidaDescricaoExame required [(ngModel)]="convenio.descricao" #descricao="ngModel">                                                    
+                          {{descricao.errors?.validaDescricaoExame}}
+                          {{descricao.errors?.required}}
+                          <div *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoExame)" class="alert alert-danger">
+                            <div *ngIf="descricao.errors.required"> Descrição Convênio Obrigatória. </div>
+                            <div *ngIf="descricao.errors?.validaDescricaoExame"> Já existe um convênio com esta descrição cadastrado. </div>                            
                           </div>                          
                         </div>
                       </div>

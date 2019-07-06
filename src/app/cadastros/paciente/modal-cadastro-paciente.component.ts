@@ -38,7 +38,7 @@ export class ModalCadastroPacienteComponent {
     modalAdiciona.result.then((convenio) => {
       if (convenio != null && convenio.descricao != '') {
 
-        var convenioExistente = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+        var convenioExistente = this.convenios.find(c => c.descricao == convenio.descricao);
         if (convenioExistente != null) {
           this.paciente.convenio = convenioExistente;
           this.convenio = convenioExistente;
@@ -46,14 +46,14 @@ export class ModalCadastroPacienteComponent {
         else {
 
           this.convenio = new Convenio();
-          this.convenio.nomeConvenio = convenio.descricao;
+          this.convenio.descricao = convenio.descricao;
           this.convenios.push(this.convenio);
 
           this.convenioService.salvar(this.convenio).subscribe(convenioCadastrado => {
             this.paciente.convenio = convenioCadastrado;
           });
 
-          this.convenio = this.convenios.find(c => c.nomeConvenio == convenio.descricao);
+          this.convenio = this.convenios.find(c => c.descricao == convenio.descricao);
         }
       }
     }).catch((error) => { })

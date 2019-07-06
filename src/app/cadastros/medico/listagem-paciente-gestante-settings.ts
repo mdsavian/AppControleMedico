@@ -1,6 +1,4 @@
-import { Util } from "../../uteis/Util";
-
-export const settings = {
+export const settingsGestante = {
   mode:'external',
   noDataMessage:"Não foi encontrado nenhum registro",
   columns: {

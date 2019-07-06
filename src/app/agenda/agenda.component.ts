@@ -579,7 +579,7 @@ export class AgendaComponent implements OnInit {
 
     if (agendamento.paciente != null) {
       return agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
-        agendamento.convenio.nomeConvenio.toUpperCase() + " - " +
+        agendamento.convenio.descricao.toUpperCase() + " - " +
         agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " até " +
         agendamento.horaFinal.substring(0, 2) + ":" + agendamento.horaFinal.substring(2, 4) + " - " +
         ESituacaoAgendamento[agendamento.situacaoAgendamento].toUpperCase();

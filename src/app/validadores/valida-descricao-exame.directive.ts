@@ -12,15 +12,18 @@ export class ValidaDescricaoExameDirective implements Validator {
   constructor(private exameService: ExameService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
+    if (control.value == '')
+      return null;
+
     var listaExame = this.exameService.listaExame;
     var exameRegente = this.exameService.exame;
 
     if (exameRegente == null && listaExame != null && listaExame.length > 0
-       && listaExame.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
-    return { 'validaDescricaoExame': { value: control.value } } ;        
+      && listaExame.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      return { 'validaDescricaoExame': { value: control.value } };
     }
-    return null;    
-    
+    return null;
+
   }
 }
 

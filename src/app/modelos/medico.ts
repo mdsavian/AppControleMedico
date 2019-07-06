@@ -7,8 +7,10 @@ import { Clinica } from "./clinica";
 
 export class Medico extends Pessoa {
 
-  constructor() {
+  constructor() {    
     super();
+    this.conveniosId = new Array<string>();
+    this.convenios = new Array<Convenio>();    
   }
   
   crm : string;  

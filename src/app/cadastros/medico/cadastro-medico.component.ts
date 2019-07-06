@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Estados } from "../../enums/estados";
 import { Medico } from '../../modelos/medico';
 import { MedicoService } from '../../services/medico.service';
-import { DragulaService } from 'ng2-dragula';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConvenioService } from '../../services/convenio.service';
 import { Convenio } from '../../modelos/convenio';
@@ -18,26 +18,30 @@ import { EspecialidadeService } from '../../services/especialidade.service';
 import { Paciente } from '../../modelos/paciente';
 import { PacienteService } from '../../services/paciente.service';
 import { LocalDataSource } from 'ng2-smart-table';
-import * as tableData from './listagem-paciente-gestante-settings';
+import * as tableDataGestantes from './listagem-paciente-gestante-settings';
+import * as tableDataConvenio from './listagem-convenio-medico-settings';
 import { ConfiguracaoAgenda } from '../../modelos/configuracaoAgenda';
 import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha.component';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
 import { UsuarioService } from '../../services/usuario.service';
 import { LoginService } from '../../services/login.service';
 import { Clinica } from '../../modelos/clinica';
+import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
   styleUrls: ['./cadastro-medico.component.scss', '../../cadastros/cadastros.scss']
 })
 
-export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CadastroMedicoComponent implements OnInit, AfterViewInit {
 
   @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
   @ViewChild('numero') private numero: ElementRef;
 
-  settings = tableData.settings;
-  source: LocalDataSource;
+  settingsGestante = tableDataGestantes.settingsGestante;
+  settingsConvenio = tableDataConvenio.settingsConvenio;
+  sourceGestante: LocalDataSource;
+  sourceConvenio: LocalDataSource;
   estados = Estados;
   especialidades = new Array<Especialidade>();
   nomeEspecialidades: Array<string>;
@@ -47,35 +51,19 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   data: string = "01/01/1901"
   util = new Util();
   convenios: Array<Convenio> = [];
-  medico: Medico = { 
-    clinicasId:new Array<string>(), clinicas:new Array<Clinica>(),usuarioId:"",configuracaoAgendaId:"",conveniosId:new Array<string>(),
+  medico: Medico = {
+    clinicasId: new Array<string>(), clinicas: new Array<Clinica>(), usuarioId: "", configuracaoAgendaId: "", conveniosId: new Array<string>(),
     id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario: new Usuario(),
-    administrador: false, cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(),especialidadeId:"",
+    administrador: false, cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(), especialidadeId: "",
     configuracaoAgenda: new ConfiguracaoAgenda()
   };
   usuario: Usuario;
   usuarioAdministrador = false;
   permiteAlterarSenha = false;
+  convenioModel: Convenio;
 
-  constructor(private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private dragulaService: DragulaService,
-    private convenioService: ConvenioService, private route: ActivatedRoute, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
-
-    this.dragulaService.createGroup('CONVENIOS', {
-      copy: (el, source) => {
-        return source.id === 'convenios';
-      },
-      copyItem: (convenio: Convenio) => {
-        var novoConvenio = new Convenio();
-        novoConvenio.nomeConvenio = convenio.nomeConvenio;
-        novoConvenio.diasRetorno = convenio.diasRetorno;
-        novoConvenio.id = convenio.id;
-
-        return novoConvenio;
-      },
-      accepts: (el, target, source, sibling) => {
-        return target.id !== 'conveniosMedico';
-      }
-    });
+  constructor(private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService,
+    private convenioService: ConvenioService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
 
 
@@ -83,37 +71,56 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
 
     this.usuario = this.util.retornarUsuarioCorrente();
     this.usuarioAdministrador = this.util.retornarUsuarioAdministrador();
-    console.log(this.medicoService.medico)
-    if (this.medicoService.medico != null) {
 
+    if (this.medicoService.medico != null) {
       this.medico = this.medicoService.medico;
       this.data = this.util.dataParaString(this.medico.dataNascimento);
-
-      if (this.medico.especialidade != null)
-        this.especialidadeSelecionada = this.medico.especialidade.descricao;
 
       this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
 
       this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
         this.pacientesGestantes = gestantes;
-        this.source = new LocalDataSource(this.pacientesGestantes);
-      })
+        this.sourceGestante = new LocalDataSource(this.pacientesGestantes);
+      });
+    }
 
-      this.convenioService.TodosFiltrandoMedico(this.medico.id).subscribe(dados => {
-        this.convenios = dados;
-      });
-    }
-    else {
-      this.convenioService.Todos().subscribe(dados => {
-        this.convenios = dados;
-      });
-    }
+    this.convenioService.Todos().subscribe(dados => {
+      this.convenios = dados;
+
+      if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
+        dados.forEach(conv => {
+
+          if (this.medico.convenios == null)
+            this.medico.convenios = new Array<Convenio>();
+
+          var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
+
+          if (indexConvenio >= 0) {
+            this.medico.convenios.push(conv);
+            this.convenios.splice(indexConvenio, 1);
+          }
+        });
+
+        if (this.util.hasItems(this.medico.convenios))
+          this.sourceConvenio = new LocalDataSource(this.medico.convenios);
+
+        if (this.util.hasItems(this.convenios))
+          this.convenioModel = this.convenios.find(c => true);
+      }
+    });
+
     this.especialidadeService.Todos().subscribe(c => {
       this.especialidades = c;
+
       this.nomeEspecialidades = new Array<string>();
       c.forEach(d => {
         this.nomeEspecialidades.push(d.descricao);
       });
+
+      if (!this.util.isNullOrWhitespace(this.medico.especialidadeId)) {
+        this.medico.especialidade = this.especialidades.find(c => c.id == this.medico.especialidadeId);
+        this.especialidadeSelecionada = this.nomeEspecialidades.find(c => c === this.medico.especialidade.descricao);
+      }
     })
   }
 
@@ -124,6 +131,40 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   configurarAgendaMedico() {
     if (this.medico.id != '')
       this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
+  }
+
+  public adicionaConvenio() {
+    var modal = this.modalService.open(ModalAdicionaConvenioComponent, { windowClass: "modal-holder" });
+
+    modal.result.then((convenio) => {
+      this.convenioModel = convenio;
+      this.adicionarConvenioMedico();
+    });
+
+  }
+
+  adicionarConvenioMedico() {
+
+    if (this.medico.conveniosId == null)
+      this.medico.conveniosId = new Array<string>();
+
+    if (this.medico.convenios == null)
+      this.medico.convenios = new Array<Convenio>();
+
+    this.medico.conveniosId.push(this.convenioModel.id);
+    this.medico.convenios.push(this.convenioModel);
+
+    var index = this.convenios.indexOf(this.convenioModel);
+
+    this.convenios.splice(index,1);    
+    this.sourceConvenio = new LocalDataSource(this.medico.convenios);
+
+    if (this.medico.id != null) {
+      this.medicoService.salvar(this.medico).subscribe(medico => {
+        this.medico = medico;
+      });
+    }
+
   }
 
   alterarSenhaMedico() {
@@ -157,9 +198,6 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
   }
-  public ngOnDestroy(): void {
-    this.dragulaService.destroy("CONVENIOS");
-  }
 
   editarPaciente(event) {
     this.router.navigate(['/cadastros/cadastropaciente', { id: event.data.id }]);
@@ -174,8 +212,11 @@ export class CadastroMedicoComponent implements OnInit, OnDestroy, AfterViewInit
 
   selecionaEspecialidade(item: any) {
     var especialidade = this.especialidades.find(c => c.descricao === item.item);
-    if (especialidade != null)
+    if (especialidade != null) {
+      this.medico.especialidadeId = especialidade.id;
       this.medico.especialidade = especialidade;
+
+    }
   }
 
 

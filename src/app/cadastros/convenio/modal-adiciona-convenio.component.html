@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h4 class="modal-title">Adiciona Convênio</h4>
+    <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <div class="form-group">
+                <label class="control-label" for="nomeConvenio">Descrição Convênio(*)</label>
+                <input type="text" id="nomeConvenio" placeholder="Nome Convênio" name="nomeConvenio"
+                    class="form-control" appValidaNomeConvenio required [(ngModel)]="convenio.descricao"
+                    #nomeConvenio="ngModel">
+                <div *ngIf="nomeConvenio.invalid && (nomeConvenio.errors?.validaNomeConvenio)"
+                    class="alert alert-danger">
+                    <div *ngIf="nomeConvenio.errors.required"> Descrição Convênio Obrigatória. </div>
+                    <div *ngIf="nomeConvenio.errors?.validaNomeConvenio"> Já existe um convênio com esta descrição
+                        cadastrado. </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <div class="form-group">
+                <label class="control-label" for="diasRetorno">Dias Retorno</label>
+                <input type="number" id="diasRetorno" name="diasRetorno" class="form-control"
+                    [(ngModel)]="convenio.diasRetorno" #diasRetorno="ngModel">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button style="width:40%" (click)="fechar()" id="btnCancelar" class="btn btn-rounded btn-warning">Cancelar</button>
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" [disabled]="nomeConvenio.invalid"
+        type="submit">Salvar</button>
+</div>

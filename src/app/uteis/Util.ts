@@ -19,13 +19,22 @@ export class Util {
         return novaData;
     }
 
-    public retornarUsuarioAdministrador(): boolean {        
-        var usuario = new LoginService(null,null).usuarioCorrenteValor;        
+    public isNullOrWhitespace(texto) {
+        return !texto || !texto.trim();
+    }
+
+    public hasItems(lista) {
+
+        return lista != null && lista.length > 0;
+    }
+
+    public retornarUsuarioAdministrador(): boolean {
+        var usuario = new LoginService(null, null).usuarioCorrenteValor;
         return ((usuario.medicoId == "" || usuario.medicoId == null) && (usuario.funcionarioId == null || usuario.funcionarioId == ""));
     }
 
     public retornarUsuarioCorrente(): Usuario {
-        var usuario = new LoginService(null,null).usuarioCorrenteValor;
+        var usuario = new LoginService(null, null).usuarioCorrenteValor;
         return usuario;
     }
 
@@ -55,14 +64,14 @@ export class Util {
     }
 
     public formataCnpj(cnpj: string) {
-        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g,"\$1.\$2.\$3\/\$4\-\$5");
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5");
 
-    }   
-    
+    }
+
     public formataCpf(cpf: string) {
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g,"\$1.\$2.\$3\-\$4");
-    }   
-    
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4");
+    }
+
 
 
     public formataTelefone(telefone: string) {
