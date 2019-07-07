@@ -230,8 +230,8 @@
                       </div>
                     </div>
                     <div class="col-xs-3 col-md-2 text-center" style="display: flex; align-items: center; justify-content: center;">
-                      <button class="btn btn-rounded btn-success" [disabled]="!convenio" style="top:50%; display:block;"
-                        (click)="adicionarConvenioMedico()">Associar Convênio </button>
+                      <button class="btn btn-rounded btn-success" [disabled]="convenioModel == null" style="top:50%; display:block;"
+                        (click)="associarConvenioMedico()">Associar Convênio </button>
                     </div>
                   </div>
                   <div class="row">

@@ -12,14 +12,14 @@
                     <div class="row rowcadastro">
                       <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                          <label class="control-label" for="descricao">Descrição Convênio(*)</label>
-                          <input type="text" id="descricao" placeholder="Descrição Convênio" name="descricao"  
-                          class="form-control" appValidaDescricaoExame required [(ngModel)]="convenio.descricao" #descricao="ngModel">                                                    
-                          {{descricao.errors?.validaDescricaoExame}}
-                          {{descricao.errors?.required}}
-                          <div *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoExame)" class="alert alert-danger">
-                            <div *ngIf="descricao.errors.required"> Descrição Convênio Obrigatória. </div>
-                            <div *ngIf="descricao.errors?.validaDescricaoExame"> Já existe um convênio com esta descrição cadastrado. </div>                            
+                          <label class="control-label" for="descricao">Descrição(*)</label>
+                          <input type="text" id="descricao" placeholder="Descrição" name="descricao"  
+                          class="form-control" appValidaDescricaoConvenio required [(ngModel)]="convenio.descricao" 
+                          #descricaoConvenio="ngModel">
+                          <div *ngIf="descricaoConvenio.invalid || (descricaoConvenio.errors?.validaDescricaoConvenio)" 
+                          class="alert alert-danger">
+                            <div *ngIf="descricaoConvenio.errors.required"> Descrição Convênio Obrigatória. </div>
+                            <div *ngIf="descricaoConvenio.errors?.validaDescricaoConvenio"> Já existe um convênio com esta descrição cadastrado. </div>                            
                           </div>                          
                         </div>
                       </div>

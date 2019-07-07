@@ -84,29 +84,39 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
       });
     }
 
-    this.convenioService.Todos().subscribe(dados => {
-      this.convenios = dados;
+    this.alimentarConvenioEEspecialidade();
+  }
+
+  private alimentarConvenioEEspecialidade() {
+    
+    this.convenioService.Todos().subscribe(dados => {         
 
       if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
-        dados.forEach(conv => {
-
-          if (this.medico.convenios == null)
+        if (this.medico.convenios == null)
             this.medico.convenios = new Array<Convenio>();
+        
+        dados.forEach(conv => {          
 
           var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
 
           if (indexConvenio >= 0) {
-            this.medico.convenios.push(conv);
-            this.convenios.splice(indexConvenio, 1);
+            this.medico.convenios.push(conv);    
           }
-        });
+          else
+          {
+            this.convenios.push(conv);
+          }
+                    
+        });        
 
         if (this.util.hasItems(this.medico.convenios))
           this.sourceConvenio = new LocalDataSource(this.medico.convenios);
-
-        if (this.util.hasItems(this.convenios))
-          this.convenioModel = this.convenios.find(c => true);
       }
+      else
+        this.convenios = dados;
+
+      if (this.util.hasItems(this.convenios))
+        this.convenioModel = this.convenios.find(c => true);
     });
 
     this.especialidadeService.Todos().subscribe(c => {
@@ -121,9 +131,8 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
         this.medico.especialidade = this.especialidades.find(c => c.id == this.medico.especialidadeId);
         this.especialidadeSelecionada = this.nomeEspecialidades.find(c => c === this.medico.especialidade.descricao);
       }
-    })
+    });
   }
-
   public formataData(e): void {
     this.medico.dataNascimento = this.util.stringParaData(e.target.value);
   }
@@ -138,12 +147,15 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
 
     modal.result.then((convenio) => {
       this.convenioModel = convenio;
-      this.adicionarConvenioMedico();
-    });
+      this.associarConvenioMedico();
+    }, error=>{});
 
   }
 
-  adicionarConvenioMedico() {
+  associarConvenioMedico() {
+
+    if (this.convenioModel == null)
+      return;
 
     if (this.medico.conveniosId == null)
       this.medico.conveniosId = new Array<string>();
@@ -151,20 +163,23 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     if (this.medico.convenios == null)
       this.medico.convenios = new Array<Convenio>();
 
+    if (this.medico.convenios.find(c => c.id == this.convenioModel.id) != null)
+      return;
+
     this.medico.conveniosId.push(this.convenioModel.id);
     this.medico.convenios.push(this.convenioModel);
 
     var index = this.convenios.indexOf(this.convenioModel);
 
-    this.convenios.splice(index,1);    
+    this.convenios.splice(index, 1);
+    this.convenioModel = this.convenios.find(c => true);
     this.sourceConvenio = new LocalDataSource(this.medico.convenios);
 
-    if (this.medico.id != null) {
+    if (!this.util.isNullOrWhitespace(this.medico.id)) {
       this.medicoService.salvar(this.medico).subscribe(medico => {
         this.medico = medico;
       });
     }
-
   }
 
   alterarSenhaMedico() {

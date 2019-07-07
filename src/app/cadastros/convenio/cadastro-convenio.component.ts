@@ -22,7 +22,7 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
   source: LocalDataSource;
   listaMedicos: Array<Medico>;
   settings = tableData.settings;
-  convenio: Convenio = {  
+  convenio: Convenio = {
     id: "", descricao: "", diasRetorno: 0, ativo: true
   };
 
@@ -37,10 +37,13 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
 
-    this.convenios = this.convenioService.listaConvenio;
+    this.convenioService.Todos().subscribe(convenios => {
+    this.convenios = convenios
+      this.convenioService.listaConvenio = convenios;
+    });
 
     if (this.convenioService.convenio != null) {
-      this.convenio = this.convenioService.convenio;        
+      this.convenio = this.convenioService.convenio;
 
       this.convenioService.buscarMedicosPorConvenio(this.convenio.id).subscribe(medicos => {
         this.listaMedicos = medicos;
@@ -48,6 +51,7 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
         this.source = new LocalDataSource(this.listaMedicos);
       });
     }
+
   }
 
   constructor(private convenioService: ConvenioService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {

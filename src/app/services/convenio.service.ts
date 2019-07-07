@@ -31,7 +31,7 @@ export class ConvenioService {
     return this.http.get<Convenio>(this.accessPointUrl + "buscarPorId/" + convenioId);
   }
 
-  public Todos() {    
+  public Todos() {        
     return this.http.get<Convenio[]>(this.accessPointUrl);
   }
 
