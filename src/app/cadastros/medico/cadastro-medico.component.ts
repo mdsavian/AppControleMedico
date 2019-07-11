@@ -138,8 +138,10 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   }
 
   configurarAgendaMedico() {
-    if (this.medico.id != '')
-      this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
+    if (this.medico.id != ''){
+      this.medicoService.medico = this.medico;
+      this.router.navigate(['/cadastros/configuracaoagenda']);
+    }
   }
 
   public adicionaConvenio() {

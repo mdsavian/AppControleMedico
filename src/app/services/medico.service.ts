@@ -3,11 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Medico } from '../modelos/medico';
 import { Usuario } from '../modelos/usuario';
 import { environment } from '../../environments/environment';
+import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
+ 
+  
   public medico:Medico;
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'medico/';
@@ -39,6 +42,16 @@ export class MedicoService {
   buscarMedicoUsuario(usuario:Usuario): any {
     return this.http.post<Medico>(this.accessPointUrl + "buscarMedicoUsuario/", usuario);
     
+  }
+
+  salvarConfiguracaoAgendaMedico(medico: Medico) {
+    return this.http.post<Medico>(this.accessPointUrl + "salvarConfiguracaoAgendaMedico/", medico);
+
+  }
+
+  buscarConfiguracaoAgendaMedico(configuracaoAgendaId: string) {
+
+    return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarConfiguracaoAgendaMedico/"+ configuracaoAgendaId);
   }
 
 }

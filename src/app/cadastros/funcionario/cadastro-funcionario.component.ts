@@ -29,9 +29,9 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   @ViewChild('numero') private numero: ElementRef;
 
   funcionario: Funcionario = {
-    id: "", nomeCompleto: "", cpf: "", dataAdmissao: new Date('01/01/0001'), dataDemissao: new Date('01/01/0001'), 
-    dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1,     celular: "", email: "", cep: "", endereco: "", 
-    oficioId:"", usuarioId:"",
+    id: "", nomeCompleto: "", cpf: "", dataAdmissao: new Date('01/01/0001'), dataDemissao: new Date('01/01/0001'),
+    dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", cep: "", endereco: "",
+    oficioId: "", usuarioId: "",
     numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaAgenda: false
   };
 
@@ -45,12 +45,12 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   dataNasci: string = "01/01/1901"
   dataAdmis: string = "01/01/1901"
   dataDemis: string = "01/01/1901"
-  usuario:Usuario;
-  
-  constructor(private loginService:LoginService,private usuarioService: UsuarioService,public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
+  usuario: Usuario;
+
+  constructor(private loginService: LoginService, private usuarioService: UsuarioService, public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
     private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
-  
+
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
   }
@@ -62,7 +62,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
       modal.result.then((alteraSenha) => {
         alteraSenha.usuarioId = this.usuario.id;
-        this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {          
+        this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {
           if (c == null) {
             var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
             modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente.";
@@ -83,22 +83,26 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.usuario = this.util.retornarUsuarioCorrente();
-    
+
     if (this.funcionarioService.funcionario != null) {
-      
-        this.funcionario = this.funcionarioService.funcionario;
-        this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
-        this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
-        this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);        
-        this.oficioSelecionado = this.funcionario.oficio.descricao;        
-        this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
+
+      this.funcionario = this.funcionarioService.funcionario;
+      this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
+      this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
+      this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
+      this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
     }
 
-    this.oficioService.Todos().subscribe(c => {
-      this.oficios = c;
+    this.oficioService.Todos().subscribe(oficioBanco => {
+      this.oficios = oficioBanco;
       this.nomeOficios = new Array<string>();
-      c.forEach(d => {
-        this.nomeOficios.push(d.descricao);
+      
+      oficioBanco.forEach(ofiBanc => {
+
+        this.nomeOficios.push(ofiBanc.descricao);
+
+        if (!this.util.isNullOrWhitespace(this.funcionario.oficioId) && this.funcionario.oficioId == ofiBanc.id)
+          this.oficioSelecionado = this.nomeOficios.find(c => c == ofiBanc.descricao);
       });
     })
   }
@@ -116,7 +120,8 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   selectedItem(item) {
     var oficio = this.oficios.find(c => c.descricao === item.item);
-    this.funcionario.oficio = this.oficios.find(c => c.descricao === item.item);
+    this.funcionario.oficio = oficio;
+    this.funcionario.oficioId = oficio.id;
   }
   public buscaCep() {
     if (this.funcionario.cep != "") {
@@ -153,6 +158,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         var oficioExistente = this.oficios.find(c => c.descricao == oficio.descricao);
         if (oficioExistente != null) {
           this.funcionario.oficio = oficioExistente;
+          this.funcionario.oficioId = oficioExistente.id;
           this.oficioSelecionado = oficioExistente.descricao;
         }
         else {
@@ -164,6 +170,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
           this.oficioService.salvar(novoOficio).subscribe(oficioCadastrado => {
             this.funcionario.oficio = oficioCadastrado;
+            this.funcionario.oficioId = oficioCadastrado.id;
             this.oficioSelecionado = oficioCadastrado.descricao;
           })
         }

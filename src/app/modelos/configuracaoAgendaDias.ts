@@ -1,10 +1,8 @@
-import { Entidade } from "./entidade";
 
-export class ConfiguracaoAgendaDias extends Entidade {
+
+export class ConfiguracaoAgendaDias {
 
     constructor(dia:number) {
-        super();
-
         this.dia = dia;
         this.configurado = true;
         this.primeiroHorarioInicial = "08:00";

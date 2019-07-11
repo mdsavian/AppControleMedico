@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ConfiguracaoAgendaDias } from '../../modelos/configuracaoAgendaDias';
 import { EConfiguracaoMinutosAgenda } from '../../enums/EConfiguracaoMinutosAgenda';
+import { Util } from '../../uteis/Util';
 
 @Component({
   templateUrl: './configuracao-agenda.component.html',
@@ -18,6 +19,9 @@ import { EConfiguracaoMinutosAgenda } from '../../enums/EConfiguracaoMinutosAgen
 export class ConfiguracaoAgendaComponent implements OnInit {
 
   @ViewChild('modalSalvouComSucesso') modalSalvouComSucesso: TemplateRef<any>;
+
+
+  util = new Util();
   configuracaoAgendaDias = new Array<ConfiguracaoAgendaDias>();
   medicos = new Array<Medico>();
   nomeMedicos: Array<string>;
@@ -35,20 +39,13 @@ export class ConfiguracaoAgendaComponent implements OnInit {
 
   public ngOnInit(): void {
 
-    for (var i = 0; i < 7; i++) {
-      this.configuracaoAgendaDias.push(new ConfiguracaoAgendaDias(i));
-    }
-    
-    var id = this.route.snapshot.paramMap.get('id');
-    if (id != null) {
-      this.medicoService.buscarPorId(id).subscribe(dado => {
-        this.medico = dado;
-        this.medicoSelecionado = dado.nomeCompleto;
-        if (this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
-          this.configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias;
-          this.configMinutos = EConfiguracaoMinutosAgenda[this.medico.configuracaoAgenda.configuracaoMinutosAgenda];
-        }
-      });
+    this.criaConfiguracao();
+
+    if (this.medicoService.medico != null) {
+      this.medico = this.medicoService.medico;
+      this.medicoSelecionado = this.medico.nomeCompleto;
+      this.buscaConfigMedico();
+
     }
 
     this.medicoService.todos().subscribe(medicos => {
@@ -60,8 +57,7 @@ export class ConfiguracaoAgendaComponent implements OnInit {
     });
   }
 
-  public marcaTodos(e:any)
-  {
+  public marcaTodos(e: any) {
 
     this.configuracaoAgendaDias.forEach(config => {
       config.configurado = e.target.checked;
@@ -69,13 +65,15 @@ export class ConfiguracaoAgendaComponent implements OnInit {
   }
 
   public onSubmit(): void {
+
     if (this.medico.configuracaoAgenda == null)
       this.medico.configuracaoAgenda = new ConfiguracaoAgenda();
+
     this.medico.configuracaoAgenda.configuracaoAgendaDias = this.configuracaoAgendaDias;
 
-    this.medicoService.salvar(this.medico).subscribe(
+    this.medicoService.salvarConfiguracaoAgendaMedico(this.medico).subscribe(
       data => {
-        var modal = this.modalService.open(this.modalSalvouComSucesso);
+        this.modalService.open(this.modalSalvouComSucesso);
         this.router.navigate(["cadastros/configuracaoagenda/", { id: this.medico.id }]);
       },
       error => {
@@ -121,23 +119,40 @@ export class ConfiguracaoAgendaComponent implements OnInit {
     }
   }
 
-  selecionaMedico(item: any) {
-    var medico = this.medicos.find(c => c.nomeCompleto === item.item);
-    if (medico != null && medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
-      this.medico = medico;
-      this.configuracaoAgendaDias = medico.configuracaoAgenda.configuracaoAgendaDias;
-      this.configMinutos = EConfiguracaoMinutosAgenda[this.medico.configuracaoAgenda.configuracaoMinutosAgenda];
+  buscaConfigMedico() {
+    if (this.medico != null) {
+      if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
+        this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).subscribe(configuracao => {
+          this.medico.configuracaoAgenda = configuracao;
 
-    }
-    else
-    {
-      for (var i = 0; i < 7; i++) {
-        this.configuracaoAgendaDias.push(new ConfiguracaoAgendaDias(i));
+          if (this.medico.configuracaoAgenda != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
+            this.configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias;
+            this.configMinutos = EConfiguracaoMinutosAgenda[this.medico.configuracaoAgenda.configuracaoMinutosAgenda];
+          }
+        });
       }
-      this.configMinutos = EConfiguracaoMinutosAgenda[3].toString();
+      else
+        this.criaConfiguracao();
     }
+    else {
+      this.criaConfiguracao();
+    }
+
   }
 
+  selecionaMedico(item: any) {
+    this.medico = this.medicos.find(c => c.nomeCompleto === item.item);
+    this.buscaConfigMedico();
+  }
+
+  criaConfiguracao() {
+    this.configuracaoAgendaDias = new Array<ConfiguracaoAgendaDias>();
+
+    for (var i = 0; i < 7; i++) {
+      this.configuracaoAgendaDias.push(new ConfiguracaoAgendaDias(i));
+    }
+    this.configMinutos = EConfiguracaoMinutosAgenda[3].toString();
+  }
   selecionaConfiguracaoMinutos(value: string) {
     if (this.medico.configuracaoAgenda == null)
       this.medico.configuracaoAgenda = this.configuracaoAgenda;

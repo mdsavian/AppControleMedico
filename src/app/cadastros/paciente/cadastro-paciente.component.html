@@ -274,23 +274,22 @@
                     <div class="row"></div>
 
                     <div class="row rowcadastro">
-                      <div class="col-xs-12 col-md-12">
+                      <div class="col-xs-6 col-md-3">
                         <div class="form-group">
-                          <label class="control-label" for="convenio">Convênio(*)</label>
+                          <label class="control-label" for="convenio">Convênio</label>
                           <div class="input-group">
-                            <input id="convenioSelecionado" name="convenioSelecionado" type="text"
-                              (selectItem)="selecionaConvenio($event)" placeholder="Digite o convênio" required [ngbTypeahead]="buscaConvenio" class="form-control"
-                              #convenio="ngModel" [(ngModel)]="convenioSelecionado" />
+                            <select class="form-control" [(ngModel)]="paciente.convenioId" #convenio="ngModel" id="convenio"
+                              name="convenio">
+                              <option *ngFor="let conv of convenios" [ngValue]="conv.id">
+                                {{conv.descricao}}
+                              </option>
+                            </select>
                             <div class="input-group-prepend">
-                              <span (click)="adicionaConvenio()" class="input-group-text" id="img-adiciona-oficio"><i
-                                  class="fa fa-pencil"></i></span>
+                              <ng-template #tipConvenio>Adiciona Convênio</ng-template>
+                              <span (click)="adicionaConvenio()" [ngbTooltip]="tipConvenio" class="input-group-text"
+                                id="img-adiciona-convenio">
+                                <i class="fa fa-pencil"></i></span>
                             </div>
-                          </div>
-                          <div
-                            *ngIf="(convenio.invalid || falhaNaBusca)"
-                            class="alert alert-danger">
-                            <div *ngIf="convenio.errors?.required">Convênio Obrigatório. </div>
-                            <div *ngIf="falhaNaBusca">Não foi possível encontrar um convênio com esta descrição.</div>
                           </div>
                         </div>
                       </div>
