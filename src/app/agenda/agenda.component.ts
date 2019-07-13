@@ -32,7 +32,7 @@ export class AgendaComponent implements OnInit {
   @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
   @ViewChild('modalAcoes') modalAcoes: TemplateRef<any>;
-  
+
   acaoAgendamento = "";
   eventosBanco: Agendamento[];
   validadorAgendamento = new ValidadorAgendamento();
@@ -43,9 +43,9 @@ export class AgendaComponent implements OnInit {
   viewDate: Date = new Date();
   util = new Util();
   medico: Medico;
-  funcionario:Funcionario;
+  funcionario: Funcionario;
   medicos: Medico[];
-  visualizaBotoesAberturaFechamentoCaixa= false;
+  visualizaBotoesAberturaFechamentoCaixa = false;
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
@@ -53,33 +53,31 @@ export class AgendaComponent implements OnInit {
   msgteste: string;
 
   constructor(private agendamentoService: AgendamentoService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
-     private loginService: LoginService, private funcionarioService:FuncionarioService, private medicoService: MedicoService, private router: Router) {
+    private loginService: LoginService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router) {
   }
 
   ngOnInit() {
     var usuario = this.loginService.usuarioCorrenteValor;
+    
+    if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
+      this.medicoService.buscarPorId(usuario.medicoId).subscribe(medico => {        
+        this.medico = medico;
+        if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId))
+          this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).subscribe(config => {
+            this.medico.configuracaoAgenda = config;
+            this.ajustarParametrosCalendario();
+          });
 
-    if (usuario.medicoId != "" && usuario.medicoId != null){
-      this.medicoService.todosFiltrandoMedico(usuario.medicoId).subscribe(medicos => {
-        this.medicos = medicos;
-        if (usuario.medicoId != "") {
-          this.medico = this.medicos.find(d => d.id === usuario.medicoId);
-        }
-        this.ajustarParametrosCalendario();
       });
-
     }
-    else if (usuario.funcionarioId != "" && usuario.funcionarioId != null)
-    {
-      this.funcionarioService.buscarPorId(usuario.funcionarioId).subscribe(func=> {
+    else if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
+      this.funcionarioService.buscarPorId(usuario.funcionarioId).subscribe(func => {
         console.log(func, func.visualizaAgenda);
         this.funcionario = func;
         this.visualizaBotoesAberturaFechamentoCaixa = func.visualizaAgenda;
       });
-
-      
     }
-    
+
   }
 
   converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
@@ -246,7 +244,7 @@ export class AgendaComponent implements OnInit {
 
           if (eventoClicado.end != null) {
             let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
-              eventoClicado.start, eventoClicado.start.toTimeString().substr(0, 5), eventoClicado.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
+              this.util.dataParaString(eventoClicado.start), eventoClicado.start.toTimeString().substr(0, 5), eventoClicado.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
 
             if (retornoValidacao != "") {
               if (retornoValidacao.indexOf("intervalo") > 0) {
@@ -481,7 +479,7 @@ export class AgendaComponent implements OnInit {
 
     let agendamentoAntigo = this.eventosBanco.find(c => c.id == event.id);
     let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
-      event.start, event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
+      this.util.dataParaString(event.start), event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
 
     if (retornoValidacao != "") {
       if (retornoValidacao.indexOf("intervalo") > 0) {
@@ -524,7 +522,8 @@ export class AgendaComponent implements OnInit {
   }
 
   configurarAgendaMedico() {
-    this.router.navigate(['/cadastros/configuracaoagenda', { id: this.medico.id }]);
+    this.medicoService.medico = this.medico;
+    this.router.navigate(['/cadastros/configuracaoagenda']);
   }
 
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {

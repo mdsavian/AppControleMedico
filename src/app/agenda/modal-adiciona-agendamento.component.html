@@ -154,7 +154,7 @@
                         <select class="form-control" [(ngModel)]="agendamento.convenio" #convenioModel="ngModel"
                             id="convenioModel" name="convenioModel" [required]="tipoAgendamento.value!='Bloqueio'">
                             <option *ngFor="let convenio of convenios" [ngValue]="convenio">
-                                {{convenio.nomeConvenio}}
+                                {{convenio.descricao}}
                             </option>
                         </select>
                         <div class="input-group-prepend">

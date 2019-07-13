@@ -39,11 +39,11 @@ export class Util {
     }
 
     public stringParaData(dataString: string): Date {
-
-        if (dataString.length > 8) {
+       
+        if (dataString.length > 8) { 
+            
             var dataPartes = dataString.split("/");
             var horaPartes = dataString.split(":");
-
             if (horaPartes.length > 1) {
                 var data = new Date(parseInt(dataPartes[2], 10),
                     parseInt(dataPartes[1], 10) - 1,
