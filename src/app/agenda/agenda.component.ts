@@ -57,8 +57,10 @@ export class AgendaComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
     var usuario = this.loginService.usuarioCorrenteValor;
-    
+    console.log("opa");
     if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
       this.medicoService.buscarPorId(usuario.medicoId).subscribe(medico => {        
         this.medico = medico;

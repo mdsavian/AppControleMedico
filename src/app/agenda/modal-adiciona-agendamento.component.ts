@@ -26,6 +26,7 @@ import { ValidadorAgendamento } from './validadorAgendamento';
 import { AgendamentoService } from '../services/agendamento.service';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/map';
+import { MedicoService } from '../services/medico.service';
 
 
 @Component({
@@ -60,13 +61,13 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   @ViewChild('tipoAgendamento', { read: ElementRef }) private tipoAgendamento: ElementRef;
 
-  constructor(public activeModal: NgbActiveModal, private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
+  constructor(public activeModal: NgbActiveModal, private medicoService:MedicoService,private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
     private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
 
   ngAfterViewInit(): void {
-    this.tipoAgendamento.nativeElement.focus();
+    this.tipoAgendamento.nativeElement.focus();   
   }
 
 
@@ -179,8 +180,17 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
     let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
-    let reqConvenios = this.convenioService.Todos().map(c => {      
-      this.convenios = c
+
+    let reqConvenios = this.convenioService.Todos().map(dados => { 
+      if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
+        dados.forEach(conv => {
+          var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
+          if (indexConvenio >= 0)
+            this.convenios.push(conv);                        
+        });
+      }
+      else
+        this.convenios = dados;
     });
 
     return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqConvenios]);
@@ -247,6 +257,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
               if (convenioExistente != null) {
                 this.agendamento.convenio = convenioExistente;
                 this.agendamento.convenioId = convenioExistente.id;
+                this.medico.conveniosId.push(convenioExistente.id);
+                this.medicoService.salvar(this.medico).subscribe(c=>{});
               }
               else {
 
@@ -257,6 +269,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
                 this.convenioService.salvar(convenioNovo).subscribe(convenioCadastrado => {
                   this.agendamento.convenio = this.convenios.find(c => c.descricao == convenioCadastrado.descricao);
                   this.agendamento.convenioId = convenioCadastrado.id;
+                  this.medico.conveniosId.push(convenioCadastrado.id);
+                this.medicoService.salvar(this.medico).subscribe(c=>{});
                 });
               }
             }

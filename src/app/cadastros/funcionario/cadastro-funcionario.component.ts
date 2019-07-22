@@ -12,12 +12,20 @@ import { OficioService } from '../../services/oficio.service';
 import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha.component';
 import { Util } from '../../uteis/Util';
 import { Oficio } from '../../modelos/oficio';
+import { Medico } from '../../modelos/medico';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-adiciona-modelo-descricao.component';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
 import { LoginService } from '../../services/login.service';
 import { UsuarioService } from '../../services/usuario.service';
+import * as tableDataClinica from './listagem-clinica-funcionario-settings';
+import * as tableDataMedico from './listagem-medico-funcionario-settings';
+import { ClinicaService } from '../../services/clinica.service';
+import { MedicoService } from '../../services/medico.service';
+import { Clinica } from '../../modelos/clinica';
+import { LocalDataSource } from 'ng2-smart-table';
+import { AppService } from '../../services/app.service';
 
 @Component({
   templateUrl: './cadastro-funcionario.component.html',
@@ -28,13 +36,11 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
   @ViewChild('numero') private numero: ElementRef;
 
-  funcionario: Funcionario = {
-    id: "", nomeCompleto: "", cpf: "", dataAdmissao: new Date('01/01/0001'), dataDemissao: new Date('01/01/0001'),
-    dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", cep: "", endereco: "",
-    oficioId: "", usuarioId: "",
-    numero: "", complemento: "", bairro: "", cidade: "", uf: "", oficio: new Oficio(), imagem: "", usuario: new Usuario(), permissaoAdministrador: false, visualizaAgenda: false
-  };
+  funcionario= new Funcionario ();
 
+  settingsClinica = tableDataClinica.settingsClinica;
+  settingsMedico = tableDataMedico.settingsMedico;
+  usuarioAdministrador = false;
   permiteAlterarSenha = false;
   oficios = new Array<Oficio>();
   nomeOficios: Array<string>;
@@ -46,8 +52,15 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   dataAdmis: string = "01/01/1901"
   dataDemis: string = "01/01/1901"
   usuario: Usuario;
+  clinicas: Clinica[] = [];
+  clinicaModel:Clinica;
+  sourceClinica: LocalDataSource;
 
-  constructor(private loginService: LoginService, private usuarioService: UsuarioService, public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
+  medicos: Medico[] = [];
+  medicoModel:Medico;
+  sourceMedico: LocalDataSource;
+
+  constructor(private appService:AppService,private loginService: LoginService,private medicoService:MedicoService, private clinicaService:ClinicaService,private usuarioService: UsuarioService, public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
     private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
@@ -82,7 +95,8 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    this.usuario = this.util.retornarUsuarioCorrente();
+    this.usuario = this.appService.retornarUsuarioCorrente();
+    this.usuarioAdministrador = this.appService.retornarUsuarioAdministrador();
 
     if (this.funcionarioService.funcionario != null) {
 
@@ -93,6 +107,71 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
     }
 
+    this.alimentarModelos();
+    
+  }
+  associarMedicoFuncionario()
+  {
+    if (this.medicoModel == null)
+      return;
+
+    if (this.funcionario.medicosId == null)
+      this.funcionario.medicosId = new Array<string>();
+
+    if (this.funcionario.medicos == null)
+      this.funcionario.medicos = new Array<Medico>();
+
+    if (this.funcionario.medicos.find(c => c.id == this.medicoModel.id) != null)
+      return;
+
+    this.funcionario.medicosId.push(this.medicoModel.id);
+    this.funcionario.medicos.push(this.medicoModel);
+
+    var index = this.medicos.indexOf(this.medicoModel);
+
+    this.medicos.splice(index, 1);
+    this.medicoModel = this.medicos.find(c => true);
+    this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
+
+    if (!this.util.isNullOrWhitespace(this.funcionario.id)) {
+      this.funcionarioService.salvar(this.funcionario).subscribe(funcionario => {
+        this.funcionario = funcionario;
+      });
+    }
+  }
+
+  associarClinicaFuncionario() {
+
+    if (this.clinicaModel == null)
+      return;
+
+    if (this.funcionario.clinicasId == null)
+      this.funcionario.clinicasId = new Array<string>();
+
+    if (this.funcionario.clinicas == null)
+      this.funcionario.clinicas = new Array<Clinica>();
+
+    if (this.funcionario.clinicas.find(c => c.id == this.clinicaModel.id) != null)
+      return;
+
+    this.funcionario.clinicasId.push(this.clinicaModel.id);
+    this.funcionario.clinicas.push(this.clinicaModel);
+
+    var index = this.clinicas.indexOf(this.clinicaModel);
+
+    this.clinicas.splice(index, 1);
+    this.clinicaModel = this.clinicas.find(c => true);
+    this.sourceClinica = new LocalDataSource(this.funcionario.clinicas);
+
+    if (!this.util.isNullOrWhitespace(this.funcionario.id)) {
+      this.funcionarioService.salvar(this.funcionario).subscribe(funcionario => {
+        this.funcionario = funcionario;
+      });
+    }
+  }
+
+  alimentarModelos()
+  {
     this.oficioService.Todos().subscribe(oficioBanco => {
       this.oficios = oficioBanco;
       this.nomeOficios = new Array<string>();
@@ -104,7 +183,58 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         if (!this.util.isNullOrWhitespace(this.funcionario.oficioId) && this.funcionario.oficioId == ofiBanc.id)
           this.oficioSelecionado = this.nomeOficios.find(c => c == ofiBanc.descricao);
       });
-    })
+    });
+
+    this.medicoService.todos().subscribe(dados => {
+
+      if (this.funcionario != null && this.util.hasItems(this.funcionario.medicosId)) {
+        if (this.funcionario.medicos == null)
+          this.funcionario.medicos = new Array<Medico>();
+
+        dados.forEach(clin => {
+
+          var indexMedico = this.funcionario.medicosId.indexOf(clin.id);
+          if (indexMedico >= 0)
+            this.funcionario.medicos.push(clin);
+          else
+            this.medicos.push(clin);
+        });
+
+        if (this.util.hasItems(this.funcionario.medicos))
+          this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
+      }
+      else
+        this.medicos = dados;
+
+      if (this.util.hasItems(this.medicos))
+        this.medicoModel = this.medicos.find(c => true);
+    });
+
+   
+    this.clinicaService.Todos().subscribe(dados => {
+
+      if (this.funcionario != null && this.util.hasItems(this.funcionario.clinicasId)) {
+        if (this.funcionario.clinicas == null)
+          this.funcionario.clinicas = new Array<Clinica>();
+
+        dados.forEach(clin => {
+
+          var indexClinica = this.funcionario.clinicasId.indexOf(clin.id);
+          if (indexClinica >= 0)
+            this.funcionario.clinicas.push(clin);
+          else
+            this.clinicas.push(clin);
+        });
+
+        if (this.util.hasItems(this.funcionario.clinicas))
+          this.sourceClinica = new LocalDataSource(this.funcionario.clinicas);
+      }
+      else
+        this.clinicas = dados;
+
+      if (this.util.hasItems(this.clinicas))
+        this.clinicaModel = this.clinicas.find(c => true);
+    });
   }
 
   search = (text$: Observable<string>) =>

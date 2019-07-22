@@ -28,16 +28,7 @@ export class Util {
         return lista != null && lista.length > 0;
     }
 
-    public retornarUsuarioAdministrador(): boolean {
-        var usuario = new LoginService(null, null).usuarioCorrenteValor;
-        return ((usuario.medicoId == "" || usuario.medicoId == null) && (usuario.funcionarioId == null || usuario.funcionarioId == ""));
-    }
-
-    public retornarUsuarioCorrente(): Usuario {
-        var usuario = new LoginService(null, null).usuarioCorrenteValor;
-        return usuario;
-    }
-
+   
     public stringParaData(dataString: string): Date {
        
         if (dataString.length > 8) { 

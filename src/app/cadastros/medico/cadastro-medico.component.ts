@@ -4,8 +4,9 @@ import { Estados } from "../../enums/estados";
 import { Medico } from '../../modelos/medico';
 import { MedicoService } from '../../services/medico.service';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConvenioService } from '../../services/convenio.service';
+import { ClinicaService } from '../../services/clinica.service';
 import { Convenio } from '../../modelos/convenio';
 import { Especialidade } from '../../modelos/especialidade';
 import { Util } from '../../uteis/Util';
@@ -20,6 +21,7 @@ import { PacienteService } from '../../services/paciente.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as tableDataGestantes from './listagem-paciente-gestante-settings';
 import * as tableDataConvenio from './listagem-convenio-medico-settings';
+import * as tableDataClinica from './listagem-clinica-medico-settings';
 import { ConfiguracaoAgenda } from '../../modelos/configuracaoAgenda';
 import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha.component';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
@@ -27,6 +29,7 @@ import { UsuarioService } from '../../services/usuario.service';
 import { LoginService } from '../../services/login.service';
 import { Clinica } from '../../modelos/clinica';
 import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
+import { AppService } from '../../services/app.service';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -40,8 +43,11 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
 
   settingsGestante = tableDataGestantes.settingsGestante;
   settingsConvenio = tableDataConvenio.settingsConvenio;
+  settingsClinica = tableDataClinica.settingsClinica;
+
   sourceGestante: LocalDataSource;
   sourceConvenio: LocalDataSource;
+  sourceClinica: LocalDataSource;
   estados = Estados;
   especialidades = new Array<Especialidade>();
   nomeEspecialidades: Array<string>;
@@ -51,26 +57,23 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   data: string = "01/01/1901"
   util = new Util();
   convenios: Array<Convenio> = [];
-  medico: Medico = {
-    clinicasId: new Array<string>(), clinicas: new Array<Clinica>(), usuarioId: "", configuracaoAgendaId: "", conveniosId: new Array<string>(),
-    id: "", nomeCompleto: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, celular: "", email: "", usuario: new Usuario(),
-    administrador: false, cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", imagem: "", crm: "", convenios: new Array<Convenio>(), especialidade: new Especialidade(), especialidadeId: "",
-    configuracaoAgenda: new ConfiguracaoAgenda()
-  };
+  medico= new Medico(); 
   usuario: Usuario;
   usuarioAdministrador = false;
   permiteAlterarSenha = false;
   convenioModel: Convenio;
+  clinicas: Clinica[] = [];
+  clinicaModel:Clinica;
 
-  constructor(private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService,
+  constructor(private appService:AppService,private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private clinicaService: ClinicaService,
     private convenioService: ConvenioService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
 
 
   public ngOnInit(): void {
 
-    this.usuario = this.util.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.util.retornarUsuarioAdministrador();
+    this.usuario = this.appService.retornarUsuarioCorrente();
+    this.usuarioAdministrador = this.appService.retornarUsuarioAdministrador();
 
     if (this.medicoService.medico != null) {
       this.medico = this.medicoService.medico;
@@ -84,30 +87,26 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
       });
     }
 
-    this.alimentarConvenioEEspecialidade();
+    this.alimentarModelos();
   }
 
-  private alimentarConvenioEEspecialidade() {
-    
-    this.convenioService.Todos().subscribe(dados => {         
+  private alimentarModelos() {
+
+    this.convenioService.Todos().subscribe(dados => {
 
       if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
         if (this.medico.convenios == null)
-            this.medico.convenios = new Array<Convenio>();
-        
-        dados.forEach(conv => {          
+          this.medico.convenios = new Array<Convenio>();
+
+        dados.forEach(conv => {
 
           var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
 
-          if (indexConvenio >= 0) {
-            this.medico.convenios.push(conv);    
-          }
+          if (indexConvenio >= 0)
+            this.medico.convenios.push(conv);
           else
-          {
             this.convenios.push(conv);
-          }
-                    
-        });        
+        });
 
         if (this.util.hasItems(this.medico.convenios))
           this.sourceConvenio = new LocalDataSource(this.medico.convenios);
@@ -117,6 +116,31 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
 
       if (this.util.hasItems(this.convenios))
         this.convenioModel = this.convenios.find(c => true);
+    });
+
+    this.clinicaService.Todos().subscribe(dados => {
+
+      if (this.medico != null && this.util.hasItems(this.medico.clinicasId)) {
+        if (this.medico.clinicas == null)
+          this.medico.clinicas = new Array<Clinica>();
+
+        dados.forEach(clin => {
+
+          var indexClinica = this.medico.clinicasId.indexOf(clin.id);
+          if (indexClinica >= 0)
+            this.medico.clinicas.push(clin);
+          else
+            this.clinicas.push(clin);
+        });
+
+        if (this.util.hasItems(this.medico.clinicas))
+          this.sourceClinica = new LocalDataSource(this.medico.clinicas);
+      }
+      else
+        this.clinicas = dados;
+
+      if (this.util.hasItems(this.clinicas))
+        this.clinicaModel = this.clinicas.find(c => true);
     });
 
     this.especialidadeService.Todos().subscribe(c => {
@@ -138,7 +162,7 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   }
 
   configurarAgendaMedico() {
-    if (this.medico.id != ''){
+    if (this.medico.id != '') {
       this.medicoService.medico = this.medico;
       this.router.navigate(['/cadastros/configuracaoagenda']);
     }
@@ -150,8 +174,38 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     modal.result.then((convenio) => {
       this.convenioModel = convenio;
       this.associarConvenioMedico();
-    }, error=>{});
+    }, error => { });
 
+  }
+
+  associarClinicaMedico() {
+
+    if (this.clinicaModel == null)
+      return;
+
+    if (this.medico.clinicasId == null)
+      this.medico.clinicasId = new Array<string>();
+
+    if (this.medico.clinicas == null)
+      this.medico.clinicas = new Array<Clinica>();
+
+    if (this.medico.clinicas.find(c => c.id == this.clinicaModel.id) != null)
+      return;
+
+    this.medico.clinicasId.push(this.clinicaModel.id);
+    this.medico.clinicas.push(this.clinicaModel);
+
+    var index = this.clinicas.indexOf(this.clinicaModel);
+
+    this.clinicas.splice(index, 1);
+    this.clinicaModel = this.clinicas.find(c => true);
+    this.sourceClinica = new LocalDataSource(this.medico.clinicas);
+
+    if (!this.util.isNullOrWhitespace(this.medico.id)) {
+      this.medicoService.salvar(this.medico).subscribe(medico => {
+        this.medico = medico;
+      });
+    }
   }
 
   associarConvenioMedico() {

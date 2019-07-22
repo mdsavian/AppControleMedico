@@ -3,269 +3,336 @@
     <div class="card">
       <div class="card-body">
         <form #funcionarioForm="ngForm">
-          <div [hidden]="funcionarioForm.submitted">
-            <ngb-tabset type="pills">
-              <ngb-tab title="Informações Pessoais">
-                <ng-template ngbTabContent>
-                  <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                    <div class="row"></div>
+          <ngb-tabset type="pills">
+            <ngb-tab title="Informações Pessoais">
+              <ng-template ngbTabContent>
+                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
 
-                    <div class="row rowcadastro">
-                      <div class="col-xs-12 col-md-6">
-                        <div class="form-group">
-                          <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
-                          <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
-                            class="form-control" required minlength="4" [(ngModel)]="funcionario.nomeCompleto"
-                            #nomeCompleto>
-                          <div *ngIf="nomeCompleto.invalid"
-                            class="alert alert-danger">
-                            <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
-                            <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
-                          </div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-12 col-md-6">
+                      <div class="form-group">
+                        <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
+                        <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
+                          class="form-control" required minlength="4" [(ngModel)]="funcionario.nomeCompleto"
+                          #nomeCompleto>
+                        <div *ngIf="nomeCompleto.invalid" class="alert alert-danger">
+                          <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
+                          <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
                         </div>
                       </div>
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="cpf">CPF</label>
-                          <input type="text" id="cpf" appValidacpf mask="000.000.000-00" placeholder="CPF" name="cpf"
-                            class="form-control" [(ngModel)]="funcionario.cpf" #cpf="ngModel">
-                          <div *ngIf="cpf.invalid && cpf.errors?.validaCpf"
-                            class="alert alert-danger">
-                            <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="rg">RG</label>
-                          <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
-                            [(ngModel)]="funcionario.rg" #rg="ngModel">
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="cpf">CPF</label>
+                        <input type="text" id="cpf" appValidacpf mask="000.000.000-00" placeholder="CPF" name="cpf"
+                          class="form-control" [(ngModel)]="funcionario.cpf" #cpf="ngModel">
+                        <div *ngIf="cpf.invalid && cpf.errors?.validaCpf" class="alert alert-danger">
+                          <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
                         </div>
                       </div>
                     </div>
 
-                    <div class="row rowcadastro">
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="celular">Celular(*)</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
-                            </div>
-                            <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
-                              required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel"
-                              pattern="^[0-9]{11}$">
-                          </div>
-                          <div *ngIf="celular.invalid" class="alert alert-danger">
-                            <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
-                            <div *ngIf="celular.errors.required"> Celular Inválido. </div>
-                          </div>
-                        </div>
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="rg">RG</label>
+                        <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
+                          [(ngModel)]="funcionario.rg" #rg="ngModel">
                       </div>
+                    </div>
+                  </div>
 
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="telefone">Telefone</label>
-                          <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
-                            </div>
-                            <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
-                              [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
+                  <div class="row rowcadastro">
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="celular">Celular(*)</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
                           </div>
+                          <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
+                            required [(ngModel)]="funcionario.celular" mask="(00) 0 0000-0000" #celular="ngModel"
+                            pattern="^[0-9]{11}$">
                         </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="email">E-mail(*)</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">@</span>
-                            </div>
-                            <input type="email" id="email" placeholder="funcionario@email.com" name="email"
-                              class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel">
-                          </div>
-                          <div *ngIf="emailInput.invalid "
-                            class="alert alert-danger">
-                            <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
-                            <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
-                          </div>
+                        <div *ngIf="celular.invalid" class="alert alert-danger">
+                          <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
+                          <div *ngIf="celular.errors.required"> Celular Inválido. </div>
                         </div>
                       </div>
                     </div>
 
-                    <div class="row rowcadastro">
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="dataNascimento">Data de Nascimento</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
-                              #dataNascimento="ngModel" (blur)="formataData($event)">                           
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="telefone">Telefone</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
                           </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="dataAdmis">Data de Admissão</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <input type="text" mask="00/00/0000" id="dataAdmis" name="dataAdmis"
-                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataAdmis"
-                              #dataAdmissao="ngModel" (blur)="formataData($event)">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="dataDemis">Data de Demissão</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <input type="text" mask="00/00/0000" id="dataDemis" name="dataDemis"
-                              placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataDemis"
-                              #dataDemissao="ngModel" (blur)="formataData($event)">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="oficioSelecionado">Ofício</label>
-                          <div class="input-group">
-                            <input id="oficioSelecionado" name="oficioSelecionado" type="text"
-                              (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
-                              #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
-                            <div class="input-group-prepend">
-                              <span (click)="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
-                                  class="fa fa-pencil"></i></span>
-                            </div>
-                          </div>
-                          <div *ngIf="(falhaNaBusca || oficio.invalid)"
-                            class="alert alert-danger">
-                            <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
-                          </div>
+                          <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
+                            [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
                         </div>
                       </div>
                     </div>
 
-                    <div class="row rowcadastro">
-                      <div class="col-xs-4 col-md-2">
-                        <label class="form-check-inline" for="ativo">Ativo</label>
-                        <input class="form-check-inline" [(ngModel)]="funcionario.ativo" checked name="ativo" id="ativo"
-                          value="checked" type="checkbox">
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="email">E-mail(*)</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">@</span>
+                          </div>
+                          <input type="email" id="email" placeholder="funcionario@email.com" name="email"
+                            class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel">
+                        </div>
+                        <div *ngIf="emailInput.invalid " class="alert alert-danger">
+                          <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
+                          <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
+                        </div>
                       </div>
-
-                      <div class="col-xs-5 col-md-3">
-                        <label class="form-check-inline" for="permissaoAdministrador">Permissão Administrador</label>
-                        <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador"
-                          name="permissaoAdministrador" id="permissaoAdministrador" value="checked" type="checkbox">
-                      </div>
-
-                      <div class="col-xs-5 col-md-3">
-                        <label class="form-check-inline" for="visualizaAgenda">Visualiza Agenda</label>
-                        <input class="form-check-inline" [(ngModel)]="funcionario.visualizaAgenda"
-                          name="visualizaAgenda" id="visualizaAgenda" value="checked" type="checkbox">
-                      </div>
-
-
                     </div>
+                  </div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="dataNascimento">Data de Nascimento</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
+                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
+                            #dataNascimento="ngModel" (blur)="formataData($event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="dataAdmis">Data de Admissão</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" mask="00/00/0000" id="dataAdmis" name="dataAdmis" placeholder="dd/mm/yyyy"
+                            class="form-control" [(ngModel)]="dataAdmis" #dataAdmissao="ngModel"
+                            (blur)="formataData($event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="dataDemis">Data de Demissão</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" mask="00/00/0000" id="dataDemis" name="dataDemis" placeholder="dd/mm/yyyy"
+                            class="form-control" [(ngModel)]="dataDemis" #dataDemissao="ngModel"
+                            (blur)="formataData($event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="oficioSelecionado">Ofício</label>
+                        <div class="input-group">
+                          <input id="oficioSelecionado" name="oficioSelecionado" type="text"
+                            (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
+                            #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
+                          <div class="input-group-prepend">
+                            <span (click)="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
+                                class="fa fa-pencil"></i></span>
+                          </div>
+                        </div>
+                        <div *ngIf="(falhaNaBusca || oficio.invalid)" class="alert alert-danger">
+                          <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-4 col-md-2">
+                      <label class="form-check-inline" for="ativo">Ativo</label>
+                      <input class="form-check-inline" [(ngModel)]="funcionario.ativo" checked name="ativo" id="ativo"
+                        value="checked" type="checkbox">
+                    </div>
+
+                    <div class="col-xs-5 col-md-3">
+                      <label class="form-check-inline" for="permissaoAdministrador">Permissão Administrador</label>
+                      <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador"
+                        name="permissaoAdministrador" id="permissaoAdministrador" type="checkbox">
+                    </div>
+
+                    <div class="col-xs-5 col-md-3">
+                      <label class="form-check-inline" for="visualizaAgenda">Visualiza Agenda</label>
+                      <input class="form-check-inline" #visuAgenda [(ngModel)]="funcionario.visualizaAgenda" name="visualizaAgenda"
+                        id="visualizaAgenda" type="checkbox">
+                    </div>
+
 
                   </div>
-                </ng-template>
-              </ngb-tab>
 
-              <ngb-tab title="Contato">
-                <ng-template ngbTabContent>
-                  <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                    <div class="row"></div>
+                </div>
+              </ng-template>
+            </ngb-tab>
 
-                    <div class="row rowcadastro">
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="cep">CEP</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><img src="../../../assets/images/icon/logo-correio.png"
-                                  width="25" height="22"> </span>
-                            </div>
-                            <input type="text" id="cep" placeholder="CEP" name="cep" class="form-control"
-                              [(ngModel)]="funcionario.cep" #cep="ngModel" (blur)="buscaCep()" mask="00.000-000">
+            <ngb-tab title="Contato">
+              <ng-template ngbTabContent>
+                <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="cep">CEP</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><img src="../../../assets/images/icon/logo-correio.png"
+                                width="25" height="22"> </span>
                           </div>
-
+                          <input type="text" id="cep" placeholder="CEP" name="cep" class="form-control"
+                            [(ngModel)]="funcionario.cep" #cep="ngModel" (blur)="buscaCep()" mask="00.000-000">
                         </div>
-                      </div>
 
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="endereco">Endereço</label>
-                          <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
-                            [(ngModel)]="funcionario.endereco" #endereco="ngModel">
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="numero">Número</label>
-                          <input type="text" id="numero" placeholder="Número" name="numero" class="form-control"
-                            [(ngModel)]="funcionario.numero" #numero>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="complemento">Complemento</label>
-                          <input type="text" id="complemento" placeholder="Complemento" name="complemento"
-                            class="form-control" [(ngModel)]="funcionario.complemento" #complemento="ngModel">
-                        </div>
                       </div>
                     </div>
 
-                    <div class="row rowcadastro">
-
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="bairro">Bairro</label>
-                          <input type="text" id="bairro" placeholder="Bairro" name="bairro" class="form-control"
-                            [(ngModel)]="funcionario.bairro" #bairro="ngModel">
-                        </div>
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="endereco">Endereço</label>
+                        <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
+                          [(ngModel)]="funcionario.endereco" #endereco="ngModel">
                       </div>
+                    </div>
 
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="cidade">Cidade</label>
-                          <input type="text" id="cidade" placeholder="Cidade" name="cidade" class="form-control"
-                            [(ngModel)]="funcionario.cidade" #cidade="ngModel">
-                        </div>
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="numero">Número</label>
+                        <input type="text" id="numero" placeholder="Número" name="numero" class="form-control"
+                          [(ngModel)]="funcionario.numero" #numero>
                       </div>
+                    </div>
 
-                      <div class="col-xs-6 col-md-3">
-                        <div class="form-group">
-                          <label class="control-label" for="uf">Estado</label>
-                          <select class="form-control" [(ngModel)]="funcionario.uf" #uf="ngModel" id="uf" name="uf">
-                            <option *ngFor="let codigo of estados | enumToArray">
-                              {{codigo}}
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="complemento">Complemento</label>
+                        <input type="text" id="complemento" placeholder="Complemento" name="complemento"
+                          class="form-control" [(ngModel)]="funcionario.complemento" #complemento="ngModel">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row rowcadastro">
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="bairro">Bairro</label>
+                        <input type="text" id="bairro" placeholder="Bairro" name="bairro" class="form-control"
+                          [(ngModel)]="funcionario.bairro" #bairro="ngModel">
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="cidade">Cidade</label>
+                        <input type="text" id="cidade" placeholder="Cidade" name="cidade" class="form-control"
+                          [(ngModel)]="funcionario.cidade" #cidade="ngModel">
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="uf">Estado</label>
+                        <select class="form-control" [(ngModel)]="funcionario.uf" #uf="ngModel" id="uf" name="uf">
+                          <option *ngFor="let codigo of estados | enumToArray">
+                            {{codigo}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Clínicas" *ngIf="usuarioAdministrador">
+              <ng-template ngbTabContent>
+                <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
+                  <div class="row">
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="clinica">Clínica</label>
+                        <div class="input-group">
+                          <select class="form-control" [(ngModel)]="clinicaModel" #clinica="ngModel" id="clinica"
+                            name="clinica">
+                            <option *ngFor="let clin of clinicas" [ngValue]="clin">
+                              {{clin.razaoSocial}}
                             </option>
                           </select>
                         </div>
                       </div>
                     </div>
+                    <div class="col-xs-3 col-md-2 text-center"
+                      style="display: flex; align-items: center; justify-content: center;">
+                      <button class="btn btn-rounded btn-success" [disabled]="clinicaModel == null"
+                        style="top:50%; display:block;" (click)="associarClinicaFuncionario()">Associar Clínica
+                      </button>
+                    </div>
                   </div>
-                </ng-template>
-              </ngb-tab>
-            </ngb-tabset>
-          </div>
+                  <div class="row">
+                    <div class="table table-responsive smart-table">
+                      <ng2-smart-table [(settings)]="settingsClinica" [(source)]="sourceClinica" class="">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            
+            
+            <!--*ngIf=""-->
+            <ngb-tab title="Médicos" >
+              <ng-template ngbTabContent>
+                
+                <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
+                  <div class="row">
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                          {{visuAgenda}}
+                        <label class="control-label" for="medico">Médico</label>
+                        <div class="input-group">
+                          <select class="form-control" [(ngModel)]="medicoModel" #clinica="ngModel" id="medico"
+                            name="medico">
+                            <option *ngFor="let med of medicos" [ngValue]="med">
+                              {{med.nomeCompleto}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xs-3 col-md-2 text-center"
+                      style="display: flex; align-items: center; justify-content: center;">
+                      <button class="btn btn-rounded btn-success" [disabled]="medicoModel == null"
+                        style="top:50%; display:block;" (click)="associarMedicoFuncionario()">Associar Médico
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="table table-responsive smart-table">
+                      <ng2-smart-table [(settings)]="settingsMedico" [(source)]="sourceMedico" class="">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
           <div class="panel-footer row rowcadastro">
             <div class="col-xs-6 col-md-6">
               <button class="btn btn-rounded btn-danger" style="width:30%" [disabled]="!permiteAlterarSenha"
