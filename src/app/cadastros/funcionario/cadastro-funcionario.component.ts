@@ -68,6 +68,41 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     this.nomeCompleto.nativeElement.focus();
   }
 
+  public ngOnInit(): void {
+    this.usuario = this.appService.retornarUsuarioCorrente();
+    this.usuarioAdministrador = this.appService.retornarUsuarioAdministrador();
+
+    if (this.funcionarioService.funcionario != null) {
+
+      this.funcionario = this.funcionarioService.funcionario;
+      this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
+      this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
+      this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
+      this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
+    }
+
+    this.alimentarModelos();
+    
+  } 
+
+
+  deletarMedico(event)
+  {
+    
+    console.log(this.funcionario.medicos);
+    var medico = this.funcionario.medicos.find(c=> c.id == event.data.id);
+    console.log(medico,this.funcionario.medicos.indexOf(medico));
+    this.funcionario.medicos.splice(this.funcionario.medicos.indexOf(medico), 1);
+
+    this.medicos.push(medico);
+
+    this.funcionario.medicosId.splice(this.funcionario.medicosId.indexOf(event.data.id), 1);
+    
+    this.funcionarioService.salvar(this.funcionario).subscribe(c=> {});
+    this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
+
+  }
+
   alterarSenha() {
 
     if (this.permiteAlterarSenha) {
@@ -94,22 +129,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public ngOnInit(): void {
-    this.usuario = this.appService.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.appService.retornarUsuarioAdministrador();
-
-    if (this.funcionarioService.funcionario != null) {
-
-      this.funcionario = this.funcionarioService.funcionario;
-      this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
-      this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
-      this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
-      this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
-    }
-
-    this.alimentarModelos();
-    
-  }
+ 
   associarMedicoFuncionario()
   {
     if (this.medicoModel == null)
@@ -126,7 +146,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
     this.funcionario.medicosId.push(this.medicoModel.id);
     this.funcionario.medicos.push(this.medicoModel);
-
     var index = this.medicos.indexOf(this.medicoModel);
 
     this.medicos.splice(index, 1);
@@ -134,9 +153,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
 
     if (!this.util.isNullOrWhitespace(this.funcionario.id)) {
-      this.funcionarioService.salvar(this.funcionario).subscribe(funcionario => {
-        this.funcionario = funcionario;
-      });
+      this.funcionarioService.salvar(this.funcionario).subscribe(funci => {});
     }
   }
 
@@ -191,13 +208,13 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         if (this.funcionario.medicos == null)
           this.funcionario.medicos = new Array<Medico>();
 
-        dados.forEach(clin => {
+        dados.forEach(medicos => {
 
-          var indexMedico = this.funcionario.medicosId.indexOf(clin.id);
+          var indexMedico = this.funcionario.medicosId.indexOf(medicos.id);
           if (indexMedico >= 0)
-            this.funcionario.medicos.push(clin);
+            this.funcionario.medicos.push(medicos);
           else
-            this.medicos.push(clin);
+            this.medicos.push(medicos);
         });
 
         if (this.util.hasItems(this.funcionario.medicos))

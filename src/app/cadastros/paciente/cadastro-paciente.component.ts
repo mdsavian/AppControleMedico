@@ -20,6 +20,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
+import { EspecialidadeService } from '../../services/especialidade.service';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -47,9 +48,10 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   descricaos: Array<string>;
   falhaNaBusca: boolean;
   medico: Medico;
+  exibeAbaEspecialidade: boolean;
 
   constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
-    private convenioService: ConvenioService, private route: ActivatedRoute, private modalService: NgbModal,
+    private convenioService: ConvenioService, private especialidadeService: EspecialidadeService, private modalService: NgbModal,
     private loginService: LoginService, private medicoService: MedicoService) {
   }
 
@@ -68,8 +70,11 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
     var usuario = this.loginService.usuarioCorrenteValor;
 
-    if (usuario.medicoId != "") {
-      this.medicoService.buscarMedicoUsuario(usuario).subscribe(medicoRetorno => this.medico = medicoRetorno);
+    if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
+      this.medicoService.buscarMedicoUsuario(usuario).subscribe(medicoRetorno => {
+        this.medico = medicoRetorno;
+        this.ExibeAbaEspecialidade("obstetrícia");
+      });
     }
 
     this.convenioService.Todos().subscribe(dados => {
@@ -82,7 +87,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     var modal = this.modalService.open(ModalAdicionaConvenioComponent, { windowClass: "modal-holder" });
 
     modal.result.then((convenio) => {
-      
+
       this.paciente.convenio = convenio;
       this.paciente.convenioId = convenio.id;
       this.convenios.push(convenio);
@@ -103,13 +108,16 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ExibeAbaEspecialidade(especialidade: string): boolean {
+  ExibeAbaEspecialidade(especialidade: string) {
+    if (this.medico != null && !this.util.isNullOrWhitespace(this.medico.especialidadeId)) {
 
-    if (this.medico != null && this.medico.especialidade != null) {
-      return this.medico.especialidade.descricao.includes(especialidade);
+      this.especialidadeService.buscarPorId(this.medico.especialidadeId).subscribe(espec => {
+        this.medico.especialidade = espec;
+
+        this.exibeAbaEspecialidade = espec.descricao.toUpperCase().includes(especialidade.toUpperCase());
+        console.log(this.exibeAbaEspecialidade);
+      });
     }
-
-    return false;
   }
   buscaConvenio = (text$: Observable<string>) =>
     text$.pipe(
