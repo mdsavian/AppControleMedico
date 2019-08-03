@@ -104,34 +104,65 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/listagem/listagemprocedimento',
-        title: 'Procedimento',
+        title: 'Procedimentos',
         icon: '',
-        class: '',
+        class: 'has-arrow',
         label: '',
         labelClass: '',
         extralink: false,
-        submenu: []
-      },     
-      {
-        path: '/listagem/listagemexame',
-        title: 'Exame',
-        icon: '',
-        class: '',
-        label: '',
-        labelClass: '',
-        extralink: false,
-        submenu: []
+        submenu: [
+          {
+            path: '/listagem/listagemprocedimento',
+            title: 'Procedimento',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          },
+          {
+            path: '/listagem/listagemexame',
+            title: 'Exame',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          },
+          {
+            path: '/listagem/listagemcirurgia',
+            title: 'Cirurgia',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          },
+        ]
       },
       {
-        path: '/listagem/listagemcirurgia',
-        title: 'Cirurgia',
+        path: '',
+        title: 'Financeiro',
         icon: '',
-        class: '',
+        class: 'has-arrow',
         label: '',
         labelClass: '',
         extralink: false,
-        submenu: []
-      },
+        submenu: [
+          {
+            path: '/listagem/listagemformadepagamento',
+            title: 'Forma de Pagamento',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          },
+        ]},
       {
         path: '/listagem/listagemlocal',
         title: 'Local',

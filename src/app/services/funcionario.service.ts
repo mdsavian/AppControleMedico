@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class FuncionarioService {
+ 
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'funcionario/';
   public funcionario:Funcionario;
@@ -30,6 +31,10 @@ export class FuncionarioService {
 
   public Excluir(funcionarioId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + funcionarioId);
+  }
+
+  buscarComMedicos(funcionarioId: string) {
+    return this.http.get<Funcionario>(this.accessPointUrl + "buscarComMedicos/" + funcionarioId);
   }
 
 }

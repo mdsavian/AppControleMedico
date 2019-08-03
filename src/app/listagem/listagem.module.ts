@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ListagemRoutes } from './listagem.routing';
@@ -15,6 +15,7 @@ import { ListagemExameComponent } from './exame/listagem-exame.component';
 import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.component';
 import { ListagemLocalComponent } from './local/listagem-local.component';
 import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
+import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 import { CorComponent } from './shared/cor-component';
 
 @NgModule({
@@ -25,7 +26,7 @@ import { CorComponent } from './shared/cor-component';
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemMedicoComponent, ListagemPacienteComponent, ListagemFormaDePagamentoComponent,ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
     ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemClinicaComponent,ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent, CorComponent
   ],

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
@@ -29,6 +29,7 @@ import { FuncionarioService } from '../services/funcionario.service';
   templateUrl: 'agenda.component.html'
 })
 export class AgendaComponent implements OnInit {
+
   @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
   @ViewChild('modalAcoes') modalAcoes: TemplateRef<any>;
@@ -44,7 +45,7 @@ export class AgendaComponent implements OnInit {
   util = new Util();
   medico: Medico;
   funcionario: Funcionario;
-  medicos: Medico[];
+  medicos: Medico[] = [];
   visualizaBotoesAberturaFechamentoCaixa = false;
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
@@ -58,30 +59,34 @@ export class AgendaComponent implements OnInit {
 
   ngOnInit() {
 
-
     var usuario = this.loginService.usuarioCorrenteValor;
-    console.log("opa");
-    if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
-      this.medicoService.buscarPorId(usuario.medicoId).subscribe(medico => {        
-        this.medico = medico;
-        if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId))
-          this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).subscribe(config => {
-            this.medico.configuracaoAgenda = config;
-            this.ajustarParametrosCalendario();
-          });
 
-      });
-    }
-    else if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
-      this.funcionarioService.buscarPorId(usuario.funcionarioId).subscribe(func => {
-        console.log(func, func.visualizaAgenda);
+    if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
+      this.funcionarioService.buscarComMedicos(usuario.funcionarioId).subscribe(func => {
         this.funcionario = func;
-        this.visualizaBotoesAberturaFechamentoCaixa = func.visualizaAgenda;
+        this.medicos = func.medicos;
+        this.medico = func.medicos.find(c => true);
+        this.carregarConfiguracaoMedico();
+
       });
     }
-
+    else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
+      this.medicoService.buscarPorId(usuario.medicoId).subscribe(medic => {
+        this.medicos.push(medic);
+        this.medico = this.medicos.find(c => true);
+        this.carregarConfiguracaoMedico();
+      });
+    }
   }
 
+  carregarConfiguracaoMedico() {
+    if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId) && this.medico.configuracaoAgenda == null) {
+      this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).subscribe(config => {
+        this.medico.configuracaoAgenda = config;
+        this.ajustarParametrosCalendario();
+      });
+    }
+  }
   converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
     var novoAgendamento = new Agendamento();
 
@@ -143,20 +148,19 @@ export class AgendaComponent implements OnInit {
   }
 
   ajustarParametrosCalendario() {
-    if (this.medico != null) {
 
+    if (this.medico != null) {
       this.carregarAgendamentosMedico();
 
-      if (this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
-
+      if (this.medico.configuracaoAgenda != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
         var configuracaoAgenda = this.medico.configuracaoAgenda;
         this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
         this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
 
         if (this.view == CalendarView.Week) {
-
           this.horaInicialCalendario = configuracaoAgenda.primeiroHorario;
           this.horaFinalCalendario = configuracaoAgenda.ultimoHorario;
+
         }
         else if (this.view == CalendarView.Day) {
           var configuracaoAgendaDias = configuracaoAgenda.configuracaoAgendaDias;
@@ -183,7 +187,7 @@ export class AgendaComponent implements OnInit {
     let hora = data.getHours();
     let minutos = data.getMinutes();
 
-    if (this.medico != null) {
+    if (this.medico != null && this.medico.configuracaoAgenda != null) {
       var configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias[dia]
 
       if (configuracaoAgendaDias != null) {
@@ -577,7 +581,6 @@ export class AgendaComponent implements OnInit {
   }
 
   montaTituloAgendamento(agendamento: Agendamento): string {
-
     if (agendamento.paciente != null) {
       return agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
         agendamento.convenio.descricao.toUpperCase() + " - " +

@@ -61,13 +61,13 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   @ViewChild('tipoAgendamento', { read: ElementRef }) private tipoAgendamento: ElementRef;
 
-  constructor(public activeModal: NgbActiveModal, private medicoService:MedicoService,private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
+  constructor(public activeModal: NgbActiveModal, private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
     private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
 
   ngAfterViewInit(): void {
-    this.tipoAgendamento.nativeElement.focus();   
+    this.tipoAgendamento.nativeElement.focus();
   }
 
 
@@ -91,7 +91,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
             this.agendamento.paciente = this.paciente;
           }
 
-          this.agendamento.convenio = this.convenios.find(c => c.id == this.agendamento.convenioId);
+          this.agendamento.convenio = this.convenios.find(c => c.id == this.agendamento.convenio.id);
 
           if (!this.util.isNullOrWhitespace(this.agendamento.exameId))
             this.agendamento.exame = this.exames.find(c => c.id == this.agendamento.exameId);
@@ -130,15 +130,14 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         modalErro.componentInstance.mensagemErro = "Paciente inválido.";
         return;
       }
-      
+
       if (this.agendamento.dataAgendamento == null) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
         return;
       }
     }
-        
-    // var dataString = this.util.stringParaData(this.agendamento.dataAgendamento);
+
     var validaHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
       this.agendamento.dataAgendamento, this.agendamento.horaInicial, this.agendamento.horaFinal, this.agendamento.tipoAgendamento);
 
@@ -147,9 +146,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       modalErro.componentInstance.mensagemErro = validaHoras;
       return;
     }
-
     this.agendamento = this.validadorAgendamento.tratarCorAgendamento(this.agendamento);
-
     this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => this.activeModal.close(novoAgendamento));
   }
 
@@ -181,12 +178,12 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
     let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
 
-    let reqConvenios = this.convenioService.Todos().map(dados => { 
+    let reqConvenios = this.convenioService.Todos().map(dados => {
       if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
         dados.forEach(conv => {
           var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
           if (indexConvenio >= 0)
-            this.convenios.push(conv);                        
+            this.convenios.push(conv);
         });
       }
       else
@@ -258,7 +255,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
                 this.agendamento.convenio = convenioExistente;
                 this.agendamento.convenioId = convenioExistente.id;
                 this.medico.conveniosId.push(convenioExistente.id);
-                this.medicoService.salvar(this.medico).subscribe(c=>{});
+                this.medicoService.salvar(this.medico).subscribe(c => { });
               }
               else {
 
@@ -270,7 +267,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
                   this.agendamento.convenio = this.convenios.find(c => c.descricao == convenioCadastrado.descricao);
                   this.agendamento.convenioId = convenioCadastrado.id;
                   this.medico.conveniosId.push(convenioCadastrado.id);
-                this.medicoService.salvar(this.medico).subscribe(c=>{});
+                  this.medicoService.salvar(this.medico).subscribe(c => { });
                 });
               }
             }

@@ -4,20 +4,25 @@
       <div class="row col-12">
         <div class="col-xs-2 col-md-2 form-group">
           <div class="row col-xs-12 col-md-12">
-            <select class="form-control" (change)="ajustarParametrosCalendario()" [(ngModel)]="medico" id="medicos"
-              name="medicos">
-              <option *ngFor="let medico of medicos" [ngValue]="medico">
-                {{medico.nomeCompleto}}
-              </option>
-            </select>
+            <div class="form-group">
+              <label class="control-label" for="medicoSelect">Médico</label>
+              <select class="form-control" (change)="carregarConfiguracaoMedico()" [(ngModel)]="medico"
+                id="medicoSelect" name="medicoSelect" #medicoSelect="ngModel">
+                <option *ngFor="let med of medicos" [ngValue]="med">
+                  {{med.nomeCompleto}}
+                </option>
+              </select>
+            </div>
           </div>
           <div class="row col-xs-12 col-md-12">
-              <button class="btn-success" [style.visibility]="visualizaBotoesAberturaFechamentoCaixa? 'hidden': 'visible'">
-                Abrir Caixa
-              </button>
+            <button class="btn-success"
+              [style.visibility]="visualizaBotoesAberturaFechamentoCaixa? 'hidden': 'visible'">
+              Abrir Caixa
+            </button>
           </div>
-          <div class="row col-xs-12 col-md-12">            
-            <button class="btn-warning" [style.visibility]="visualizaBotoesAberturaFechamentoCaixa? 'hidden': 'visible'">
+          <div class="row col-xs-12 col-md-12">
+            <button class="btn-warning"
+              [style.visibility]="visualizaBotoesAberturaFechamentoCaixa? 'hidden': 'visible'">
               Fechar Caixa
             </button>
           </div>

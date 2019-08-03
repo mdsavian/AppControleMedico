@@ -11,6 +11,7 @@ import { ListagemExameComponent } from './exame/listagem-exame.component';
 import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.component';
 import { ListagemLocalComponent } from './local/listagem-local.component';
 import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
+import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -23,7 +24,7 @@ export const ListagemRoutes: Routes = [
           title: 'Médicos',
           urls: [
             { title: 'Médicos' }
-          ]
+          ] 
         }
       },
       {
@@ -124,6 +125,16 @@ export const ListagemRoutes: Routes = [
           title: 'Clínica',
           urls: [
             { title: 'Clínica' }
+          ]
+        }
+      },
+      {
+        path: 'listagemformadepagamento',
+        component: ListagemFormaDePagamentoComponent,
+        data: {
+          title: 'Forma de Pagamento',
+          urls: [
+            { title: 'Forma De Pagamento' }
           ]
         }
       }

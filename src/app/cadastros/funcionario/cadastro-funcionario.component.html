@@ -305,7 +305,7 @@
                       <div class="form-group">
                         <label class="control-label" for="medico">Médico</label>
                         <div class="input-group">
-                          <select class="form-control" [(ngModel)]="medicoModel" #clinica="ngModel" id="medico"
+                          <select class="form-control" [(ngModel)]="medicoModel" #medico="ngModel" id="medico"
                             name="medico">
                             <option *ngFor="let med of medicos" [ngValue]="med">
                               {{med.nomeCompleto}}
