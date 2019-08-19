@@ -15,8 +15,8 @@ import { Estados } from "../../enums/estados";
 
 export class CadastroClinicaComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('razaoSocial', { read: ElementRef, static:false}) private razaoSocial: ElementRef;
-  @ViewChild('numero', { read: ElementRef, static:false}) private numero: ElementRef;
+  @ViewChild('razaoSocial', { read: ElementRef, static: false}) private razaoSocial: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static: false}) private numero: ElementRef;
 
   estados = Estados;
   mensagemErro: string;

@@ -59,7 +59,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   falhaNaBusca = true;
   tituloTela: string = "";
 
-  @ViewChild('tipoAgendamento', { read: ElementRef, static:false }) private tipoAgendamento: ElementRef;
+  @ViewChild('tipoAgendamento', { read: ElementRef, static: false }) private tipoAgendamento: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
     private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,

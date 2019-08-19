@@ -11,13 +11,13 @@ export const routes: Routes = [
   {
     path: '',
     component: FullComponent,
-    children: [      
-      { path: 'relatorio', loadChildren: './relatorio/relatorio.module#RelatorioModule' },
-      { path: 'icons', loadChildren: './icons/icons.module#IconsModule' },
-      { path: 'listagem', loadChildren: './listagem/listagem.module#ListagemModule', canActivate: [AuthGuard] },
-      { path: 'cadastros', loadChildren: './cadastros/cadastros.module#CadastrosModule', canActivate: [AuthGuard] },
-      { path: 'importador', loadChildren: './importador/importador.module#ImportadorModule', canActivate: [AuthGuard] },
-      { path: 'agenda', loadChildren: './agenda/agenda.module#AgendaModule', canActivate: [AuthGuard] },
+    children: [
+      { path: 'relatorio', loadChildren: () => import('./relatorio/relatorio.module').then(m => m.RelatorioModule) },
+      { path: 'icons', loadChildren: () => import('./icons/icons.module').then(m => m.IconsModule) },
+      { path: 'listagem', loadChildren: () => import('./listagem/listagem.module').then(m => m.ListagemModule), canActivate: [AuthGuard] },
+      { path: 'cadastros', loadChildren: () => import('./cadastros/cadastros.module').then(m => m.CadastrosModule), canActivate: [AuthGuard] },
+      { path: 'importador', loadChildren: () => import('./importador/importador.module').then(m => m.ImportadorModule), canActivate: [AuthGuard] },
+      { path: 'agenda', loadChildren: () => import('./agenda/agenda.module').then(m => m.AgendaModule), canActivate: [AuthGuard] },
     ]
   },
   {
@@ -25,9 +25,7 @@ export const routes: Routes = [
     component: BlankComponent,
     children: [
       {
-        path: 'authentication',
-        loadChildren:
-          './authentication/authentication.module#AuthenticationModule'
+        path: 'authentication', loadChildren: () => import('./authentication/authentication.module').then(m => m.AuthenticationModule)
       }
     ]
   },
@@ -41,4 +39,4 @@ export const routes: Routes = [
   imports: [RouterModule.forRoot(routes), NgbModule.forRoot()],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

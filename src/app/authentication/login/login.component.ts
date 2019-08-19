@@ -12,7 +12,6 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  @ViewChild('modalErro',{ read: TemplateRef, static:false}) private modalErro: TemplateRef<any>;
 
   constructor(public router: Router, private loginService: LoginService, private modalService: NgbModal) { }
   mensagemErro = "";

@@ -12,7 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class CadastroOficioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('descricao', { read: ElementRef, static:false }) private descricao: ElementRef;
+  @ViewChild('descricao', { read: ElementRef, static: false }) private descricao: ElementRef;
 
   mensagemErro: string;
   id: string;

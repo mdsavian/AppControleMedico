@@ -12,7 +12,7 @@ import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-
 })
 
 export class ModalCadastroPacienteComponent {
-  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
 
   paciente: Paciente = new Paciente();
 
