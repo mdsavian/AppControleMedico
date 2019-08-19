@@ -7,8 +7,7 @@ import { ImportadorService } from '../../services/importador.service';
   styleUrls: ['./relatorio-unimed.css']
 })
 export class RelatorioUnimedComponent {
-   
-  @ViewChild(RelatorioUnimedComponent)
+    
   table: RelatorioUnimedComponent;
 
   loadingIndicator = true;

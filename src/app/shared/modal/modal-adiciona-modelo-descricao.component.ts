@@ -14,7 +14,7 @@ export class ModalAdicionaModeloDescricaoComponent {
   labelDescricao: string;
   mostrarCor = false;
 
-  @ViewChild('nomeDescricao', { read: ElementRef }) private nomeDescricao: ElementRef;
+  @ViewChild('nomeDescricao', { read: ElementRef, static:false }) private nomeDescricao: ElementRef;
 
   constructor(public activeModal: NgbActiveModal) { }
 

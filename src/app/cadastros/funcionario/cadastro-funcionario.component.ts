@@ -33,8 +33,8 @@ import { AppService } from '../../services/app.service';
 })
 export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
-  @ViewChild('numero') private numero: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static:false }) private numero: ElementRef;
 
   funcionario= new Funcionario ();
 

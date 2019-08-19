@@ -28,8 +28,8 @@ import { EspecialidadeService } from '../../services/especialidade.service';
 })
 export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
-  @ViewChild('numero') private numero: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static:false }) private numero: ElementRef;
 
   paciente: Paciente = {
     id: "", nomeCompleto: "", convenioId: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",

@@ -31,10 +31,10 @@ import { FuncionarioService } from '../services/funcionario.service';
 })
 export class AgendaComponent implements OnInit {
 
-  @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;  
-  @ViewChild('modalAberturaCaixa') modalAberturaCaixa: TemplateRef<any>;
-  @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
-  @ViewChild('modalAcoes') modalAcoes: TemplateRef<any>;
+  @ViewChild('modalConsultaEmHorarioIntervalo', { read: TemplateRef, static: false }) modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+  @ViewChild('modalAberturaCaixa', { read: TemplateRef, static: false }) modalAberturaCaixa: TemplateRef<any>;
+  @ViewChild('modalAcaoAgendamento', { read: TemplateRef, static: false }) modalAcaoAgendamento: TemplateRef<any>;
+  @ViewChild('modalAcoes', { read: TemplateRef, static: false }) modalAcoes: TemplateRef<any>;
 
   acaoAgendamento = "";
   eventosBanco: Agendamento[];
@@ -584,20 +584,17 @@ export class AgendaComponent implements OnInit {
     }).catch((error) => { })
   }
 
-  abrirFecharCaixa(acao:string)
-  {
-    if (acao == "abrir")
-    {
+  abrirFecharCaixa(acao: string) {
+    if (acao == "abrir") {
       this.modalService.open(ModalAberturaCaixaComponent, { size: "lg" }).result.then(
         caixa => {
-          
-          }
+
+        }
         , (erro) => {
         });
-        
+
     }
-    else if (acao == "fechar")
-    {
+    else if (acao == "fechar") {
 
     }
   }

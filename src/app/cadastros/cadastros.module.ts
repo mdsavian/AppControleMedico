@@ -35,11 +35,9 @@ import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
-import { CurrencyMaskModule } from "ng2-currency-mask";
- 
 
 @NgModule({
-  imports: [NgbModule, CurrencyMaskModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
+  imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroExameComponent, CadastroPacienteComponent,
     ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
