@@ -14,15 +14,13 @@
               </select>
             </div>
           </div>
-          <div class="row col-xs-12 col-md-12">
-            <button class="btn-success"
-              [style.visibility]="visualizaBotoesAberturaFechamentoCaixa? 'hidden': 'visible'">
+          <div class="row col-xs-12 col-md-12" *ngIf="visualizaBotoesAberturaFechamentoCaixa">            
+            <button class="btn-success" (click)="abrirFecharCaixa('abrir')">
               Abrir Caixa
             </button>
           </div>
-          <div class="row col-xs-12 col-md-12">
-            <button class="btn-warning"
-              [style.visibility]="visualizaBotoesAberturaFechamentoCaixa? 'hidden': 'visible'">
+          <div class="row col-xs-12 col-md-12" *ngIf="visualizaBotoesAberturaFechamentoCaixa">
+            <button class="btn-warning" (click)="abrirFecharCaixa('fechar')">
               Fechar Caixa
             </button>
           </div>

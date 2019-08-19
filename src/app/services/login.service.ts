@@ -40,6 +40,15 @@ export class LoginService {
 
   }
 
+  public validaSenha(login:string, senha:string)
+  {
+    var usuario = new Usuario();
+    usuario.senha = senha;
+    usuario.login = login;
+        
+    return this.http.post(this.accessPointUrl + "validaSenha/", usuario, { headers: this.headers });
+  }
+
   public logout() {
 
     localStorage.removeItem("usuarioCorrente");    

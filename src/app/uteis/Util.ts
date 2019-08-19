@@ -1,9 +1,8 @@
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
-import { Usuario } from "../modelos/usuario";
-import { LoginService } from "../services/login.service";
 
 export class Util {
+
 
     public converteData(data: NgbDate): Date {
         var dataNova: Date = new Date(data.year, data.month, data.day);
@@ -28,11 +27,11 @@ export class Util {
         return lista != null && lista.length > 0;
     }
 
-   
+
     public stringParaData(dataString: string): Date {
-       
-        if (dataString.length > 8) { 
-            
+
+        if (dataString.length > 8) {
+
             var dataPartes = dataString.split("/");
             var horaPartes = dataString.split(":");
             if (horaPartes.length > 1) {
@@ -84,9 +83,8 @@ export class Util {
         return datepipe.transform(data, "dd/MM/yyyy");
     }
 
-
-    public dataHoraParaString(data: Date, ): string {
-        var datepipe: DatePipe = new DatePipe('pt-BR');
-        return datepipe.transform(data, "dd/MM/yyyy");
+    horaAgoraString(): string {
+        var d = new Date();
+        return d.getHours().toString() + ":" + d.getMinutes().toString();
     }
 }

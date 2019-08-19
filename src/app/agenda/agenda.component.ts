@@ -12,6 +12,7 @@ import { MedicoService } from '../services/medico.service';
 import { Medico } from '../modelos/medico';
 import { Router } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component';
+import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
 import { Agendamento } from '../modelos/agendamento';
 import { Util } from '../uteis/Util';
 import { AgendamentoService } from '../services/agendamento.service';
@@ -30,7 +31,8 @@ import { FuncionarioService } from '../services/funcionario.service';
 })
 export class AgendaComponent implements OnInit {
 
-  @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+  @ViewChild('modalConsultaEmHorarioIntervalo') modalConsultaEmHorarioIntervalo: TemplateRef<any>;  
+  @ViewChild('modalAberturaCaixa') modalAberturaCaixa: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento') modalAcaoAgendamento: TemplateRef<any>;
   @ViewChild('modalAcoes') modalAcoes: TemplateRef<any>;
 
@@ -66,12 +68,14 @@ export class AgendaComponent implements OnInit {
         this.funcionario = func;
         this.medicos = func.medicos;
         this.medico = func.medicos.find(c => true);
+        this.visualizaBotoesAberturaFechamentoCaixa = true;
         this.carregarConfiguracaoMedico();
 
       });
     }
     else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
       this.medicoService.buscarPorId(usuario.medicoId).subscribe(medic => {
+        this.visualizaBotoesAberturaFechamentoCaixa = false;
         this.medicos.push(medic);
         this.medico = this.medicos.find(c => true);
         this.carregarConfiguracaoMedico();
@@ -578,6 +582,24 @@ export class AgendaComponent implements OnInit {
         this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamento));
       }
     }).catch((error) => { })
+  }
+
+  abrirFecharCaixa(acao:string)
+  {
+    if (acao == "abrir")
+    {
+      this.modalService.open(ModalAberturaCaixaComponent, { size: "lg" }).result.then(
+        caixa => {
+          
+          }
+        , (erro) => {
+        });
+        
+    }
+    else if (acao == "fechar")
+    {
+
+    }
   }
 
   montaTituloAgendamento(agendamento: Agendamento): string {

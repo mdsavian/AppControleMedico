@@ -5,10 +5,10 @@ import { EnumToArrayPipe } from './enumToArray.pipe'
   imports: [
   ],
   declarations: [
-    EnumToArrayPipe
+    EnumToArrayPipe,
   ],
-  exports:[      
-    EnumToArrayPipe
+  exports: [
+    EnumToArrayPipe,
   ]
 })
-export class UteisModule {}
+export class UteisModule { }
