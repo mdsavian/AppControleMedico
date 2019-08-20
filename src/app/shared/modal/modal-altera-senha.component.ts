@@ -12,7 +12,7 @@ export class ModalAlteraSenhaComponent {
   public alteraSenha: AlteraSenha = new AlteraSenha();
   usuarioId: string;
   labelDescricao: string = "";
-  @ViewChild('senhaAtual', { read: ElementRef, static: false }) private senhaAtual: ElementRef;
+  @ViewChild('senhaAtual', { read: ElementRef }) private senhaAtual: ElementRef;
 
   constructor(public activeModal: NgbActiveModal) { }
 

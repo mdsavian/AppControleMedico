@@ -18,7 +18,7 @@ import { Util } from '../../uteis/Util';
 
 export class ConfiguracaoAgendaComponent implements OnInit {
 
-  @ViewChild('modalSalvouComSucesso', { read: TemplateRef, static: false}) modalSalvouComSucesso: TemplateRef<any>;
+  @ViewChild('modalSalvouComSucesso', { read: TemplateRef}) modalSalvouComSucesso: TemplateRef<any>;
 
 
   util = new Util();

@@ -12,11 +12,11 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     children: [
-      { path: 'relatorio', loadChildren: () => import('./relatorio/relatorio.module').then(m => m.RelatorioModule) },
+      { path: 'relatorio', loadChildren: () => import('./relatorio/relatorio.module').then(m => m.RelatorioModule)},
       { path: 'icons', loadChildren: () => import('./icons/icons.module').then(m => m.IconsModule) },
-      { path: 'listagem', loadChildren: () => import('./listagem/listagem.module').then(m => m.ListagemModule), canActivate: [AuthGuard] },
-      { path: 'cadastros', loadChildren: () => import('./cadastros/cadastros.module').then(m => m.CadastrosModule), canActivate: [AuthGuard] },
-      { path: 'importador', loadChildren: () => import('./importador/importador.module').then(m => m.ImportadorModule), canActivate: [AuthGuard] },
+      { path: 'listagem', loadChildren: () => import('./listagem/listagem.module').then(m =>  m.ListagemModule), canActivate: [AuthGuard] },
+      { path: 'cadastros', loadChildren: () => import('./cadastros/cadastros.module').then(m =>  m.CadastrosModule), canActivate: [AuthGuard] },
+      { path: 'importador', loadChildren: () => import('./importador/importador.module').then(m =>  m.ImportadorModule), canActivate: [AuthGuard] },
       { path: 'agenda', loadChildren: () => import('./agenda/agenda.module').then(m => m.AgendaModule), canActivate: [AuthGuard] },
     ]
   },

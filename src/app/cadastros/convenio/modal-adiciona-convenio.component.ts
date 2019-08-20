@@ -14,7 +14,7 @@ export class ModalAdicionaConvenioComponent {
   };
   mostrarCor = false;
 
-  @ViewChild('nomeConvenio', { read: ElementRef, static: false }) private nomeConvenio: ElementRef;
+  @ViewChild('nomeConvenio', { read: ElementRef }) private nomeConvenio: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private convenioService: ConvenioService) { }
 
