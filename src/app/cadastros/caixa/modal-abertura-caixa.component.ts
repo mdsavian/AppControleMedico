@@ -15,8 +15,8 @@ import { LoginService } from '../../services/login.service';
 })
 
 export class ModalAberturaCaixaComponent {
-  @ViewChild('funcionarioModel', { read: ElementRef}) private funcionarioModel: ElementRef;
-  @ViewChild('senha', { read: ElementRef}) private senha: ElementRef;
+  @ViewChild('funcionarioModel', { read: ElementRef, static:false}) private funcionarioModel: ElementRef;
+  @ViewChild('senha', { read: ElementRef, static:false}) private senha: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   caixa: Caixa = new Caixa();

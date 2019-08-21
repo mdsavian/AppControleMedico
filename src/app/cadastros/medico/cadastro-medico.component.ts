@@ -38,8 +38,8 @@ import { AppService } from '../../services/app.service';
 
 export class CadastroMedicoComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef }) private nomeCompleto: ElementRef;
-  @ViewChild('numero',{ read: ElementRef }) private numero: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
+  @ViewChild('numero',{ read: ElementRef, static:false }) private numero: ElementRef;
 
   settingsGestante = tableDataGestantes.settingsGestante;
   settingsConvenio = tableDataConvenio.settingsConvenio;

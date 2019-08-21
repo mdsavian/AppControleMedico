@@ -31,10 +31,10 @@ import { FuncionarioService } from '../services/funcionario.service';
 })
 export class AgendaComponent implements OnInit {
 
-  @ViewChild('modalConsultaEmHorarioIntervalo', { read: TemplateRef }) modalConsultaEmHorarioIntervalo: TemplateRef<any>;
-  @ViewChild('modalAberturaCaixa', { read: TemplateRef }) modalAberturaCaixa: TemplateRef<any>;
-  @ViewChild('modalAcaoAgendamento', { read: TemplateRef }) modalAcaoAgendamento: TemplateRef<any>;
-  @ViewChild('modalAcoes', { read: TemplateRef }) modalAcoes: TemplateRef<any>;
+  @ViewChild('modalConsultaEmHorarioIntervalo', { read: TemplateRef, static:false }) modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+  @ViewChild('modalAberturaCaixa', { read: TemplateRef, static:false }) modalAberturaCaixa: TemplateRef<any>;
+  @ViewChild('modalAcaoAgendamento', { read: TemplateRef, static:false }) modalAcaoAgendamento: TemplateRef<any>;
+  @ViewChild('modalAcoes', { read: TemplateRef, static:false }) modalAcoes: TemplateRef<any>;
 
   acaoAgendamento = "";
   eventosBanco: Agendamento[];
