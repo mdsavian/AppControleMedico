@@ -1,5 +1,5 @@
 
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util';
 import { Caixa } from '../../modelos/caixa';
@@ -14,8 +14,8 @@ import { LoginService } from '../../services/login.service';
   templateUrl: './modal-abertura-caixa.component.html'
 })
 
-export class ModalAberturaCaixaComponent {
-  @ViewChild('funcionarioModel', { read: ElementRef, static:false}) private funcionarioModel: ElementRef;
+export class ModalAberturaCaixaComponent   {
+  @ViewChild('funcionarioModel', { read: ElementRef, static:true}) private funcionarioModel: ElementRef;
   @ViewChild('senha', { read: ElementRef, static:false}) private senha: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
@@ -28,6 +28,7 @@ export class ModalAberturaCaixaComponent {
   senhaValida: boolean;
   constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
 
+  
   ngOnInit() {
     this.funcionarioModel.nativeElement.focus();
     this.caixa.horaAbertura = this.util.horaAgoraString();
