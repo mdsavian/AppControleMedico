@@ -1,5 +1,6 @@
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
+import { padNumber } from "@ng-bootstrap/ng-bootstrap/util/util";
 
 export class Util {
 
@@ -29,9 +30,7 @@ export class Util {
 
 
     public stringParaData(dataString: string): Date {
-
         if (dataString.length > 8) {
-
             var dataPartes = dataString.split("/");
             var horaPartes = dataString.split(":");
             if (horaPartes.length > 1) {
@@ -47,11 +46,22 @@ export class Util {
                     parseInt(dataPartes[0], 10));
             }
         }
-        else {
-
+        else if (dataString.length == 8) //data string 22082019
+        {
+            var data = new Date(parseInt(dataString.substr(4, 4), 10),
+                parseInt(dataString.substr(2, 2), 10),
+                parseInt(dataString.substr(0, 2), 10));
         }
         return data;
     }
+
+    public formatarData(data: string) {
+         return(data.substr(0, 2)+ "/" + data.substr(2, 2) + "/"+ data.substr(4, 4));
+    }
+
+    public formatarHora(hora: string) {
+        return(hora.substr(0, 2)+ ":" + hora.substr(2, 2));
+   }
 
     public formataCnpj(cnpj: string) {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5");
@@ -61,7 +71,6 @@ export class Util {
     public formataCpf(cpf: string) {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4");
     }
-
 
 
     public formataTelefone(telefone: string) {
@@ -85,6 +94,7 @@ export class Util {
 
     horaAgoraString(): string {
         var d = new Date();
-        return d.getHours().toString() + ":" + d.getMinutes().toString();
+        console.log(("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2));
+        return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
     }
 }

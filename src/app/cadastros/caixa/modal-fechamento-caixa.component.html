@@ -1,6 +1,6 @@
-<form #aberturaCaixa="ngForm">
+<form #fechamentoCaixa="ngForm">
     <div class="modal-header">
-        <h4 class="modal-title">Abertura Caixa</h4>
+        <h4 class="modal-title">Fechamento Caixa</h4>
         <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -9,21 +9,28 @@
         <div class="row">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
-                    <label class="control-label" for="funcionario">Funcionário(*)</label>
-                    <select class="form-control" (change)="validaCaixaFuncionario()" [(ngModel)]="caixa.funcionarioId"
-                        #funcionarioModel="ngModel" id="funcionario" name="funcionario" required>
-                        <option *ngFor="let func of funcionarios" [ngValue]="func.id">
-                            {{func.nomeCompleto}}
+                    <label class="control-label" for="Caixa">Caixa(*)</label>
+                    <select class="form-control" (change)="descricaoCaixa($event)" [(ngModel)]="caixa"
+                        #caixaModel="ngModel" id="caixa" name="caixa" required>
+                        <option *ngFor="let cax of caixas" [ngValue]="cax">
+                            {{cax.descricao}}
                         </option>
                     </select>
-                    <div *ngIf="funcionarioModel.invalid || existeCaixaAbertoParaFuncionario"
+                    <div *ngIf="caixaModel.invalid"
                         class="alert alert-danger">
-                        <div *ngIf="funcionarioModel.invalid && funcionarioModel.errors.required"> Funcionário Obrigatório. </div>
-                        <div *ngIf="existeCaixaAbertoParaFuncionario"> Já existe um caixa aberto para o funcionário selecionado. </div>
+                        <div *ngIf="caixaModel.invalid && caixaModel.errors.required"> Caixa Obrigatório. </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="form-group">
+                        <label class="control-label" for="login">Login(*)</label>
+                        <input type="text" class="form-control" readonly id="login" name="login" #login placeholder="login">
+                    </div>
+                </div>
+            </div>
         <div class="row">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
@@ -39,39 +46,39 @@
 
         <div class="row">
             <div class="col-xs-4 col-md-4">
-                <label class="control-label" for="trocoAbertura">Troco Abertura(*)</label>
+                <label class="control-label" for="trocoFechamento">Troco Fechamento(*)</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">R$</span>
                     </div>
-                    <input type="text" id="trocoAbertura" mask="dot_separator.2" name="trocoAbertura"
-                        placeholder="000,00" class="form-control" required [(ngModel)]="caixa.trocoAbertura"
-                        #trocoAbertura="ngModel">
+                    <input type="text" id="trocoFechamento" mask="dot_separator.2" name="trocoFechamento"
+                        placeholder="000,00" class="form-control" required [(ngModel)]="caixa.trocoFechamento"
+                        #trocoFechamento="ngModel">
                 </div>
-                <div *ngIf="trocoAbertura.invalid" class="alert alert-danger">
-                    <div *ngIf="trocoAbertura.errors.required"> Troco Abertura Obrigatório. </div>
+                <div *ngIf="trocoFechamento.invalid" class="alert alert-danger">
+                    <div *ngIf="trocoFechamento.errors.required"> Troco Fechamento Obrigatório. </div>
                 </div>
             </div>
 
             <div class="col-xs-4 col-md-4">
-                <label class="control-label" for="dataAbertura">Data de Abertura</label>
+                <label class="control-label" for="dataFechamento">Data de Fechamento</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <input type="text" mask="00/00/0000" id="dataAbertura" name="dataAbertura" placeholder="dd/mm/yyyy"
-                        class="form-control" [(ngModel)]="caixa.dataAbertura" #dataAbertura="ngModel" readonly>
+                    <input type="text" mask="00/00/0000" id="dataFechamento" name="dataFechamento" placeholder="dd/mm/yyyy"
+                        class="form-control" [(ngModel)]="caixa.dataFechamento" #dataFechamento="ngModel" readonly>
                 </div>
             </div>
             <div class="col-xs-4 col-md-4">
-                <label class="control-label" for="horaAbertura">Hora de Abertura</label>
+                <label class="control-label" for="horaFechamento">Hora de Fechamento</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <input type="text" mask="Hh:m0" pattern="{{patterHora}}" id="horaAbertura" name="horaAbertura"
-                        placeholder="HH:mm" class="form-control" [(ngModel)]="caixa.horaAbertura"
-                        #horaAbertura="ngModel" readonly>
+                    <input type="text" mask="Hh:m0" pattern="{{patterHora}}" id="horaFechamento" name="horaFechamento"
+                        placeholder="HH:mm" class="form-control" [(ngModel)]="caixa.horaFechamento"
+                        #horaFechamento="ngModel" readonly>
                 </div>
             </div>
         </div>
@@ -80,5 +87,5 @@
 <div class="modal-footer">
     <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning"  type="submit">Cancelar</button>
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" 
-        [disabled]="!aberturaCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
+        [disabled]="!fechamentoCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
 </div>

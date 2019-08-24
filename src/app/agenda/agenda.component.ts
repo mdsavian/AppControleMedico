@@ -8,11 +8,12 @@ import { fromEvent } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoginService } from '../services/login.service';
-import { MedicoService } from '../services/medico.service'; 
+import { MedicoService } from '../services/medico.service';
 import { Medico } from '../modelos/medico';
 import { Router } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component';
 import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
+import { ModalFechamentoCaixaComponent } from '../cadastros/caixa/modal-fechamento-caixa.component';
 import { Agendamento } from '../modelos/agendamento';
 import { Util } from '../uteis/Util';
 import { AgendamentoService } from '../services/agendamento.service';
@@ -22,6 +23,7 @@ import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda';
 import { Funcionario } from '../modelos/funcionario';
 import { FuncionarioService } from '../services/funcionario.service';
+import { CaixaService } from '../services/caixa.service';
 
 @Component({
   selector: 'mwl-demo-component',
@@ -31,10 +33,10 @@ import { FuncionarioService } from '../services/funcionario.service';
 })
 export class AgendaComponent implements OnInit {
 
-  @ViewChild('modalConsultaEmHorarioIntervalo', { read: TemplateRef, static:false }) modalConsultaEmHorarioIntervalo: TemplateRef<any>;
-  @ViewChild('modalAberturaCaixa', { read: TemplateRef, static:false }) modalAberturaCaixa: TemplateRef<any>;
-  @ViewChild('modalAcaoAgendamento', { read: TemplateRef, static:false }) modalAcaoAgendamento: TemplateRef<any>;
-  @ViewChild('modalAcoes', { read: TemplateRef, static:false }) modalAcoes: TemplateRef<any>;
+  @ViewChild('modalConsultaEmHorarioIntervalo', { read: TemplateRef, static: false }) modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+  @ViewChild('modalAberturaCaixa', { read: TemplateRef, static: false }) modalAberturaCaixa: TemplateRef<any>;
+  @ViewChild('modalAcaoAgendamento', { read: TemplateRef, static: false }) modalAcaoAgendamento: TemplateRef<any>;
+  @ViewChild('modalAcoes', { read: TemplateRef, static: false }) modalAcoes: TemplateRef<any>;
 
   acaoAgendamento = "";
   eventosBanco: Agendamento[];
@@ -43,6 +45,7 @@ export class AgendaComponent implements OnInit {
   view: CalendarView = CalendarView.Day;
   dragToCreateActive = false;
   activeDayIsOpen = true;
+  mensagemCaixaAberto = "";
   viewDate: Date = new Date();
   util = new Util();
   medico: Medico;
@@ -55,7 +58,7 @@ export class AgendaComponent implements OnInit {
   horaFinalCalendario = "18";
   msgteste: string;
 
-  constructor(private agendamentoService: AgendamentoService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
+  constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
     private loginService: LoginService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router) {
   }
 
@@ -69,12 +72,20 @@ export class AgendaComponent implements OnInit {
         this.medicos = func.medicos;
         this.medico = func.medicos.find(c => true);
         this.visualizaBotoesAberturaFechamentoCaixa = true;
+        this.caixaService.retornarCaixaAbertoFuncionario(func.id).subscribe(caixa => {
+          if (caixa != null) {
+            this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caixa.dataAbertura)
+                           + " " + this.util.formatarHora(caixa.horaAbertura);
+          }
+
+        });
         this.carregarConfiguracaoMedico();
 
       });
     }
     else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
       this.medicoService.buscarPorId(usuario.medicoId).subscribe(medic => {
+
         this.visualizaBotoesAberturaFechamentoCaixa = false;
         this.medicos.push(medic);
         this.medico = this.medicos.find(c => true);
@@ -585,17 +596,21 @@ export class AgendaComponent implements OnInit {
   }
 
   abrirFecharCaixa(acao: string) {
+    console.log(acao);
     if (acao == "abrir") {
       this.modalService.open(ModalAberturaCaixaComponent, { size: "lg" }).result.then(
         caixa => {
-
         }
-        , (erro) => {
+        , (erro) => {            
         });
-
     }
     else if (acao == "fechar") {
+      this.modalService.open(ModalFechamentoCaixaComponent, { size: "lg" }).result.then(
+        caixa => {
+        }
+        , (erro) => {
 
+        });
     }
   }
 

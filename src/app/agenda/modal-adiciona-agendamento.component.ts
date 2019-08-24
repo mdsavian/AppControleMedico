@@ -155,7 +155,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   }
 
   public formataData(e): void {
-
     if (e.target.id == "dataAgendamento" && e.target.value.length == 10) {
 
       this.agendamento.dataAgendamento = e.target.value;

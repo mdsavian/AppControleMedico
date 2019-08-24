@@ -1,4 +1,5 @@
 import { Entidade } from "./entidade";
+import { Funcionario } from "./funcionario";
 
 export class Caixa extends Entidade {
 
@@ -15,5 +16,8 @@ export class Caixa extends Entidade {
 
   trocoAbertura:number;
   trocoFechamento:number;
+
+  descricao:string;
+  funcionario:Funcionario;
   
 }

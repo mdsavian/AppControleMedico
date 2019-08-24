@@ -10,16 +10,18 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { LoginService } from '../../services/login.service';
 
 @Component({
-  selector: 'app-modal-abertura-caixa.component',
-  templateUrl: './modal-abertura-caixa.component.html'
+  selector: 'app-modal-fechamento-caixa.component',
+  templateUrl: './modal-fechamento-caixa.component.html'
 })
 
-export class ModalAberturaCaixaComponent   {
-  @ViewChild('funcionarioModel', { read: ElementRef, static:true}) private funcionarioModel: ElementRef;
+export class ModalFechamentoCaixaComponent   {
+  @ViewChild('caixaModel', { read: ElementRef, static:true}) private caixaModel: ElementRef;
+  @ViewChild('login', { read: ElementRef, static:true}) private login: ElementRef;
   @ViewChild('senha', { read: ElementRef, static:false}) private senha: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   caixa: Caixa = new Caixa();
+  caixas: Array<Caixa>;
   util = new Util();
   funcionarios: Array<Funcionario>;
   dataAber: string;
@@ -28,19 +30,33 @@ export class ModalAberturaCaixaComponent   {
   senhaValida: boolean;
   constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
   
-  ngOnInit() {
-    this.funcionarioModel.nativeElement.focus();
-    this.caixa.horaAbertura = this.util.horaAgoraString();
-    this.caixa.dataAbertura = this.util.dataParaString(new Date());
-    this.funcionarioService.Todos().subscribe(funcs => {
-      this.funcionarios = funcs;      
+  ngOnInit() {    
+    this.caixaModel.nativeElement.focus();
+
+    this.caixa.dataFechamento = this.util.dataParaString(new Date());
+    this.caixa.horaFechamento = this.util.horaAgoraString();   
+
+    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas=> {
+      this.funcionarioService.Todos().subscribe(funcs => {
+        this.funcionarios = funcs;      
+        caixas.forEach(caix => {
+          let func = funcs.find(c=> c.id == caix.funcionarioId);   
+          
+          caix.dataFechamento = this.util.dataParaString(new Date());
+          caix.horaFechamento = this.util.horaAgoraString();        
+
+          caix.descricao = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caix.dataAbertura)
+          + " " + this.util.formatarHora(caix.horaAbertura);
+        });
+        this.caixas = caixas
+      });
     });
   }
 
-  validaCaixaFuncionario() {
-    this.caixaService.retornarCaixaAbertoFuncionario(this.caixa.funcionarioId).subscribe(caixa => {
-      this.existeCaixaAbertoParaFuncionario = caixa != null;
-    });
+  descricaoCaixa(e:any)
+  {
+    let caix = this.caixas.find(c=> c.id == this.caixa.id);
+    this.login.nativeElement.value = this.funcionarios.find(c=> c.id == caix.funcionarioId).email;
   }
 
   validaSenha() {
@@ -52,8 +68,9 @@ export class ModalAberturaCaixaComponent   {
   }
 
   salvar() {
-
     var retornar = false;
+
+    console.log(this.caixa);
 
     if (this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
@@ -61,7 +78,7 @@ export class ModalAberturaCaixaComponent   {
       retornar = true;
     }
 
-    if (this.caixa.trocoAbertura <= 0) {
+    if (this.caixa.trocoFechamento <= 0) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Troco inválido.";
       retornar = true;
@@ -72,7 +89,6 @@ export class ModalAberturaCaixaComponent   {
         this.activeModal.close(caixaRetorno);
       });
     }
-
   }
 
   fechar() {

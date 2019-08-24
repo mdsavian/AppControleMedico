@@ -25,10 +25,13 @@ export class CaixaService {
     //caixa.clinicaId = this.appService.retornarClinica().id);
     return this.http.post<Caixa>(this.accessPointUrl, caixa);
   }
-
-
-  validarCaixaAbertoFuncionario(funcionarioId: string) {
-    return this.http.get<boolean>(this.accessPointUrl + "validarCaixaAbertoFuncionario/" + funcionarioId);
+  
+  retornarTodosCaixasAbertos()
+  {
+    return this.http.get<Array<Caixa>>(this.accessPointUrl + "retornarTodosCaixasAbertos/");
+  }
+  retornarCaixaAbertoFuncionario(funcionarioId: string) {
+    return this.http.get<Caixa>(this.accessPointUrl + "retornarCaixaAbertoFuncionario/" + funcionarioId);
   }
 
   public buscarPorId(caixaId: string) {

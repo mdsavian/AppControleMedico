@@ -15,6 +15,7 @@ import { UteisModule } from '../uteis/uteis.module'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
 import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
+import { ModalFechamentoCaixaComponent } from '../cadastros/caixa/modal-fechamento-caixa.component';
 
 export class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -47,9 +48,9 @@ export class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent],
+  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent]
+  entryComponents: [ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent,ModalFechamentoCaixaComponent]
 })
 
 export class AgendaModule { }
