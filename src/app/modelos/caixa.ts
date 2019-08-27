@@ -20,4 +20,6 @@ export class Caixa extends Entidade {
   descricao:string;
   funcionario:Funcionario;
   
+  usuarioFechamentoId:string;
+  usuarioAberturaId:string;
 }

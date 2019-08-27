@@ -12,7 +12,6 @@ export class ValidaDescricaoFormaDePagamentoDirective implements Validator {
   constructor(private formaDePagamentoService: FormaDePagamentoService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
-    console.log(control.value);
     if (control.value == '' || control.value == null)
       return null;
 

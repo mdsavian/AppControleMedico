@@ -7,13 +7,14 @@ import { addMinutes, endOfWeek } from 'date-fns';
 import { fromEvent } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { LoginService } from '../services/login.service';
+import { AppService } from '../services/app.service';
 import { MedicoService } from '../services/medico.service';
 import { Medico } from '../modelos/medico';
 import { Router } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component';
 import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
 import { ModalFechamentoCaixaComponent } from '../cadastros/caixa/modal-fechamento-caixa.component';
+import { ModalSucessoComponent } from '../shared/modal/modal-sucesso.component';
 import { Agendamento } from '../modelos/agendamento';
 import { Util } from '../uteis/Util';
 import { AgendamentoService } from '../services/agendamento.service';
@@ -24,6 +25,7 @@ import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda'
 import { Funcionario } from '../modelos/funcionario';
 import { FuncionarioService } from '../services/funcionario.service';
 import { CaixaService } from '../services/caixa.service';
+import { ModalErrorComponent } from '../shared/modal/modal-error.component';
 
 @Component({
   selector: 'mwl-demo-component',
@@ -59,12 +61,12 @@ export class AgendaComponent implements OnInit {
   msgteste: string;
 
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
-    private loginService: LoginService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router) {
+    private appService: AppService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router) {
   }
 
   ngOnInit() {
 
-    var usuario = this.loginService.usuarioCorrenteValor;
+    var usuario = this.appService.retornarUsuarioCorrente();
 
     if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
       this.funcionarioService.buscarComMedicos(usuario.funcionarioId).subscribe(func => {
@@ -75,7 +77,7 @@ export class AgendaComponent implements OnInit {
         this.caixaService.retornarCaixaAbertoFuncionario(func.id).subscribe(caixa => {
           if (caixa != null) {
             this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caixa.dataAbertura)
-                           + " " + this.util.formatarHora(caixa.horaAbertura);
+              + " " + this.util.formatarHora(caixa.horaAbertura);
           }
 
         });
@@ -596,20 +598,27 @@ export class AgendaComponent implements OnInit {
   }
 
   abrirFecharCaixa(acao: string) {
-    console.log(acao);
     if (acao == "abrir") {
       this.modalService.open(ModalAberturaCaixaComponent, { size: "lg" }).result.then(
         caixa => {
+          if (caixa != null && !this.util.isNullOrWhitespace(caixa.dataAbertura)) {
+            var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+            modal.componentInstance.mensagem = "Caixa aberto com sucesso.";
+          }
+
         }
-        , (erro) => {            
+        , (erro) => {
         });
     }
     else if (acao == "fechar") {
       this.modalService.open(ModalFechamentoCaixaComponent, { size: "lg" }).result.then(
         caixa => {
+          if (caixa != null && !this.util.isNullOrWhitespace(caixa.dataFechamento)) {
+            var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+            modal.componentInstance.mensagem = "Caixa fechado com sucesso.";
+          }
         }
         , (erro) => {
-
         });
     }
   }

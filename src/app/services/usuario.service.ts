@@ -3,11 +3,13 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { environment } from '../../environments/environment';
 import { AlteraSenha } from '../modelos/naoPersistidos/alteraSenha';
 import { Observable } from 'rxjs';
+import {Usuario} from '../modelos/usuario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
+  
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'usuario/';
 
@@ -15,8 +17,8 @@ export class UsuarioService {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
-  public get() {
-    return this.http.get(this.accessPointUrl, { headers: this.headers });
+  public todos() {
+    return this.http.get<Array<Usuario>>(this.accessPointUrl, { headers: this.headers });
 
   }
 

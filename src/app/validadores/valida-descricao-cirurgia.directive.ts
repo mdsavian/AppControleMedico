@@ -11,18 +11,23 @@ export class ValidaDescricaoCirurgiaDirective implements Validator {
 
   constructor(private cirurgiaService: CirurgiaService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
-    this.cirurgiaService.Todos().subscribe(c=> 
+
+    if (control.value == '' || control.value == null)
+      return null;
+
+
+    this.cirurgiaService.Todos().subscribe(c =>
       this.cirurgiaService.listaCirurgia = c);
     var listaCirurgia = this.cirurgiaService.listaCirurgia;
     var cirurgiaRegente = this.cirurgiaService.cirurgia;
 
-    if (cirurgiaRegente == null && listaCirurgia != null && listaCirurgia.length > 0 && 
+    if (cirurgiaRegente == null && listaCirurgia != null && listaCirurgia.length > 0 &&
       listaCirurgia.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
-        
-    return { 'validaDescricaoCirurgia': { value: control.value } } ;        
+
+      return { 'validaDescricaoCirurgia': { value: control.value } };
     }
-    return null;    
-    
+    return null;
+
   }
 }
 

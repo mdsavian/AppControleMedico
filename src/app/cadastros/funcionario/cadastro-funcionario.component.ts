@@ -88,10 +88,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   deletarMedico(event)
   {
-    
-    console.log(this.funcionario.medicos);
-    var medico = this.funcionario.medicos.find(c=> c.id == event.data.id);
-    console.log(medico,this.funcionario.medicos.indexOf(medico));
+    var medico = this.funcionario.medicos.find(c=> c.id == event.data.id);   
     this.funcionario.medicos.splice(this.funcionario.medicos.indexOf(medico), 1);
 
     this.medicos.push(medico);

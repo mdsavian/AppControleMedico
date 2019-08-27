@@ -12,15 +12,18 @@ export class ValidaDescricaoEspecialidadeDirective implements Validator {
   constructor(private especialidadeService: EspecialidadeService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
+    if (control.value == '' || control.value == null)
+      return null;
+
     var listaEspecialidade = this.especialidadeService.listaEspecialidade;
     var especialidadeRegente = this.especialidadeService.especialidade;
 
-    if (especialidadeRegente == null && listaEspecialidade != null && listaEspecialidade.length > 0 
-      && listaEspecialidade.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
-    return { 'validaDescricaoEspecialidade': { value: control.value } } ;        
+    if (especialidadeRegente == null && listaEspecialidade != null && listaEspecialidade.length > 0
+      && listaEspecialidade.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      return { 'validaDescricaoEspecialidade': { value: control.value } };
     }
-    return null;    
-    
+    return null;
+
   }
 }
 

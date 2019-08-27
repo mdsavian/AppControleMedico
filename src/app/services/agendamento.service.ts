@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Agendamento } from '../modelos/agendamento'
 import { environment } from '../../environments/environment';
+import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class AgendamentoService {
   public agendamento: Agendamento;
   public listaAgendamento: Array<Agendamento>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appService: AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -31,9 +32,9 @@ export class AgendamentoService {
     return this.http.get<Agendamento>(this.accessPointUrl + "buscarPorId/" + agendamentoId);
   }
 
-  public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario:string) {
+  public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario: string) {
 
-    let parametros = new HttpParams().set("medicoId",medicoId).set("data", data).set("tipoCalendario",tipoCalendario);
+    let parametros = new HttpParams().set("medicoId", medicoId).set("data", data).set("tipoCalendario", tipoCalendario);
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
   }
 

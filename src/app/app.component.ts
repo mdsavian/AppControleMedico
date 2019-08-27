@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Usuario } from './modelos/usuario';
-import { LoginService } from './services/login.service';
+import { AppService } from './services/app.service';
 import { Router } from '@angular/router';
+import { LoginService } from './services/login.service';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +15,12 @@ export class AppComponent {
 
   constructor(
     public router: Router,
-    private loginService: LoginService) {
-    this.usuarioCorrent = this.loginService.usuarioCorrenteValor;
+    private appService: AppService, private loginService:LoginService) {
+    this.usuarioCorrent = this.appService.retornarUsuarioCorrente();
   }
 
   logout() {
     this.loginService.logout();
-    this.router.navigate(['../authentication/login']);
+    this.router.navigate(['../authentication/app']);
   }
 }

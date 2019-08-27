@@ -94,7 +94,6 @@ export class Util {
 
     horaAgoraString(): string {
         var d = new Date();
-        console.log(("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2));
         return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
     }
 }

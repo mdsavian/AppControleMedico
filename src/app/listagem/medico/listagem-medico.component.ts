@@ -4,7 +4,7 @@ import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginService } from '../../services/login.service';
+import { AppService } from '../../services/app.service';
 import { Util } from "../../uteis/Util";
 
 @Component({
@@ -19,52 +19,51 @@ export class ListagemMedicoComponent {
   administrador: boolean;
   settings = {};
 
-  constructor(private loginService: LoginService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
-    this.isSpinnerVisible = true;
+  constructor(private appService: AppService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
+    this.isSpinnerVisible = true;    
 
-    this.loginService.usuarioCorrenteObservable.subscribe(usuario => {
-      this.administrador = usuario.funcionarioId == "" && usuario.medicoId == "";
+    var usuario = this.appService.retornarUsuarioCorrente();
+    this.administrador = usuario.funcionarioId == "" && usuario.medicoId == "";
 
-      this.settings = {
-        mode: 'external',
-        noDataMessage: "Não foi encontrado nenhum registro",
-        columns: {
-          nomeCompleto: {
-            title: 'Nome',
-            filter: true
-          },
-          email: {
-            title: 'Email',
-            filter: false
-          },
-          celular: {
-            title: 'Celular',
-            filter: false,
-            valuePrepareFunction: (celular) => { return celular === null ? "" : util.formataCelular(celular) }
-          }
+    this.settings = {
+      mode: 'external',
+      noDataMessage: "Não foi encontrado nenhum registro",
+      columns: {
+        nomeCompleto: {
+          title: 'Nome',
+          filter: true
         },
-        actions:
-        {
-          delete: this.administrador,
-          add: this.administrador,
-          columnTitle: ''
+        email: {
+          title: 'Email',
+          filter: false
         },
-        delete: {
-          deleteButtonContent: this.administrador ? '<i class="ti-trash text-danger m-r-10"></i>' : '',
-          saveButtonContent: this.administrador ? '<i class="ti-save text-success m-r-10"></i>' : '',
-          cancelButtonContent: this.administrador ? '<i class="ti-close text-danger"></i>' : '',
-        },
-        edit: {
-          editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
-          saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
-          cancelButtonContent: '<i class="ti-close text-danger"></i>',
-        },
-        add:
-        {
-          addButtonContent: this.administrador ? 'Novo' : ''
+        celular: {
+          title: 'Celular',
+          filter: false,
+          valuePrepareFunction: (celular) => { return celular === null ? "" : util.formataCelular(celular) }
         }
-      };
-    });
+      },
+      actions:
+      {
+        delete: this.administrador,
+        add: this.administrador,
+        columnTitle: ''
+      },
+      delete: {
+        deleteButtonContent: this.administrador ? '<i class="ti-trash text-danger m-r-10"></i>' : '',
+        saveButtonContent: this.administrador ? '<i class="ti-save text-success m-r-10"></i>' : '',
+        cancelButtonContent: this.administrador ? '<i class="ti-close text-danger"></i>' : '',
+      },
+      edit: {
+        editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+        saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+        cancelButtonContent: '<i class="ti-close text-danger"></i>',
+      },
+      add:
+      {
+        addButtonContent: this.administrador ? 'Novo' : ''
+      }
+    };
 
     this.buscaMedicos();
 
@@ -93,7 +92,7 @@ export class ListagemMedicoComponent {
   }
 
   editarRegistro(event) {
-    this.medicoService.medico = this.listaMedicos.find(c=> c.id == event.data.id);
+    this.medicoService.medico = this.listaMedicos.find(c => c.id == event.data.id);
     this.router.navigate(['/cadastros/cadastromedico']);
   }
 

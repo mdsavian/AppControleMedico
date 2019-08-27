@@ -12,7 +12,7 @@ export class ValidaDescricaoExameDirective implements Validator {
   constructor(private exameService: ExameService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
-    if (control.value == '')
+    if (control.value == '' || control.value == null)
       return null;
 
     var listaExame = this.exameService.listaExame;

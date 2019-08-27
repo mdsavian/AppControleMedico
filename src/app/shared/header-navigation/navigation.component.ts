@@ -8,14 +8,16 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { LoginService } from '../../services/login.service';
+import { AppService } from '../../services/app.service';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html'
 })
 export class NavigationComponent implements AfterViewInit {
   name: string;
+  clinicaDescricao = "tomaaa fdppp";
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal, private router: Router, private loginService : LoginService) {}  
+  constructor(private modalService: NgbModal, private router: Router, private loginService : LoginService, private appService:AppService) {}  
 
   // This is for Notifications
   notifications: Object[] = [

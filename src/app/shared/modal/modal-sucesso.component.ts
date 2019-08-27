@@ -12,6 +12,7 @@ import {
 export class ModalSucessoComponent {
   @Input() public mensagem:string;
   @Input() public titulo:string;
+  @Input() public mostrarHeader:boolean = false;
 
   constructor(public activeModal: NgbActiveModal) { }
 

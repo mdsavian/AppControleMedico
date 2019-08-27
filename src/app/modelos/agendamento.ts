@@ -26,7 +26,7 @@ export class Agendamento extends Entidade {
     corFundo: string;
     corLetra: string;    
 
-    clinicasId:string[];
+    clinicaId:string;
     exameId: string;
     localId: string;
     cirurgiaId: string;
@@ -38,7 +38,6 @@ export class Agendamento extends Entidade {
     tipoAgendamento: ETipoAgendamento;
     situacaoAgendamento: ESituacaoAgendamento;
     paciente: Paciente;
-    clinicas:Clinica[];
     medico: Medico;
     exame: Exame;
     local: Local;

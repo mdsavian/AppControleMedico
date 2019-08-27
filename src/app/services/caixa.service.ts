@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Caixa } from '../modelos/Caixa'
 import { environment } from '../../environments/environment';
+import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaixaService {
   private headers: HttpHeaders;
-  private accessPointUrl: string = environment.apiUrl + 'Caixa/';
+  private accessPointUrl: string = environment.apiUrl + 'caixa/';
 
   public caixa: Caixa;
   public listaCaixa: Array<Caixa>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appService:AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -21,8 +22,7 @@ export class CaixaService {
     return this.http.get<Array<Caixa>>(this.accessPointUrl);
   }
 
-  public salvar(caixa: Caixa) {
-    //caixa.clinicaId = this.appService.retornarClinica().id);
+  public salvar(caixa: Caixa) {    
     return this.http.post<Caixa>(this.accessPointUrl, caixa);
   }
   

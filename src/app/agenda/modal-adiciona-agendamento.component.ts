@@ -27,6 +27,7 @@ import { AgendamentoService } from '../services/agendamento.service';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/map';
 import { MedicoService } from '../services/medico.service';
+import { AppService } from '../services/app.service';
 
 
 @Component({
@@ -62,7 +63,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('tipoAgendamento', { read: ElementRef, static:false }) private tipoAgendamento: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private localService: LocalService,
-    private exameService: ExameService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
+    private exameService: ExameService, private appService:AppService, private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
 
@@ -111,6 +112,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       }
       else {
         this.tituloTela = "Novo Agendamento - ";
+        this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;
         this.agendamento.dataAgendamento = this.util.dataParaString(new Date());
       }
 

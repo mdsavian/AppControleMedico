@@ -11,7 +11,7 @@ import { Util } from '../../uteis/Util';
 import { PacienteService } from "../../services/paciente.service"
 import { EnderecoService } from '../../services/endereco.service';
 import { ConvenioService } from '../../services/convenio.service';
-import { LoginService } from '../../services/login.service';
+import { AppService } from '../../services/app.service';
 import { MedicoService } from '../../services/medico.service';
 
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
@@ -52,7 +52,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
   constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private especialidadeService: EspecialidadeService, private modalService: NgbModal,
-    private loginService: LoginService, private medicoService: MedicoService) {
+    private appService: AppService, private medicoService: MedicoService) {
   }
 
   public ngAfterViewInit(): void {
@@ -67,8 +67,8 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       this.dataNasci = this.util.dataParaString(this.paciente.dataNascimento);
       this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
     }
-
-    var usuario = this.loginService.usuarioCorrenteValor;
+    
+    var usuario = this.appService.retornarUsuarioCorrente();
 
     if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
       this.medicoService.buscarMedicoUsuario(usuario).subscribe(medicoRetorno => {
@@ -115,7 +115,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.medico.especialidade = espec;
 
         this.exibeAbaEspecialidade = espec.descricao.toUpperCase().includes(especialidade.toUpperCase());
-        console.log(this.exibeAbaEspecialidade);
       });
     }
   }

@@ -8,19 +8,20 @@ import { FuncionarioService } from '../../services/funcionario.service';
 import { CaixaService } from '../../services/caixa.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { LoginService } from '../../services/login.service';
+import { AppService } from '../../services/app.service';
 
 @Component({
   selector: 'app-modal-fechamento-caixa.component',
   templateUrl: './modal-fechamento-caixa.component.html'
 })
 
-export class ModalFechamentoCaixaComponent   {
-  @ViewChild('caixaModel', { read: ElementRef, static:true}) private caixaModel: ElementRef;
-  @ViewChild('login', { read: ElementRef, static:true}) private login: ElementRef;
-  @ViewChild('senha', { read: ElementRef, static:false}) private senha: ElementRef;
+export class ModalFechamentoCaixaComponent {
+  @ViewChild('caixaModel', { read: ElementRef, static: true }) private caixaModel: ElementRef;
+  @ViewChild('login', { read: ElementRef, static: true }) private login: ElementRef;
+  @ViewChild('senha', { read: ElementRef, static: false }) private senha: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
-  caixa: Caixa = new Caixa();
+  caixa: Caixa = new Caixa
   caixas: Array<Caixa>;
   util = new Util();
   funcionarios: Array<Funcionario>;
@@ -28,35 +29,39 @@ export class ModalFechamentoCaixaComponent   {
   testPrice: any;
   existeCaixaAbertoParaFuncionario: boolean;
   senhaValida: boolean;
-  constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
-  
-  ngOnInit() {    
+  constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private funcionarioService: FuncionarioService,
+    private caixaService: CaixaService, private appService: AppService, private modalService: NgbModal) { }
+
+  ngOnInit() {
     this.caixaModel.nativeElement.focus();
+    var horaString = this.util.horaAgoraString();
+    var dataString = this.util.dataParaString(new Date());
+    
+    this.caixa.dataFechamento = dataString;
+    this.caixa.horaFechamento = horaString;
+    var usuario = this.appService.retornarUsuarioCorrente().id;
 
-    this.caixa.dataFechamento = this.util.dataParaString(new Date());
-    this.caixa.horaFechamento = this.util.horaAgoraString();   
-
-    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas=> {
+    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
       this.funcionarioService.Todos().subscribe(funcs => {
-        this.funcionarios = funcs;      
+        this.funcionarios = funcs;
         caixas.forEach(caix => {
-          let func = funcs.find(c=> c.id == caix.funcionarioId);   
-          
-          caix.dataFechamento = this.util.dataParaString(new Date());
-          caix.horaFechamento = this.util.horaAgoraString();        
+          let func = funcs.find(c => c.id == caix.funcionarioId);          
+
+          caix.dataFechamento = dataString;
+          caix.horaFechamento = horaString;
+          caix.usuarioFechamentoId = usuario;
 
           caix.descricao = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caix.dataAbertura)
-          + " " + this.util.formatarHora(caix.horaAbertura);
+            + " " + this.util.formatarHora(caix.horaAbertura);
         });
         this.caixas = caixas
       });
     });
   }
 
-  descricaoCaixa(e:any)
-  {
-    let caix = this.caixas.find(c=> c.id == this.caixa.id);
-    this.login.nativeElement.value = this.funcionarios.find(c=> c.id == caix.funcionarioId).email;
+  descricaoCaixa(e: any) {
+    let caix = this.caixas.find(c => c.id == this.caixa.id);
+    this.login.nativeElement.value = this.funcionarios.find(c => c.id == caix.funcionarioId).email;
   }
 
   validaSenha() {
@@ -92,6 +97,6 @@ export class ModalFechamentoCaixaComponent   {
   }
 
   fechar() {
-    this.activeModal.close();
+    this.activeModal.close("");
   }
 }

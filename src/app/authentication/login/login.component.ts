@@ -5,6 +5,7 @@ import { LoginService } from '../../services/login.service';
 import { first } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { AppService } from '../../services/app.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(public router: Router, private loginService: LoginService, private modalService: NgbModal) { }
+  constructor(public router: Router, private loginService: LoginService, private modalService: NgbModal, public appService: AppService) { }
   mensagemErro = "";
   ngOnInit() {
     this.loginService.logout();
@@ -32,12 +33,14 @@ export class LoginComponent implements OnInit {
           var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";
         }
-        else if (data.medicoId != "") {
-
-          this.router.navigate(['/agenda/agenda']);
+        else {
+          this.appService.buscarClinicasUsuario(data);
+          if (data.medicoId != "") {
+            this.router.navigate(['/agenda/agenda']);
+          }
+          else
+            this.router.navigate(["/agenda/agenda/"]);
         }
-        else
-          this.router.navigate(["/agenda/agenda/"]);
 
       },
       error => {

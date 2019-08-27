@@ -8,6 +8,7 @@ import { FuncionarioService } from '../../services/funcionario.service';
 import { CaixaService } from '../../services/caixa.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { LoginService } from '../../services/login.service';
+import { AppService } from '../../services/app.service';
 
 @Component({
   selector: 'app-modal-abertura-caixa.component',
@@ -26,12 +27,14 @@ export class ModalAberturaCaixaComponent   {
   testPrice: any;
   existeCaixaAbertoParaFuncionario: boolean;
   senhaValida: boolean;
-  constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
+  constructor(public activeModal: NgbActiveModal, private appService:AppService, private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
   
   ngOnInit() {
     this.funcionarioModel.nativeElement.focus();
+    this.caixa.clinicaId = this.appService.retornarClinicaCorrente().id;
     this.caixa.horaAbertura = this.util.horaAgoraString();
     this.caixa.dataAbertura = this.util.dataParaString(new Date());
+    this.caixa.usuarioAberturaId = this.appService.retornarUsuarioCorrente().id;
     this.funcionarioService.Todos().subscribe(funcs => {
       this.funcionarios = funcs;      
     });
@@ -76,6 +79,6 @@ export class ModalAberturaCaixaComponent   {
   }
 
   fechar() {
-    this.activeModal.close();
+    this.activeModal.close("");
   }
 }

@@ -10,14 +10,15 @@ export class ValidaCpfDirective implements Validator {
 
   constructor() { };
   validate(control: AbstractControl): { [key: string]: any } | null {
-    
-    if (control.value == '')
+
+    if (control.value == '' || control.value == null)
       return null;
-    if (!this.validaCpf(control.value)) return { 'validaCpf' : { value: control.value } };
-     else return null;
+
+    if (!this.validaCpf(control.value)) return { 'validaCpf': { value: control.value } };
+    else return null;
   }
-  
-  public validaCpf(cpf: string): boolean {    
+
+  public validaCpf(cpf: string): boolean {
 
     if (cpf == null) {
       return false;

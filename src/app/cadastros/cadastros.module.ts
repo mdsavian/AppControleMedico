@@ -16,6 +16,7 @@ import { ValidaDescricaoServicoDirective } from '../validadores/valida-descricao
 import { ValidaDescricaoExameDirective } from '../validadores/valida-descricao-exame.directive';
 import { ValidaDescricaoEspecialidadeDirective } from '../validadores/valida-descricao-especialidade.directive';
 import { ValidaDescricaoFormaDePagamentoDirective } from '../validadores/valida-descricao-forma-de-pagamento.directive';
+import { ValidaEmailUsuarioDirective } from '../validadores/valida-email-usuario';
 import { ValidaNomeOficioDirective } from '../validadores/valida-nome-oficio.directive';
 import { ValidaCpfDirective } from '../validadores/valida-cpf.directive';
 import { ValidaCnpjDirective } from '../validadores/valida-cnpj.directive';
@@ -45,7 +46,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoServicoDirective,
-    ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaDescricaoFormaDePagamentoDirective],
+    ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
 
   entryComponents: [ModalAdicionaConvenioComponent]
 })

@@ -14,7 +14,7 @@
                       appValidaDescricaoCirurgia required minlength="4" [(ngModel)]="cirurgia.descricao"
                       #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoCirurgia)"
+                      *ngIf="descricao.invalid && descricao.errors?.validaDescricaoCirurgia"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoCirurgia"> Já existe um cirurgia com esta descrição
