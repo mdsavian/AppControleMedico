@@ -11,10 +11,10 @@
                   <div class="form-group">
                     <label class="control-label" for="descricao">Descrição(*)</label>
                     <input type="text" id="descricao" placeholder="Descrição" name="descricao" class="form-control"
-                      appValidaDescricaoProcedimento required minlength="4" [(ngModel)]="procedimento.descricao"
+                      appValidaDescricaoProcedimento required [(ngModel)]="procedimento.descricao"
                       #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoProcedimento)"
+                      *ngIf="descricao.invalid || descricao.errors?.validaDescricaoProcedimento"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoProcedimento"> Já existe um procedimento com esta

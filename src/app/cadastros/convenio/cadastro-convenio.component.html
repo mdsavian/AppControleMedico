@@ -16,7 +16,7 @@
                           <input type="text" id="descricao" placeholder="Descrição" name="descricao"  
                           class="form-control" appValidaDescricaoConvenio required [(ngModel)]="convenio.descricao" 
                           #descricaoConvenio="ngModel">
-                          <div *ngIf="descricaoConvenio.invalid || (descricaoConvenio.errors?.validaDescricaoConvenio)" 
+                          <div *ngIf="descricaoConvenio.invalid || descricaoConvenio.errors?.validaDescricaoConvenio" 
                           class="alert alert-danger">
                             <div *ngIf="descricaoConvenio.errors.required"> Descrição Convênio Obrigatória. </div>
                             <div *ngIf="descricaoConvenio.errors?.validaDescricaoConvenio"> Já existe um convênio com esta descrição cadastrado. </div>                            

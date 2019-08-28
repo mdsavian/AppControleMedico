@@ -11,10 +11,10 @@
                   <div class="form-group">
                     <label class="control-label" for="descricao">Descrição(*)</label>
                     <input type="text" id="descricao" placeholder="Descrição" name="descricao"
-                      class="form-control" appValidaNomeOficio required minlength="4"
+                      class="form-control" appValidaNomeOficio required 
                       [(ngModel)]="oficio.descricao" #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.errors?.validaNomeOficio)"
+                      *ngIf="descricao.invalid || descricao.errors?.validaNomeOficio"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
                       <div *ngIf="descricao.errors?.validaNomeOficio"> Já existe um ofício com esta descrição cadastrada. </div>

@@ -11,10 +11,10 @@
                   <div class="form-group">
                     <label class="control-label" for="descricao">Descrição(*)</label>
                     <input type="text" id="descricao" placeholder="Descrição" name="descricao"
-                      class="form-control" appValidaDescricaoExame required minlength="4"
+                      class="form-control" appValidaDescricaoExame required 
                       [(ngModel)]="exame.descricao" #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoExame)"
+                      *ngIf="descricao.invalid || descricao.errors?.validaDescricaoExame"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoExame"> Já existe um exame com esta descrição cadastrado. </div>

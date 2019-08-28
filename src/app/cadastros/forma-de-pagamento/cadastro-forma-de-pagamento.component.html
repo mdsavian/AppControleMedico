@@ -11,10 +11,10 @@
                   <div class="form-group">
                     <label class="control-label" for="descricao">Descrição(*)</label>
                     <input type="text" id="descricao" placeholder="Descrição" name="descricao"
-                      class="form-control" appValidaDescricaoFormaDePagamento required minlength="4"
+                      class="form-control" appValidaDescricaoFormaDePagamento required 
                       [(ngModel)]="formaDePagamento.descricao" #descricao="ngModel">
                     <div
-                      *ngIf="descricao.invalid && (descricao.errors?.validaDescricaoFormaDePagamento)"
+                      *ngIf="descricao.invalid  || descricao.errors?.validaDescricaoFormaDePagamento"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoFormaDePagamento"> Já existe uma forma de pagamento com esta descrição cadastrada. </div>

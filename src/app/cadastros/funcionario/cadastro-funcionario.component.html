@@ -15,7 +15,7 @@
                         <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                         <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
                           class="form-control" required minlength="4" [(ngModel)]="funcionario.nomeCompleto"
-                          #nomeCompleto>
+                          #nomeCompleto="ngModel">
                         <div *ngIf="nomeCompleto.invalid" class="alert alert-danger">
                           <div *ngIf="nomeCompleto.errors.required"> Nome Obrigatório. </div>
                           <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
