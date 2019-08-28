@@ -1,0 +1,88 @@
+<form #aberturaCaixa="ngForm">
+    <div class="modal-header">
+        <h4 class="modal-title">Abertura Caixa</h4>
+        <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="funcionario">Forma de Pagamento(*)</label>
+                    <select class="form-control" (change)="alteraFormaPagamento()" [(ngModel)]="agendamentoPagamento.formaPagamentoId"
+                        #formaPagamentoModel="ngModel" id="formaPagamento" name="formaPagamento" required>
+                        <option *ngFor="let forma of formasPagamento" [ngValue]="forma.id">
+                            {{forma.descricao}}
+                        </option>
+                    </select>
+                    <div *ngIf="formaPagamentoModel.invalid"
+                        class="alert alert-danger">
+                        <div *ngIf="formaPagamentoModel.errors.required"> Forma de Pagamento Obrigatória. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="Caixa">Caixa(*)</label>
+                    <select class="form-control" (change)="descricaoCaixa($event)" [(ngModel)]="caixa"
+                        #caixaModel="ngModel" id="caixa" name="caixa" required>
+                        <option *ngFor="let cax of caixas" [ngValue]="cax">
+                            {{cax.descricao}}
+                        </option>
+                    </select>
+                    <div *ngIf="caixaModel.invalid"
+                        class="alert alert-danger">
+                        <div *ngIf="caixaModel.invalid && caixaModel.errors.required"> Caixa Obrigatório. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-4 col-md-4">
+                <label class="control-label" for="trocoAbertura">Troco Abertura(*)</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$</span>
+                    </div>
+                    <input type="text" id="trocoAbertura" mask="dot_separator.2" name="trocoAbertura"
+                        placeholder="000,00" class="form-control" required [(ngModel)]="caixa.trocoAbertura"
+                        #trocoAbertura="ngModel">
+                </div>
+                <div *ngIf="trocoAbertura.invalid" class="alert alert-danger">
+                    <div *ngIf="trocoAbertura.errors.required"> Troco Abertura Obrigatório. </div>
+                </div>
+            </div>
+
+            <div class="col-xs-4 col-md-4">
+                <label class="control-label" for="dataAbertura">Data de Abertura</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <input type="text" mask="00/00/0000" id="dataAbertura" name="dataAbertura" placeholder="dd/mm/yyyy"
+                        class="form-control" [(ngModel)]="caixa.dataAbertura" #dataAbertura="ngModel" readonly>
+                </div>
+            </div>
+            <div class="col-xs-4 col-md-4">
+                <label class="control-label" for="horaAbertura">Hora de Abertura</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <input type="text" mask="Hh:m0" pattern="{{patterHora}}" id="horaAbertura" name="horaAbertura"
+                        placeholder="HH:mm" class="form-control" [(ngModel)]="caixa.horaAbertura"
+                        #horaAbertura="ngModel" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal-footer">
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning"  type="submit">Cancelar</button>
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" 
+        [disabled]="!aberturaCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
+</div>
