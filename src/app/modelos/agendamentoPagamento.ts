@@ -5,6 +5,7 @@ export class AgendamentoPagamento extends Entidade {
 
   constructor() {
     super();
+    this.parcela = 1;
   }
   
   formaPagamentoId:string;
@@ -14,4 +15,6 @@ export class AgendamentoPagamento extends Entidade {
   dataPagamento:string;
   vistaPrazo:EVistaPrazo;
   parcela:number;
+
+  descricaoPagamento:string;
 }

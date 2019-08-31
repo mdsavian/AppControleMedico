@@ -15,7 +15,7 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 
 export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('descricao', { read: ElementRef, static:false}) private descricao: ElementRef;
+  @ViewChild('descricao', { read: ElementRef, static:true}) private descricao: ElementRef;
 
   convenios = new Array<Convenio>();
   mensagemErro: string;

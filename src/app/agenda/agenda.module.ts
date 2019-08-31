@@ -16,6 +16,8 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
 import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
 import { ModalFechamentoCaixaComponent } from '../cadastros/caixa/modal-fechamento-caixa.component';
+import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 export class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -36,7 +38,7 @@ export class CustomDateFormatter extends CalendarDateFormatter {
 }
 
 @NgModule({
-  imports: [SharedModalModule, NgbModule, UteisModule, NgxMaskModule.forRoot(), CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
+  imports: [SharedModalModule, NgbModule, UteisModule, NgxMaskModule.forRoot(), Ng2SmartTableModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
     CalendarModule.forRoot(
       {
         provide: DateAdapter,
@@ -48,9 +50,9 @@ export class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent],
+  declarations: [AgendaComponent, ModalPagamentoAgendamentoComponent,ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent,ModalFechamentoCaixaComponent]
+  entryComponents: [ModalPagamentoAgendamentoComponent,ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAberturaCaixaComponent,ModalFechamentoCaixaComponent]
 })
 
 export class AgendaModule { }

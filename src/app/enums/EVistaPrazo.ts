@@ -1,4 +1,4 @@
 export enum EVistaPrazo {
-    "Vista" = 1,
-    "Prazo" = 2
+    "À Vista" = 1,
+    "À Prazo" = 2
 }

@@ -10,6 +10,10 @@ export const settings = {
     diasRecebimento: {
       title: 'Dias de Recebimento',
       filter: false,
+    },
+    parcelasMaximas: {
+      title: 'Parcelas Máximas',
+      filter: false,
     }
   },
   actions:

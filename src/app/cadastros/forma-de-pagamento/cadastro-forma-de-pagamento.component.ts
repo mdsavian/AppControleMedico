@@ -4,6 +4,7 @@ import { FormaDePagamentoService } from '../../services/forma-de-pagamento.servi
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EVistaPrazo } from '../../enums/EVistaPrazo';
 
 @Component({
   templateUrl: './cadastro-forma-de-pagamento.component.html',
@@ -12,13 +13,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class CadastroFormaDePagamentoComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('descricao', { read: ElementRef, static:false }) private descricao: ElementRef;
+  @ViewChild('descricao', { read: ElementRef, static:true }) private descricao: ElementRef;
+  @ViewChild('tipoPagamento', { read: ElementRef, static:true }) private tipoPagamento: ElementRef;
 
   mensagemErro: string;
+  vistaPrazo: string = EVistaPrazo[1].toString();
   id: string;
-  formaDePagamento: FormaDePagamento = {
-    id: "", descricao: "", diasRecebimento :0
-  };
+  formaDePagamento = new FormaDePagamento();
+  vistaPrazoEnum = EVistaPrazo;
 
   constructor(private formaDePagamentoService: FormaDePagamentoService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
   }
@@ -30,10 +32,23 @@ export class CadastroFormaDePagamentoComponent implements OnInit, AfterViewInit 
 
   public ngOnInit(): void {
 
+    this.formaDePagamento.tipoPagamento = EVistaPrazo["À Vista"];
+
     if (this.formaDePagamentoService.formaDePagamento != null) {
       this.descricao.nativeElement.setAttribute('readonly', true);
+      this.tipoPagamento.nativeElement.setAttribute('disabled', true);
       this.formaDePagamento = this.formaDePagamentoService.formaDePagamento;
+      this.vistaPrazo = EVistaPrazo[this.formaDePagamento.tipoPagamento];
     }
+  }
+
+  selecionaTipoPagamento(value: string) {
+    if (value == "À Prazo") {
+      if (this.formaDePagamento.descricao.toUpperCase() == "DINHEIRO") {
+        value = this.tipoPagamento.nativeElement.value = EVistaPrazo[1].toString();
+      }      
+    }  
+    this.formaDePagamento.tipoPagamento = EVistaPrazo[value];
   }
 
   public onSubmit(): void {

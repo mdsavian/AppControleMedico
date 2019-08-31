@@ -26,6 +26,7 @@ import { Funcionario } from '../modelos/funcionario';
 import { FuncionarioService } from '../services/funcionario.service';
 import { CaixaService } from '../services/caixa.service';
 import { ModalErrorComponent } from '../shared/modal/modal-error.component';
+import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 
 @Component({
   selector: 'mwl-demo-component',
@@ -406,6 +407,19 @@ export class AgendaComponent implements OnInit {
           break;
         case ("PagarFinalizar"):
 
+        //if(nao existe caixas abertos retornar)
+        this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+          if (!this.util.hasItems(caixas))
+          {
+            var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+            modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
+          }
+          else
+          {
+            this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
+          }
+        });
+        
           // this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
           //   this.chamarModalAdicionaAgendamento(agendamento);
           // });        
@@ -574,7 +588,6 @@ export class AgendaComponent implements OnInit {
         // draggable: true
       }];
     });
-
     this.refreshPage();
   }
 

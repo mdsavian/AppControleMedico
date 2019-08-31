@@ -10,24 +10,40 @@
                 <div class="col-xs-12 col-md-6">
                   <div class="form-group">
                     <label class="control-label" for="descricao">Descrição(*)</label>
-                    <input type="text" id="descricao" placeholder="Descrição" name="descricao"
-                      class="form-control" appValidaDescricaoFormaDePagamento required 
-                      [(ngModel)]="formaDePagamento.descricao" #descricao="ngModel">
-                    <div
-                      *ngIf="descricao.invalid  || descricao.errors?.validaDescricaoFormaDePagamento"
+                    <input type="text" id="descricao" placeholder="Descrição" name="descricao" class="form-control"
+                      appValidaDescricaoFormaDePagamento required [(ngModel)]="formaDePagamento.descricao"
+                      #descricao="ngModel">
+                    <div *ngIf="descricao.invalid  || descricao.errors?.validaDescricaoFormaDePagamento"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
-                      <div *ngIf="descricao.errors?.validaDescricaoFormaDePagamento"> Já existe uma forma de pagamento com esta descrição cadastrada. </div>
+                      <div *ngIf="descricao.errors?.validaDescricaoFormaDePagamento"> Já existe uma forma de pagamento
+                        com esta descrição cadastrada. </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-xs-6 col-md-3">
-                    <div class="form-group">
-                      <label class="control-label" for="diasRecebimento">Dias Recebimento</label>
-                      <input type="number" required class="form-control" [(ngModel)]="formaDePagamento.diasRecebimento"
-                        #diasRecebimento="ngModel" id="diasRecebimento" name="diasRecebimento">                      
-                    </div>
+                <div class="col-xs-4 col-md-4">
+                  <label class="control-label" for="tipoPagamento">Tipo do Pagamento(*)</label>
+                  <select class="form-control" (change)="selecionaTipoPagamento($event.target.value)" required
+                    [(ngModel)]="vistaPrazo" #tipoPagamento="ngModel" id="tipoPagamento" name="tipoPagamento">
+                    <option *ngFor="let codigo of vistaPrazoEnum | enumToArray">
+                      {{codigo}}
+                    </option>
+                  </select>
+                  <div *ngIf="tipoPagamento.invalid" class="alert alert-danger">
+                    <div *ngIf="tipoPagamento.errors?.tipoPagamento || formaDePagamento.tipoPagamento == null"> Tipo de
+                      pagamento obrigatório. </div>
                   </div>
+                </div>
+              </div>
+              <div class="row rowcadastro">
+                <div class="col-xs-6 col-md-3">
+                  <div class="form-group">
+                    <label class="control-label" for="diasRecebimento">Dias Recebimento</label>
+                    <input type="number" required min="1" class="form-control"
+                      [(ngModel)]="formaDePagamento.diasRecebimento" #diasRecebimento="ngModel" id="diasRecebimento"
+                      name="diasRecebimento">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -35,8 +51,8 @@
             <div class="form-group">
               <div class="col-xs-8 col-md-6">
                 <!--  -->
-                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!formaDePagamentoForm.form.valid"
-                  type="submit">Salvar</button>
+                <button style="width:40%" class="btn btn-rounded btn-success"
+                  [disabled]="!formaDePagamentoForm.form.valid" type="submit">Salvar</button>
                 <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
               </div>
             </div>
