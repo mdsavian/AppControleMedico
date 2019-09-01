@@ -15,7 +15,7 @@ export const settingsMedico = {
   actions:
   {
     columnTitle: '',
-    add: false,    
+    add: false,
     edit: false
   },
   delete: {

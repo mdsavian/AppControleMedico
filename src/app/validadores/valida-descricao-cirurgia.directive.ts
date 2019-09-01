@@ -1,6 +1,7 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 import { CirurgiaService } from "../services/cirurgia.service";
+import { Util } from "../uteis/Util";
 
 @Directive({
   selector: '[appValidaDescricaoCirurgia]',
@@ -19,9 +20,8 @@ export class ValidaDescricaoCirurgiaDirective implements Validator {
     this.cirurgiaService.Todos().subscribe(c =>
       this.cirurgiaService.listaCirurgia = c);
     var listaCirurgia = this.cirurgiaService.listaCirurgia;
-    var cirurgiaRegente = this.cirurgiaService.cirurgia;
 
-    if (cirurgiaRegente == null && listaCirurgia != null && listaCirurgia.length > 0 &&
+    if (new Util().hasItems(listaCirurgia) &&
       listaCirurgia.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
 
       return { 'validaDescricaoCirurgia': { value: control.value } };

@@ -1,9 +1,11 @@
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
-import { padNumber } from "@ng-bootstrap/ng-bootstrap/util/util";
 
 export class Util {
 
+    formatarDecimal(valor: number) {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
+    }
 
     public converteData(data: NgbDate): Date {
         var dataNova: Date = new Date(data.year, data.month, data.day);
@@ -56,12 +58,12 @@ export class Util {
     }
 
     public formatarData(data: string) {
-         return(data.substr(0, 2)+ "/" + data.substr(2, 2) + "/"+ data.substr(4, 4));
+        return (data.substr(0, 2) + "/" + data.substr(2, 2) + "/" + data.substr(4, 4));
     }
 
     public formatarHora(hora: string) {
-        return(hora.substr(0, 2)+ ":" + hora.substr(2, 2));
-   }
+        return (hora.substr(0, 2) + ":" + hora.substr(2, 2));
+    }
 
     public formataCnpj(cnpj: string) {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5");

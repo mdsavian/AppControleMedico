@@ -381,21 +381,24 @@ export class AgendaComponent implements OnInit {
     this.modalService.open(this.modalAcoes).result.then(result => {
       switch (result) {
         case ("Editar"):
-          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+          if (agendamento != null) {
             this.chamarModalAdicionaAgendamento(agendamento, "editar");
-          });
+          }
           break;
         case ("Confirmar"):
-          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+          if (agendamento != null) {
             this.acaoAgendamento = "Confirmar";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
                 if (result == 'Sim') {
                   agendamento = this.validadorAgendamento.tratarCorAgendamento(agendamento);
-                  agendamento.situacaoAgendamento = ESituacaoAgendamento["Confirmado"];
+                  agendamento.situacaoAgendamento = ESituacaoAgendamento.Confirmado;
                   this.agendamentoService.salvar(agendamento).subscribe(retorno => {
                     if (retorno) {
-                      this.carregarAgendamentosMedico();
+                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                      // this.carregarAgendamentosMedico();
                     }
                   });
                 }
@@ -403,63 +406,72 @@ export class AgendaComponent implements OnInit {
               (() => { })
             );
 
-          });
+          }
           break;
         case ("PagarFinalizar"):
+          this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+            if (!this.util.hasItems(caixas)) {
+              var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+              modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
+            }
+            else {
+              var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
-        //if(nao existe caixas abertos retornar)
-        this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
-          if (!this.util.hasItems(caixas))
-          {
-            var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-            modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
-          }
-          else
-          {
-            this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
-          }
-        });
-        
-          // this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
-          //   this.chamarModalAdicionaAgendamento(agendamento);
-          // });        
+              if (agendamento != null) {
+                var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
+                modalPagamento.componentInstance.agendamento = agendamento;
+                modalPagamento.result.then(retorno => {
+                  this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                  var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+                  modal.componentInstance.mensagem = "Agendamento finalizado com sucesso!";
+                })
+              }
+            }
+          });
           break;
         case ("Cancelar"):
-          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+          if (agendamento != null) {
             this.acaoAgendamento = "Cancelar";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
                 if (result == 'Sim') {
-                  agendamento.situacaoAgendamento = ESituacaoAgendamento["Cancelado"];
+                  agendamento.situacaoAgendamento = ESituacaoAgendamento.Cancelado;
                   agendamento.corFundo = "#000000";
                   this.agendamentoService.salvar(agendamento).subscribe(retorno => {
                     if (retorno) {
-                      this.carregarAgendamentosMedico();
+                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
                     }
                   });
                 }
               },
               (() => { })
             );
-          });
+          }
 
           break;
         case ("Excluir"):
-          this.agendamentoService.buscarPorId(evento.id.toString()).subscribe(agendamento => {
+          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+          if (agendamento != null) {
             this.acaoAgendamento = "Excluir";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
                 if (result == 'Sim') {
                   this.agendamentoService.Excluir(agendamento.id).subscribe(retorno => {
                     if (retorno) {
-                      this.carregarAgendamentosMedico();
+                      var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
+                      if (eventoVelho != null) {
+                        var index = this.eventos.indexOf(eventoVelho);
+                        this.eventos.splice(index, 1);
+                        this.refreshPage();
+                      }
                     }
                   });
                 }
               },
               (() => { })
             );
-          });
+          }
           break;
       }
     },
@@ -526,7 +538,7 @@ export class AgendaComponent implements OnInit {
               agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
               agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
               agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
-              this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+              // this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
             }
             else {
               this.eventos = this.eventos.filter(e => e.id !== event.id);
@@ -544,7 +556,7 @@ export class AgendaComponent implements OnInit {
       agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
       agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
       agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
-      this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+      // this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
     }
 
   }
@@ -572,6 +584,8 @@ export class AgendaComponent implements OnInit {
         var index = this.eventos.indexOf(eventoVelho);
         this.eventos.splice(index, 1);
       }
+
+      var eventoVelhoBanco = this.eventosBanco.find
 
       this.eventos = [...this.eventos,
       {
@@ -638,7 +652,8 @@ export class AgendaComponent implements OnInit {
 
   montaTituloAgendamento(agendamento: Agendamento): string {
     if (agendamento.paciente != null) {
-      return agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
+      var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento);
+      return operacao + " - " + agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
         agendamento.convenio.descricao.toUpperCase() + " - " +
         agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " até " +
         agendamento.horaFinal.substring(0, 2) + ":" + agendamento.horaFinal.substring(2, 4) + " - " +
@@ -665,7 +680,7 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
   }
 }
 
-function floorToNearest(amount: number, precision: number) {
+function floorToNearest(amount: number, precision: number) { 
   return Math.floor(amount / precision) * precision;
 }
 

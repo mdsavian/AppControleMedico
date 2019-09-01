@@ -1,6 +1,7 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 import { ProcedimentoService } from "../services/procedimento.service";
+import { Util } from "../uteis/Util";
 
 @Directive({
   selector: '[appValidaDescricaoProcedimento]',
@@ -15,7 +16,7 @@ export class ValidaDescricaoProcedimentoDirective implements Validator {
     var listaProcedimento = this.procedimentoService.listaProcedimento;
     var procedimentoRegente = this.procedimentoService.procedimento;
 
-    if (procedimentoRegente == null && listaProcedimento != null && listaProcedimento.length > 0 
+    if (new Util().hasItems(listaProcedimento)
       && listaProcedimento.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
     return { 'validaDescricaoProcedimento': { value: control.value } } ;        
     }

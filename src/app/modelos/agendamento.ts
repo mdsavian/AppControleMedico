@@ -8,7 +8,7 @@ import { ETipoAgendamento } from "../enums/ETipoAgendamento";
 import { ESituacaoAgendamento } from "../enums/ESituacaoAgendamento";
 import { Procedimento } from "./procedimento";
 import { Convenio } from "./convenio";
-import { Clinica } from "./clinica";
+import { AgendamentoPagamento } from "./agendamentoPagamento";
 
 export class Agendamento extends Entidade {
 
@@ -34,9 +34,11 @@ export class Agendamento extends Entidade {
     procedimentoId: string;
     pacienteId: string;
     medicoId: string;
+    contemPagamentos:boolean;
 
     tipoAgendamento: ETipoAgendamento;
     situacaoAgendamento: ESituacaoAgendamento;
+    pagamentos:Array<AgendamentoPagamento>;
     paciente: Paciente;
     medico: Medico;
     exame: Exame;

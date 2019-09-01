@@ -1,6 +1,7 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 import { OficioService } from "../services/oficio.service";
+import { Util } from "../uteis/Util";
 
 @Directive({
   selector: '[appValidaNomeOficio]',
@@ -13,14 +14,13 @@ export class ValidaNomeOficioDirective implements Validator {
   validate(control: AbstractControl): { [key: string]: any } | null {
 
     var listaOficio = this.oficioService.listaOficio;
-    var oficioRegente = this.oficioService.oficio;
 
-    if (oficioRegente == null && listaOficio != null && listaOficio.length > 0 
-      && listaOficio.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
-    return { 'validaNomeOficio': { value: control.value } } ;        
+    if (new Util().hasItems(listaOficio)
+      && listaOficio.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      return { 'validaNomeOficio': { value: control.value } };
     }
-    return null;    
-    
+    return null;
+
   }
 }
 

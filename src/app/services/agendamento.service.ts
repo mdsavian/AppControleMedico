@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Agendamento } from '../modelos/agendamento'
 import { environment } from '../../environments/environment';
 import { AppService } from './app.service';
+import { Util } from '../uteis/Util';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +12,10 @@ import { AppService } from './app.service';
 
 export class AgendamentoService {
 
+
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
+  private util = new Util();
 
   public agendamento: Agendamento;
   public listaAgendamento: Array<Agendamento>;
@@ -42,4 +46,20 @@ export class AgendamentoService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + agendamentoId);
   }
 
+  public retornarOperacaoAgendamento(agendamento: Agendamento):string {
+    console.log(agendamento);
+    if (!this.util.isNullOrWhitespace(agendamento.exameId))
+      return agendamento.exame.descricao;
+
+    if (!this.util.isNullOrWhitespace(agendamento.cirurgiaId))
+      return agendamento.cirurgia.descricao;
+
+    if (!this.util.isNullOrWhitespace(agendamento.procedimentoId))
+      return agendamento.procedimento.descricao;
+
+    if (!this.util.isNullOrWhitespace(agendamento.exameId))
+      return agendamento.exame.descricao;
+      
+      return "Consulta";
+  }
 }

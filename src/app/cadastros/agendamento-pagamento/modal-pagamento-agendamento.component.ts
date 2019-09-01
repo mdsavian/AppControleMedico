@@ -13,9 +13,11 @@ import { AgendamentoPagamento } from '../../modelos/agendamentoPagamento';
 import { FormaDePagamento } from '../../modelos/formaDePagamento';
 import { EVistaPrazo } from '../../enums/EVistaPrazo';
 import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
-import * as tableDataPagamento from './lista-pagamentos-settings';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Usuario } from '../../modelos/usuario';
+import { Agendamento } from '../../modelos/agendamento';
+import { AgendamentoService } from '../../services/agendamento.service';
+import { ESituacaoAgendamento } from '../../enums/ESituacaoAgendamento';
 
 
 @Component({
@@ -28,9 +30,7 @@ export class ModalPagamentoAgendamentoComponent {
   @ViewChild('formaPagamentoModel', { read: ElementRef, static: true }) private formaPagamentoModel: ElementRef;
   @ViewChild('tipoPagamento', { read: ElementRef, static: true }) private tipoPagamento: ElementRef;
   @ViewChild('senha', { read: ElementRef, static: false }) private senha: ElementRef;
-  @ViewChild('valor', { read: ElementRef, static: false }) private valor: ElementRef;
 
-  settingsPagamentos = tableDataPagamento.settingsPagamentos;
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   caixa: Caixa = new Caixa();
   util = new Util();
@@ -49,11 +49,25 @@ export class ModalPagamentoAgendamentoComponent {
   sourcePagamentos: LocalDataSource;
   usuarioCorrente: Usuario;
   listaPagamentos = new Array<AgendamentoPagamento>();
+  valorTotal: string;
+  agendamento: Agendamento;
+  tituloTela = "";
 
   constructor(public activeModal: NgbActiveModal, private appService: AppService, private formaPagamentoService: FormaDePagamentoService,
-    private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
+    private loginService: LoginService, private agendamentoService: AgendamentoService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
 
   ngOnInit() {
+
+    if (this.agendamento != null) {
+      if (this.agendamento.paciente != null) {
+        var operacao = this.agendamentoService.retornarOperacaoAgendamento(this.agendamento);
+        this.tituloTela = operacao + " - " + this.agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
+          this.agendamento.convenio.descricao.toUpperCase() + " - " +
+          this.agendamento.horaInicial.substring(0, 2) + ":" + this.agendamento.horaInicial.substring(2, 4) + " até " +
+          this.agendamento.horaFinal.substring(0, 2) + ":" + this.agendamento.horaFinal.substring(2, 4);
+      }
+    }
+
     this.formaPagamentoModel.nativeElement.focus();
     this.usuarioCorrente = this.appService.retornarUsuarioCorrente();
 
@@ -88,9 +102,10 @@ export class ModalPagamentoAgendamentoComponent {
         value = this.tipoPagamento.nativeElement.value = EVistaPrazo[1].toString();
         this.agendamentoPagamento.vistaPrazo = EVistaPrazo[value];
       }
-      else 
-        this.visualizaParcela = true;      
+      else
+        this.visualizaParcela = true;
     }
+    console.log(this.visualizaParcela, value);
   }
 
   alteraFormaPagamento() {
@@ -105,19 +120,18 @@ export class ModalPagamentoAgendamentoComponent {
       this.agendamentoPagamento.descricaoPagamento = formaPagamento.descricao;
       this.tipoPagamento.nativeElement.value = EVistaPrazo[formaPagamento.tipoPagamento];
       this.agendamentoPagamento.vistaPrazo = formaPagamento.tipoPagamento;
+      this.tipoPagamento.nativeElement.setAttribute('disabled', true);
+
     }
-   
-    
-    this.selecionaTipoPagamento( EVistaPrazo[this.agendamentoPagamento.vistaPrazo]);
+    else
+      this.tipoPagamento.nativeElement.setAttribute('disabled', false);
+
+
+    this.selecionaTipoPagamento(EVistaPrazo[this.agendamentoPagamento.vistaPrazo]);
   }
 
   selecionaCaixa(e: Caixa) {
     this.caixaUsuario = this.caixa.id == this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId).id;
-  }
-
-  formataValor()
-  {
-    // this.valor = this.util.f
   }
 
   validaCaixaFuncionario() {
@@ -134,40 +148,122 @@ export class ModalPagamentoAgendamentoComponent {
     }
   }
 
-  adicionarPagamento()
-  {
-    console.log(this.agendamentoPagamento);
+  deletarPagamento(pagamento: AgendamentoPagamento) {
+    var index = this.listaPagamentos.findIndex(c => c.formaPagamentoId == pagamento.formaPagamentoId);
 
-    this.listaPagamentos.push(this.agendamentoPagamento);    
+    this.listaPagamentos.splice(index, 1);
+
+    if (this.util.hasItems(this.listaPagamentos))
+      this.valorTotal = this.util.formatarDecimal(this.somaPagamentos());
+
     this.sourcePagamentos = new LocalDataSource(this.listaPagamentos);
-    this.agendamentoPagamento = new AgendamentoPagamento();
+  }
+
+  adicionarPagamento() {
+    var retornar;
+
+    if (this.agendamentoPagamento.valor == 0) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Valor inválido.";
+      retornar = true;
+    }
+
+    if (this.listaPagamentos.find(c => c.formaPagamentoId == this.agendamentoPagamento.formaPagamentoId) != null) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Forma de pagamento já informada.";
+      retornar = true;
+    }
+    if (!retornar) {
+
+      console.log(this.caixa);
+      this.agendamentoPagamento.caixaId = this.caixa.id;
+      this.agendamentoPagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
+      this.agendamentoPagamento.data = this.util.dataParaString(new Date());
+
+
+      this.listaPagamentos.push(this.agendamentoPagamento);
+      this.valorTotal = this.util.formatarDecimal(this.somaPagamentos());
+      this.sourcePagamentos = new LocalDataSource(this.listaPagamentos);
+      this.agendamentoPagamento = new AgendamentoPagamento();
+      this.formaPagamentoModel.nativeElement.focus();
+
+      this.visualizaParcela = false;
+    }
+  }
+
+  somaPagamentos() {
+    var total = 0;
+    this.listaPagamentos.forEach(c => {
+      total = total + parseFloat(c.valor.toString());
+    });
+    return total;
   }
 
   salvar() {
 
     var retornar = false;
 
-    if (this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
+    if (!this.util.hasItems(this.listaPagamentos)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Funcionário inválido.";
+      modal.componentInstance.mensagemErro = "É necessário adicionar um pagamento.";
       retornar = true;
     }
 
-    if (this.caixa.trocoAbertura <= 0) {
+    if (this.somaPagamentos() <= 0) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Troco inválido.";
+      modal.componentInstance.mensagemErro = "Somatório dos pagamentos inválido.";
       retornar = true;
     }
 
     if (!retornar) {
-      this.caixaService.salvar(this.caixa).subscribe(caixaRetorno => {
-        this.activeModal.close(caixaRetorno);
+      this.agendamento.contemPagamentos = true;
+      this.agendamento.pagamentos = this.listaPagamentos;
+      this.agendamento.situacaoAgendamento = ESituacaoAgendamento.PagoFinalizado;
+
+      this.agendamentoService.salvar(this.agendamento).subscribe(agendamentoRetorno => {
+        this.activeModal.close(agendamentoRetorno);
       });
     }
-
   }
 
   fechar() {
     this.activeModal.close("");
   }
+
+  settingsPagamentos = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum registro",
+    columns: {
+      formaPagamentoId: {
+        title: 'Descrição',
+        filter: false,
+        valuePrepareFunction: (id) => { return id === "" || id === null ? "" : this.formasPagamento.find(c => c.id == id).descricao }
+      },
+      parcela: {
+        title: 'Parcela',
+        filter: false
+      },
+      valor: {
+        title: 'Valor',
+        filter: false,
+        valuePrepareFunction: (valor) => { return new Util().formatarDecimal(valor); }
+      }
+    },
+    actions:
+    {
+      columnTitle: '',
+      add: false,
+      edit: false
+    },
+    delete: {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    }
+  }
 }
+
+
+
+
+

@@ -1,6 +1,7 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 import { LocalService } from "../services/local.service";
+import { Util } from "../uteis/Util";
 
 @Directive({
   selector: '[appValidaDescricaoLocal]',
@@ -16,9 +17,8 @@ export class ValidaDescricaoLocalDirective implements Validator {
       return null;
 
     var listaLocal = this.localService.listaLocal;
-    var localRegente = this.localService.local;
 
-    if (localRegente == null && listaLocal != null && listaLocal.length > 0
+    if (new Util().hasItems(listaLocal)
       && listaLocal.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
       return { 'validaDescricaoLocal': { value: control.value } };
     }

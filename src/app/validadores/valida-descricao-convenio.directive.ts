@@ -1,6 +1,7 @@
 import { Directive } from "@angular/core";
 import { NG_VALIDATORS, Validator, AbstractControl } from "@angular/forms"
 import { ConvenioService } from "../services/convenio.service";
+import { Util } from "../uteis/Util";
 
 @Directive({
   selector: '[appValidaDescricaoConvenio]',
@@ -12,6 +13,7 @@ export class ValidaDescricaoConvenioDirective implements Validator {
   constructor(private convenioService: ConvenioService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
 
+
     if (control.value == '' || control.value == null)
       return null;
 
@@ -19,9 +21,8 @@ export class ValidaDescricaoConvenioDirective implements Validator {
       this.convenioService.listaConvenio = c);
 
     var listaConvenio = this.convenioService.listaConvenio;
-    var convenioRegente = this.convenioService.convenio;
 
-    if (convenioRegente == null && listaConvenio != null && listaConvenio.length > 0 &&
+    if (new Util().hasItems(listaConvenio) &&
       listaConvenio.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
 
       return { 'validaDescricaoConvenio': { value: control.value } };
