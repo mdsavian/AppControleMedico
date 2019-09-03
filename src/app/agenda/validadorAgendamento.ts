@@ -6,41 +6,6 @@ import{Util} from "../uteis/Util";
 export class ValidadorAgendamento {
 
   util = new Util();
-  public tratarCorAgendamento(agendamento: Agendamento) {
-    switch (agendamento.tipoAgendamento) {
-      case ETipoAgendamento.Bloqueio.valueOf(): {
-        agendamento.corFundo = "#EE0000";
-        agendamento.corLetra = "#EE0000";
-        break;
-      }
-      case ETipoAgendamento.Cirurgia.valueOf(): {
-        agendamento.corFundo = agendamento.cirurgia.corFundo;
-        agendamento.corLetra = agendamento.cirurgia.corLetra;
-        break;
-      }
-      case ETipoAgendamento.Consulta.valueOf(): {
-        agendamento.corFundo = "#EFF5F5";
-        agendamento.corLetra = "#EFF5F5";
-        break;
-      }
-      case ETipoAgendamento.Exame.valueOf(): {
-        agendamento.corFundo = agendamento.exame.corFundo;
-        agendamento.corLetra = agendamento.exame.corLetra;
-        break;
-      }
-      case ETipoAgendamento.Procedimento.valueOf(): {
-        agendamento.corFundo = agendamento.procedimento.corFundo;
-        agendamento.corLetra = agendamento.procedimento.corLetra;
-        break;
-      }
-      case ETipoAgendamento.Retorno.valueOf(): {
-        agendamento.corFundo = "#CAE1FF";
-        agendamento.corLetra = "#CAE1FF";
-        break;
-      }
-    }
-    return agendamento;
-  }
 
   public validaHorasAgendamento(medicoConfiguracaoAgenda: ConfiguracaoAgenda, dataString: string, horaInicial: string, horaFinal: string,
     tipoAgendamento: ETipoAgendamento): string {

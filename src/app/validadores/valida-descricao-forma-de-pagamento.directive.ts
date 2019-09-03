@@ -17,9 +17,11 @@ export class ValidaDescricaoFormaDePagamentoDirective implements Validator {
       return null;
 
     var listaFormaDePagamento = this.formaDePagamentoService.listaFormaDePagamento;
+    var forma = this.formaDePagamentoService.formaDePagamento;
 
     if (new Util().hasItems(listaFormaDePagamento)
-      && listaFormaDePagamento.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      && listaFormaDePagamento.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()
+      && (forma == null || forma.id != c.id)) != null) {
       return { 'validaDescricaoFormaDePagamento': { value: control.value } };
     }
     return null;

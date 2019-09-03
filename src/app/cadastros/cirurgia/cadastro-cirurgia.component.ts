@@ -30,6 +30,7 @@ export class CadastroCirurgiaComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     if (this.cirurgiaService.cirurgia) {
       this.cirurgia = this.cirurgiaService.cirurgia;
+      this.descricao.nativeElement.setAttribute('readonly', true);
     }
 
   }

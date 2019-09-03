@@ -18,6 +18,11 @@ import { Usuario } from '../../modelos/usuario';
 import { Agendamento } from '../../modelos/agendamento';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { ESituacaoAgendamento } from '../../enums/ESituacaoAgendamento';
+import { Paciente } from '../../modelos/paciente';
+import { Convenio } from '../../modelos/convenio';
+import { Procedimento } from '../../modelos/procedimento';
+import { Exame } from '../../modelos/exame';
+import { Cirurgia } from '../../modelos/cirurgia';
 
 
 @Component({
@@ -52,6 +57,11 @@ export class ModalPagamentoAgendamentoComponent {
   valorTotal: string;
   agendamento: Agendamento;
   tituloTela = "";
+  pacientes = new Array<Paciente>();
+  convenios = new Array<Convenio>();
+  exames = new Array<Exame>();
+  procedimentos = new Array<Procedimento>();
+  cirurgias = new Array<Cirurgia>();
 
   constructor(public activeModal: NgbActiveModal, private appService: AppService, private formaPagamentoService: FormaDePagamentoService,
     private loginService: LoginService, private agendamentoService: AgendamentoService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
@@ -59,14 +69,24 @@ export class ModalPagamentoAgendamentoComponent {
   ngOnInit() {
 
     if (this.agendamento != null) {
-      if (this.agendamento.paciente != null) {
-        var operacao = this.agendamentoService.retornarOperacaoAgendamento(this.agendamento);
-        this.tituloTela = operacao + " - " + this.agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
-          this.agendamento.convenio.descricao.toUpperCase() + " - " +
-          this.agendamento.horaInicial.substring(0, 2) + ":" + this.agendamento.horaInicial.substring(2, 4) + " até " +
-          this.agendamento.horaFinal.substring(0, 2) + ":" + this.agendamento.horaFinal.substring(2, 4);
+
+      this.tituloTela = this.agendamentoService.retornarOperacaoAgendamento(this.agendamento,this.exames, this.cirurgias, this.procedimentos).toUpperCase();
+
+
+      if (!this.util.hasItems(this.pacientes) && !this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
+        var paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
+        this.tituloTela = this.tituloTela + " - " + paciente.nomeCompleto.split(' ')[0];
       }
+
+      if (!this.util.hasItems(this.convenios) && !this.util.isNullOrWhitespace(this.agendamento.convenioId)) {
+        var convenio = this.convenios.find(c => c.id == this.agendamento.convenioId);
+        this.tituloTela = this.tituloTela + " - " + convenio.descricao.toUpperCase();
+      }
+      this.tituloTela = this.tituloTela + " - " +
+        this.agendamento.horaInicial.substring(0, 2) + ":" + this.agendamento.horaInicial.substring(2, 4) + " até " +
+        this.agendamento.horaFinal.substring(0, 2) + ":" + this.agendamento.horaFinal.substring(2, 4);
     }
+
 
     this.formaPagamentoModel.nativeElement.focus();
     this.usuarioCorrente = this.appService.retornarUsuarioCorrente();
@@ -93,7 +113,6 @@ export class ModalPagamentoAgendamentoComponent {
       else
         this.caixa = this.caixas.find(c => true);
     });
-
 
   }
   selecionaTipoPagamento(value: string) {
@@ -218,7 +237,7 @@ export class ModalPagamentoAgendamentoComponent {
     if (!retornar) {
       this.agendamento.contemPagamentos = true;
       this.agendamento.pagamentos = this.listaPagamentos;
-      this.agendamento.situacaoAgendamento = ESituacaoAgendamento.PagoFinalizado;
+      this.agendamento.situacaoAgendamento = ESituacaoAgendamento["Pago/Finalizado"];
 
       this.agendamentoService.salvar(this.agendamento).subscribe(agendamentoRetorno => {
         this.activeModal.close(agendamentoRetorno);

@@ -47,5 +47,4 @@ export class Agendamento extends Entidade {
     convenio: Convenio;
     procedimento: Procedimento;
 
-
 }

@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { addMinutes, endOfWeek } from 'date-fns';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AppService } from '../services/app.service';
@@ -27,6 +27,18 @@ import { FuncionarioService } from '../services/funcionario.service';
 import { CaixaService } from '../services/caixa.service';
 import { ModalErrorComponent } from '../shared/modal/modal-error.component';
 import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
+import { CirurgiaService } from '../services/cirurgia.service';
+import { PacienteService } from '../services/paciente.service';
+import { ProcedimentoService } from '../services/procedimento.service';
+import { ConvenioService } from '../services/convenio.service';
+import { LocalService } from '../services/local.service';
+import { ExameService } from '../services/exame.service';
+import { Paciente } from '../modelos/paciente';
+import { Cirurgia } from '../modelos/cirurgia';
+import { Convenio } from '../modelos/convenio';
+import { Exame } from '../modelos/exame';
+import { Procedimento } from '../modelos/procedimento';
+import { Local } from '../modelos/local';
 
 @Component({
   selector: 'mwl-demo-component',
@@ -60,41 +72,81 @@ export class AgendaComponent implements OnInit {
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
   msgteste: string;
+  isSpinnerVisible = false;
+  exames: Array<Exame> = [];
+  convenios: Array<Convenio> = [];
+  cirurgias: Array<Cirurgia> = [];
+  pacientes: Array<Paciente> = [];
+  locais: Array<Local> = [];
+  procedimentos: Array<Procedimento> = [];
 
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
-    private appService: AppService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router) {
+    private appService: AppService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router,
+    private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
+    private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
 
   ngOnInit() {
 
     var usuario = this.appService.retornarUsuarioCorrente();
 
-    if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
-      this.funcionarioService.buscarComMedicos(usuario.funcionarioId).subscribe(func => {
-        this.funcionario = func;
-        this.medicos = func.medicos;
-        this.medico = func.medicos.find(c => true);
-        this.visualizaBotoesAberturaFechamentoCaixa = true;
-        this.caixaService.retornarCaixaAbertoFuncionario(func.id).subscribe(caixa => {
-          if (caixa != null) {
-            this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caixa.dataAbertura)
-              + " " + this.util.formatarHora(caixa.horaAbertura);
-          }
+    this.buscarModelosNovoAgendamento().subscribe(c => {
+      this.isSpinnerVisible = false;
+
+      if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
+        this.funcionarioService.buscarComMedicos(usuario.funcionarioId).subscribe(func => {
+          this.funcionario = func;
+          this.medicos = func.medicos;
+          this.medico = func.medicos.find(c => true);
+          this.visualizaBotoesAberturaFechamentoCaixa = true;
+          this.caixaService.retornarCaixaAbertoFuncionario(func.id).subscribe(caixa => {
+            if (caixa != null) {
+              this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caixa.dataAbertura)
+                + " " + this.util.formatarHora(caixa.horaAbertura);
+            }
+
+          });
+          this.carregarConfiguracaoMedico();
 
         });
-        this.carregarConfiguracaoMedico();
+      }
+      else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
+        this.medicoService.buscarPorId(usuario.medicoId).subscribe(medic => {
 
-      });
-    }
-    else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
-      this.medicoService.buscarPorId(usuario.medicoId).subscribe(medic => {
+          this.visualizaBotoesAberturaFechamentoCaixa = false;
+          this.medicos.push(medic);
+          this.medico = this.medicos.find(c => true);
+          this.carregarConfiguracaoMedico();
+        });
+      }
+    });
+  }
 
-        this.visualizaBotoesAberturaFechamentoCaixa = false;
-        this.medicos.push(medic);
-        this.medico = this.medicos.find(c => true);
-        this.carregarConfiguracaoMedico();
-      });
-    }
+  buscarModelosNovoAgendamento() {
+    this.isSpinnerVisible = true;
+
+    let reqPaciente = this.pacienteService.Todos().map(dados => {
+      this.pacientes = dados;
+    });
+
+    let reqExames = this.exameService.Todos().map(dados => { this.exames = dados; });
+    let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
+    let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
+    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
+
+    let reqConvenios = this.convenioService.Todos().map(dados => {
+      if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
+        dados.forEach(conv => {
+          var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
+          if (indexConvenio >= 0)
+            this.convenios.push(conv);
+        });
+      }
+      else
+        this.convenios = dados;
+    });
+
+    return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqConvenios]);
   }
 
   carregarConfiguracaoMedico() {
@@ -393,7 +445,7 @@ export class AgendaComponent implements OnInit {
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
                 if (result == 'Sim') {
-                  agendamento = this.validadorAgendamento.tratarCorAgendamento(agendamento);
+                  agendamento = this.agendamentoService.tratarCorAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos);
                   agendamento.situacaoAgendamento = ESituacaoAgendamento.Confirmado;
                   this.agendamentoService.salvar(agendamento).subscribe(retorno => {
                     if (retorno) {
@@ -418,8 +470,17 @@ export class AgendaComponent implements OnInit {
               var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
               if (agendamento != null) {
-                var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
+                var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+
                 modalPagamento.componentInstance.agendamento = agendamento;
+                modalPagamento.componentInstance.medico = this.medico;
+                modalPagamento.componentInstance.cirurgias = this.cirurgias;
+                modalPagamento.componentInstance.locais = this.locais;
+                modalPagamento.componentInstance.exames = this.exames;
+                modalPagamento.componentInstance.procedimentos = this.procedimentos;
+                modalPagamento.componentInstance.convenios = this.convenios;
+                modalPagamento.componentInstance.pacientes = this.pacientes;
+
                 modalPagamento.result.then(retorno => {
                   this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
                   var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
@@ -585,8 +646,6 @@ export class AgendaComponent implements OnInit {
         this.eventos.splice(index, 1);
       }
 
-      var eventoVelhoBanco = this.eventosBanco.find
-
       this.eventos = [...this.eventos,
       {
         id: agendamento.id,
@@ -607,18 +666,28 @@ export class AgendaComponent implements OnInit {
 
   chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
 
-    var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg" });
+    var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+    
     modalAdicionaAgendamento.componentInstance.medico = this.medico;
+    modalAdicionaAgendamento.componentInstance.pacientes = this.pacientes;
+    modalAdicionaAgendamento.componentInstance.cirurgias = this.cirurgias;
+    modalAdicionaAgendamento.componentInstance.locais = this.locais;
+    modalAdicionaAgendamento.componentInstance.exames = this.exames;
+    modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
+    modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
 
-    if (agendamento != null)
+    if (agendamento != null){
       modalAdicionaAgendamento.componentInstance.agendamento = agendamento;
+    }
 
     if (acao == "editar") {
       modalAdicionaAgendamento.componentInstance.editando = true;
     }
 
     modalAdicionaAgendamento.result.then((agendamento: Agendamento) => {
+      console.log("resultado", agendamento.tipoAgendamento);
       if (agendamento != null) {
+        console.log("entrei");
         this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamento));
       }
     }).catch((error) => { })
@@ -651,17 +720,29 @@ export class AgendaComponent implements OnInit {
   }
 
   montaTituloAgendamento(agendamento: Agendamento): string {
-    if (agendamento.paciente != null) {
-      var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento);
-      return operacao + " - " + agendamento.paciente.nomeCompleto.split(' ')[0] + " - " +
-        agendamento.convenio.descricao.toUpperCase() + " - " +
-        agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " até " +
+    var mensagem = "";
+
+    if (!this.util.isNullOrWhitespace(agendamento.pacienteId)) {
+      var paciente = this.pacientes.find(c => c.id == agendamento.pacienteId);
+      var convenio = this.convenios.find(c => c.id == agendamento.convenioId);
+      var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos).toUpperCase();
+
+      var mensagem = operacao + " - ";
+
+      if (paciente != null)
+        mensagem = mensagem + paciente.nomeCompleto.split(' ')[0] + " - ";
+      if (convenio != null)
+        mensagem = mensagem + convenio.descricao.toUpperCase() + " - ";
+
+      mensagem = mensagem + agendamento.horaInicial.substring(0, 2) + ":" + agendamento.horaInicial.substring(2, 4) + " até " +
         agendamento.horaFinal.substring(0, 2) + ":" + agendamento.horaFinal.substring(2, 4) + " - " +
         ESituacaoAgendamento[agendamento.situacaoAgendamento].toUpperCase();
     }
     else if (agendamento.tipoAgendamento == ETipoAgendamento.Bloqueio)
-      return "AGENDA BLOQUEADA";
-    return "";
+      mensagem = "AGENDA BLOQUEADA";
+
+
+    return mensagem;
 
   }
 }
@@ -680,7 +761,7 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
   }
 }
 
-function floorToNearest(amount: number, precision: number) { 
+function floorToNearest(amount: number, precision: number) {
   return Math.floor(amount / precision) * precision;
 }
 

@@ -17,9 +17,11 @@ export class ValidaDescricaoEspecialidadeDirective implements Validator {
       return null;
 
     var listaEspecialidade = this.especialidadeService.listaEspecialidade;
+    var especialidade = this.especialidadeService.especialidade;
 
     if (new Util().hasItems(listaEspecialidade) 
-      && listaEspecialidade.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      && listaEspecialidade.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()
+      && (especialidade == null || especialidade.id != c.id)) != null) {
       return { 'validaDescricaoEspecialidade': { value: control.value } };
     }
     return null;

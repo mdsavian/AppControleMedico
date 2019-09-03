@@ -21,9 +21,11 @@ export class ValidaDescricaoConvenioDirective implements Validator {
       this.convenioService.listaConvenio = c);
 
     var listaConvenio = this.convenioService.listaConvenio;
+    var convenioRegente = this.convenioService.convenio;
 
     if (new Util().hasItems(listaConvenio) &&
-      listaConvenio.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      listaConvenio.find(c => c.descricao.toUpperCase() === control.value.toUpperCase() &&
+       (convenioRegente == null || convenioRegente.id != c.id) ) != null) {
 
       return { 'validaDescricaoConvenio': { value: control.value } };
     }

@@ -16,6 +16,7 @@ import { Estados } from "../../enums/estados";
 export class CadastroClinicaComponent implements OnInit, AfterViewInit {
 
   @ViewChild('razaoSocial', { read: ElementRef, static:false}) private razaoSocial: ElementRef;
+  @ViewChild('cnpj', { read: ElementRef, static:false}) private cnpj: ElementRef;
   @ViewChild('numero', { read: ElementRef, static:false}) private numero: ElementRef;
 
   estados = Estados;
@@ -34,6 +35,9 @@ export class CadastroClinicaComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     if (this.clinicaService.clinica) {
       this.clinica = this.clinicaService.clinica;
+      this.razaoSocial.nativeElement.setAttribute('readonly', true);
+      this.cnpj.nativeElement.setAttribute('readonly', true);
+
     }
   }
 

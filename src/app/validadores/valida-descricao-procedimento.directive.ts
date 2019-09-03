@@ -12,12 +12,15 @@ export class ValidaDescricaoProcedimentoDirective implements Validator {
 
   constructor(private procedimentoService: ProcedimentoService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
+    
+    if (control.value == '' || control.value == null)
+      return null;
 
     var listaProcedimento = this.procedimentoService.listaProcedimento;
     var procedimentoRegente = this.procedimentoService.procedimento;
-
     if (new Util().hasItems(listaProcedimento)
-      && listaProcedimento.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {    
+      && listaProcedimento.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()
+      && (procedimentoRegente == null || procedimentoRegente.id != c.id)) != null) {    
     return { 'validaDescricaoProcedimento': { value: control.value } } ;        
     }
     return null;    

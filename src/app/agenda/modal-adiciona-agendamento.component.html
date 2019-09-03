@@ -6,9 +6,9 @@
 
     <div class="modal-header" [hidden]=isSpinnerVisible>
         <h4 class="modal-title">{{tituloTela}}</h4>
-        <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
+        <!-- <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
             <span aria-hidden="true">&times;</span>
-        </button>
+        </button> -->
     </div>
     <div class="modal-body" [hidden]=isSpinnerVisible>
         <div class="row rowcadastro">
@@ -55,10 +55,10 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoProcedimento">Procedimento</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.procedimento" #tipoProcedimento="ngModel"
+                        <select class="form-control" [(ngModel)]="agendamento.procedimentoId" #tipoProcedimento="ngModel"
                             id="tipoProcedimento" name="tipoProcedimento"
                             [required]="tipoAgendamento.value=='Procedimento'">
-                            <option *ngFor="let procedimento of procedimentos" [ngValue]="procedimento">
+                            <option *ngFor="let procedimento of procedimentos" [ngValue]="procedimento.id">
                                 {{procedimento.descricao}}
                             </option>
                         </select>
@@ -81,9 +81,9 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoExame">Exame</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.exame" #tipoExame="ngModel" id="tipoExame"
+                        <select class="form-control" [(ngModel)]="agendamento.exameId" #tipoExame="ngModel" id="tipoExame"
                             name="tipoExame" [required]="tipoAgendamento.value=='Exame'">
-                            <option *ngFor="let exame of exames" [ngValue]="exame">
+                            <option *ngFor="let exame of exames" [ngValue]="exame.id">
                                 {{exame.descricao}}
                             </option>
                         </select>
@@ -105,9 +105,9 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoCirurgia">Cirurgia</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.cirurgia" #tipoCirurgia="ngModel"
+                        <select class="form-control" [(ngModel)]="agendamento.cirurgiaId" #tipoCirurgia="ngModel"
                             id="tipoCirurgia" name="tipoCirurgia" [required]="tipoAgendamento.value=='Cirurgia'">
-                            <option *ngFor="let cirurgia of cirurgias" [ngValue]="cirurgia">
+                            <option *ngFor="let cirurgia of cirurgias" [ngValue]="cirurgia.id">
                                 {{cirurgia.descricao}}
                             </option>
                         </select>
@@ -127,9 +127,9 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoLocal">Local Cirurgia</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.local" #tipoLocal="ngModel" id="tipoLocal"
+                        <select class="form-control" [(ngModel)]="agendamento.localId" #tipoLocal="ngModel" id="tipoLocal"
                             name="tipoLocal" [required]="tipoAgendamento.value=='Cirurgia'">
-                            <option *ngFor="let local of locais" [ngValue]="local">
+                            <option *ngFor="let local of locais" [ngValue]="local.id">
                                 {{local.descricao}}
                             </option>
                         </select>
@@ -151,9 +151,9 @@
                 <div class="form-group">
                     <label class="control-label" for="convenioModel">Convênio(*)</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.convenio" #convenioModel="ngModel"
+                        <select class="form-control" [(ngModel)]="agendamento.convenioId" #convenioModel="ngModel"
                             id="convenioModel" name="convenioModel" [required]="tipoAgendamento.value!='Bloqueio'">
-                            <option *ngFor="let convenio of convenios" [ngValue]="convenio">
+                            <option *ngFor="let convenio of convenios" [ngValue]="convenio.id">
                                 {{convenio.descricao}}
                             </option>
                         </select>

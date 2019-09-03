@@ -17,12 +17,13 @@ export class ValidaDescricaoCirurgiaDirective implements Validator {
       return null;
 
 
-    this.cirurgiaService.Todos().subscribe(c =>
-      this.cirurgiaService.listaCirurgia = c);
+    this.cirurgiaService.Todos().subscribe(c => this.cirurgiaService.listaCirurgia = c);
     var listaCirurgia = this.cirurgiaService.listaCirurgia;
+    var cirurgia = this.cirurgiaService.cirurgia;
 
     if (new Util().hasItems(listaCirurgia) &&
-      listaCirurgia.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()) != null) {
+      listaCirurgia.find(c => c.descricao.toUpperCase() === control.value.toUpperCase()
+      && (cirurgia == null || cirurgia.id != c.id)) != null) {
 
       return { 'validaDescricaoCirurgia': { value: control.value } };
     }
