@@ -67,7 +67,7 @@
             <div class="col-md-2">
               <div class="btn-group">
                 <div class="btn btn-warning" (click)=configurarAgendaMedico()> Configurar Agenda </div>
-                <div class="btn btn-success" (click)="chamarModalAdicionaAgendamento(null)">Nova Consulta</div>
+                <div class="btn btn-success" (click)="chamarModalAdicionaAgendamento(null, 'novo')">Novo Agendamento</div>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@
   </div>
 </div>
 
-<ng-template #modalConsultaEmHorarioIntervalo id="modalConsultaEmHorarioIntervalo" let-c="close" let-d="dismiss">
+<ng-template #modalAgendamentoEmHorarioIntervalo id="modalAgendamentoEmHorarioIntervalo" let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Horário Intervalo</h4>
     <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="c('Fechar')">

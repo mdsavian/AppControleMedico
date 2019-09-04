@@ -48,13 +48,13 @@ import { Local } from '../modelos/local';
 })
 export class AgendaComponent implements OnInit {
 
-  @ViewChild('modalConsultaEmHorarioIntervalo', { read: TemplateRef, static: false }) modalConsultaEmHorarioIntervalo: TemplateRef<any>;
+  @ViewChild('modalAgendamentoEmHorarioIntervalo', { read: TemplateRef, static: false }) modalAgendamentoEmHorarioIntervalo: TemplateRef<any>;
   @ViewChild('modalAberturaCaixa', { read: TemplateRef, static: false }) modalAberturaCaixa: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento', { read: TemplateRef, static: false }) modalAcaoAgendamento: TemplateRef<any>;
   @ViewChild('modalAcoes', { read: TemplateRef, static: false }) modalAcoes: TemplateRef<any>;
 
   acaoAgendamento = "";
-  eventosBanco: Agendamento[];
+  eventosBanco: Array<Agendamento>;
   validadorAgendamento = new ValidadorAgendamento();
   CalendarView = CalendarView;
   view: CalendarView = CalendarView.Day;
@@ -212,7 +212,8 @@ export class AgendaComponent implements OnInit {
     this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
       .subscribe(dados => {
         this.eventos = [];
-        this.eventosBanco = dados;
+        this.eventosBanco = new Array<Agendamento>();
+        console.log(dados);        
         this.converteEAdicionaAgendamentoEvento(dados);
       });
   }
@@ -324,7 +325,7 @@ export class AgendaComponent implements OnInit {
 
             if (retornoValidacao != "") {
               if (retornoValidacao.indexOf("intervalo") > 0) {
-                this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+                this.modalService.open(this.modalAgendamentoEmHorarioIntervalo).result.then(
                   result => {
                     if (result == 'Ok') {
                       // this.eventos = [...this.eventos, eventoClicado];
@@ -343,7 +344,7 @@ export class AgendaComponent implements OnInit {
           else { //só tem data inicial - utiliza o validador do component, mesmo utilizado em tela para os horários
 
             if (this.validaHoraIntervaloComponente(segment.date)) {
-              this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+              this.modalService.open(this.modalAgendamentoEmHorarioIntervalo).result.then(
                 result => {
                   if (result == 'Ok') {
                     // this.eventos = [...this.eventos, eventoClicado];
@@ -433,7 +434,9 @@ export class AgendaComponent implements OnInit {
     this.modalService.open(this.modalAcoes).result.then(result => {
       switch (result) {
         case ("Editar"):
+          
           var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+          console.log(agendamento,this.eventosBanco);
           if (agendamento != null) {
             this.chamarModalAdicionaAgendamento(agendamento, "editar");
           }
@@ -586,14 +589,12 @@ export class AgendaComponent implements OnInit {
 
   DroppedResizedEvent(event: CalendarEvent): void {
 
-
     let agendamentoAntigo = this.eventosBanco.find(c => c.id == event.id);
     let retornoValidacao = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
       this.util.dataParaString(event.start), event.start.toTimeString().substr(0, 5), event.end.toTimeString().substr(0, 5), ETipoAgendamento.Consulta);
-
     if (retornoValidacao != "") {
       if (retornoValidacao.indexOf("intervalo") > 0) {
-        this.modalService.open(this.modalConsultaEmHorarioIntervalo).result.then(
+        this.modalService.open(this.modalAgendamentoEmHorarioIntervalo).result.then(
           result => {
             if (result == 'Ok') {
               agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
@@ -639,12 +640,20 @@ export class AgendaComponent implements OnInit {
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
     lista.forEach(agendamento => {
       var dataHoraInicial = this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaInicial);
-
+      
       var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
       if (eventoVelho != null) {
         var index = this.eventos.indexOf(eventoVelho);
         this.eventos.splice(index, 1);
       }
+
+      var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
+      if (eventoBancoVelho != null) {
+        var index = this.eventosBanco.indexOf(eventoBancoVelho);
+        this.eventosBanco.splice(index, 1);
+      }
+
+      this.eventosBanco.push(agendamento);
 
       this.eventos = [...this.eventos,
       {
@@ -665,7 +674,7 @@ export class AgendaComponent implements OnInit {
   }
 
   chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
-
+    
     var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
     
     modalAdicionaAgendamento.componentInstance.medico = this.medico;
@@ -677,20 +686,20 @@ export class AgendaComponent implements OnInit {
     modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
 
     if (agendamento != null){
-      modalAdicionaAgendamento.componentInstance.agendamento = agendamento;
+      modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
     }
 
     if (acao == "editar") {
       modalAdicionaAgendamento.componentInstance.editando = true;
     }
 
-    modalAdicionaAgendamento.result.then((agendamento: Agendamento) => {
-      console.log("resultado", agendamento.tipoAgendamento);
-      if (agendamento != null) {
-        console.log("entrei");
-        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamento));
+    modalAdicionaAgendamento.result.then((agendamentoResult: Agendamento) => {
+      if (agendamentoResult != null) {
+        console.log("resultado", agendamentoResult);        
+        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoResult));
       }
-    }).catch((error) => { })
+    }).catch((error) => {
+    })
   }
 
   abrirFecharCaixa(acao: string) {

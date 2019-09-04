@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Agendamento } from '../modelos/agendamento'
 import { environment } from '../../environments/environment';
-import { AppService } from './app.service';
 import { Util } from '../uteis/Util';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Exame } from '../modelos/exame';
@@ -15,14 +14,10 @@ import { Procedimento } from '../modelos/procedimento';
 })
 
 export class AgendamentoService {
-
-
+  
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
-
-  public agendamento: Agendamento;
-  public listaAgendamento: Array<Agendamento>;
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });

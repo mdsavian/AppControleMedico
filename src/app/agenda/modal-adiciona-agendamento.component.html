@@ -32,7 +32,7 @@
                         <input id="pacienteSelecionado" name="pacienteSelecionado" type="text"
                             (selectItem)="selecionaPaciente($event)" placeholder="Digite o nome do paciente"
                             [required]="tipoAgendamento.value!='Bloqueio'" [ngbTypeahead]="buscaPaciente"
-                            class="form-control" minlength="3" #pacienteModel="ngModel"
+                            class="form-control" minlength="3" #pacienteModel="ngModel" id="pacienteModel"
                             [(ngModel)]="pacienteSelecionado">
                         <div class="input-group-prepend">
                             <ng-template #tipPaciente>Adiciona Paciente</ng-template>
