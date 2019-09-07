@@ -39,6 +39,7 @@ import { Convenio } from '../modelos/convenio';
 import { Exame } from '../modelos/exame';
 import { Procedimento } from '../modelos/procedimento';
 import { Local } from '../modelos/local';
+import { ConfiguracaoAgendaService } from '../services/configuracaoAgenda.service';
 
 @Component({
   selector: 'mwl-demo-component',
@@ -79,9 +80,10 @@ export class AgendaComponent implements OnInit {
   pacientes: Array<Paciente> = [];
   locais: Array<Local> = [];
   procedimentos: Array<Procedimento> = [];
+  acoesPermitidas: Array<string> = [];
 
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
-    private appService: AppService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router,
+    private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService,private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
@@ -168,31 +170,10 @@ export class AgendaComponent implements OnInit {
       novoAgendamento.horaFinal = evento.end.toTimeString().substr(0, 5).replace(":", "");
     else {
 
-      var minutosFinal = 0;
-
       var horaFinal = new Date();
       horaFinal.setDate(evento.start.getDate());
 
-      switch (this.medico.configuracaoAgenda.configuracaoMinutosAgenda) {
-        case (EConfiguracaoMinutosAgenda["1 Hora"]):
-          minutosFinal = 60;
-          break;
-        case (EConfiguracaoMinutosAgenda["5 Minutos"]):
-          minutosFinal = 5;
-          break;
-        case (EConfiguracaoMinutosAgenda["10 Minutos"]):
-          minutosFinal = 10;
-          break;
-        case (EConfiguracaoMinutosAgenda["15 Minutos"]):
-          minutosFinal = 15;
-          break;
-        case (EConfiguracaoMinutosAgenda["20 Minutos"]):
-          minutosFinal = 20;
-          break;
-        case (EConfiguracaoMinutosAgenda["30 Minutos"]):
-          minutosFinal = 30;
-          break;
-      }
+      var minutosFinal = this.configuracaoAgendaService.retornarMinutosConfiguracao(this.medico.configuracaoAgenda.configuracaoMinutosAgenda);
 
       if (minutosFinal == 60) {
         horaFinal.setHours(evento.start.getHours() + 1);
@@ -213,7 +194,6 @@ export class AgendaComponent implements OnInit {
       .subscribe(dados => {
         this.eventos = [];
         this.eventosBanco = new Array<Agendamento>();
-        console.log(dados);        
         this.converteEAdicionaAgendamentoEvento(dados);
       });
   }
@@ -261,14 +241,19 @@ export class AgendaComponent implements OnInit {
     if (this.medico != null && this.medico.configuracaoAgenda != null) {
       var configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias[dia]
 
+      var minutosFinal = this.configuracaoAgendaService.retornarMinutosConfiguracao(this.medico.configuracaoAgenda.configuracaoMinutosAgenda);
+      
       if (configuracaoAgendaDias != null) {
-        var horaSegmento = hora * 60 + minutos;
+        var horaSegmentoInicial = hora * 60 + minutos;
+        var horaSegmentoFinal = hora * 60 + minutos + minutosFinal;
         if (configuracaoAgendaDias.horarioInicioIntervalo != null) {
 
-          var horarioInicioIntervalo = parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioInicioIntervalo.substr(2, 2));
-          var horarioFimIntervalo = parseInt(configuracaoAgendaDias.horarioFimIntervalo.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.horarioFimIntervalo.substr(2, 2));
+          var horarioInicioIntervalo = this.validadorAgendamento.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
+          var horarioFimIntervalo = this.validadorAgendamento.converteHorarioParaMinutos(configuracaoAgendaDias.horarioFimIntervalo);
 
-          retorno = horaSegmento >= horarioInicioIntervalo && horaSegmento <= horarioFimIntervalo;
+          retorno =  ((horaSegmentoInicial >= horarioInicioIntervalo && horaSegmentoInicial <= horarioFimIntervalo)
+           || (horaSegmentoFinal >= horarioInicioIntervalo && horaSegmentoFinal <= horarioFimIntervalo)
+           || (horaSegmentoInicial <= horarioInicioIntervalo && horaSegmentoInicial >= horarioFimIntervalo));
         }
 
         if (retorno)
@@ -277,14 +262,14 @@ export class AgendaComponent implements OnInit {
         //valida maior que hora fim do dia 
         var horaFim = configuracaoAgendaDias.segundoHorarioFinal == null ? parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioFinal.substr(2, 2))
           : parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.segundoHorarioFinal.substr(2, 2));
-        retorno = horaSegmento > horaFim;
+        retorno = horaSegmentoInicial > horaFim;
 
         if (retorno)
           return retorno;
 
         //valida menor que hora inicio do dia 
         var horaInicio = parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(2, 2));
-        retorno = horaSegmento < horaInicio;
+        retorno = horaSegmentoInicial < horaInicio;
       }
 
     }
@@ -297,7 +282,7 @@ export class AgendaComponent implements OnInit {
       id: this.eventos.length,
       title: 'Novo Agendamento',
       start: segment.date,
-      actions: this.acoesEventosCalendario,
+      // actions: this.acoesEventosCalendario,
       meta: {
         tmpEvent: true
       },
@@ -394,56 +379,60 @@ export class AgendaComponent implements OnInit {
     this.criarEventoNoCalendarioClicado(segment, segmentElement);
   }
 
-  acoesEventosCalendario: CalendarEventAction[] = [
-    // {
-    //   label: '<i class="fa fa-fw fa-calendar-check-o" title="Confirmar"></i>',
-    //   onClick: ({ event }: { event: CalendarEvent }): void => {
-    //     this.actionAgendamento(event, "Confirmar");
-    //   }
-    // },
-    // {
-    //   label: '<i class="fa fa-fw fa-money" title="Pagar e Finalizar"></i>',
-    //   onClick: ({ event }: { event: CalendarEvent }): void => {
-    //     this.actionAgendamento(event, "PagarFinalizar");
-    //   }
-    // },
-    // {
-    //   label: '<i class="fa fa-fw fa-pencil" title="Editar"></i>',
-    //   onClick: ({ event }: { event: CalendarEvent }): void => {
-    //     this.actionAgendamento(event, "Editar");
-
-    //   }
-    // },
-    // {
-    //   label: '<i class="fa fa-fw fa-times" title="Cancelar"></i>',
-    //   onClick: ({ event }: { event: CalendarEvent }): void => {
-    //     this.actionAgendamento(event, "Cancelar");
-
-    //   }
-    // },
-    // {
-    //   label: '<i class="fa fa-fw fa-trash" title="Excluir"></i>',
-    //   onClick: ({ event }: { event: CalendarEvent }): void => {
-    //     this.actionAgendamento(event, "Excluir");
-
-    //   }
-    // }
-  ];
+  validarBotoesAcoes(acao:string)
+  {
+    return this.acoesPermitidas.find(c=> c == acao.toUpperCase()) != null ;
+  }
+  tratarAcoesPermitidas(agendamento) {    
+    this.acoesPermitidas = [];
+    if (agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
+      switch (agendamento.situacaoAgendamento) {
+        case (ESituacaoAgendamento.Agendado.valueOf()):
+          {
+            this.acoesPermitidas.push("CONFIRMAR");
+            this.acoesPermitidas.push("PAGAR/FINALIZAR");
+            this.acoesPermitidas.push("EDITAR");
+            this.acoesPermitidas.push("CANCELAR");
+            this.acoesPermitidas.push("EXCLUIR");
+            break;
+          }
+        case (ESituacaoAgendamento.Cancelado.valueOf()):
+          {
+            this.acoesPermitidas.push("EDITAR");
+            this.acoesPermitidas.push("EXCLUIR");
+            break;
+          }
+        case (ESituacaoAgendamento.Confirmado.valueOf()):
+          {
+            this.acoesPermitidas.push("PAGAR/FINALIZAR");
+            this.acoesPermitidas.push("EDITAR");
+            this.acoesPermitidas.push("CANCELAR");
+            this.acoesPermitidas.push("EXCLUIR");
+            break;
+          }
+        case (ESituacaoAgendamento["Pago/Finalizado"].valueOf()):
+          { 
+            break;
+          }
+      }
+    }
+    else
+    {
+      this.acoesPermitidas.push("EDITAR");
+      this.acoesPermitidas.push("EXCLUIR");
+    }
+  }
 
   actionAgendamento(evento: CalendarEvent, acao: string) {
-    this.modalService.open(this.modalAcoes).result.then(result => {
-      switch (result) {
-        case ("Editar"):
-          
-          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
-          console.log(agendamento,this.eventosBanco);
-          if (agendamento != null) {
+    var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+    if (agendamento != null) {
+      this.tratarAcoesPermitidas(agendamento);
+      this.modalService.open(this.modalAcoes).result.then(result => {
+        switch (result) {
+          case ("Editar"):
             this.chamarModalAdicionaAgendamento(agendamento, "editar");
-          }
-          break;
-        case ("Confirmar"):
-          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
-          if (agendamento != null) {
+            break;
+          case ("Confirmar"):
             this.acaoAgendamento = "Confirmar";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
@@ -453,7 +442,6 @@ export class AgendaComponent implements OnInit {
                   this.agendamentoService.salvar(agendamento).subscribe(retorno => {
                     if (retorno) {
                       this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                      // this.carregarAgendamentosMedico();
                     }
                   });
                 }
@@ -461,18 +449,16 @@ export class AgendaComponent implements OnInit {
               (() => { })
             );
 
-          }
-          break;
-        case ("PagarFinalizar"):
-          this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
-            if (!this.util.hasItems(caixas)) {
-              var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-              modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
-            }
-            else {
-              var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
-              if (agendamento != null) {
+            break;
+          case ("PagarFinalizar"):
+            this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+              if (!this.util.hasItems(caixas)) {
+                var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+                modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
+              }
+              else {
+
                 var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
 
                 modalPagamento.componentInstance.agendamento = agendamento;
@@ -489,13 +475,12 @@ export class AgendaComponent implements OnInit {
                   var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
                   modal.componentInstance.mensagem = "Agendamento finalizado com sucesso!";
                 })
+
               }
-            }
-          });
-          break;
-        case ("Cancelar"):
-          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
-          if (agendamento != null) {
+            });
+            break;
+          case ("Cancelar"):
+
             this.acaoAgendamento = "Cancelar";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
@@ -511,12 +496,10 @@ export class AgendaComponent implements OnInit {
               },
               (() => { })
             );
-          }
 
-          break;
-        case ("Excluir"):
-          var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
-          if (agendamento != null) {
+
+            break;
+          case ("Excluir"):
             this.acaoAgendamento = "Excluir";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
               result => {
@@ -535,11 +518,12 @@ export class AgendaComponent implements OnInit {
               },
               (() => { })
             );
-          }
-          break;
-      }
-    },
-      (() => { }));
+
+            break;
+        }
+      },
+        (() => { }));
+    }
   }
 
   private refreshPage() {
@@ -600,7 +584,11 @@ export class AgendaComponent implements OnInit {
               agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
               agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
               agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
-              // this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+              this.agendamentoService.salvar(agendamentoAntigo).subscribe(retorno => {
+                if (retorno) {
+                  this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                }
+              });
             }
             else {
               this.eventos = this.eventos.filter(e => e.id !== event.id);
@@ -618,7 +606,11 @@ export class AgendaComponent implements OnInit {
       agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
       agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
       agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
-      // this.agendamentoService.salvar(agendamentoAntigo).subscribe(c => this.carregarAgendamentosMedico());
+      this.agendamentoService.salvar(agendamentoAntigo).subscribe(retorno => {
+        if (retorno) {
+          this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+        }
+      });
     }
 
   }
@@ -640,20 +632,19 @@ export class AgendaComponent implements OnInit {
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
     lista.forEach(agendamento => {
       var dataHoraInicial = this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaInicial);
-      
-      var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
-      if (eventoVelho != null) {
-        var index = this.eventos.indexOf(eventoVelho);
-        this.eventos.splice(index, 1);
-      }
 
       var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
       if (eventoBancoVelho != null) {
         var index = this.eventosBanco.indexOf(eventoBancoVelho);
         this.eventosBanco.splice(index, 1);
       }
-
       this.eventosBanco.push(agendamento);
+
+      var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
+      if (eventoVelho != null) {
+        var index = this.eventos.indexOf(eventoVelho);
+        this.eventos.splice(index, 1);
+      }     
 
       this.eventos = [...this.eventos,
       {
@@ -662,7 +653,7 @@ export class AgendaComponent implements OnInit {
         end: this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaFinal),
         title: this.montaTituloAgendamento(agendamento),
         color: { primary: agendamento.corFundo, secondary: agendamento.corFundo },
-        actions: this.acoesEventosCalendario,
+        // actions: this.acoesEventosCalendario,
         resizable: {
           beforeStart: true,
           afterEnd: true
@@ -674,9 +665,9 @@ export class AgendaComponent implements OnInit {
   }
 
   chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
-    
+
     var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
-    
+
     modalAdicionaAgendamento.componentInstance.medico = this.medico;
     modalAdicionaAgendamento.componentInstance.pacientes = this.pacientes;
     modalAdicionaAgendamento.componentInstance.cirurgias = this.cirurgias;
@@ -685,7 +676,7 @@ export class AgendaComponent implements OnInit {
     modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
     modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
 
-    if (agendamento != null){
+    if (agendamento != null) {
       modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
     }
 
@@ -695,7 +686,6 @@ export class AgendaComponent implements OnInit {
 
     modalAdicionaAgendamento.result.then((agendamentoResult: Agendamento) => {
       if (agendamentoResult != null) {
-        console.log("resultado", agendamentoResult);        
         this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoResult));
       }
     }).catch((error) => {

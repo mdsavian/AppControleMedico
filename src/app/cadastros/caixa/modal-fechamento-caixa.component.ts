@@ -74,9 +74,6 @@ export class ModalFechamentoCaixaComponent {
 
   salvar() {
     var retornar = false;
-
-    console.log(this.caixa);
-
     if (this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Funcionário inválido.";

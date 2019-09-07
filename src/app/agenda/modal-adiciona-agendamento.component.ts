@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, AfterContentInit, TemplateRef } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
@@ -28,6 +28,7 @@ import { ConvenioService } from '../services/convenio.service';
 import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
+import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 
 
 @Component({
@@ -144,31 +145,38 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     this.agendamento.medicoId = this.medico.id;
 
+    var retorno = false;
+
     if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
       if (this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Paciente inválido.";
-        return;
+        retorno = true;
       }
 
       if (this.agendamento.dataAgendamento == null) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
-        return;
+        retorno = true;
       }
     }
 
+    if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado)
+      this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Agendado;
+      
     var validaHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
       this.agendamento.dataAgendamento, this.agendamento.horaInicial, this.agendamento.horaFinal, this.agendamento.tipoAgendamento);
 
     if (validaHoras != "") {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modalErro.componentInstance.mensagemErro = validaHoras;
-      return;
+      retorno = true;
     }
 
-    this.agendamento = this.agendamentoService.tratarCorAgendamento(this.agendamento, this.exames, this.cirurgias, this.procedimentos);
-    this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => { console.log("novo", novoAgendamento); this.activeModal.close(novoAgendamento) });
+    if (!retorno) {
+      this.agendamento = this.agendamentoService.tratarCorAgendamento(this.agendamento, this.exames, this.cirurgias, this.procedimentos);
+      this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => { this.activeModal.close(novoAgendamento) });
+    }
   }
 
   fechar() {

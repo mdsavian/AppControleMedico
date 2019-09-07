@@ -36,6 +36,7 @@ export class ValidadorAgendamento {
           return erro;
         }
 
+        
         var horasMinutoInicioConfiguracao = this.converteHorarioParaMinutos(configuracaoAgendaDias.primeiroHorarioInicial);
         var horasMinutoFinalConfiguracao = this.converteHorarioParaMinutos(configuracaoAgendaDias.segundoHorarioFinal);
         var horarioInicioIntervalo = this.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
@@ -50,6 +51,7 @@ export class ValidadorAgendamento {
           erro = "Hora de fim do agendamento maior que a hora final configurada neste dia.";
           return erro;
         }
+        
         if (tipoAgendamento != ETipoAgendamento.Bloqueio && ((horasMinutosInicialAgendamento >= horarioInicioIntervalo && horasMinutosInicialAgendamento <= horarioFimIntervalo)
           || (horasMinutosFinalAgendamento >= horarioInicioIntervalo && horasMinutosFinalAgendamento <= horarioFimIntervalo)
           || (horasMinutosInicialAgendamento <= horarioInicioIntervalo && horasMinutosFinalAgendamento >= horarioFimIntervalo))) {

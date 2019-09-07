@@ -22,7 +22,6 @@ export class FormaDePagamentoService {
   }
   
   public salvar(formaDePagamento: FormaDePagamento) {
-    console.log(formaDePagamento);
     return this.http.post<FormaDePagamento>(this.accessPointUrl, formaDePagamento);
   }
 

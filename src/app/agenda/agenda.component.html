@@ -5,8 +5,12 @@
 </div>
 <div class="row">
   <div class="col-12">
-    <form #agendaFor="ngForm">
-      <div class="row col-12">
+      <div class="spinner" *ngIf=isSpinnerVisible>
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+      </div>
+    <form #agendaFor="ngForm" *ngIf=!isSpinnerVisible>        
+      <div class="row col-12" >
         <div class="col-xs-2 col-md-2 form-group">
           <div class="row col-xs-12 col-md-12">
             <div class="form-group">
@@ -126,7 +130,7 @@
     <p><strong>Agendamento em horário intervalo, deseja prosseguir?</strong></p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" (click)="c('Cancelar')">Cancel</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="c('Cancelar')">Cancelar</button>
     <button type="button" class="btn btn-warning" (click)="c('Ok')">Ok</button>
   </div>
 </ng-template>
@@ -140,28 +144,28 @@
   </div>
   <div class="modal-body">
     <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-primary"
+      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-primary" [disabled]="!validarBotoesAcoes('Confirmar')"
         (click)="c('Confirmar')"><span class="fa fa-calendar-check-o" title="Confirmar"></span> Confirmar</button>
     </div>
 
     <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-success"
+      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-success" [disabled]="!validarBotoesAcoes('Pagar/Finalizar')"
         (click)="c('PagarFinalizar')"><span class="fa fa-money" title="Pagar e finalizar"></span> Pagar e
         finalizar</button>
     </div>
 
     <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-secondary"
+      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-secondary" [disabled]="!validarBotoesAcoes('Editar')"
         (click)="c('Editar')"><span class="fa fa-pencil" title="Editar"></span> Editar </button>
     </div>
 
     <div style="margin-top: 10px">
-      <button type="button" class="btn btn-warning btn-lg btn-block" style="margin:0 auto;"
+      <button type="button" class="btn btn-warning btn-lg btn-block" style="margin:0 auto;" [disabled]="!validarBotoesAcoes('Cancelar')"
         (click)="c('Cancelar')"><span class="fa fa-times" title="Cancelar"></span> Cancelar</button>
     </div>
 
     <div style="margin-top: 10px">
-      <button type="button" class="btn btn-danger btn-lg btn-block" style="margin:0 auto; display:block;"
+      <button type="button" class="btn btn-danger btn-lg btn-block" style="margin:0 auto; display:block;" [disabled]="!validarBotoesAcoes('Excluir')"
         (click)="c('Excluir')"><span class="fa fa-trash" title="Excluir"></span> Excluir</button>
     </div>
   </div>

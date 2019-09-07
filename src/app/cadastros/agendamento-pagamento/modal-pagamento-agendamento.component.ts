@@ -124,7 +124,6 @@ export class ModalPagamentoAgendamentoComponent {
       else
         this.visualizaParcela = true;
     }
-    console.log(this.visualizaParcela, value);
   }
 
   alteraFormaPagamento() {
@@ -193,12 +192,9 @@ export class ModalPagamentoAgendamentoComponent {
       retornar = true;
     }
     if (!retornar) {
-
-      console.log(this.caixa);
       this.agendamentoPagamento.caixaId = this.caixa.id;
       this.agendamentoPagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
       this.agendamentoPagamento.data = this.util.dataParaString(new Date());
-
 
       this.listaPagamentos.push(this.agendamentoPagamento);
       this.valorTotal = this.util.formatarDecimal(this.somaPagamentos());
@@ -238,6 +234,8 @@ export class ModalPagamentoAgendamentoComponent {
       this.agendamento.contemPagamentos = true;
       this.agendamento.pagamentos = this.listaPagamentos;
       this.agendamento.situacaoAgendamento = ESituacaoAgendamento["Pago/Finalizado"];
+      this.agendamento.corFundo = "#656565";
+      this.agendamento.corLetra = "#656565";
 
       this.agendamentoService.salvar(this.agendamento).subscribe(agendamentoRetorno => {
         this.activeModal.close(agendamentoRetorno);

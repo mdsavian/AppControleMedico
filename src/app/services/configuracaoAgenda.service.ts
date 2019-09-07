@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 import { environment } from '../../environments/environment';
+import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,24 @@ export class ConfiguracaoAgendaService {
 
   public Excluir(configuracaoAgendaId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + configuracaoAgendaId);
+  }
+
+  retornarMinutosConfiguracao(configuracaoMinutosAgenda:EConfiguracaoMinutosAgenda)
+  {
+    switch (configuracaoMinutosAgenda) {
+      case (EConfiguracaoMinutosAgenda["1 Hora"]):
+        return 60;
+      case (EConfiguracaoMinutosAgenda["5 Minutos"]):
+        return 5;
+      case (EConfiguracaoMinutosAgenda["10 Minutos"]):
+        return 10;
+      case (EConfiguracaoMinutosAgenda["15 Minutos"]):
+        return 15;
+      case (EConfiguracaoMinutosAgenda["20 Minutos"]):
+        return 20;
+      case (EConfiguracaoMinutosAgenda["30 Minutos"]):
+        return 30;
+    }
   }
 
 }

@@ -7,6 +7,7 @@ import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Exame } from '../modelos/exame';
 import { Cirurgia } from '../modelos/cirurgia';
 import { Procedimento } from '../modelos/procedimento';
+import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 
 
 @Injectable({
@@ -14,7 +15,7 @@ import { Procedimento } from '../modelos/procedimento';
 })
 
 export class AgendamentoService {
-  
+
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
@@ -28,9 +29,6 @@ export class AgendamentoService {
   }
 
   public salvar(agendamento: Agendamento) {
-    
-    console.log("agendamento :", agendamento);
-
     return this.http.post<Agendamento>(this.accessPointUrl, agendamento);
   }
 
@@ -66,51 +64,59 @@ export class AgendamentoService {
       if (procedimento != null)
         return procedimento.descricao;
     }
-    else return "Consulta";
-
+    else {
+      return ETipoAgendamento[agendamento.tipoAgendamento];
+    }
   }
 
   public tratarCorAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>) {
-    switch (agendamento.tipoAgendamento) {
-      case ETipoAgendamento.Bloqueio.valueOf(): {
-        agendamento.corFundo = "#EE0000";
-        agendamento.corLetra = "#EE0000";
-        break;
-      }
-      case ETipoAgendamento.Cirurgia.valueOf(): {
-        var cirurgia = cirurgias.find(c => c.id == agendamento.cirurgiaId);
-        if (cirurgia != null) {
-          agendamento.corFundo = cirurgia.corFundo;
-          agendamento.corLetra = cirurgia.corLetra;
+      
+    if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Pago/Finalizado"]) {
+      agendamento.corFundo = "#656565";
+      agendamento.corLetra = "#656565";
+    }
+    else {
+      switch (agendamento.tipoAgendamento) {
+        case ETipoAgendamento.Bloqueio.valueOf(): {
+          agendamento.corFundo = "#EE0000";
+          agendamento.corLetra = "#EE0000";
+          break;
         }
-        break;
-      }
-      case ETipoAgendamento.Consulta.valueOf(): {
-        agendamento.corFundo = "#EFF5F5";
-        agendamento.corLetra = "#EFF5F5";
-        break;
-      }
-      case ETipoAgendamento.Exame.valueOf(): {
-        var exame = exames.find(c => c.id == agendamento.exameId);
-        if (exame != null) {
-          agendamento.corFundo = exame.corFundo;
-          agendamento.corLetra = exame.corLetra;
+        case ETipoAgendamento.Cirurgia.valueOf(): {
+          var cirurgia = cirurgias.find(c => c.id == agendamento.cirurgiaId);
+          if (cirurgia != null) {
+            agendamento.corFundo = cirurgia.corFundo;
+            agendamento.corLetra = cirurgia.corLetra;
+          }
+          break;
         }
-        break;
-      }
-      case ETipoAgendamento.Procedimento.valueOf(): {
-        var procedimento = procedimentos.find(c => c.id == agendamento.procedimentoId);
-        if (procedimento != null) {
-          agendamento.corFundo = procedimento.corFundo;
-          agendamento.corLetra = procedimento.corLetra;
+        case ETipoAgendamento.Consulta.valueOf(): {
+          agendamento.corFundo = "#EFF5F5";
+          agendamento.corLetra = "#EFF5F5";
+          break;
         }
-        break;
-      }
-      case ETipoAgendamento.Retorno.valueOf(): {
-        agendamento.corFundo = "#CAE1FF";
-        agendamento.corLetra = "#CAE1FF";
-        break;
+        case ETipoAgendamento.Exame.valueOf(): {
+          var exame = exames.find(c => c.id == agendamento.exameId);
+          if (exame != null) {
+            agendamento.corFundo = exame.corFundo;
+            agendamento.corLetra = exame.corLetra;
+          }
+          break;
+        }
+        case ETipoAgendamento.Procedimento.valueOf(): {
+          var procedimento = procedimentos.find(c => c.id == agendamento.procedimentoId);
+          if (procedimento != null) {
+            agendamento.corFundo = procedimento.corFundo;
+            agendamento.corLetra = procedimento.corLetra;
+          }
+          break;
+        }
+        case ETipoAgendamento.Retorno.valueOf(): {
+          agendamento.corFundo = "#CAE1FF";
+          agendamento.corLetra = "#CAE1FF";
+          break;
+        }
       }
     }
     return agendamento;
