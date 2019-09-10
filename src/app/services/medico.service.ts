@@ -27,8 +27,12 @@ export class MedicoService {
     return this.http.get<Medico>(this.accessPointUrl + "buscarPorId/" + medicoId);
   }
 
-  todosFiltrandoMedico(medicoId: string) {
-    return this.http.get<Array<Medico>>(this.accessPointUrl + "todosFiltrandoMedico/"+ medicoId);
+  buscarMedicoEspecialidade(especialidadeId: string) {
+    return this.http.get<Array<Medico>>(this.accessPointUrl + "buscarMedicoEspecialidade/"+ especialidadeId);
+  }
+
+  buscarMedicoConvenio(convenioId: string) {
+    return this.http.get<Array<Medico>>(this.accessPointUrl + "buscarMedicoConvenio/"+ convenioId);
   }
 
   public todos() {

@@ -5,6 +5,9 @@ import { CirurgiaService } from '../../services/cirurgia.service';
 import { Cirurgia } from '../../modelos/cirurgia';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AgendamentoService } from '../../services/agendamento.service';
+import { Util } from '../../uteis/Util';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 
 @Component({
   templateUrl: './listagem-cirurgia.component.html'
@@ -15,8 +18,9 @@ export class ListagemCirurgiaComponent {
   public isSpinnerVisible = false;
   closeResult: string;
   settings = tableData.settings;
+  util = new Util();
 
-  constructor(private cirurgiaService: CirurgiaService, private router: Router, private modalService: NgbModal) {
+  constructor(private cirurgiaService: CirurgiaService, private agendamentoService: AgendamentoService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
     this.buscaCirurgias();
     this.isSpinnerVisible = false;
@@ -31,21 +35,30 @@ export class ListagemCirurgiaComponent {
   }
 
   deletarRegistro(event, modalExcluir) {
-    this.modalService.open(modalExcluir).result.then(
-      result => {
-        if (result == 'Sim') {
-          this.cirurgiaService.Excluir(event.data.id).subscribe(retorno => {
-            if (retorno) {
-              this.buscaCirurgias();
-            }
-          });
-        }
+    this.agendamentoService.buscarAgendamentosCirurgia(event.data.id).subscribe(agendamentos => {
+      console.log(agendamentos);
+      if (this.util.hasItems(agendamentos)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não é possível excluir cirurgia vínculada a agendamento(s).";
       }
-    );
+      else {
+        this.modalService.open(modalExcluir).result.then(
+          result => {
+            if (result == 'Sim') {
+              this.cirurgiaService.Excluir(event.data.id).subscribe(retorno => {
+                if (retorno) {
+                  this.buscaCirurgias();
+                }
+              });
+            }
+          }
+        );
+      }
+    });
   }
 
   editarRegistro(event) {
-    this.cirurgiaService.cirurgia = this.listaCirurgias.find(c=> c.id == event.data.id);
+    this.cirurgiaService.cirurgia = this.listaCirurgias.find(c => c.id == event.data.id);
     this.router.navigate(['/cadastros/cadastrocirurgia']);
   }
 
@@ -54,7 +67,7 @@ export class ListagemCirurgiaComponent {
     this.router.navigate(['/cadastros/cadastrocirurgia']);
   }
 
-  
+
 
 }
 

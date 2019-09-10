@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class FuncionarioService {
- 
+   
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'funcionario/';
   public funcionario:Funcionario;
@@ -35,6 +35,10 @@ export class FuncionarioService {
 
   buscarComMedicos(funcionarioId: string) {
     return this.http.get<Funcionario>(this.accessPointUrl + "buscarComMedicos/" + funcionarioId);
+  }
+
+  buscarPorOficio(oficioId: any) {
+    return this.http.get<Array<Funcionario>>(this.accessPointUrl + "buscarPorOficio/" + oficioId);
   }
 
 }

@@ -4,7 +4,10 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { ConvenioService } from '../../services/convenio.service';
 import { Convenio } from '../../modelos/convenio';
 import { Router } from '@angular/router';
-import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { MedicoService } from '../../services/medico.service';
+import { Util } from '../../uteis/Util';
 
 @Component({
   templateUrl: './listagem-convenio.component.html'
@@ -15,44 +18,52 @@ export class ListagemConvenioComponent {
   public isSpinnerVisible = false;
   closeResult: string;
   settings = tableData.settings;
+  util = new Util();
 
-constructor( private convenioService: ConvenioService, private router: Router, private modalService: NgbModal) {
+  constructor(private convenioService: ConvenioService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
     this.buscaConvenios();
     this.isSpinnerVisible = false;
   }
-  
+
   buscaConvenios(): void {
-    this.convenioService.Todos().subscribe(dados => {      
-      this.listaConvenios = dados;     
+    this.convenioService.Todos().subscribe(dados => {
+      this.listaConvenios = dados;
       this.convenioService.listaConvenio = this.listaConvenios;
-      this.source = new LocalDataSource(this.listaConvenios);            
+      this.source = new LocalDataSource(this.listaConvenios);
     });
-  }  
+  }
 
   deletarRegistro(event, modalExcluir) {
-    this.modalService.open(modalExcluir).result.then(
-      result => {
-        if (result == 'Sim')
-        {
-          this.convenioService.Excluir(event.data.id).subscribe(retorno=> {
-          if (retorno)
-          {
-            this.buscaConvenios();
-          }
-          });
-        }
+    this.medicoService.buscarMedicoConvenio(event.data.id).subscribe(agendamentos => {
+      if (this.util.hasItems(agendamentos)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não é possível excluir convênio vínculado a médico(s).";
       }
-    );      
-  } 
+      else {
+
+        this.modalService.open(modalExcluir).result.then(
+          result => {
+            if (result == 'Sim') {
+              this.convenioService.Excluir(event.data.id).subscribe(retorno => {
+                if (retorno) {
+                  this.buscaConvenios();
+                }
+              });
+            }
+          }
+        );
+      }
+    });
+  }
 
   editarRegistro(event) {
-    this.convenioService.convenio = this.listaConvenios.find(c=> c.id == event.data.id);
+    this.convenioService.convenio = this.listaConvenios.find(c => c.id == event.data.id);
     this.router.navigate(['/cadastros/cadastroconvenio']);
   }
 
   criarRegistro(event) {
-    this.convenioService.convenio =null;
+    this.convenioService.convenio = null;
     this.router.navigate(['/cadastros/cadastroconvenio']);
   }
 }

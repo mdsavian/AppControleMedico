@@ -133,7 +133,9 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     }
     else {
       this.tituloTela = "Novo Agendamento - ";
-      this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;
+      this.agendamento.medicoId = this.medico.id;
+      this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;      
+      this.agendamento.funcionarioId = this.appService.retornarUsuarioCorrente().funcionarioId;
       this.agendamento.dataAgendamento = this.util.dataParaString(new Date());
     }
 
@@ -141,9 +143,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   }
 
-  salvar() {
-
-    this.agendamento.medicoId = this.medico.id;
+  salvar() {    
 
     var retorno = false;
 

@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../../services/app.service';
 import { Util } from "../../uteis/Util";
+import { AgendamentoService } from '../../services/agendamento.service';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 
 @Component({
   templateUrl: './listagem-medico.component.html'
@@ -18,12 +20,12 @@ export class ListagemMedicoComponent {
   closeResult: string;
   administrador: boolean;
   settings = {};
+  util = new Util();
 
-  constructor(private appService: AppService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
-    this.isSpinnerVisible = true;    
+  constructor(private appService: AppService,  private agendamentoService: AgendamentoService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
+    this.isSpinnerVisible = true;
 
-    var usuario = this.appService.retornarUsuarioCorrente();
-    this.administrador = usuario.funcionarioId == "" && usuario.medicoId == "";
+    this.administrador = this.appService.retornarUsuarioAdministrador();
 
     this.settings = {
       mode: 'external',
@@ -40,7 +42,7 @@ export class ListagemMedicoComponent {
         celular: {
           title: 'Celular',
           filter: false,
-          valuePrepareFunction: (celular) => { return celular === null ? "" : util.formataCelular(celular) }
+          valuePrepareFunction: (celular) => { return celular === null ? "" : this.util.formataCelular(celular) }
         }
       },
       actions:
@@ -78,17 +80,26 @@ export class ListagemMedicoComponent {
   }
 
   deletarRegistro(event, modalExcluir) {
-    this.modalService.open(modalExcluir).result.then(
-      result => {
-        if (result == 'Sim') {
-          this.medicoService.Excluir(event.data.id).subscribe(retorno => {
-            if (retorno) {
-              this.buscaMedicos();
-            }
-          });
-        }
+    this.agendamentoService.buscarAgendamentoMedicoExcluir(event.data.id).subscribe(agendamentos => {
+      console.log(agendamentos);
+      if (this.util.hasItems(agendamentos)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não é possível excluir médico vínculado a agendamento(s).";
       }
-    );
+      else {
+        this.modalService.open(modalExcluir).result.then(
+          result => {
+            if (result == 'Sim') {
+              this.medicoService.Excluir(event.data.id).subscribe(retorno => {
+                if (retorno) {
+                  this.buscaMedicos();
+                }
+              });
+            }
+          }
+        );
+      }
+    });
   }
 
   editarRegistro(event) {
@@ -100,8 +111,4 @@ export class ListagemMedicoComponent {
     this.medicoService.medico = null;
     this.router.navigate(['/cadastros/cadastromedico']);
   }
-
-
-
 }
-var util = new Util();

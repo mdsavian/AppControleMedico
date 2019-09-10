@@ -15,6 +15,7 @@ import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 })
 
 export class AgendamentoService {
+  
 
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
@@ -39,7 +40,32 @@ export class AgendamentoService {
   public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario: string) {
 
     let parametros = new HttpParams().set("medicoId", medicoId).set("data", data).set("tipoCalendario", tipoCalendario);
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
+    return this.http.get<Agendamento[]>  (this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
+  }
+
+  buscarAgendamentoMedicoExcluir(medicoId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentoMedicoExcluir/" + medicoId);
+  }  
+  buscarAgendamentosPaciente(pacienteId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId);
+  }
+  buscarAgendamentosLocal(localId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosLocal/" + localId);
+  }
+  buscarPagamentoAgendamentoForma(formaPagamentoId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId);
+  }
+  buscarAgendamentosProcedimento(procedimentoId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId);
+  }
+  buscarAgendamentosExame(exameId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosExame/" + exameId);
+  }
+  buscarAgendamentosCirurgia(cirurgiaId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId);
+  }
+  buscarAgendamentosFuncionario(funcionarioId: any) {
+    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId);
   }
 
   public Excluir(agendamentoId) {

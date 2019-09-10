@@ -25,12 +25,8 @@ export const settings = {
   },
   actions:
   {
-    columnTitle: ''
-  },
-  delete: {
-    deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
-    saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
-    cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    columnTitle: '',
+    delete:false
   },
   edit: {
     editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
