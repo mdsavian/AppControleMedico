@@ -6,11 +6,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalAdicionaModeloDescricaoComponent } from './modal-adiciona-modelo-descricao.component';
 import { ModalAlteraSenhaComponent } from './modal-altera-senha.component';
 import { ModalSucessoComponent } from './modal-sucesso.component';
+import { ModalWebcamComponent } from './modal-webcam.component';
+import { WebcamModule } from 'ngx-webcam';
 
 
 @NgModule({
-  imports: [CommonModule, NgbModule, RouterModule, FormsModule],
-  declarations: [ModalAdicionaModeloDescricaoComponent,ModalAlteraSenhaComponent,ModalSucessoComponent],
-  entryComponents: [ModalAdicionaModeloDescricaoComponent,ModalAlteraSenhaComponent,ModalSucessoComponent]
+  imports: [CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule],
+  declarations: [ModalWebcamComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+  entryComponents: [ModalWebcamComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
 })
 export class SharedModalModule { }

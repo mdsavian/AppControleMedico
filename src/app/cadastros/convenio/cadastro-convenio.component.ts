@@ -7,6 +7,8 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import {WebcamImage} from 'ngx-webcam';
+
 
 @Component({
   templateUrl: './cadastro-convenio.component.html',

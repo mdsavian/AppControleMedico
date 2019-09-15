@@ -1,26 +1,26 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ɵCodegenComponentFactoryResolver } from '@angular/core';
-
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Paciente } from "../../modelos/paciente";
 import { Convenio } from '../../modelos/convenio'
 import { Medico } from '../../modelos/medico';
 import { ESemanasGestacao } from '../../enums/ESemanasGestacao';
 import { EDiasGestacao } from '../../enums/EDiasGestacao';;
 import { Estados } from "../../enums/estados";
-
 import { Util } from '../../uteis/Util';
 import { PacienteService } from "../../services/paciente.service"
 import { EnderecoService } from '../../services/endereco.service';
 import { ConvenioService } from '../../services/convenio.service';
 import { AppService } from '../../services/app.service';
 import { MedicoService } from '../../services/medico.service';
-
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
 import { EspecialidadeService } from '../../services/especialidade.service';
+import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
+import { UploadService } from '../../services/upload.service';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -28,8 +28,8 @@ import { EspecialidadeService } from '../../services/especialidade.service';
 })
 export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
-  @ViewChild('numero', { read: ElementRef, static:false }) private numero: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
 
   paciente: Paciente = {
     id: "", nomeCompleto: "", convenioId: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",
@@ -49,8 +49,10 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   falhaNaBusca: boolean;
   medico: Medico;
   exibeAbaEspecialidade: boolean;
+  imagemPaciente: any;
+  imageUrl:any;
 
-  constructor(public router: Router, private pacienteService: PacienteService, private enderecoService: EnderecoService,
+  constructor(public router: Router, private uploadService: UploadService, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private especialidadeService: EspecialidadeService, private modalService: NgbModal,
     private appService: AppService, private medicoService: MedicoService) {
   }
@@ -62,12 +64,12 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
 
     if (this.pacienteService.paciente != null) {
-
       this.paciente = this.pacienteService.paciente;
       this.dataNasci = this.util.dataParaString(this.paciente.dataNascimento);
       this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
+      this.downloadFoto();
     }
-    
+
     var usuario = this.appService.retornarUsuarioCorrente();
 
     if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
@@ -136,9 +138,26 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       this.paciente.dataValidadeCartao = this.util.stringParaData(e.target.value);
   }
 
-  public onSubmit(): void {
+  public tirarFoto() {
+    var modalWebcam = this.modalService.open(ModalWebcamComponent, { size: "lg" });
+    modalWebcam.result.then(imagem => {
+      this.imagemPaciente = imagem;
+    },
+      error => { });
+  }
+
+  public downloadFoto()
+  {
+    this.uploadService.downloadImagem(this.pacienteService.paciente.id, "paciente").subscribe(byte=>{
+      this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+    });
+  }
+  public salvar(): void {
     this.pacienteService.salvar(this.paciente).subscribe(
       data => {
+        if (this.imagemPaciente != null) {
+          this.uploadService.salvarImagem(this.imagemPaciente, "paciente", data.id);
+        }
         this.router.navigate(["listagem/listagempaciente"]);
       },
       error => {

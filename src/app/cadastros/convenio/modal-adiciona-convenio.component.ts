@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; import { Convenio } from '../../modelos/convenio';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; 
+import { Convenio } from '../../modelos/convenio';
 import { ConvenioService } from '../../services/convenio.service';
 
 

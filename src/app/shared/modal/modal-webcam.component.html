@@ -1,0 +1,30 @@
+<div style="text-align:center">
+	<h1>
+		Nova Foto
+	</h1>
+</div>
+
+<div style="text-align:center">
+	<div>
+		<webcam [height]="300" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+			[imageQuality]="1" (initError)="handleInitError($event)"></webcam>
+		<br />
+	</div>
+</div>
+<div style="text-align:center">
+	<button class="actionBtn" (click)="triggerSnapshot()" style="width:20%" class="btn btn-rounded btn-warning">Tirar
+		Foto</button>
+	<button class="actionBtn" (click)="salvar()" style="width:20%" [disabled]="!webcamImage"
+		class="btn btn-rounded btn-success">Salvar</button>
+	<br />
+</div>
+
+<div style="text-align:center" *ngIf="webcamImage">
+	<img width="400" height="300" [src]="webcamImage.imageAsDataUrl" />
+</div>
+<br />
+
+<!-- <h4 *ngIf="errors.length > 0">Messages:</h4>
+<ul *ngFor="let error of errors">
+	<li>{{error | json}}</li>
+</ul> -->

@@ -5,7 +5,6 @@ registerLocaleData(localept, 'pt');
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { WebcamModule } from 'ngx-webcam';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   CommonModule,
@@ -57,7 +56,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgxMaskModule.forRoot(),
     PerfectScrollbarModule,
     AppRoutingModule,
-    WebcamModule,
+    
   ],
   declarations: [
     AppComponent,

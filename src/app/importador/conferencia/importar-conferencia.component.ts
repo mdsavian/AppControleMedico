@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FileUploader, FileItem, ParsedResponseHeaders } from 'ng2-file-upload/ng2-file-upload';
 import { HttpClient } from '@angular/common/http'
-import { ImportadorService } from '../../services/importador.service';
+import { UploadService } from '../../services/upload.service';
 import { Router } from '@angular/router';
 import {environment} from '../../../environments/environment';
 
@@ -19,7 +19,7 @@ export class ImportarConferenciaComponent {
   public uploader: FileUploader;
   public dadosRelatorio: string;
 
-  constructor(private http: HttpClient, private importadorService: ImportadorService, public router: Router) {
+  constructor(private http: HttpClient, private uploadService: UploadService, public router: Router) {
     this.uploader = new FileUploader({
       url: URL,
       allowedFileType: ["pdf"],
@@ -35,7 +35,7 @@ export class ImportarConferenciaComponent {
 
     this.uploader.onCompleteAll = () => {
 
-      this.importadorService.ArmazenaDados(this.dadosRelatorio);
+      this.uploadService.ArmazenaDados(this.dadosRelatorio);
       this.router.navigate(["relatorio/relatoriounimed"]);
     }
   }

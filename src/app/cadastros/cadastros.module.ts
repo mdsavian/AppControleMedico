@@ -37,6 +37,7 @@ import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
+
 @NgModule({
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 

@@ -26,5 +26,7 @@ export class Paciente extends Pessoa {
 
   convenioId:string;
   convenio :Convenio;
+
+
   
 }

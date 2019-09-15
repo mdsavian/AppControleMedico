@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ImportadorService } from '../../services/importador.service';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-relatorio-unimed',
@@ -17,8 +17,8 @@ export class RelatorioUnimedComponent {
   columns = [{ name: 'Data' },{name:'Beneficiário', prop:'beneficiario' }, { name:"Código Movimento", prop: 'codigoMovimento' }, 
              { name: 'Servico'}, {name:"Valor Produto", prop:"valorProduto"},{name:"Valor Participação", prop:"valorParticipacao"}];
 
-  constructor(private importadorService:ImportadorService) {   
-    var data  = this.importadorService.RetornaDados();
+  constructor(private uploadService:UploadService) {   
+    var data  = this.uploadService.RetornaDados();
     this.rows = JSON.parse(data);  
   }
   
