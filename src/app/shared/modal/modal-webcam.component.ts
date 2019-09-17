@@ -50,8 +50,7 @@ export class ModalWebcamComponent implements OnInit {
     return this.trigger.asObservable();
   }
 
-  public salvar() {
-    var imagem = this.util.dataURIparaBlob(this.webcamImage.imageAsBase64);
-    this.activeModal.close(imagem);
+  public salvar() {    
+    this.activeModal.close(this.webcamImage.imageAsBase64);
   }
 }

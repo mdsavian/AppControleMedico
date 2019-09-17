@@ -38,51 +38,7 @@ export class Util {
             ia[i] = byteString.charCodeAt(i);
         }
         return new Blob([ab], { type: 'image/jpeg' });
-    }
-
-    public arrayByteParaBase64(array) {
-        console.log(array);
-
-        //  console.log("segundo", new ArrayBuffer(array));
-        console.log("terceiro", new Uint8Array(array));
-
-        var len = array.byteLength;
-        console.log(len, array.length);
-        var binary = "";
-        for (var i = 0; i < array.length; i++) {
-            binary += String.fromCharCode(array[i]);
-        }
-        console.log("binary", binary);
-        console.log("aaaa", window.btoa(array));
-        return window.btoa(array);
-
-        // var xx = array.getBytes();
-        // var binary = '';
-        // let base64String = btoa(String.fromCharCode(...array));
-
-        // console.log(base64String);
-        // var ab = new ArrayBuffer(array);
-        // var ia = new Uint8Array(ab);
-
-        // try{
-        //     var bytes = new Uint8Array(array);
-        //     console.log("errbytes, ", bytes);
-
-        // }
-        // catch(erro)
-        // {
-        //     console.log("erro, ", erro);
-        // }
-
-        // console.log(array.byteLength);
-        // for (var i = 0; i < len; i++) {
-        //     binary += String.fromCharCode(ia[i]);
-        // }
-
-        // console.log("binary",binary);
-        // console.log("aaaa",window.btoa(binary));
-        // return window.btoa(binary);
-    }
+    }    
 
     public stringParaData(dataString: string): Date {
         if (dataString.length > 8) {

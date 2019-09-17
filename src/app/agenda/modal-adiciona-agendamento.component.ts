@@ -29,6 +29,7 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
+import { UploadService } from '../services/upload.service';
 
 
 @Component({
@@ -70,7 +71,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('tipoProcedimento', { read: ElementRef, static: false }) private procedimentoModel: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
-    private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
+    private uploadService:UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
   ngAfterViewInit(): void {
@@ -214,6 +215,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     modalNovoPaciente.result.then((paciente: Paciente) => {
       if (paciente != null && paciente.nomeCompleto != '') {
 
+        console.log(paciente);
         var pacienteExistente = this.pacientes.find(c => c.nomeCompleto == paciente.nomeCompleto);
         if (pacienteExistente != null) {
           this.agendamento.paciente = pacienteExistente;
@@ -226,6 +228,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
           this.pacienteSelecionado = paciente.nomeCompleto;
 
           this.pacienteService.salvar(paciente).subscribe(pacienteCadastrado => {
+            if (paciente.foto != null)
+              this.uploadService.salvarImagem(paciente.foto, "paciente", pacienteCadastrado.id);
             this.agendamento.paciente = pacienteCadastrado;
             this.agendamento.pacienteId = pacienteCadastrado.id;
           });

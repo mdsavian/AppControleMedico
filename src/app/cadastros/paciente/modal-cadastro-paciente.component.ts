@@ -5,6 +5,7 @@ import { Util } from '../../uteis/Util';
 import { Convenio } from '../../modelos/convenio';
 import { ConvenioService } from '../../services/convenio.service';
 import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-adiciona-modelo-descricao.component';
+import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
 
 @Component({
   selector: 'app-modal-cadastro-paciente.component',
@@ -12,15 +13,19 @@ import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-
 })
 
 export class ModalCadastroPacienteComponent {
-  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static:true }) private nomeCompleto: ElementRef;
+  @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
+
 
   paciente: Paciente = new Paciente();
-
   util = new Util();
   convenio: Convenio;
   convenios: Array<Convenio>;
   nomeCompletoModel: string;
   dataNasci:string;
+
+  imagemPaciente: any;
+  imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
 
   constructor(public activeModal: NgbActiveModal, private convenioService: ConvenioService, private modalService: NgbModal) { }
 
@@ -60,6 +65,30 @@ export class ModalCadastroPacienteComponent {
 
   }
 
+  public tirarFoto() {
+    var modalWebcam = this.modalService.open(ModalWebcamComponent, { size: "lg" });
+    modalWebcam.result.then(imagem => {
+      this.imagemPaciente = this.util.dataURIparaBlob(imagem);
+      this.imageUrl = "data:image/jpeg;base64," + imagem;
+    },
+      error => { });
+  }
+
+  importarArquivo() {
+    this.fileInput.nativeElement.click();
+  }
+
+  changefile(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = ((e) => {
+        this.imageUrl = e.target['result'];
+        this.imagemPaciente = this.util.dataURIparaBlob(this.imageUrl.split(',')[1]);
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
   ngOnInit() {
     this.nomeCompleto.nativeElement.focus();
     this.convenioService.Todos().subscribe(c => this.convenios = c);
@@ -67,6 +96,9 @@ export class ModalCadastroPacienteComponent {
 
 
   salvar() {
+    if (this.imagemPaciente != null)
+      this.paciente.foto = this.imagemPaciente;
+
     this.activeModal.close(this.paciente);
   }
 

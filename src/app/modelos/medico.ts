@@ -33,4 +33,6 @@ export class Medico extends Pessoa {
   especialidade: Especialidade;
   configuracaoAgenda: ConfiguracaoAgenda;
 
+  fotoId:string;
+
 }

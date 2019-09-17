@@ -31,7 +31,7 @@ export class UploadService {
     var nomeImagem = entidade + "-" + id + ".jpeg";
     formData.append("image", imagem, nomeImagem);
 
-    return this.http.post(this.accessPointUrl + "salvarImagem", formData).subscribe(c => { });
+    return this.http.post(this.accessPointUrl + "salvarImagem", formData);
   }
 
   public downloadImagem(id: string, entidade: string) {

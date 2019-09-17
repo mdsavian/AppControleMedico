@@ -1,13 +1,25 @@
 <form #adicionaPaciente="ngForm">
     <div class="modal-header">
-        <h4 class="modal-title">Adiciona Paciente</h4>
+        <h4 class="modal-title">Adicionar Paciente</h4>
         <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-xs-12 col-md-12">
+            <div class="col-xs-4 col-md-4" style="text-align:center">
+                <img [src]="imageUrl" width="200" height="220" />
+                <br />
+                <br />
+                <button class="btn btn-rounded btn-warning" (click)="tirarFoto()">Tirar Foto</button>
+                <br />
+                <br />
+                <button class="btn btn-rounded" style="background-color: rgba(117, 117, 212, 0.835)"
+                    (click)="importarArquivo()">Importar Arquivo</button>
+                <input id="fileInput" #fileInput type="file" (change)="changefile($event)" accept=".jpeg, .png, .jpg;"
+                    name="fileInput" style="display: none;" />
+            </div>
+            <div class="col-xs-6 col-md-4">
                 <div class="form-group">
                     <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                     <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
@@ -19,39 +31,6 @@
                         <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-10 col-md-6">
-                <label class="control-label" for="celular">Celular(*)</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
-                    </div>
-                    <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control" required
-                        [(ngModel)]="paciente.celular" mask="(00) 0 0000-0000" #celular="ngModel" pattern="^[0-9]{11}$">
-                </div>
-                <div *ngIf="celular.invalid" class="alert alert-danger">
-                    <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
-                    <div *ngIf="celular.errors.pattern"> Celular Inválido. </div>
-                </div>
-            </div>
-
-            <div class="col-xs-10 col-md-6">
-                <label class="control-label" for="dataNascimento">Data de Nascimento</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                        placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci" #dataNascimento="ngModel"
-                        (blur)="formataData($event)">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-10 col-md-6">
 
                 <label class="control-label" for="tipoConvenio">Convenio</label>
                 <div class="input-group">
@@ -72,9 +51,6 @@
                     <div *ngIf="tipoConvenio.errors?.required">Convenio Obrigatório. </div>
                 </div>
 
-            </div>
-            <div class="col-xs-10 col-md-6">
-
                 <label class="control-label" for="numerocartao">Número Cartão</label>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -83,9 +59,32 @@
                     <input type="number" id="numeroCartao" name="numeroCartao" placeholder="Número Cartão"
                         class="form-control" [(ngModel)]="paciente.numeroCartao" #numeroCartao="ngModel">
                 </div>
-
             </div>
 
+            <div class="col-xs-6 col-md-4">
+                <label class="control-label" for="celular">Celular(*)</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-mobile-phone"></i></span>
+                    </div>
+                    <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control" required
+                        [(ngModel)]="paciente.celular" mask="(00) 0 0000-0000" #celular="ngModel" pattern="^[0-9]{11}$">
+                </div>
+                <div *ngIf="celular.invalid" class="alert alert-danger">
+                    <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
+                    <div *ngIf="celular.errors.pattern"> Celular Inválido. </div>
+                </div>
+
+                <label class="control-label" for="dataNascimento">Data de Nascimento</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
+                        placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci" #dataNascimento="ngModel"
+                        (blur)="formataData($event)">
+                </div>
+            </div>
         </div>
     </div>
 </form>

@@ -30,6 +30,8 @@ import { LoginService } from '../../services/login.service';
 import { Clinica } from '../../modelos/clinica';
 import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
 import { AppService } from '../../services/app.service';
+import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -38,8 +40,9 @@ import { AppService } from '../../services/app.service';
 
 export class CadastroMedicoComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
-  @ViewChild('numero',{ read: ElementRef, static:false }) private numero: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
+  @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
   settingsGestante = tableDataGestantes.settingsGestante;
   settingsConvenio = tableDataConvenio.settingsConvenio;
@@ -57,18 +60,19 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   data: string = "01/01/1901"
   util = new Util();
   convenios: Array<Convenio> = [];
-  medico= new Medico(); 
+  medico = new Medico();
   usuario: Usuario;
   usuarioAdministrador = false;
   permiteAlterarSenha = false;
   convenioModel: Convenio;
   clinicas: Clinica[] = [];
-  clinicaModel:Clinica;
+  clinicaModel: Clinica;
+  imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
+  imagemMedico: any;
 
-  constructor(private appService:AppService,private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private clinicaService: ClinicaService,
+  constructor(private appService: AppService, private uploadService: UploadService, private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private clinicaService: ClinicaService,
     private convenioService: ConvenioService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
-
 
   public ngOnInit(): void {
 
@@ -80,6 +84,9 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
       this.data = this.util.dataParaString(this.medico.dataNascimento);
 
       this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
+
+      if (!this.util.isNullOrWhitespace(this.medico.fotoId))
+        this.downloadFoto();
 
       this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
         this.pacientesGestantes = gestantes;
@@ -318,10 +325,47 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public tirarFoto() {
+    var modalWebcam = this.modalService.open(ModalWebcamComponent, { size: "lg" });
+    modalWebcam.result.then(imagem => {
+      this.imagemMedico = this.util.dataURIparaBlob(imagem);
+      this.imageUrl = "data:image/jpeg;base64," + imagem;
+    },
+      error => { });
+  }
+
+  importarArquivo() {
+    this.fileInput.nativeElement.click();
+  }
+
+  changefile(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = ((e) => {
+        this.imageUrl = e.target['result'];
+        this.imagemMedico = this.util.dataURIparaBlob(this.imageUrl.split(',')[1]);
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  public downloadFoto() {
+    this.uploadService.downloadImagem(this.medicoService.medico.id, "medico").subscribe(byte => {
+      this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+    });
+  }
+
   public salvar(): void {
     this.medicoService.salvar(this.medico).subscribe(
       data => {
-        this.router.navigate(["listagem/listagemmedico"]);
+        if (this.imagemMedico != null) {
+          this.uploadService.salvarImagem(this.imagemMedico, "medico", data.id).subscribe(c => {
+            this.router.navigate(["listagem/listagemmedico"]);
+          });
+        }
+        else
+          this.router.navigate(["listagem/listagemmedico"]);
+
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });

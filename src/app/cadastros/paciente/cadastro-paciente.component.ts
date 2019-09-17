@@ -20,7 +20,6 @@ import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-conve
 import { EspecialidadeService } from '../../services/especialidade.service';
 import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
 import { UploadService } from '../../services/upload.service';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -29,14 +28,10 @@ import { JsonPipe } from '@angular/common';
 export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
   @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
-  @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static: true }) private numero: ElementRef;
+  @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
-  paciente: Paciente = {
-    id: "", nomeCompleto: "", convenioId: "", cpf: "", dataNascimento: new Date('01/01/0001'), rg: "", ativo: true, genero: 1, nomeConjugue: "", nomeMae: "",
-    nomePai: "", ocupacao: "", tipoSanguineo: 1, telefone: "", celular: "", email: "", aceitaReceberSms: true, responsavel: "",
-    cep: "", endereco: "", numero: "", estadoCivil: 0, complemento: "", bairro: "", cidade: "", uf: "", convenio: new Convenio(),
-    numeroCartao: 1, cartaoNacionalSaude: 1, dataValidadeCartao: new Date('01/01/0001'), imagem: "", tipoPlano: "", diaGestacao: '', semanaGestacao: ''
-  };
+  paciente = new Paciente();
 
   semanasGestacao = ESemanasGestacao;
   diasGestacao = EDiasGestacao;
@@ -50,7 +45,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   medico: Medico;
   exibeAbaEspecialidade: boolean;
   imagemPaciente: any;
-  imageUrl:any;
+  imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
 
   constructor(public router: Router, private uploadService: UploadService, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private especialidadeService: EspecialidadeService, private modalService: NgbModal,
@@ -67,7 +62,9 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       this.paciente = this.pacienteService.paciente;
       this.dataNasci = this.util.dataParaString(this.paciente.dataNascimento);
       this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
-      this.downloadFoto();
+
+      if (!this.util.isNullOrWhitespace(this.paciente.fotoId))
+        this.downloadFoto();
     }
 
     var usuario = this.appService.retornarUsuarioCorrente();
@@ -78,18 +75,14 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.ExibeAbaEspecialidade("obstetrícia");
       });
     }
-
     this.convenioService.Todos().subscribe(dados => {
       this.convenios = dados;
     });
   }
 
   public adicionaConvenio(): void {
-
     var modal = this.modalService.open(ModalAdicionaConvenioComponent, { windowClass: "modal-holder" });
-
     modal.result.then((convenio) => {
-
       this.paciente.convenio = convenio;
       this.paciente.convenioId = convenio.id;
       this.convenios.push(convenio);
@@ -120,6 +113,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
   buscaConvenio = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
@@ -141,24 +135,45 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   public tirarFoto() {
     var modalWebcam = this.modalService.open(ModalWebcamComponent, { size: "lg" });
     modalWebcam.result.then(imagem => {
-      this.imagemPaciente = imagem;
+      this.imagemPaciente = this.util.dataURIparaBlob(imagem);
+      this.imageUrl = "data:image/jpeg;base64," + imagem;
     },
       error => { });
   }
 
-  public downloadFoto()
-  {
-    this.uploadService.downloadImagem(this.pacienteService.paciente.id, "paciente").subscribe(byte=>{
+  importarArquivo() {
+    this.fileInput.nativeElement.click();
+  }
+
+  changefile(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = ((e) => {
+        this.imageUrl = e.target['result'];
+        this.imagemPaciente = this.util.dataURIparaBlob(this.imageUrl.split(',')[1]);
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  public downloadFoto() {
+    this.uploadService.downloadImagem(this.pacienteService.paciente.id, "paciente").subscribe(byte => {
       this.imageUrl = "data:image/jpeg;base64," + byte['value'];
     });
   }
+
   public salvar(): void {
     this.pacienteService.salvar(this.paciente).subscribe(
       data => {
         if (this.imagemPaciente != null) {
-          this.uploadService.salvarImagem(this.imagemPaciente, "paciente", data.id);
+          this.uploadService.salvarImagem(this.imagemPaciente, "paciente", data.id).subscribe(
+            c => {
+              this.router.navigate(["listagem/listagempaciente"]);
+            }
+          );
         }
-        this.router.navigate(["listagem/listagempaciente"]);
+        else
+          this.router.navigate(["listagem/listagempaciente"]);
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
