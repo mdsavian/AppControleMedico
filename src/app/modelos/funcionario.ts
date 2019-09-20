@@ -18,17 +18,16 @@ export class Funcionario extends Pessoa {
 
   oficioId: string;
   usuarioId: string;
-
   oficio: Oficio;
   usuario: Usuario;
   dataAdmissao: Date;
   dataDemissao: Date;
   permissaoAdministrador: boolean;
   visualizaAgenda: boolean;
-
   clinicasId: string[];
   clinicas: Clinica[];
   medicosId: string[];
   medicos: Medico[];
+  fotoId:string;
 
 }

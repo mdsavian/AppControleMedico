@@ -21,5 +21,6 @@ export class Clinica extends Entidade {
   numero:string;
   complemento:string;
   cnpj:string;
+  logoId:string;
   
 }

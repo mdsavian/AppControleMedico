@@ -15,7 +15,8 @@ export class UsuarioService {
 
   public usuarioCorrente: Usuario;
   public listaUsuario: Array<Usuario>;
-  
+  public usuarioParaValidacao: Usuario;
+
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }

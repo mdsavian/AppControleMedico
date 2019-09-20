@@ -2,7 +2,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <form (ngSubmit)="onSubmit()" #clinicaForm="ngForm">
+        <form #clinicaForm="ngForm">
           <ngb-tabset type="pills">
             <ngb-tab title="Informações">
               <ng-template ngbTabContent>
@@ -73,7 +73,19 @@
                           [(ngModel)]="clinica.im" #im="ngModel">
                       </div>
                     </div>
+
+                    <div class="col-xs-1 col-md-1">
+                      <img [src]="imageUrl" width="100" height="100" />
+                    </div>
+                    <div class="col-xs-1 col-md-1" style="text-align: left;">
+                      <button class="btn btn-rounded" style="margin-top:60px; background-color: rgba(117, 117, 212, 0.835)"
+                        (click)="importarArquivo()">Importar Arquivo</button>
+                        <br/>
+                      <input id="fileInput" #fileInput type="file" (change)="changefile($event)"
+                        accept=".jpeg, .png, .jpg;" name="fileInput" style="display: none;" />
+                    </div>
                   </div>
+
                   <div class="row rowcadastro">
                     <div class="col-xs-4 col-md-2">
                       <label class="form-check-inline" for="ativo">Ativo</label>
@@ -164,7 +176,7 @@
             <div class="form-group">
               <div class="col-xs-8 col-md-6">
                 <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!clinicaForm.form.valid"
-                  type="submit">Salvar</button>
+                  type="button" (click)="salvar()">Salvar</button>
                 <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
               </div>
             </div>

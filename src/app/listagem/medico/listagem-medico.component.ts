@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';
@@ -8,12 +8,14 @@ import { AppService } from '../../services/app.service';
 import { Util } from "../../uteis/Util";
 import { AgendamentoService } from '../../services/agendamento.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { UsuarioService } from '../../services/usuario.service';
+import { Usuario } from '../../modelos/usuario';
 
 @Component({
   templateUrl: './listagem-medico.component.html'
 })
 
-export class ListagemMedicoComponent {
+export class ListagemMedicoComponent implements OnInit {
   source: LocalDataSource;
   listaMedicos: Array<Medico>;
   public isSpinnerVisible = false;
@@ -21,8 +23,19 @@ export class ListagemMedicoComponent {
   administrador: boolean;
   settings = {};
   util = new Util();
+  usuarios: Array<Usuario>;
 
-  constructor(private appService: AppService,  private agendamentoService: AgendamentoService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
+  ngOnInit()
+  {
+    this.buscaMedicos();
+
+    this.usuarioService.todos().subscribe(c=> {
+      this.usuarioService.listaUsuario = c;
+      this.usuarios = c;
+    });
+  }
+
+  constructor(private appService: AppService, private usuarioService: UsuarioService, private agendamentoService: AgendamentoService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
 
     this.administrador = this.appService.retornarUsuarioAdministrador();
@@ -67,7 +80,7 @@ export class ListagemMedicoComponent {
       }
     };
 
-    this.buscaMedicos();
+    
 
   }
 
@@ -81,7 +94,6 @@ export class ListagemMedicoComponent {
 
   deletarRegistro(event, modalExcluir) {
     this.agendamentoService.buscarAgendamentoMedicoExcluir(event.data.id).subscribe(agendamentos => {
-      console.log(agendamentos);
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir médico vínculado a agendamento(s).";
@@ -103,12 +115,13 @@ export class ListagemMedicoComponent {
   }
 
   editarRegistro(event) {
+    this.usuarioService.usuarioParaValidacao = this.usuarios.find(c => c.medicoId == event.data.id);
     this.medicoService.medico = this.listaMedicos.find(c => c.id == event.data.id);
     this.router.navigate(['/cadastros/cadastromedico']);
   }
 
   criarRegistro(event) {
-    this.medicoService.medico = null;
+    this.usuarioService.usuarioParaValidacao = this.medicoService.medico = null;
     this.router.navigate(['/cadastros/cadastromedico']);
   }
 }

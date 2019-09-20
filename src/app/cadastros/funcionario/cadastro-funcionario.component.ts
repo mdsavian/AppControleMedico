@@ -26,6 +26,8 @@ import { MedicoService } from '../../services/medico.service';
 import { Clinica } from '../../modelos/clinica';
 import { LocalDataSource } from 'ng2-smart-table';
 import { AppService } from '../../services/app.service';
+import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   templateUrl: './cadastro-funcionario.component.html',
@@ -33,10 +35,11 @@ import { AppService } from '../../services/app.service';
 })
 export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef, static:false }) private nomeCompleto: ElementRef;
-  @ViewChild('numero', { read: ElementRef, static:false }) private numero: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
+  @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
+  @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
-  funcionario= new Funcionario ();
+  funcionario = new Funcionario();
 
   settingsClinica = tableDataClinica.settingsClinica;
   settingsMedico = tableDataMedico.settingsMedico;
@@ -53,14 +56,15 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   dataDemis: string = "01/01/1901"
   usuario: Usuario;
   clinicas: Clinica[] = [];
-  clinicaModel:Clinica;
+  clinicaModel: Clinica;
   sourceClinica: LocalDataSource;
-
   medicos: Medico[] = [];
-  medicoModel:Medico;
+  medicoModel: Medico;
   sourceMedico: LocalDataSource;
+  imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
+  imagemFuncionario: any;
 
-  constructor(private appService:AppService,private loginService: LoginService,private medicoService:MedicoService, private clinicaService:ClinicaService,private usuarioService: UsuarioService, public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
+  constructor(private appService: AppService, private uploadService: UploadService, private loginService: LoginService, private medicoService: MedicoService, private clinicaService: ClinicaService, private usuarioService: UsuarioService, public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
     private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
@@ -79,23 +83,22 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
       this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
       this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
+
+      if (!this.util.isNullOrWhitespace(this.funcionario.fotoId))
+        this.downloadFoto();
     }
-
     this.alimentarModelos();
-    
-  } 
-
-
-  deletarMedico(event)
-  {
-    var medico = this.funcionario.medicos.find(c=> c.id == event.data.id);   
+  }
+  
+  deletarMedico(event) {
+    var medico = this.funcionario.medicos.find(c => c.id == event.data.id);
     this.funcionario.medicos.splice(this.funcionario.medicos.indexOf(medico), 1);
 
     this.medicos.push(medico);
 
     this.funcionario.medicosId.splice(this.funcionario.medicosId.indexOf(event.data.id), 1);
-    
-    this.funcionarioService.salvar(this.funcionario).subscribe(c=> {});
+
+    this.funcionarioService.salvar(this.funcionario).subscribe(c => { });
     this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
 
   }
@@ -126,9 +129,8 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
   }
 
- 
-  associarMedicoFuncionario()
-  {
+
+  associarMedicoFuncionario() {
     if (this.medicoModel == null)
       return;
 
@@ -150,7 +152,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
 
     if (!this.util.isNullOrWhitespace(this.funcionario.id)) {
-      this.funcionarioService.salvar(this.funcionario).subscribe(funci => {});
+      this.funcionarioService.salvar(this.funcionario).subscribe(funci => { });
     }
   }
 
@@ -184,12 +186,11 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  alimentarModelos()
-  {
+  alimentarModelos() {
     this.oficioService.Todos().subscribe(oficioBanco => {
       this.oficios = oficioBanco;
       this.nomeOficios = new Array<string>();
-      
+
       oficioBanco.forEach(ofiBanc => {
 
         this.nomeOficios.push(ofiBanc.descricao);
@@ -224,7 +225,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         this.medicoModel = this.medicos.find(c => true);
     });
 
-   
+
     this.clinicaService.Todos().subscribe(dados => {
 
       if (this.funcionario != null && this.util.hasItems(this.funcionario.clinicasId)) {
@@ -322,10 +323,47 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public tirarFoto() {
+    var modalWebcam = this.modalService.open(ModalWebcamComponent, { size: "lg" });
+    modalWebcam.result.then(imagem => {
+      this.imagemFuncionario = this.util.dataURIparaBlob(imagem);
+      this.imageUrl = "data:image/jpeg;base64," + imagem;
+    },
+      error => { });
+  }
+
+  importarArquivo() {
+    this.fileInput.nativeElement.click();
+  }
+
+  changefile(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = ((e) => {
+        this.imageUrl = e.target['result'];
+        this.imagemFuncionario = this.util.dataURIparaBlob(this.imageUrl.split(',')[1]);
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  public downloadFoto() {
+    this.uploadService.downloadImagem(this.funcionarioService.funcionario.id, "funcionario").subscribe(byte => {
+      this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+    });
+  }
+
   public salvar(): void {
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {
-        this.router.navigate(["listagem/listagemfuncionario"]);
+
+        if (this.imagemFuncionario != null) {
+          this.uploadService.salvarImagem(this.imagemFuncionario, "funcionario", data.id).subscribe(c => {
+            this.router.navigate(["listagem/listagemfuncionario"]);
+          });
+        }
+        else
+          this.router.navigate(["listagem/listagemfuncionario"]);
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });

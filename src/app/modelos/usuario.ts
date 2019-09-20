@@ -11,5 +11,5 @@ export class Usuario extends Entidade{
   ultimoLogin:string;
   ativo:boolean;
   medicoId:string;
-  funcionarioId:string;
+  funcionarioId:string;  
 }

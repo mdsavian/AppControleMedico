@@ -10,7 +10,6 @@ import { Util } from "../uteis/Util";
 export class ValidaEmailUsuarioDirective implements Validator {
   constructor(private usuarioService: UsuarioService) { };
   validate(control: AbstractControl): { [key: string]: any } | null {
-
     
     if (control.value == '' || control.value == null)
       return null;
@@ -19,7 +18,7 @@ export class ValidaEmailUsuarioDirective implements Validator {
       this.usuarioService.listaUsuario = c);
 
     var listaUsuario = this.usuarioService.listaUsuario;
-    var usuario = this.usuarioService.usuarioCorrente;
+    var usuario = this.usuarioService.usuarioParaValidacao;
 
     if (new Util().hasItems(listaUsuario) &&
       listaUsuario.find(c => c.login.toUpperCase() === control.value.toUpperCase()

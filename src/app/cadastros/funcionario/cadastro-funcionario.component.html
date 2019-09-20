@@ -10,7 +10,16 @@
                   <div class="row"></div>
 
                   <div class="row rowcadastro">
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-4 col-md-2" style="text-align:center">
+                      <img [src]="imageUrl" width="200" height="220" />
+                      <button class="btn btn-rounded" style="background-color: rgba(117, 117, 212, 0.835)"
+                        (click)="importarArquivo()">Importar Arquivo</button>
+                      <input id="fileInput" #fileInput type="file" (change)="changefile($event)"
+                        accept=".jpeg, .png, .jpg;" name="fileInput" style="display: none;" />
+                    </div>
+
+
+                    <div class="col-xs-10 col-md-4">
                       <div class="form-group">
                         <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                         <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
@@ -21,8 +30,41 @@
                           <div *ngIf="nomeCompleto.errors.minlength"> Nome deve ter ao menos 4 caracteres. </div>
                         </div>
                       </div>
+
+                      <div class="form-group">
+                        <label class="control-label" for="email">E-mail(*)</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">@</span>
+                          </div>
+                          <input type="email" id="email" placeholder="funcionario@email.com" name="email"
+                            class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel"
+                            appValidaEmailUsuario>
+                        </div>
+                        <div *ngIf="emailInput.invalid || emailInput.errors?.validaEmailUsuario"
+                          class="alert alert-danger">
+                          <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
+                          <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
+                          <div *ngIf="emailInput.errors?.validaEmailUsuario"> Já existe um usuário cadastrado com este
+                            e-mail. </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="control-label" for="telefone">Telefone</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
+                          </div>
+                          <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
+                            [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
+                        </div>
+                      </div>
+
                     </div>
-                    <div class="col-xs-6 col-md-3">
+
+
+                    <div class="col-xs-3 col-md-2">
                       <div class="form-group">
                         <label class="control-label" for="cpf">CPF</label>
                         <input type="text" id="cpf" appValidacpf mask="000.000.000-00" placeholder="CPF" name="cpf"
@@ -31,20 +73,39 @@
                           <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
                         </div>
                       </div>
+
+                      <div class="form-group">
+                        <label class="control-label" for="dataNascimento">Data de Nascimento</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
+                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
+                            #dataNascimento="ngModel" (blur)="formataData($event)">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="control-label" for="dataAdmis">Data de Admissão</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" mask="00/00/0000" id="dataAdmis" name="dataAdmis" placeholder="dd/mm/yyyy"
+                            class="form-control" [(ngModel)]="dataAdmis" #dataAdmissao="ngModel"
+                            (blur)="formataData($event)">
+                        </div>
+                      </div>
                     </div>
 
-                    <div class="col-xs-6 col-md-3">
+                    <div class="col-xs-3 col-md-2">
                       <div class="form-group">
                         <label class="control-label" for="rg">RG</label>
                         <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
                           [(ngModel)]="funcionario.rg" #rg="ngModel">
                       </div>
-                    </div>
-                  </div>
 
-                  <div class="row rowcadastro">
-
-                    <div class="col-xs-6 col-md-3">
                       <div class="form-group">
                         <label class="control-label" for="celular">Celular(*)</label>
                         <div class="input-group">
@@ -60,71 +121,7 @@
                           <div *ngIf="celular.errors.required"> Celular Inválido. </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="col-xs-6 col-md-3">
-                      <div class="form-group">
-                        <label class="control-label" for="telefone">Telefone</label>
-                        <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
-                          </div>
-                          <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
-                            [(ngModel)]="funcionario.telefone" mask="(00) 0000-0000" #telefone="ngModel">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-xs-6 col-md-3">
-                      <div class="form-group">
-                        <label class="control-label" for="email">E-mail(*)</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">@</span>
-                          </div>
-                          <input type="email" id="email" placeholder="funcionario@email.com" name="email"
-                            class="form-control" required email  [(ngModel)]="funcionario.email" 
-                            #emailInput="ngModel" appValidaEmailUsuario>
-                        </div>
-                        <div *ngIf="emailInput.invalid || emailInput.errors?.validaEmailUsuario" class="alert alert-danger">
-                          <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
-                          <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
-                          <div *ngIf="emailInput.errors?.validaEmailUsuario"> Já existe um usuário cadastrado com este e-mail. </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row rowcadastro">
-                    <div class="col-xs-6 col-md-3">
-                      <div class="form-group">
-                        <label class="control-label" for="dataNascimento">Data de Nascimento</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                          </div>
-                          <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
-                            #dataNascimento="ngModel" (blur)="formataData($event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-xs-6 col-md-3">
-                      <div class="form-group">
-                        <label class="control-label" for="dataAdmis">Data de Admissão</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                          </div>
-                          <input type="text" mask="00/00/0000" id="dataAdmis" name="dataAdmis" placeholder="dd/mm/yyyy"
-                            class="form-control" [(ngModel)]="dataAdmis" #dataAdmissao="ngModel"
-                            (blur)="formataData($event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-xs-6 col-md-3">
                       <div class="form-group">
                         <label class="control-label" for="dataDemis">Data de Demissão</label>
                         <div class="input-group">
@@ -138,7 +135,7 @@
                       </div>
                     </div>
 
-                    <div class="col-xs-6 col-md-3">
+                    <div class="col-xs-3 col-md-2">
                       <div class="form-group">
                         <label class="control-label" for="oficioSelecionado">Ofício</label>
                         <div class="input-group">
@@ -294,11 +291,11 @@
                 </div>
               </ng-template>
             </ngb-tab>
-            
-            
+
+
             <!--*ngIf=""-->
             <ngb-tab title="Médicos" *ngIf="funcionario != null && funcionario.visualizaAgenda">
-              <ng-template ngbTabContent>                
+              <ng-template ngbTabContent>
                 <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
                   <div class="row">
@@ -323,7 +320,8 @@
                   </div>
                   <div class="row">
                     <div class="table table-responsive smart-table">
-                      <ng2-smart-table [(settings)]="settingsMedico" (delete)="deletarMedico($event)" [(source)]="sourceMedico" class="">
+                      <ng2-smart-table [(settings)]="settingsMedico" (delete)="deletarMedico($event)"
+                        [(source)]="sourceMedico" class="">
                       </ng2-smart-table>
                     </div>
                   </div>

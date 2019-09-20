@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as tableData from './listagem-funcionario-settings';
 import { LocalDataSource } from 'ng2-smart-table';
 import { FuncionarioService } from '../../services/funcionario.service';
@@ -8,30 +8,43 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { AgendamentoService } from '../../services/agendamento.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { Usuario } from '../../modelos/usuario';
 
 @Component({
   templateUrl: './listagem-funcionario.component.html'
 })
-export class ListagemFuncionarioComponent {
+export class ListagemFuncionarioComponent implements OnInit{
   source: LocalDataSource;
   listaFuncionarios: Array<Funcionario>;
   public isSpinnerVisible = false;
   closeResult: string;
   util = new Util();
+  usuarios:Array<Usuario>;
   
-  constructor(private funcionarioService: FuncionarioService, private agendamentoService:AgendamentoService,private router: Router, private modalService: NgbModal) {
+  constructor(private funcionarioService: FuncionarioService, private usuarioService:UsuarioService, private agendamentoService:AgendamentoService,private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
-    this.buscaFuncionarios();
-    this.isSpinnerVisible = false;
+    
   }
 
   buscaFuncionarios(): void {
     this.funcionarioService.Todos().subscribe(dados => {
+      this.isSpinnerVisible = false;
       this.listaFuncionarios = dados;
       this.source = new LocalDataSource(this.listaFuncionarios);
     });
   }
   settings = tableData.settings;
+
+
+  public ngOnInit(): void {
+    this.buscaFuncionarios();        
+    this.usuarioService.todos().subscribe(c=> {
+      this.usuarioService.listaUsuario = c;
+      this.usuarios = c;     
+    });
+  }
+
 
   deletarRegistro(event, modalExcluir) {
     this.agendamentoService.buscarAgendamentosFuncionario(event.data.id).subscribe(agendamentos => {
@@ -56,12 +69,13 @@ export class ListagemFuncionarioComponent {
   }
 
   editarRegistro(event) {
-      this.funcionarioService.funcionario = this.listaFuncionarios.find(c => c.id == event.data.id);
+    this.usuarioService.usuarioParaValidacao = this.usuarios.find(c=> c.funcionarioId == event.data.id);
+    this.funcionarioService.funcionario = this.listaFuncionarios.find(c=> c.id == event.data.id);
       this.router.navigate(['/cadastros/cadastrofuncionario']);
     }
 
   criarRegistro(event) {
-      this.funcionarioService.funcionario = null;
+    this.usuarioService.usuarioParaValidacao = this.funcionarioService.funcionario = null;
       this.router.navigate(['/cadastros/cadastrofuncionario']);
     }
 }
