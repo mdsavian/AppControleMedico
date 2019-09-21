@@ -1,0 +1,203 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form #fornecedorForm="ngForm">
+          <ngb-tabset type="pills">
+            <ngb-tab title="Informações Fornecedor">
+              <ng-template ngbTabContent>
+                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-6 col-md-5">
+                      <div class="form-group">
+                        <label class="control-label" for="razaoSocial">Razão Social(*)</label>
+                        <input type="text" id="razaoSocial" placeholder="Razão Social" name="razaoSocial"
+                          class="form-control" required [(ngModel)]="fornecedor.razaoSocial" #razaoSocial="ngModel">
+                        <div *ngIf="razaoSocial.invalid" class="alert alert-danger">
+                          <div *ngIf="razaoSocial.errors.required"> Razão Social Obrigatória. </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xs-6 col-md-5">
+                      <div class="form-group">
+                        <label class="control-label" for="nomeFantasia">Nome Fantasia(*)</label>
+                        <input type="text" id="nomeFantasia" placeholder="Nome Fantasia" name="nomeFantasia"
+                          class="form-control" required [(ngModel)]="fornecedor.nomeFantasia" #nomeFantasia="ngModel">
+                        <div *ngIf="nomeFantasia.invalid" class="alert alert-danger">
+                          <div *ngIf="nomeFantasia.errors.required">Nome Fantasia Obrigatória. </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-2 col-md-2">
+                      <div class="form-group">
+                        <label class="control-label" for="cnpj">CNPJ</label>
+                        <input type="text" id="cnpj" appValidaCnpj mask="00.000.000/0000-00" required placeholder="CNPJ"
+                          name="cnpj" class="form-control" [(ngModel)]="fornecedor.cpfCnpj" #cnpj="ngModel">
+                        <div *ngIf="cnpj.invalid || cnpj.errors?.validaCnpj" class="alert alert-danger">
+                          <div *ngIf="cnpj.errors.required"> CNPJ Obrigatório. </div>
+                          <div *ngIf="cnpj.errors?.validaCnpj"> CNPJ inválido. </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-2 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="inscricaoEstadual">Inscrição Estadual</label>
+                        <input type="text" id="inscricaoEstadual" placeholder="Inscrição Estadual"
+                          name="inscricaoEstadual" class="form-control" [(ngModel)]="fornecedor.inscricaoEstadual"
+                          #inscricaoEstadual="ngModel">
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="inscricaoMunicipal">Inscrição Municipal</label>
+                        <input type="text" id="inscricaoMunicipal" placeholder="Inscrição Municipal"
+                          name="inscricaoMunicipal" class="form-control" required
+                          [(ngModel)]="fornecedor.inscricaoMunicipal" #inscricaoMunicipal="ngModel">
+                        <div *ngIf="inscricaoMunicipal.invalid" class="alert alert-danger">
+                          <div *ngIf="inscricaoMunicipal.errors.required"> Inscrição Municipal Obrigatória. </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-3 col-md-2">
+                      <div class="form-group">
+                        <label class="control-label" for="telefone">Telefone(*)</label>
+                        <input type="text" id="telefone" placeholder="Telefone" mask="(00) 0000-0000" name="telefone"
+                          class="form-control" required [(ngModel)]="fornecedor.telefone" #telefone="ngModel">
+                        <div *ngIf="telefone.invalid" class="alert alert-danger">
+                          <div *ngIf="telefone.errors.required"> Telefone Obrigatório. </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xs-3 col-md-4">
+                      <div class="form-group">
+                        <label class="control-label" for="email">E-mail(*)</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">@</span>
+                          </div>
+                          <input type="email" id="email" appValidaEmailUsuario placeholder="fornecedor@email.com"
+                            name="email" class="form-control" email required [(ngModel)]="fornecedor.email"
+                            #emailInput="ngModel">
+                        </div>
+                        <div *ngIf="emailInput.invalid || emailInput.errors?.validaEmailUsuario"
+                          class="alert alert-danger">
+                          <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
+                          <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
+                          <div *ngIf="emailInput.errors?.validaEmailUsuario"> Já existe um usuário cadastrado com este
+                            e-mail. </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="cep">CEP</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><img src="../../../assets/images/icon/logo-correio.png"
+                                width="25" height="22"> </span>
+                          </div>
+                          <input type="text" id="cep" mask="00.000-000" placeholder="CEP" name="cep"
+                            class="form-control" (blur)="buscaCep()" [(ngModel)]="fornecedor.cep" #cep="ngModel">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="endereco">Endereço</label>
+                        <input type="text" id="endereco" placeholder="Endereço" name="endereco" class="form-control"
+                          [(ngModel)]="fornecedor.endereco" #endereco="ngModel">
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="numero">Número</label>
+                        <input type="text" id="numero" placeholder="Número" name="numero" class="form-control"
+                          [(ngModel)]="fornecedor.numero" #numero>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="complemento">Complemento</label>
+                        <input type="text" id="complemento" placeholder="Complemento" name="complemento"
+                          class="form-control" [(ngModel)]="fornecedor.complemento" #complemento="ngModel">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row rowcadastro">
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="bairro">Bairro</label>
+                        <input type="text" id="bairro" placeholder="Bairro" name="bairro" class="form-control"
+                          [(ngModel)]="fornecedor.bairro" #bairro="ngModel">
+                      </div>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="cidade">Cidade</label>
+                        <input type="text" id="cidade" placeholder="Cidade" name="cidade" class="form-control"
+                          [(ngModel)]="fornecedor.cidade" #cidade="ngModel">
+                      </div>
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="uf">Estado</label>
+                        <select class="form-control" [(ngModel)]="fornecedor.uf" #uf="ngModel" id="uf" name="uf">
+                          <option *ngFor="let codigo of estados | enumToArray">
+                            {{codigo}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="pais">País</label>
+                          <select class="form-control" [(ngModel)]="fornecedor.pais" #pais="ngModel" id="pais" name="pais">
+                            <option *ngFor="let codigo of paises | enumToArray">
+                              {{codigo}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                  </div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-4 col-md-2">
+                      <label class="form-check-inline" for="ativo">Ativo</label>
+                      <input class="form-check-inline" [(ngModel)]="fornecedor.ativo"
+                        checked name="ativo" id="ativo" value="checked" type="checkbox">
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <!--  -->
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!fornecedorForm.form.valid"
+                  type="button" (click)="salvar()">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

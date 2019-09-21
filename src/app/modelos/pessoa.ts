@@ -8,12 +8,11 @@ export class Pessoa extends Entidade {
     nomeCompleto: string;
     dataNascimento: Date;
     rg: string;
-    cpf: string;
+    cpfCnpj: string;
     genero: number;
     celular: string;
     email: string;
     ativo:boolean;
-    imagem: string;
     
     cep: string;
     endereco: string;

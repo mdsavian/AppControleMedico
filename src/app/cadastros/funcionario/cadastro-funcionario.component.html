@@ -68,7 +68,7 @@
                       <div class="form-group">
                         <label class="control-label" for="cpf">CPF</label>
                         <input type="text" id="cpf" appValidacpf mask="000.000.000-00" placeholder="CPF" name="cpf"
-                          class="form-control" [(ngModel)]="funcionario.cpf" #cpf="ngModel">
+                          class="form-control" [(ngModel)]="funcionario.cpfCnpj" #cpf="ngModel">
                         <div *ngIf="cpf.invalid && cpf.errors?.validaCpf" class="alert alert-danger">
                           <div *ngIf="cpf.errors?.validaCpf"> CPF inválido. </div>
                         </div>

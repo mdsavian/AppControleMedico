@@ -6,10 +6,10 @@ export class Paciente extends Pessoa {
   constructor() {
     super();
 
-    this.id = ""; this.nomeCompleto = ""; this.convenioId = ""; this.cpf = ""; this.dataNascimento = new Date('01/01/0001'); this.rg = ""; this.ativo = true; this.genero = 1; this.nomeConjugue = ""; this.nomeMae = "";
+    this.id = ""; this.nomeCompleto = ""; this.convenioId = ""; this.cpfCnpj = ""; this.dataNascimento = new Date('01/01/0001'); this.rg = ""; this.ativo = true; this.genero = 1; this.nomeConjugue = ""; this.nomeMae = "";
     this.nomePai = ""; this.ocupacao = ""; this.tipoSanguineo = 1; this.telefone = ""; this.celular = ""; this.email = ""; this.aceitaReceberSms = true; this.responsavel = "";
     this.cep = ""; this.endereco = ""; this.numero = ""; this.estadoCivil = 0; this.complemento = ""; this.bairro = ""; this.cidade = ""; this.uf = ""; this.convenio = new Convenio();
-    this.numeroCartao = 1; this.cartaoNacionalSaude = 1; this.fotoId = ""; this.dataValidadeCartao = new Date('01/01/0001'); this.imagem = ""; this.tipoPlano = ""; this.diaGestacao = ''; this.semanaGestacao = ''
+    this.numeroCartao = 1; this.cartaoNacionalSaude = 1; this.fotoId = ""; this.dataValidadeCartao = new Date('01/01/0001'); this.tipoPlano = ""; this.diaGestacao = ''; this.semanaGestacao = ''
   }
 
 

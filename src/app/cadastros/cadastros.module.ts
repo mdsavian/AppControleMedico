@@ -33,6 +33,7 @@ import { CadastroExameComponent } from './exame/cadastro-exame.component';
 import { CadastroLocalComponent } from './local/cadastro-local.component';
 import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.component';
 import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
+import { CadastroFornecedorComponent } from './fornecedor/cadastro-fornecedor.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
@@ -42,7 +43,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroExameComponent, CadastroPacienteComponent,
-    ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
+    CadastroFornecedorComponent,ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaCpfDirective, ValidaNomeOficioDirective,

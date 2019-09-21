@@ -2,7 +2,6 @@ import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { Funcionario } from "../../modelos/funcionario";
 import { Estados } from "../../enums/estados";
 import { Usuario } from '../../modelos/usuario';

@@ -21,14 +21,35 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
       },
       {
-        path: '/listagem/listagempaciente',
-        title: 'Paciente',
+        path: '',
+        title: 'Pessoas',
         icon: '',
-        class: '',
+        class: 'has-arrow',
         label: '',
         labelClass: '',
         extralink: false,
-        submenu: []
+        submenu: [
+          {
+            path: '/listagem/listagempaciente',
+            title: 'Paciente',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          },
+          {
+            path: '/listagem/listagemfornecedor',
+            title: 'Fornecedor',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          }
+        ]
       },
       {
         path: '',
@@ -162,7 +183,8 @@ export const ROUTES: RouteInfo[] = [
             extralink: false,
             submenu: []
           },
-        ]},
+        ]
+      },
       {
         path: '/listagem/listagemlocal',
         title: 'Local',

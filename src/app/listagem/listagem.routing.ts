@@ -12,6 +12,7 @@ import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.componen
 import { ListagemLocalComponent } from './local/listagem-local.component';
 import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
+import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -24,6 +25,16 @@ export const ListagemRoutes: Routes = [
           title: 'Médicos',
           urls: [
             { title: 'Médicos' }
+          ] 
+        }
+      },
+      {
+        path: 'listagemfornecedor',
+        component: ListagemFornecedorComponent,
+        data: {
+          title: 'Fornecedores',
+          urls: [
+            { title: 'Fornecedores' }
           ] 
         }
       },

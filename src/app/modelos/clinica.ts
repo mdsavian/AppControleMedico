@@ -8,7 +8,6 @@ export class Clinica extends Entidade {
 
   ativo:boolean;
   nomeFantasia:string;
-  //imagem
   ie:string;
   im:string;  
   razaoSocial:string;  

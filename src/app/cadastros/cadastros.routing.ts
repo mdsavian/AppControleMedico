@@ -11,6 +11,7 @@ import { CadastroExameComponent } from './exame/cadastro-exame.component';
 import { CadastroLocalComponent } from './local/cadastro-local.component';
 import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.component';
 import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
+import { CadastroFornecedorComponent } from './fornecedor/cadastro-fornecedor.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 
 export const CadastrosRoutes: Routes = [
@@ -24,6 +25,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Paciente',
           urls: [
             { title: 'Cadastro Paciente', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastrofornecedor',
+        component: CadastroFornecedorComponent,
+        data: {
+          title: 'Cadastro Fornecedor',
+          urls: [
+            { title: 'Cadastro Fornecedor', url: '/cadastros/cadastrar' }
           ]
         }
       },
