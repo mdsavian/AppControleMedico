@@ -16,6 +16,7 @@ import { ListagemCirurgiaComponent } from './cirurgia/listagem-cirurgia.componen
 import { ListagemLocalComponent } from './local/listagem-local.component';
 import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
 import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.component';
+import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 import { CorComponent } from './shared/cor-component';
 
@@ -27,8 +28,8 @@ import { CorComponent } from './shared/cor-component';
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent,ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
-    ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemClinicaComponent,ListagemOficioComponent, ListagemEspecialidadeComponent,
+    ListagemMedicoComponent, ListagemPacienteComponent, ListagemContaPagarComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent, CorComponent
   ],
   entryComponents: [

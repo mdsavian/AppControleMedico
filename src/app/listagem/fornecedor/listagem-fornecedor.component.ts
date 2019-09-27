@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { Util } from '../../uteis/Util';
+import { ContaPagarService } from '../../services/contaPagar.service';
 
 @Component({
   templateUrl: './listagem-fornecedor.component.html'
@@ -19,7 +20,7 @@ export class ListagemFornecedorComponent {
   settings = tableData.settings;
   util = new Util();
 
-  constructor(private fornecedorService: FornecedorService, private router: Router, private modalService: NgbModal) {
+  constructor(private contaPagarService: ContaPagarService, private fornecedorService: FornecedorService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
     this.buscaFornecedores();
     this.isSpinnerVisible = false;
@@ -35,12 +36,12 @@ export class ListagemFornecedorComponent {
 
   deletarRegistro(event, modalExcluir) {
     console.log(event.data.id);
-    // this.agendamentoService.buscarAgendamentosFornecedor(event.data.id).subscribe(agendamentos => {
-    //   if (this.util.hasItems(agendamentos)) {
-    //     var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-    //     modal.componentInstance.mensagemErro = "Não é possível excluir fornecedor vínculado a agendamento(s).";
-    //   }
-    //   else {
+    this.contaPagarService.buscarContaPagarPorFornecedor(event.data.id).subscribe(conta => {
+      if (this.util.hasItems(conta)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não é possível excluir fornecedor vínculado a conta(s) a pagar.";
+      }
+      else {
         this.modalService.open(modalExcluir).result.then(
           result => {
             if (result == 'Sim') {
@@ -50,10 +51,9 @@ export class ListagemFornecedorComponent {
                 }
               });
             }
-          }
-        );
-    //   }
-    // });
+          });
+      }
+    });
   }
 
   editarRegistro(event) {
@@ -65,9 +65,6 @@ export class ListagemFornecedorComponent {
     this.fornecedorService.fornecedor = null;
     this.router.navigate(['/cadastros/cadastrofornecedor']);
   }
-
-
-
 }
 
 

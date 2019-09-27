@@ -44,8 +44,6 @@ export class CadastroFornecedorComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-
-    console.log("eae", this.fornecedorService.fornecedor );
     if (this.fornecedorService.fornecedor != null) {
       this.fornecedor = this.fornecedorService.fornecedor;
     }

@@ -230,6 +230,27 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: '',
+    title: 'Financeiro',
+    icon: 'icon-Calendar-4',
+    class: '',
+    label: '',
+    labelClass: '',
+    extralink: false,
+    submenu: [
+      {
+        path: '/listagem/listagemcontapagar',
+        title: 'Conta Pagar',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      }
+    ]
+  },
+  {
+    path: '',
     title: 'Importador',
     icon: 'icon-Double-Circle',
     class: '',

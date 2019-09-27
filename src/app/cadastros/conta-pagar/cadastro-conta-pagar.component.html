@@ -1,0 +1,147 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form #fornecedorForm="ngForm">
+          <ngb-tabset type="pills">
+            <ngb-tab title="Informações Fornecedor">
+              <ng-template ngbTabContent>
+                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
+
+                  <div class="row" style="list-style: heigth 0.4;">
+                    <div class="col-xs-12 col-md-12">
+                      <div class="form-group">
+                        <label class="control-label" for="fornecedor">Fornecedor(*)</label>
+                        <div class="input-group">
+                          <input name="fornecedorSelecionado" type="text" (selectItem)="selecionaFornecedor($event)"
+                            placeholder="Digite a razão social do fornecedor" required [ngbTypeahead]="buscaFornecedor"
+                            class="form-control" minlength="3" #fornecedorModel="ngModel" id="fornecedorModel"
+                            [(ngModel)]="fornecedorSelecionado">
+                          <div class="input-group-prepend">
+                            <ng-template #tipFornecedor>Adiciona Fornecedor</ng-template>
+                            <span (click)="adicionaFornecedor()" [ngbTooltip]="tipFornecedor" class="input-group-text"
+                              id="img-adiciona-fornecedor">
+                              <i class="fa fa-pencil"></i></span>
+                          </div>
+                        </div>
+                        <div *ngIf="(falhaNaBusca || fornecedorModel.invalid)" class="alert alert-danger">
+                          <div *ngIf="fornecedorModel.errors?.required">Fornecedor Obrigatório. </div>
+                          <div *ngIf="falhaNaBusca">Não foi possível encontrar um fornecedor com este nome.</div>
+                          <div *ngIf="fornecedorModel.errors?.minlength"> Razão social/Nome fantasia precisa ter no
+                            mínimo 3 caracteres</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-2 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="numeroFatura">Número Fatura</label>
+                        <input type="text" id="numeroFatura" placeholder="Número Fatura" name="numeroFatura"
+                          class="form-control" [(ngModel)]="contaPagar.numeroFatura" #numeroFatura="ngModel" required>
+                        <div *ngIf="numeroFatura.invalid && (numeroDocumento.value == '' || numeroDocumento.value == null)" class="alert alert-danger">
+                          <div *ngIf="numeroFatura.errors.required"> Número Fatura/Documento obrigatória(o).</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-2 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="numeroDocumento">Número Documento</label>
+                        <input type="text" id="numeroDocumento" placeholder="Número Documento" name="numeroDocumento"
+                          class="form-control" [(ngModel)]="contaPagar.numeroDocumento" #numeroDocumento="ngModel"
+                          required>
+                        <div *ngIf="numeroDocumento.invalid && (numeroFatura.value == '' || numeroFatura.value == null)" class="alert alert-danger">
+                          <div *ngIf="numeroDocumento.errors.required"> Número Documento/Fatura obrigatório(a).</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-2 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="dataEmissao">Data Emissão</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <input type="text" mask="00/00/0000" required id="dataEmissao" name="dataEmissao"
+                              placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataEmi"
+                              #dataEmissao="ngModel" (blur)="formataData($event)">
+                          </div>
+                          <div *ngIf="dataEmissao.invalid" class="alert alert-danger">
+                            <div *ngIf="dataEmissao.errors.required"> Data Obrigatória.</div>
+                            <div *ngIf="dataEmissao.errors.pattern"> Data Inválida.</div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-xs-2 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="dataVencimento">Data Vencimento</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" mask="00/00/0000" required id="dataVencimento" name="dataVencimento"
+                            placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataVenc"
+                            #dataVencimento="ngModel" (blur)="formataData($event)">
+                        </div>
+                        <div *ngIf="dataVencimento.invalid" class="alert alert-danger">
+                          <div *ngIf="dataVencimento.errors.required"> Data Obrigatória.</div>
+                          <div *ngIf="dataVencimento.errors.pattern"> Data Inválida.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row rowcadastro col-md-12" style="text-align: right">
+                    <div class="col-xs-3 col-md-6">
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                      <label class="control-label" for="tipoContaPagar">Tipo Conta Pagar</label>
+                      <select class="form-control" [(ngModel)]="contaPagar.TipoContaPagar" #caixaModel="ngModel"
+                        id="tipoConta" name="tipoConta" required>
+                        <option *ngFor="let tip of tiposConta | enumToArray">
+                          {{tip}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                      <label class="control-label" for="valor">Valor(*)</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" id="valor" mask="dot_separator.2" name="valor" placeholder="000,00"
+                          class="form-control" required [(ngModel)]="contaPagar.valor" #valor="ngModel">
+                      </div>
+                      <div *ngIf="valor.invalid" class="alert alert-danger">
+                        <div *ngIf="valor.errors.required"> Valor Obrigatório. </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-12 col-md-12">
+                      <label class="control-label" for="observacao">Observação</label>
+                      <textarea id="observacao" name="observacao" placeholder="observação" class="form-control"
+                        [(ngModel)]="contaPagar.observacao" #observacao="ngModel"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <!--  -->
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!fornecedorForm.form.valid"
+                  type="button" (click)="salvar()">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

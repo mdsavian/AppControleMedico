@@ -13,6 +13,7 @@ import { ListagemLocalComponent } from './local/listagem-local.component';
 import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.component';
+import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -25,6 +26,16 @@ export const ListagemRoutes: Routes = [
           title: 'Médicos',
           urls: [
             { title: 'Médicos' }
+          ] 
+        }
+      },
+      {
+        path: 'listagemcontapagar',
+        component: ListagemContaPagarComponent,
+        data: {
+          title: 'Conta Pagar',
+          urls: [
+            { title: 'Conta Pagar' }
           ] 
         }
       },
