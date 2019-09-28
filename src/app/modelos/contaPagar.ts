@@ -8,7 +8,7 @@ export class ContaPagar extends Entidade {
     super();
   }
 
-  cinicaId: string;
+  clinicaId: string;
   fornecedorId: string;
   usuarioId: string;
   dataEmissao: string;

@@ -10,10 +10,15 @@ import { Estados } from "../../enums/estados";
 import { Paises } from "../../enums/paises";
 import { Fornecedor } from '../../modelos/fornecedor';
 import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { LocalDataSource } from 'ng2-smart-table';
+import * as tableDataPagamentos from './listagem-pagamentos-settings';
+import {distinctUntilChanged, map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
 import { Util } from '../../uteis/Util';
 import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
+import { ModalCadastroFornecedorComponent } from '../fornecedor/modal-cadastro-fornecedor.component';
+import { AppService } from '../../services/app.service';
+import { ModalPagamentoComponent } from '../../shared/modal/modal-pagamento.component';
 @Component({
   templateUrl: './cadastro-conta-pagar.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
@@ -21,16 +26,21 @@ import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
 
 export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
 
-   @ViewChild('fornecedorModel', { read: ElementRef, static: false }) private fornecedorModel: ElementRef;
-  // @ViewChild('nomeFantasia', { read: ElementRef, static: false }) private nomeFantasia: ElementRef;
-  // @ViewChild('cnpj', { read: ElementRef, static: false }) private cnpj: ElementRef;
-  // @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
+  @ViewChild('fornecedorModel', { read: ElementRef, static: false }) private fornecedorModel: ElementRef;
+  @ViewChild('tipoContaModel', { read: ElementRef, static: false }) private tipoContaModel: ElementRef;
+  @ViewChild('valor', { read: ElementRef, static: false }) private valor: ElementRef;
+  @ViewChild('numeroDocumento', { read: ElementRef, static: false }) private numeroDocumento: ElementRef;
+  @ViewChild('numeroFatura', { read: ElementRef, static: false }) private numeroFatura: ElementRef;
 
+  sourcePagamentos: LocalDataSource;
+  settingsPagamentos = tableDataPagamentos.settingsPagamentos;
   mensagemErro: string;
   util = new Util();
   dataEmi = this.util.dataParaString(new Date());
+  dataVenc:string;
   id: string;
   contaPagar = new ContaPagar();
+  tipoConta = ETipoContaPagar[1].toString();
   estados = Estados;
   paises = Paises;
   fornecedorSelecionado: string;
@@ -40,66 +50,78 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   falhaNaBusca: boolean;
   tiposConta = ETipoContaPagar;
 
-  constructor(private fornecedorService: FornecedorService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
+  constructor(private fornecedorService: FornecedorService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
   }
 
   adicionaFornecedor() {
-    // var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent, { size: 'lg' })
+    var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent)
 
-    // modalNovoFornecedor.result.then((fornecedor: Fornecedor) => {
-    //   if (fornecedor != null && fornecedor.nomeCompleto != '') {
+    modalNovoFornecedor.result.then((fornecedor: Fornecedor) => {
+      if (fornecedor != null && fornecedor.razaoSocial != '') {
+        var fornecedorExistente = this.fornecedores.find(c => c.razaoSocial == fornecedor.razaoSocial);
+        if (fornecedorExistente != null) {
+          this.contaPagar.fornecedorId = fornecedorExistente.id;
+        }
+        else {
+          this.fornecedores.push(fornecedor);
+          this.nomeFornecedores.push(fornecedor.razaoSocial);
+          this.fornecedorSelecionado = fornecedor.razaoSocial;
 
-    //     console.log(fornecedor);
-    //     var fornecedorExistente = this.fornecedors.find(c => c.nomeCompleto == fornecedor.nomeCompleto);
-    //     if (fornecedorExistente != null) {
-    //       this.agendamento.fornecedor = fornecedorExistente;
-    //       this.agendamento.fornecedorId = fornecedorExistente.id;
-    //     }
-    //     else {
-
-    //       this.fornecedors.push(fornecedor);
-    //       this.nomeFornecedors.push(fornecedor.nomeCompleto);
-    //       this.fornecedorSelecionado = fornecedor.nomeCompleto;
-
-    //       this.fornecedorService.salvar(fornecedor).subscribe(fornecedorCadastrado => {
-    //         if (fornecedor.foto != null)
-    //           this.uploadService.salvarImagem(fornecedor.foto, "fornecedor", fornecedorCadastrado.id);
-    //         this.agendamento.fornecedor = fornecedorCadastrado;
-    //         this.agendamento.fornecedorId = fornecedorCadastrado.id;
-    //       });
-    //     }
-    //   }
-    // }).catch((error) => { })
+          this.fornecedorService.salvar(fornecedor).subscribe(fornecedorCadastrado => {
+            this.contaPagar.fornecedorId = fornecedorCadastrado.id;
+          });
+        }
+      }
+    }).catch((error) => { })
 
   }
 
   ngAfterViewInit(): void {
     this.fornecedorService.Todos().subscribe(fornec => {
       this.fornecedores = fornec;
+
+      if (!this.util.isNullOrWhitespace(this.contaPagar.fornecedorId))
+        this.fornecedorSelecionado = this.fornecedores.find(c => c.id == this.contaPagar.fornecedorId).razaoSocial;
+
       this.nomeFornecedores = new Array<string>();
       this.fornecedores.forEach(d => {
         this.nomeFornecedores.push(d.razaoSocial);
       });
-    })
+    });
+
     if (this.fornecedorModel != null) {
       this.fornecedorModel.nativeElement.focus();
-      if (this.contaPagarService.contaPagar != null)
-        this.fornecedorModel.nativeElement.setAttribute('readonly', true);
     }
+    
+    if (this.contaPagarService.contaPagar != null) {
+      if (this.fornecedorModel != null)
+        this.fornecedorModel.nativeElement.setAttribute('readonly', true);
 
-    // if (this.nomeFantasia != null && this.contaPagarService.contaPagar != null)
-    //   this.nomeFantasia.nativeElement.setAttribute('readonly', true);
+      if (this.tipoContaModel != null)
+        this.tipoContaModel.nativeElement.setAttribute('readonly', true);
 
-    // if (this.cnpj != null && this.contaPagarService.contaPagar != null)
-    //   this.cnpj.nativeElement.setAttribute('readonly', true);
+      if (this.valor != null && this.util.hasItems(this.contaPagar.pagamentos))
+        this.valor.nativeElement.setAttribute('readonly', true);
+
+      if (this.numeroDocumento != null && !this.util.isNullOrWhitespace(this.contaPagar.numeroDocumento))
+        this.numeroDocumento.nativeElement.setAttribute('readonly', true);
+        
+      if (this.numeroFatura != null && this.contaPagar.numeroFatura > 0)
+        this.numeroFatura.nativeElement.setAttribute('readonly', true);
+    }
   }
 
   public ngOnInit(): void {
     if (this.contaPagarService.contaPagar != null) {
       this.contaPagar = this.contaPagarService.contaPagar;
+      this.dataEmi = this.contaPagar.dataEmissao;
+      this.dataVenc = this.contaPagar.dataVencimento;
+      this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
+
     }
-    else
-    {
+    else {
+      this.contaPagar.usuarioId = this.appService.retornarUsuarioCorrente().id;
+      this.contaPagar.clinicaId = this.appService.retornarClinicaCorrente().id;
       this.contaPagar.tipoContaPagar = ETipoContaPagar["Lançamento Manual"];
       this.contaPagar.dataEmissao = this.util.dataParaString(new Date());
     }
@@ -125,12 +147,12 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
     )
 
   selecionaFornecedor(item) {
-    var fornecedor = this.fornecedores.find(c => c.nomeCompleto === item.item);
+    var fornecedor = this.fornecedores.find(c => c.razaoSocial === item.item);
     if (fornecedor != null) {
+      console.log(fornecedor);
       this.fornecedor = fornecedor;
       this.contaPagar.fornecedorId = fornecedor.id;
     }
-
   }
 
   public formataData(e): void {
@@ -142,10 +164,18 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
     }
   }
 
+  selecionaTipoConta(value: string) {
+    this.contaPagar.tipoContaPagar = ETipoContaPagar[value];
+  }
+
+  adicionarPagamento()
+  {
+    this.modalService.open(ModalPagamentoComponent);
+  }
   public salvar(): void {
     this.contaPagarService.salvar(this.contaPagar).subscribe(
       data => {
-        this.router.navigate(["listagem/listagemcontaPagar"]);
+        this.router.navigate(["listagem/listagemcontapagar"]);
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });

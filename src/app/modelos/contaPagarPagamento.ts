@@ -1,15 +1,9 @@
-import { Entidade } from "./entidade";
 
-export class ContaPagarPagamento extends Entidade {
+import { Pagamento } from "./naoPersistidos/pagamento";
+
+export class ContaPagarPagamento extends Pagamento {
 
   constructor() {
     super();
   }
-
-  dataPagamento:string;
-  jurosMulta:number;
-  desconto:number;
-  valor:number;
-  formaPagamentoId:string;
-  usuarioId:string;
 }

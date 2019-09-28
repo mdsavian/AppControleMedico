@@ -82,16 +82,13 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text">@</span>
                           </div>
-                          <input type="email" id="email" appValidaEmailUsuario placeholder="fornecedor@email.com"
-                            name="email" class="form-control" email required [(ngModel)]="fornecedor.email"
+                          <input type="email" id="email" placeholder="fornecedor@email.com"
+                            name="email" class="form-control" email [(ngModel)]="fornecedor.email"
                             #emailInput="ngModel">
                         </div>
-                        <div *ngIf="emailInput.invalid || emailInput.errors?.validaEmailUsuario"
+                        <div *ngIf="emailInput.invalid"
                           class="alert alert-danger">
-                          <div *ngIf="emailInput.errors.required"> E-mail Obrigatório. </div>
                           <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
-                          <div *ngIf="emailInput.errors?.validaEmailUsuario"> Já existe um usuário cadastrado com este
-                            e-mail. </div>
                         </div>
                       </div>
                     </div>

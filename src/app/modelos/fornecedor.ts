@@ -2,8 +2,9 @@ import { Pessoa } from "./pessoa";
 
 export class Fornecedor extends Pessoa {
 
-    constructor() {
+    constructor() {        
         super();
+        this.ativo = true;
     }
 
     inscricaoMunicipal:string;

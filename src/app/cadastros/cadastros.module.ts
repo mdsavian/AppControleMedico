@@ -26,6 +26,7 @@ import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
 import { ModalAdicionaConvenioComponent } from "./convenio/modal-adiciona-convenio.component";
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
+import { ModalCadastroFornecedorComponent } from "./fornecedor/modal-cadastro-fornecedor.component";
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
 import { CadastroProcedimentoComponent } from './procedimento/cadastro-procedimento.component';
@@ -43,7 +44,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 @NgModule({
   imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
-  declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroExameComponent, CadastroPacienteComponent,
+  declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroExameComponent, CadastroPacienteComponent,ModalCadastroFornecedorComponent,
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
@@ -51,6 +52,6 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
 
-  entryComponents: [ModalAdicionaConvenioComponent]
+  entryComponents: [ModalAdicionaConvenioComponent,ModalCadastroFornecedorComponent]
 })
 export class CadastrosModule { }

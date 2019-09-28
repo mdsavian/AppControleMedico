@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form #fornecedorForm="ngForm">
+          <div class="modal-body">
+            <div class="row rowcadastro">
+              <div class="col-xs-6 col-md-5">
+                <div class="form-group">
+                  <label class="control-label" for="razaoSocial">Razão Social(*)</label>
+                  <input type="text" id="razaoSocial" placeholder="Razão Social" name="razaoSocial" class="form-control"
+                    required [(ngModel)]="fornecedor.razaoSocial" #razaoSocial="ngModel">
+                  <div *ngIf="razaoSocial.invalid" class="alert alert-danger">
+                    <div *ngIf="razaoSocial.errors.required"> Razão Social Obrigatória. </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-6 col-md-5">
+                <div class="form-group">
+                  <label class="control-label" for="nomeFantasia">Nome Fantasia(*)</label>
+                  <input type="text" id="nomeFantasia" placeholder="Nome Fantasia" name="nomeFantasia"
+                    class="form-control" required [(ngModel)]="fornecedor.nomeFantasia" #nomeFantasia="ngModel">
+                  <div *ngIf="nomeFantasia.invalid" class="alert alert-danger">
+                    <div *ngIf="nomeFantasia.errors.required">Nome Fantasia Obrigatória. </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-2 col-md-2">
+                <div class="form-group">
+                  <label class="control-label" for="cnpj">CNPJ</label>
+                  <input type="text" id="cnpj" appValidaCnpj mask="00.000.000/0000-00" required placeholder="CNPJ"
+                    name="cnpj" class="form-control" [(ngModel)]="fornecedor.cpfCnpj" #cnpj="ngModel">
+                  <div *ngIf="cnpj.invalid || cnpj.errors?.validaCnpj" class="alert alert-danger">
+                    <div *ngIf="cnpj.errors.required"> CNPJ Obrigatório. </div>
+                    <div *ngIf="cnpj.errors?.validaCnpj"> CNPJ inválido. </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row rowcadastro">
+              <div class="col-xs-2 col-md-3">
+                <div class="form-group">
+                  <label class="control-label" for="inscricaoEstadual">Inscrição Estadual</label>
+                  <input type="text" id="inscricaoEstadual" placeholder="Inscrição Estadual" name="inscricaoEstadual"
+                    class="form-control" [(ngModel)]="fornecedor.inscricaoEstadual" #inscricaoEstadual="ngModel">
+                </div>
+              </div>
+
+              <div class="col-xs-6 col-md-3">
+                <div class="form-group">
+                  <label class="control-label" for="inscricaoMunicipal">Inscrição Municipal</label>
+                  <input type="text" id="inscricaoMunicipal" placeholder="Inscrição Municipal" name="inscricaoMunicipal"
+                    class="form-control" required [(ngModel)]="fornecedor.inscricaoMunicipal"
+                    #inscricaoMunicipal="ngModel">
+                  <div *ngIf="inscricaoMunicipal.invalid" class="alert alert-danger">
+                    <div *ngIf="inscricaoMunicipal.errors.required"> Inscrição Municipal Obrigatória. </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-3 col-md-2">
+                <div class="form-group">
+                  <label class="control-label" for="telefone">Telefone(*)</label>
+                  <input type="text" id="telefone" placeholder="Telefone" mask="(00) 0000-0000" name="telefone"
+                    class="form-control" [(ngModel)]="fornecedor.telefone" #telefone="ngModel">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <!--  -->
+                <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!fornecedorForm.form.valid"
+                  type="button" (click)="salvar()">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
