@@ -35,26 +35,25 @@ export class ListagemContaPagarComponent {
   }
 
   deletarRegistro(event, modalExcluir) {
-    // this.agendamentoService.buscarAgendamentosContaPagar(event.data.id).subscribe(agendamentos => {
-    //   console.log(agendamentos);
-    //   if (this.util.hasItems(agendamentos)) {
-    //     var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-    //     modal.componentInstance.mensagemErro = "Não é possível excluir contaPagar vínculada a agendamento(s).";
-    //   }
-    //   else {
-    //     this.modalService.open(modalExcluir).result.then(
-    //       result => {
-    //         if (result == 'Sim') {
-    //           this.contaPagarService.Excluir(event.data.id).subscribe(retorno => {
-    //             if (retorno) {
-    //               this.buscaContaPagars();
-    //             }
-    //           });
-    //         }
-    //       }
-    //     );
-    //   }
-    // });
+    var conta = this.listaContaPagars.find(c => c.id == event.data.id);
+
+    if (this.util.hasItems(conta.pagamentos)) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Não é possível excluir conta a pagar que já contém pagamento(s).";
+    }
+    else {
+      this.modalService.open(modalExcluir).result.then(
+        result => {
+          if (result == 'Sim') {
+            this.contaPagarService.Excluir(event.data.id).subscribe(retorno => {
+              if (retorno) {
+                this.buscaContaPagars();
+              }
+            });
+          }
+        }
+      );
+    }
   }
 
   editarRegistro(event) {
@@ -63,7 +62,6 @@ export class ListagemContaPagarComponent {
   }
 
   criarRegistro(event) {
-    console.log("opa eae12121");
     this.contaPagarService.contaPagar = null;
     this.router.navigate(['/cadastros/cadastrocontapagar']);
   }

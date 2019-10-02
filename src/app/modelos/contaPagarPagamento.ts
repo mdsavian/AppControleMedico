@@ -6,4 +6,6 @@ export class ContaPagarPagamento extends Pagamento {
   constructor() {
     super();
   }
+
+  codigo:number;
 }

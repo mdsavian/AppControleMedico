@@ -11,14 +11,14 @@ import { Paises } from "../../enums/paises";
 import { Fornecedor } from '../../modelos/fornecedor';
 import { Observable } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
-import * as tableDataPagamentos from './listagem-pagamentos-settings';
-import {distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
 import { Util } from '../../uteis/Util';
 import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
 import { ModalCadastroFornecedorComponent } from '../fornecedor/modal-cadastro-fornecedor.component';
 import { AppService } from '../../services/app.service';
 import { ModalPagamentoComponent } from '../../shared/modal/modal-pagamento.component';
+import { ContaPagarPagamento } from '../../modelos/contaPagarPagamento';
 @Component({
   templateUrl: './cadastro-conta-pagar.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
@@ -33,11 +33,10 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   @ViewChild('numeroFatura', { read: ElementRef, static: false }) private numeroFatura: ElementRef;
 
   sourcePagamentos: LocalDataSource;
-  settingsPagamentos = tableDataPagamentos.settingsPagamentos;
   mensagemErro: string;
   util = new Util();
   dataEmi = this.util.dataParaString(new Date());
-  dataVenc:string;
+  dataVenc: string;
   id: string;
   contaPagar = new ContaPagar();
   tipoConta = ETipoContaPagar[1].toString();
@@ -51,29 +50,6 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   tiposConta = ETipoContaPagar;
 
   constructor(private fornecedorService: FornecedorService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
-  }
-
-  adicionaFornecedor() {
-    var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent)
-
-    modalNovoFornecedor.result.then((fornecedor: Fornecedor) => {
-      if (fornecedor != null && fornecedor.razaoSocial != '') {
-        var fornecedorExistente = this.fornecedores.find(c => c.razaoSocial == fornecedor.razaoSocial);
-        if (fornecedorExistente != null) {
-          this.contaPagar.fornecedorId = fornecedorExistente.id;
-        }
-        else {
-          this.fornecedores.push(fornecedor);
-          this.nomeFornecedores.push(fornecedor.razaoSocial);
-          this.fornecedorSelecionado = fornecedor.razaoSocial;
-
-          this.fornecedorService.salvar(fornecedor).subscribe(fornecedorCadastrado => {
-            this.contaPagar.fornecedorId = fornecedorCadastrado.id;
-          });
-        }
-      }
-    }).catch((error) => { })
-
   }
 
   ngAfterViewInit(): void {
@@ -92,7 +68,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
     if (this.fornecedorModel != null) {
       this.fornecedorModel.nativeElement.focus();
     }
-    
+
     if (this.contaPagarService.contaPagar != null) {
       if (this.fornecedorModel != null)
         this.fornecedorModel.nativeElement.setAttribute('readonly', true);
@@ -105,7 +81,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
 
       if (this.numeroDocumento != null && !this.util.isNullOrWhitespace(this.contaPagar.numeroDocumento))
         this.numeroDocumento.nativeElement.setAttribute('readonly', true);
-        
+
       if (this.numeroFatura != null && this.contaPagar.numeroFatura > 0)
         this.numeroFatura.nativeElement.setAttribute('readonly', true);
     }
@@ -116,8 +92,9 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
       this.contaPagar = this.contaPagarService.contaPagar;
       this.dataEmi = this.contaPagar.dataEmissao;
       this.dataVenc = this.contaPagar.dataVencimento;
-      this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
 
+      if (this.util.hasItems(this.contaPagar.pagamentos))
+        this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
     }
     else {
       this.contaPagar.usuarioId = this.appService.retornarUsuarioCorrente().id;
@@ -125,6 +102,25 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
       this.contaPagar.tipoContaPagar = ETipoContaPagar["Lançamento Manual"];
       this.contaPagar.dataEmissao = this.util.dataParaString(new Date());
     }
+  }
+
+  calcularSaldo() {
+    if (this.util.hasItems(this.contaPagar.pagamentos)) {
+      var pagamentos = 0;
+
+      this.contaPagar.pagamentos.forEach(pagamento => {
+
+        let val = pagamento.valor * pagamento.parcela;
+        pagamentos = +pagamentos + +val;
+      });
+
+      var saldo = this.contaPagar.valorTotal -pagamentos;
+      this.contaPagar.saldo = parseFloat(saldo.toFixed(2));
+    }
+    else
+      this.contaPagar.saldo = this.contaPagar.valorTotal;
+
+    console.log(this.contaPagar.saldo > 0);
   }
 
   buscaFornecedor = (text$: Observable<string>) =>
@@ -146,10 +142,35 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
       })
     )
 
+  calcularJurosDesconto(valor: number, operacao: string) {
+    var valorTot = this.contaPagar.valor;
+    if (valorTot == null)
+      return;
+
+    if (valorTot > 0) {
+      if (operacao == "desconto" || (this.contaPagar.desconto != null && this.contaPagar.desconto > 0)) {
+        let valorDesconto = valor;
+        if (this.contaPagar.desconto != null && this.contaPagar.desconto > 0)
+          valorDesconto = this.contaPagar.desconto;
+        valorTot = +valorTot + -valorDesconto;
+      }
+
+      if (operacao == "juros" || (this.contaPagar.jurosMulta != null && this.contaPagar.jurosMulta > 0)) {
+        let valorJuros = valor;
+        if (this.contaPagar.jurosMulta != null && this.contaPagar.jurosMulta > 0)
+          valorJuros = this.contaPagar.jurosMulta;
+        valorTot = +valorTot + +valorJuros;
+      }
+    }
+
+    this.contaPagar.valorTotal = parseFloat(valorTot.toString());
+    this.calcularSaldo();
+
+  }
+
   selecionaFornecedor(item) {
     var fornecedor = this.fornecedores.find(c => c.razaoSocial === item.item);
     if (fornecedor != null) {
-      console.log(fornecedor);
       this.fornecedor = fornecedor;
       this.contaPagar.fornecedorId = fornecedor.id;
     }
@@ -168,20 +189,127 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
     this.contaPagar.tipoContaPagar = ETipoContaPagar[value];
   }
 
-  adicionarPagamento()
-  {
-    this.modalService.open(ModalPagamentoComponent);
-  }
-  public salvar(): void {
-    this.contaPagarService.salvar(this.contaPagar).subscribe(
-      data => {
-        this.router.navigate(["listagem/listagemcontapagar"]);
-      },
-      error => {
-        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
+  adicionarPagamento() {
+    var modalPagamento = this.modalService.open(ModalPagamentoComponent, { size: "lg" });
+    modalPagamento.componentInstance.saldo = this.contaPagar.saldo;
+    modalPagamento.result.then(pagamento => {
+      if (pagamento != null) {
+        var contaPagamento = new ContaPagarPagamento();
+        contaPagamento.dataPagamento = pagamento.dataPagamento;
+        contaPagamento.valor = pagamento.valor;
+        contaPagamento.formaPagamentoId = pagamento.formaPagamentoId;
+        contaPagamento.usuarioId = pagamento.usuarioId;
+        contaPagamento.vistaPrazo = pagamento.vistaPrazo;
+        contaPagamento.parcela = pagamento.parcela;
+        contaPagamento.descricaoPagamento = pagamento.descricaoPagamento;
 
+        if (!this.util.hasItems(this.contaPagar.pagamentos)) {
+          this.contaPagar.pagamentos = new Array<ContaPagarPagamento>();
+          contaPagamento.codigo = 1;
+        }
+        else
+          contaPagamento.codigo = this.contaPagar.pagamentos.length + 1;
+
+        this.contaPagar.pagamentos.push(contaPagamento);
+        this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
+        this.calcularSaldo();
       }
-    )
+    }, error => { });
   }
+
+  adicionaFornecedor() {
+    var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent, {size:'lg'});
+
+    modalNovoFornecedor.result.then((fornecedor: Fornecedor) => {
+      if (fornecedor != null && fornecedor.razaoSocial != '') {
+        var fornecedorExistente = this.fornecedores.find(c => c.razaoSocial == fornecedor.razaoSocial);
+        if (fornecedorExistente != null) {
+          this.contaPagar.fornecedorId = fornecedorExistente.id;
+        }
+        else {
+          this.fornecedores.push(fornecedor);
+          this.nomeFornecedores.push(fornecedor.razaoSocial);
+          this.fornecedorSelecionado = fornecedor.razaoSocial;
+
+          this.fornecedorService.salvar(fornecedor).subscribe(fornecedorCadastrado => {
+            this.contaPagar.fornecedorId = fornecedorCadastrado.id;
+          });
+        }
+      }
+    }).catch((error) => { })
+
+  }
+
+  deletarPagamento(event: any, modalExcluir) {
+
+    this.modalService.open(modalExcluir).result.then(
+      result => {
+        if (result == 'Sim') {
+          var index = this.contaPagar.pagamentos.indexOf(event.data.codigo);
+          this.contaPagar.pagamentos.splice(index, 1);
+          this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
+          this.calcularSaldo();
+        }
+      }
+    );
+  }
+
+  public salvar(): void {
+    if (this.validar) {
+      this.contaPagarService.salvar(this.contaPagar).subscribe(
+        data => {
+          this.router.navigate(["listagem/listagemcontapagar"]);
+        },
+        error => {
+          var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+          modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
+
+        }
+      );
+    }
+  }
+
+  public validar(): boolean {
+    return true;
+  }
+
+  settingsPagamentos = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum pagamento",
+    columns: {
+      dataPagamento: {
+        title: 'Data',
+        filter: true
+      },
+      descricaoPagamento: {
+        title: 'Forma Pagamento',
+        filter: true
+      },
+      parcela: {
+        title: 'Parcela',
+        filter:false
+      },
+      valor: {
+        title: 'Valor',
+        filter:false
+      }
+    },
+    actions:
+    {
+      edit: false,
+      columnTitle: '  '
+    },
+    delete:
+    {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    },
+    add:
+    {
+      addButtonContent: 'Adicionar Pagamento'
+    }
+  };
 }
+
+

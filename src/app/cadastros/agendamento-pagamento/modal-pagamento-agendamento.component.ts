@@ -124,6 +124,8 @@ export class ModalPagamentoAgendamentoComponent {
       else
         this.visualizaParcela = true;
     }
+    else
+    this.visualizaParcela = false;
   }
 
   alteraFormaPagamento() {

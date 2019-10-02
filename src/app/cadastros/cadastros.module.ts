@@ -42,9 +42,9 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
 
 @NgModule({
-  imports: [NgbModule, SharedModalModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
+  imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, SharedModalModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
-  declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroExameComponent, CadastroPacienteComponent,ModalCadastroFornecedorComponent,
+  declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
@@ -52,6 +52,6 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
 
-  entryComponents: [ModalAdicionaConvenioComponent,ModalCadastroFornecedorComponent]
+  entryComponents: [ModalAdicionaConvenioComponent, ModalCadastroFornecedorComponent]
 })
 export class CadastrosModule { }

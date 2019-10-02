@@ -1,4 +1,4 @@
-<form id="formaPagamento">
+<form id="formPagamento" #formPagamento="ngForm">
     <div class="modal-header">
         <h4 class="modal-title">Pagamento</h4>
         <button type="button" class="close" aria-label="Fechar" (click)="activeModal.dismiss()">
@@ -7,7 +7,7 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-xs-2 col-md-6">
+            <div class="col-xs-4 col-md-6">
                 <label class="control-label" for="formaPagamento">Forma de Pagamento(*)</label>
                 <select class="form-control" (change)="alteraFormaPagamento()" [(ngModel)]="pagamento.formaPagamentoId"
                     #formaPagamentoModel="ngModel" id="formaPagamento" name="formaPagamento" required>
@@ -19,13 +19,12 @@
                     <div *ngIf="formaPagamentoModel.errors.required"> Forma de Pagamento Obrigatória. </div>
                 </div>
             </div>
-            <div class="col-xs-2 col-md-3">
+            <div class="col-xs-3 col-md-4">
                 <label class="control-label" for="tipoPagamento">Tipo Pagamento(*)</label>
-                <select class="form-control" (change)="selecionaTipoPagamento($event.target.value)"
-                    [(ngModel)]="vistaPrazo" #tipoPagamento="ngModel" disabled id="tipoPagamento" name="tipoPagamento">
-                    <option *ngFor="let codigo of vistaPrazoEnum | enumToArray">
-                        {{codigo}}
-                    </option>
+                <select class="form-control" [(ngModel)]="vistaPrazo" #tipoPagamento="ngModel" disabled
+                    id="tipoPagamento" (change)="selecionaTipoPagamento($event.target.value)" name="tipoPagamento">
+                    <option>À Vista</option>
+                    <option>À Prazo</option>
                 </select>
             </div>
             <div class="col-xs-2 col-md-2" *ngIf="visualizaParcela">
@@ -34,30 +33,43 @@
                     <input type="number" min="1" id="parcela" name="parcela" class="form-control" required
                         [(ngModel)]="pagamento.parcela" #parcela="ngModel">
                 </div>
+                <div *ngIf="parcela.invalid" class="alert alert-danger">
+                    <div *ngIf="parcela.errors.required">Parcela Obrigatória. </div>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-2 col-md-2">
-                <label class="control-label" for="desconto">Desconto</label>
-                <input type="text" id="desconto" mask="dot_separator.2" name="desconto" placeholder="000,00"
-                    class="form-control" [(ngModel)]="pagamento.desconto" #desconto="ngModel">
+            <div class="col-xs-2 col-md-3">
+                <div class="form-group">
+                    <label class="control-label" for="dataPagamento">Data Pagamento</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" mask="00/00/0000" required id="dataPagamento" name="dataPagamento"
+                            placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataPag" #dataPagamento="ngModel"
+                            (blur)="formataData($event)">
+                    </div>
+                    <div *ngIf="dataPagamento.invalid" class="alert alert-danger">
+                        <div *ngIf="dataPagamento.errors.required"> Data Obrigatória.</div>
+                        <div *ngIf="dataPagamento.errors.pattern"> Data Inválida.</div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-2 col-md-2">
-                <label class="control-label" for="jurosMulta">Juros/Multa</label>
-                <input type="text" id="jurosMulta" mask="dot_separator.2" name="jurosMulta" placeholder="000,00"
-                    class="form-control" [(ngModel)]="pagamento.jurosMulta" #juros="ngModel">
-            </div>
-            <div class="col-xs-2 col-md-4">
+            <div class="col-xs-3 col-md-4">
                 <label class="control-label" for="valor">Valor</label>
                 <input type="text" id="valor" mask="dot_separator.2" name="valor" placeholder="000,00"
                     class="form-control" [(ngModel)]="pagamento.valor" required #valor="ngModel">
+                <div *ngIf="valor.invalid" class="alert alert-danger">
+                    <div *ngIf="valor.errors.required">Valor Obrigatório.</div>
+                </div>
             </div>
         </div>
 
     </div>
     <div class="modal-footer">
         <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-            [disabled]="!formaPagamento.valid" type="submit">Salvar</button>
+            [disabled]="!formPagamento.valid" type="submit">Salvar</button>
         <button style="width:40%" (click)="fechar()" id="btnCancelar"
             class="btn btn-rounded btn-warning">Cancelar</button>
     </div>

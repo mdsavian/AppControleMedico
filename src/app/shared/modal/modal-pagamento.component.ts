@@ -1,13 +1,12 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
-import {
-  NgbModal, NgbActiveModal
-} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormaDePagamento } from '../../modelos/formaDePagamento';
 import { Pagamento } from '../../modelos/naoPersistidos/pagamento';
 import { EVistaPrazo } from '../../enums/EVistaPrazo';
 import { Util } from '../../uteis/Util';
 import { AppService } from '../../services/app.service';
 import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
+import { ModalErrorComponent } from './modal-error.component';
 
 @Component({
   selector: 'app-modal-pagamento',
@@ -18,19 +17,23 @@ import { FormaDePagamentoService } from '../../services/forma-de-pagamento.servi
 export class ModalPagamentoComponent {
   @ViewChild('formaPagamentoModel', { read: ElementRef, static: true }) private formaPagamentoModel: ElementRef;
   @ViewChild('tipoPagamento', { read: ElementRef, static: true }) private tipoPagamento: ElementRef;
-  
-  constructor(public activeModal: NgbActiveModal, private appService:AppService, private formaPagamentoService:FormaDePagamentoService) { }  
+
+  constructor(public activeModal: NgbActiveModal, private modalService: NgbModal, private appService: AppService, private formaPagamentoService: FormaDePagamentoService) { }
 
   formasPagamento = new Array<FormaDePagamento>();
   pagamento = new Pagamento();
-  vistaPrazoEnum = EVistaPrazo;
   vistaPrazo: string = EVistaPrazo[1].toString();
-  visualizaParcela =false;
+  visualizaParcela = false;
   util = new Util();
+  saldo: number;
+  dataPag = this.util.dataParaString(new Date());
 
-  ngOnInit() {    
+  ngOnInit() {
     this.pagamento.dataPagamento = this.util.dataParaString(new Date());
-this.pagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
+    this.pagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
+    this.pagamento.vistaPrazo = EVistaPrazo["À Vista"];
+    this.pagamento.descricaoPagamento = "DINHEIRO";
+    this.pagamento.parcela = 1;
 
     this.formaPagamentoService.Todos().subscribe(formas => {
       this.pagamento.formaPagamentoId = formas.find(c => true).id;
@@ -47,12 +50,32 @@ this.pagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
       else
         this.visualizaParcela = true;
     }
+    else {
+      this.visualizaParcela = false;
+    }
+  }
+  
+  public formataData(e): void {
+    if (e.target.id == "dataPagamento" && e.target.value.length == 10) {
+      this.pagamento.dataPagamento = e.target.value;
+    }
   }
 
-  salvar()
-  {
-    this.activeModal.close(this.pagamento);
+  salvar() {
+    var valor = this.pagamento.valor;
+    if ((parseFloat(valor.toString()) * this.pagamento.parcela) > this.saldo) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Valor informado maior do que valor de saldo.";
+    }
+    else {
+      this.activeModal.close(this.pagamento);
+    }
   }
+
+  fechar() {
+    this.activeModal.close();
+  }
+
   alteraFormaPagamento() {
 
     if (this.pagamento.formaPagamentoId == this.formasPagamento.find(c => c.descricao == "DINHEIRO").id) {

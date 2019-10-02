@@ -35,7 +35,6 @@ export class ListagemFornecedorComponent {
   }
 
   deletarRegistro(event, modalExcluir) {
-    console.log(event.data.id);
     this.contaPagarService.buscarContaPagarPorFornecedor(event.data.id).subscribe(conta => {
       if (this.util.hasItems(conta)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });

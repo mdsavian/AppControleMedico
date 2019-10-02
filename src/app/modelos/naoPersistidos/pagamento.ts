@@ -1,16 +1,11 @@
 import { EVistaPrazo } from "../../enums/EVistaPrazo";
-import { Entidade } from "../entidade";
 
-export class Pagamento extends Entidade {
+export class Pagamento {
 
   constructor() {
-    super();
-
   }
 
   dataPagamento:string;
-  jurosMulta:number;
-  desconto:number;
   valor:number;
   formaPagamentoId:string;
   usuarioId:string;

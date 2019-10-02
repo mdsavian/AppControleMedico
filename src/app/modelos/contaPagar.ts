@@ -14,9 +14,15 @@ export class ContaPagar extends Entidade {
   dataEmissao: string;
   dataVencimento: string;
   numeroDocumento: string;
-  numeroFatura: number;
+  numeroFatura: number;  
+  jurosMulta:number;
+  desconto:number;
   valor: number;
+  valorTotal:number;
+  saldo:number;
   tipoContaPagar: ETipoContaPagar;
   pagamentos: Array<ContaPagarPagamento>;
-  observacao:string;
+  observacao:string;  
 }
+
+
