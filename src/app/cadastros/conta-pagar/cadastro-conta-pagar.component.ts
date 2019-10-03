@@ -19,6 +19,8 @@ import { ModalCadastroFornecedorComponent } from '../fornecedor/modal-cadastro-f
 import { AppService } from '../../services/app.service';
 import { ModalPagamentoComponent } from '../../shared/modal/modal-pagamento.component';
 import { ContaPagarPagamento } from '../../modelos/contaPagarPagamento';
+import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
+import { FormaDePagamento } from '../../modelos/formaDePagamento';
 @Component({
   templateUrl: './cadastro-conta-pagar.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
@@ -38,6 +40,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   dataEmi = this.util.dataParaString(new Date());
   dataVenc: string;
   id: string;
+  formaDePagamentos = new Array<FormaDePagamento>();
   contaPagar = new ContaPagar();
   tipoConta = ETipoContaPagar[1].toString();
   estados = Estados;
@@ -49,7 +52,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   falhaNaBusca: boolean;
   tiposConta = ETipoContaPagar;
 
-  constructor(private fornecedorService: FornecedorService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
+  constructor(private fornecedorService: FornecedorService, private formaPagamentoService: FormaDePagamentoService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngAfterViewInit(): void {
@@ -88,13 +91,18 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
+
+    this.formaPagamentoService.Todos().subscribe(formas => {
+      if (this.contaPagarService.contaPagar != null && this.util.hasItems(this.contaPagar.pagamentos)) {
+        this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
+      }
+      this.formaDePagamentos = formas;
+    });
+
     if (this.contaPagarService.contaPagar != null) {
       this.contaPagar = this.contaPagarService.contaPagar;
       this.dataEmi = this.contaPagar.dataEmissao;
       this.dataVenc = this.contaPagar.dataVencimento;
-
-      if (this.util.hasItems(this.contaPagar.pagamentos))
-        this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
     }
     else {
       this.contaPagar.usuarioId = this.appService.retornarUsuarioCorrente().id;
@@ -114,13 +122,11 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
         pagamentos = +pagamentos + +val;
       });
 
-      var saldo = this.contaPagar.valorTotal -pagamentos;
+      var saldo = this.contaPagar.valorTotal - pagamentos;
       this.contaPagar.saldo = parseFloat(saldo.toFixed(2));
     }
     else
       this.contaPagar.saldo = this.contaPagar.valorTotal;
-
-    console.log(this.contaPagar.saldo > 0);
   }
 
   buscaFornecedor = (text$: Observable<string>) =>
@@ -218,12 +224,13 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   }
 
   adicionaFornecedor() {
-    var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent, {size:'lg'});
+    var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent, { size: 'lg' });
 
     modalNovoFornecedor.result.then((fornecedor: Fornecedor) => {
       if (fornecedor != null && fornecedor.razaoSocial != '') {
-        var fornecedorExistente = this.fornecedores.find(c => c.razaoSocial == fornecedor.razaoSocial);
+        var fornecedorExistente = this.fornecedores.find(c => c.razaoSocial == fornecedor.razaoSocial || c.cpfCnpj == fornecedor.cpfCnpj);
         if (fornecedorExistente != null) {
+          this.fornecedorSelecionado = fornecedorExistente.razaoSocial;
           this.contaPagar.fornecedorId = fornecedorExistente.id;
         }
         else {
@@ -255,7 +262,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
-    if (this.validar) {
+    if (this.validar()) {
       this.contaPagarService.salvar(this.contaPagar).subscribe(
         data => {
           this.router.navigate(["listagem/listagemcontapagar"]);
@@ -270,6 +277,26 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   }
 
   public validar(): boolean {
+
+    if (this.util.stringParaData(this.contaPagar.dataEmissao) > this.util.stringParaData(this.contaPagar.dataVencimento)) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Data de vencimento menor do que data de emissão.";
+      return false;
+    }
+    else if (this.contaPagar.desconto > this.contaPagar.valorTotal) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Desconto maior do que valor total";
+      return false;
+    }
+    else if (this.util.hasItems(this.contaPagar.pagamentos)) {
+      let soma = 0;
+      this.contaPagar.pagamentos.forEach(pag => soma = +soma + +pag.valor);
+      if (soma > this.contaPagar.valorTotal) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Soma dos pagamentos maior do que valor total";
+        return false;
+      }
+    }
     return true;
   }
 
@@ -281,17 +308,23 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
         title: 'Data',
         filter: true
       },
-      descricaoPagamento: {
+      formaPagamentoId: {
         title: 'Forma Pagamento',
-        filter: true
+        filter: true,
+        valuePrepareFunction: (formaPagamentoId) => {
+          return formaPagamentoId == null || !this.util.hasItems(this.formaDePagamentos) ? "" : this.formaDePagamentos.find(c => c.id == formaPagamentoId).descricao;
+        }
       },
       parcela: {
         title: 'Parcela',
-        filter:false
+        filter: false
       },
       valor: {
         title: 'Valor',
-        filter:false
+        filter: false,
+        valuePrepareFunction: (valor) => {
+          return this.util.formatarDecimal(valor);
+        }
       }
     },
     actions:

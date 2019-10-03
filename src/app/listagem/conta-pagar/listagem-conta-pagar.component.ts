@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import * as tableData from './listagem-conta-pagar-settings';
+import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ContaPagarService } from '../../services/contaPagar.service';
 import { ContaPagar } from '../../modelos/contaPagar';
@@ -8,29 +7,38 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { FornecedorService } from '../../services/fornecedor.service';
+import { Fornecedor } from '../../modelos/fornecedor';
+import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
 
 @Component({
   templateUrl: './listagem-conta-pagar.component.html'
 })
-export class ListagemContaPagarComponent {
+export class ListagemContaPagarComponent implements OnInit {
   source: LocalDataSource;
   listaContaPagars: Array<ContaPagar>;
   public isSpinnerVisible = false;
   closeResult: string;
-  settings = tableData.settings;
   util = new Util();
+  fornecedores = new Array<Fornecedor>();
 
-  constructor(private contaPagarService: ContaPagarService, private agendamentoService: AgendamentoService, private router: Router, private modalService: NgbModal) {
-    this.isSpinnerVisible = true;
-    this.buscaContaPagars();
-    this.isSpinnerVisible = false;
+  constructor(private contaPagarService: ContaPagarService, private fornecedorService: FornecedorService, private router: Router, private modalService: NgbModal) {
   }
 
+  ngOnInit() {
+    this.isSpinnerVisible = true;
+    this.buscaContaPagars();
+  }
   buscaContaPagars(): void {
-    this.contaPagarService.Todos().subscribe(dados => {
-      this.listaContaPagars = dados;
-      this.contaPagarService.listaContaPagar = this.listaContaPagars;
-      this.source = new LocalDataSource(this.listaContaPagars);
+    this.fornecedorService.Todos().subscribe(c => {
+    this.fornecedores = c;
+
+      this.contaPagarService.Todos().subscribe(dados => {
+        this.listaContaPagars = dados;
+        this.isSpinnerVisible = false;
+        this.contaPagarService.listaContaPagar = this.listaContaPagars;
+        this.source = new LocalDataSource(this.listaContaPagars);
+      });
     });
   }
 
@@ -65,6 +73,62 @@ export class ListagemContaPagarComponent {
     this.contaPagarService.contaPagar = null;
     this.router.navigate(['/cadastros/cadastrocontapagar']);
   }
+
+  settings = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum registro",
+    columns: {
+      fornecedorId: {
+        title: 'Fornecedor',
+        filter: true,
+        valuePrepareFunction: (fornecedorId) => {
+          return fornecedorId == null || !this.util.hasItems(this.fornecedores) ? "" : this.fornecedores.find(c => c.id == fornecedorId).razaoSocial;
+        }
+      },
+      dataEmissao: {
+        title: 'Data Emissão',
+        filter: true
+      },
+      numeroFatura: {
+        title: 'Número',
+        filter: true
+      },
+      tipoContaPagar: {
+        title: 'Tipo Conta',
+        filter: true,
+        valuePrepareFunction: (tipoContaPagar) => {return ETipoContaPagar[tipoContaPagar].toString()}
+      },
+      valor: {
+        title: 'Valor',
+        filter: true,
+        valuePrepareFunction: (valor) => {return this.util.formatarDecimal(valor)}
+
+      },
+      saldo: {
+        title: 'Saldo',
+        filter: true,
+        valuePrepareFunction: (saldo) => {return this.util.formatarDecimal(saldo)}
+      }
+    },
+    actions:
+    {
+      columnTitle: ''
+    },
+    delete: {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    },
+    edit: {
+      editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>',
+    },
+    add:
+    {
+      addButtonContent: 'Novo'
+    }
+  };
 }
 
 

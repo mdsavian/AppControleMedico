@@ -109,15 +109,27 @@
                     </div>
                     <div class="col-xs-3 col-md-2">
                       <label class="control-label" for="desconto">Desconto</label>
-                      <input type="text" id="desconto" mask="dot_separator.2"
-                        (blur)="calcularJurosDesconto($event.target.value, 'desconto')" name="desconto"
-                        placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.desconto" #desconto="ngModel">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" id="desconto" mask="dot_separator.2"
+                          (blur)="calcularJurosDesconto($event.target.value, 'desconto')" name="desconto"
+                          placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.desconto"
+                          #desconto="ngModel">
+                      </div>
                     </div>
                     <div class="col-xs-3 col-md-2">
                       <label class="control-label" for="jurosMulta">Juros/Multa</label>
-                      <input type="text" id="jurosMulta" mask="dot_separator.2"
-                        (blur)="calcularJurosDesconto($event.target.value, 'juros')" name="jurosMulta"
-                        placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.jurosMulta" #juros="ngModel">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" id="jurosMulta" mask="dot_separator.2"
+                          (blur)="calcularJurosDesconto($event.target.value, 'juros')" name="jurosMulta"
+                          placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.jurosMulta"
+                          #juros="ngModel">
+                      </div>
                     </div>
                     <div class="col-xs-3 col-md-3">
                       <label class="control-label" for="valor">Valor(*)</label>
@@ -135,8 +147,13 @@
                     </div>
                     <div class="col-xs-3 col-md-2">
                       <label class="control-label" for="valorTotal">Valor Total</label>
-                      <input type="text" id="valorTotal" mask="dot_separator.2" [(ngModel)]="contaPagar.valorTotal"
-                        readonly name="valorTotal" placeholder="000,00" class="form-control" #valorTotal="ngModel">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" id="valorTotal" mask="dot_separator.2" [(ngModel)]="contaPagar.valorTotal"
+                          readonly name="valorTotal" placeholder="000,00" class="form-control" #valorTotal="ngModel">
+                      </div>
                     </div>
                   </div>
                   <div class="row rowcadastro">
@@ -167,8 +184,9 @@
                   </div>
                   <div class="row">
                     <div class="table table-responsive smart-table">
-                      <ng2-smart-table [(settings)]="settingsPagamentos" [(source)]="sourcePagamentos" 
-                      (edit)="editarRegistro($event)" (create)="adicionarPagamento()" (delete)="deletarPagamento($event, modalExcluir)">
+                      <ng2-smart-table [(settings)]="settingsPagamentos" [(source)]="sourcePagamentos"
+                        (edit)="editarRegistro($event)" (create)="adicionarPagamento()"
+                        (delete)="deletarPagamento($event, modalExcluir)">
                       </ng2-smart-table>
                     </div>
                   </div>
@@ -192,17 +210,17 @@
 </div>
 
 <ng-template #modalExcluir id="modalExcluir" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h4 class="modal-title">Excluir Registro</h4>
-        <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <p>Deseja excluir o registro?</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="c('Sim')">Sim</button>
-        <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
-    </div>
+  <div class="modal-header">
+    <h4 class="modal-title">Excluir Registro</h4>
+    <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja excluir o registro?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Sim')">Sim</button>
+    <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
+  </div>
 </ng-template>
