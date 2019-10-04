@@ -356,6 +356,7 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
+    this.medicoService.medico = null;
     this.medicoService.salvar(this.medico).subscribe(
       data => {
         if (this.imagemMedico != null) {

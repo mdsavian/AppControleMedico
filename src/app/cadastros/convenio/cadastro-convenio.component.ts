@@ -61,6 +61,7 @@ export class CadastroConvenioComponent implements OnInit, AfterViewInit {
 
 
   public onSubmit(): void {
+    this.convenioService.convenio = null;
     this.convenioService.salvar(this.convenio).subscribe(
       data => {
         this.router.navigate(["listagem/listagemconvenio"]);

@@ -65,6 +65,7 @@ export class CadastroFornecedorComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
+    this.fornecedorService.fornecedor = null; 
     this.fornecedorService.salvar(this.fornecedor).subscribe(
       data => {
         this.router.navigate(["listagem/listagemfornecedor"]);

@@ -52,6 +52,7 @@ export class CadastroFormaDePagamentoComponent implements OnInit, AfterViewInit 
   }
 
   public onSubmit(): void {
+    this.formaDePagamentoService.formaDePagamento = null;
     this.formaDePagamentoService.salvar(this.formaDePagamento).subscribe(
       data => {
         this.router.navigate(["listagem/listagemformadepagamento"]);

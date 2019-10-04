@@ -37,6 +37,7 @@ export class CadastroExameComponent implements OnInit, AfterViewInit {
   }
 
   public onSubmit(): void {
+    this.exameService.exame = null;
     this.exameService.salvar(this.exame).subscribe(
       data => {
         this.router.navigate(["listagem/listagemexame"]);

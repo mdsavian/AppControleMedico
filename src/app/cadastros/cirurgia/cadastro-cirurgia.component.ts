@@ -36,8 +36,9 @@ export class CadastroCirurgiaComponent implements OnInit, AfterViewInit {
   }
 
   public onSubmit(): void {
+    this.cirurgiaService.cirurgia = null;
     this.cirurgiaService.salvar(this.cirurgia).subscribe(
-      data => {
+      data => {        
         this.router.navigate(["listagem/listagemcirurgia"]);
       },
       error => {

@@ -37,6 +37,7 @@ export class CadastroProcedimentoComponent implements OnInit, AfterViewInit {
   }
 
   public onSubmit(): void {
+    this.procedimentoService.procedimento = null;
     this.procedimentoService.salvar(this.procedimento).subscribe(
       data => {
         this.router.navigate(["listagem/listagemprocedimento"]);

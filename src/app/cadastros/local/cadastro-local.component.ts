@@ -39,6 +39,7 @@ export class CadastroLocalComponent implements OnInit, AfterViewInit {
   }
 
   public onSubmit(): void {
+    this.localService.local = null;
     this.localService.salvar(this.local).subscribe(
       data => {
         this.router.navigate(["listagem/listagemlocal"]);

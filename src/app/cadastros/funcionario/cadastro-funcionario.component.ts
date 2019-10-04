@@ -353,6 +353,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
+    this.funcionarioService.funcionario = null;
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {
 

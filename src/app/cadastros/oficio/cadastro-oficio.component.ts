@@ -36,6 +36,7 @@ export class CadastroOficioComponent implements OnInit, AfterViewInit {
   }
 
   public onSubmit(): void {
+    this.oficioService.oficio = null;
     this.oficioService.salvar(this.oficio).subscribe(
       data => {
         this.router.navigate(["listagem/listagemoficio"]);

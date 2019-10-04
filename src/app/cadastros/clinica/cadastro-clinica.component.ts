@@ -89,6 +89,7 @@ export class CadastroClinicaComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
+    this.clinicaService.clinica = null;
     this.clinicaService.salvar(this.clinica).subscribe(
       data => {
         if (this.imagemClinica != null) {

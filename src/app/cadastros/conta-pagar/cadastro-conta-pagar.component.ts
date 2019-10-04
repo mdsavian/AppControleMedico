@@ -262,6 +262,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
+    this.contaPagarService.contaPagar = null;
     if (this.validar()) {
       this.contaPagarService.salvar(this.contaPagar).subscribe(
         data => {

@@ -36,6 +36,7 @@ export class CadastroEspecialidadeComponent implements OnInit, AfterViewInit {
   }
 
   public onSubmit(): void {
+    this.especialidadeService.especialidade = null;
     this.especialidadeService.salvar(this.especialidade).subscribe(
       data => {
         this.router.navigate(["listagem/listagemespecialidade"]);
