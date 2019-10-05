@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-procedimento.component.html'
@@ -34,14 +35,14 @@ export class ListagemProcedimentoComponent {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.agendamentoService.buscarAgendamentosProcedimento(event.data.id).subscribe(agendamentos => {
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir procedimento vínculado a agendamento(s).";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.procedimentoService.Excluir(event.data.id).subscribe(retorno => {

@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-cirurgia.component.html'
@@ -34,15 +35,14 @@ export class ListagemCirurgiaComponent {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.agendamentoService.buscarAgendamentosCirurgia(event.data.id).subscribe(agendamentos => {
-      console.log(agendamentos);
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir cirurgia vínculada a agendamento(s).";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.cirurgiaService.Excluir(event.data.id).subscribe(retorno => {

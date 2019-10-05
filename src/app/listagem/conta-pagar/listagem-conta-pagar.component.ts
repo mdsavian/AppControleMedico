@@ -10,6 +10,7 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { FornecedorService } from '../../services/fornecedor.service';
 import { Fornecedor } from '../../modelos/fornecedor';
 import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-conta-pagar.component.html'
@@ -42,7 +43,7 @@ export class ListagemContaPagarComponent implements OnInit {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     var conta = this.listaContaPagars.find(c => c.id == event.data.id);
 
     if (this.util.hasItems(conta.pagamentos)) {
@@ -50,7 +51,7 @@ export class ListagemContaPagarComponent implements OnInit {
       modal.componentInstance.mensagemErro = "Não é possível excluir conta a pagar que já contém pagamento(s).";
     }
     else {
-      this.modalService.open(modalExcluir).result.then(
+      this.modalService.open(ModalExcluirRegistroComponent).result.then(
         result => {
           if (result == 'Sim') {
             this.contaPagarService.Excluir(event.data.id).subscribe(retorno => {

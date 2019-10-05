@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-oficio.component.html'
@@ -34,14 +35,14 @@ constructor( private oficioService: OficioService, private funcionarioService:Fu
   }
   settings = tableData.settings;
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.funcionarioService.buscarPorOficio(event.data.id).subscribe(funcionarios => {      
       if (this.util.hasItems(funcionarios)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir ofício vínculado a funcionário(s).";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.oficioService.Excluir(event.data.id).subscribe(retorno=> {

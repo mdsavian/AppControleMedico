@@ -51,7 +51,6 @@ export class CadastroFornecedorComponent implements OnInit, AfterViewInit {
 
   public buscaCep() {
     if (this.fornecedor.cep != "") {
-      console.log(this.fornecedor.cep);
       this.enderecoService.buscarEndereco(this.fornecedor.cep).subscribe(c => {
         this.fornecedor.cep = c.cep;
         this.fornecedor.bairro = c.bairro;

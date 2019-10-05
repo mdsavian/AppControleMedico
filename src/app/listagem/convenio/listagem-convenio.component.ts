@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { MedicoService } from '../../services/medico.service';
 import { Util } from '../../uteis/Util';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-convenio.component.html'
@@ -34,7 +35,7 @@ export class ListagemConvenioComponent {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.medicoService.buscarMedicoConvenio(event.data.id).subscribe(agendamentos => {
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
@@ -42,7 +43,7 @@ export class ListagemConvenioComponent {
       }
       else {
 
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.convenioService.Excluir(event.data.id).subscribe(retorno => {

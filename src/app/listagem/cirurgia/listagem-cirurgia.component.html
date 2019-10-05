@@ -8,26 +8,10 @@
                 </div>
                 <div class="table table-responsive smart-table" *ngIf=!isSpinnerVisible>
                     <ng2-smart-table [(settings)]="settings" [(source)]="source" class="" (edit)="editarRegistro($event)"
-                        (create)="criarRegistro($event)" (delete)="deletarRegistro($event, modalExcluir)">
+                        (create)="criarRegistro($event)" (delete)="deletarRegistro($event)">
                     </ng2-smart-table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<ng-template #modalExcluir id="modalExcluir" let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h4 class="modal-title">Excluir Registro</h4>
-        <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <p>Deseja excluir o registro?</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="c('Sim')">Sim</button>
-        <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
-    </div>
-</ng-template>

@@ -19,9 +19,12 @@ import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.co
 import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 import { CorComponent } from './shared/cor-component';
+import { SharedModalModule } from '../shared/modal/shared-modal.module';
+
 
 @NgModule({
   imports: [
+    SharedModalModule,
     CommonModule,
     RouterModule.forChild(ListagemRoutes),
     NgxDatatableModule,

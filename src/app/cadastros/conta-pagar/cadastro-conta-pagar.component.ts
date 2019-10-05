@@ -18,6 +18,7 @@ import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
 import { ModalCadastroFornecedorComponent } from '../fornecedor/modal-cadastro-fornecedor.component';
 import { AppService } from '../../services/app.service';
 import { ModalPagamentoComponent } from '../../shared/modal/modal-pagamento.component';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 import { ContaPagarPagamento } from '../../modelos/contaPagarPagamento';
 import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
 import { FormaDePagamento } from '../../modelos/formaDePagamento';
@@ -247,9 +248,9 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
 
   }
 
-  deletarPagamento(event: any, modalExcluir) {
+  deletarPagamento(event: any) {
 
-    this.modalService.open(modalExcluir).result.then(
+    this.modalService.open(ModalExcluirRegistroComponent).result.then(
       result => {
         if (result == 'Sim') {
           var index = this.contaPagar.pagamentos.indexOf(event.data.codigo);

@@ -8,6 +8,7 @@ import { ModalAlteraSenhaComponent } from './modal-altera-senha.component';
 import { ModalSucessoComponent } from './modal-sucesso.component';
 import { ModalWebcamComponent } from './modal-webcam.component';
 import { ModalPagamentoComponent } from './modal-pagamento.component';
+import { ModalExcluirRegistroComponent} from './modal-excluir-registro.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { WebcamModule } from 'ngx-webcam';
 
@@ -15,7 +16,7 @@ import { WebcamModule } from 'ngx-webcam';
 
 @NgModule({
   imports: [CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
-  declarations: [ModalWebcamComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
-  entryComponents: [ModalWebcamComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
+  declarations: [ModalWebcamComponent,ModalExcluirRegistroComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+  entryComponents: [ModalWebcamComponent,ModalExcluirRegistroComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
 })
 export class SharedModalModule { }

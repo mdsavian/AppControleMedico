@@ -10,6 +10,7 @@ import { AgendamentoService } from '../../services/agendamento.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { UsuarioService } from '../../services/usuario.service';
 import { Usuario } from '../../modelos/usuario';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-medico.component.html'
@@ -92,14 +93,14 @@ export class ListagemMedicoComponent implements OnInit {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.agendamentoService.buscarAgendamentoMedicoExcluir(event.data.id).subscribe(agendamentos => {
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir médico vínculado a agendamento(s).";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.medicoService.Excluir(event.data.id).subscribe(retorno => {

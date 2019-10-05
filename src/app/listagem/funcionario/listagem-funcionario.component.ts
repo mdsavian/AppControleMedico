@@ -10,6 +10,7 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { Usuario } from '../../modelos/usuario';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-funcionario.component.html'
@@ -46,14 +47,14 @@ export class ListagemFuncionarioComponent implements OnInit{
   }
 
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.agendamentoService.buscarAgendamentosFuncionario(event.data.id).subscribe(agendamentos => {
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir funcionário vínculado a agendamento(s).";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.funcionarioService.Excluir(event.data.id).subscribe(retorno => {

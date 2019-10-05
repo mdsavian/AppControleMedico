@@ -214,8 +214,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     modalNovoPaciente.result.then((paciente: Paciente) => {
       if (paciente != null && paciente.nomeCompleto != '') {
-
-        console.log(paciente);
         var pacienteExistente = this.pacientes.find(c => c.nomeCompleto == paciente.nomeCompleto);
         if (pacienteExistente != null) {
           this.agendamento.paciente = pacienteExistente;

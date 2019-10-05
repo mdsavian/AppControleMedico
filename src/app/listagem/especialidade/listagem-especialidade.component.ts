@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MedicoService } from '../../services/medico.service';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-especialidade.component.html'
@@ -34,14 +35,14 @@ export class ListagemEspecialidadeComponent {
   }
   settings = tableData.settings;
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.medicoService.buscarMedicoEspecialidade(event.data.id).subscribe(agendamentos => {
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir especialidade vínculada a médico(s).";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.especialidadeService.Excluir(event.data.id).subscribe(retorno => {

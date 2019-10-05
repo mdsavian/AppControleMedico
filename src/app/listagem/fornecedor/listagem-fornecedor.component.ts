@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { Util } from '../../uteis/Util';
 import { ContaPagarService } from '../../services/contaPagar.service';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-fornecedor.component.html'
@@ -34,14 +35,14 @@ export class ListagemFornecedorComponent {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
+  deletarRegistro(event) {
     this.contaPagarService.buscarContaPagarPorFornecedor(event.data.id).subscribe(conta => {
       if (this.util.hasItems(conta)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir fornecedor vínculado a conta(s) a pagar.";
       }
       else {
-        this.modalService.open(modalExcluir).result.then(
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
           result => {
             if (result == 'Sim') {
               this.fornecedorService.Excluir(event.data.id).subscribe(retorno => {

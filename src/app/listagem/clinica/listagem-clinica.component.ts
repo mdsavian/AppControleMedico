@@ -5,6 +5,7 @@ import { ClinicaService } from '../../services/clinica.service';
 import { Clinica } from '../../modelos/clinica';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './listagem-clinica.component.html'
@@ -30,8 +31,8 @@ export class ListagemClinicaComponent {
     });
   }
 
-  deletarRegistro(event, modalExcluir) {
-    this.modalService.open(modalExcluir).result.then(
+  deletarRegistro(event) {
+    this.modalService.open(ModalExcluirRegistroComponent).result.then(
       result => {
         if (result == 'Sim') {
           this.clinicaService.Excluir(event.data.id).subscribe(retorno => {
