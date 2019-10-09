@@ -155,7 +155,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         retorno = true;
       }
 
-      if (this.agendamento.dataAgendamento == null) {
+      if (!this.util.validaData(this.agendamento.dataAgendamento)) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
         retorno = true;

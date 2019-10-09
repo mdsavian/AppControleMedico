@@ -194,9 +194,9 @@
                         placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataAgenda"
                         #dataAgendamento="ngModel" (blur)="formataData($event)">
                 </div>
-                <div *ngIf="dataAgendamento.invalid" class="alert alert-danger">
-                    <div *ngIf="dataAgendamento.errors.required"> Data Obrigatória.</div>
-                    <div *ngIf="dataAgendamento.errors.pattern"> Data Inválida.</div>
+                <div *ngIf="dataAgendamento.invalid || dataAgendamento.errors?.validaData" class="alert alert-danger">
+                    <div *ngIf="dataAgendamento.errors?.required"> Data Obrigatória.</div>
+                    <div *ngIf="dataAgendamento.errors?.validaData"> Data Inválida.</div>
                 </div>
             </div>
 

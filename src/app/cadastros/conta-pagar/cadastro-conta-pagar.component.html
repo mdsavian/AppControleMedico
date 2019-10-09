@@ -66,12 +66,12 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" required id="dataEmissao" name="dataEmissao"
-                            placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataEmi" #dataEmissao="ngModel"
+                            placeholder="dd/mm/aaaa" class="form-control" appValidaData [(ngModel)]="dataEmi" #dataEmissao="ngModel"
                             (blur)="formataData($event)">
                         </div>
-                        <div *ngIf="dataEmissao.invalid" class="alert alert-danger">
-                          <div *ngIf="dataEmissao.errors.required"> Data Obrigatória.</div>
-                          <div *ngIf="dataEmissao.errors.pattern"> Data Inválida.</div>
+                        <div *ngIf="dataEmissao.invalid || dataEmissao.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataEmissao.errors?.required"> Data Obrigatória.</div>
+                          <div *ngIf="dataEmissao.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
                     </div>
@@ -83,12 +83,13 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" required id="dataVencimento" name="dataVencimento"
-                            placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataVenc"
+                            placeholder="dd/mm/aaaa" appValidaData class="form-control" [(ngModel)]="dataVenc"
                             #dataVencimento="ngModel" (blur)="formataData($event)">
                         </div>
-                        <div *ngIf="dataVencimento.invalid" class="alert alert-danger">
+                        <div *ngIf="dataVencimento.invalid || dataVencimento.errors?.validaData" class="alert alert-danger">
                           <div *ngIf="dataVencimento.errors.required"> Data Obrigatória.</div>
-                          <div *ngIf="dataVencimento.errors.pattern"> Data Inválida.</div>
+                          <div *ngIf="dataVencimento.errors?.validaData"> Data Inválida.</div>
+
                         </div>
                       </div>
                     </div>

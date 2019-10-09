@@ -1,3 +1,5 @@
+import { SharedModalModule } from '../shared/modal/shared-modal.module';
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +22,7 @@ import { ValidaEmailUsuarioDirective } from '../validadores/valida-email-usuario
 import { ValidaNomeOficioDirective } from '../validadores/valida-nome-oficio.directive';
 import { ValidaCpfDirective } from '../validadores/valida-cpf.directive';
 import { ValidaCnpjDirective } from '../validadores/valida-cnpj.directive';
+import { ValidaDataDirective } from '../validadores/valida-data.directive';
 
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
@@ -38,7 +41,7 @@ import { CadastroFornecedorComponent } from './fornecedor/cadastro-fornecedor.co
 import { CadastroContaPagarComponent } from './conta-pagar/cadastro-conta-pagar.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
-import { SharedModalModule } from '../shared/modal/shared-modal.module';
+
 
 
 @NgModule({
@@ -48,7 +51,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
-    ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
+    ValidaDescricaoConvenioDirective, ValidaCnpjDirective,ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
 

@@ -6,6 +6,7 @@ import { Convenio } from '../../modelos/convenio';
 import { ConvenioService } from '../../services/convenio.service';
 import { ModalAdicionaModeloDescricaoComponent } from '../../shared/modal/modal-adiciona-modelo-descricao.component';
 import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
+import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 
 @Component({
   selector: 'app-modal-cadastro-paciente.component',
@@ -13,7 +14,7 @@ import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component'
 })
 
 export class ModalCadastroPacienteComponent {
-  @ViewChild('nomeCompleto', { read: ElementRef, static:true }) private nomeCompleto: ElementRef;
+  @ViewChild('nomeCompleto', { read: ElementRef, static: true }) private nomeCompleto: ElementRef;
   @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
 
@@ -22,7 +23,7 @@ export class ModalCadastroPacienteComponent {
   convenio: Convenio;
   convenios: Array<Convenio>;
   nomeCompletoModel: string;
-  dataNasci:string;
+  dataNasci: string;
 
   imagemPaciente: any;
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
@@ -96,10 +97,19 @@ export class ModalCadastroPacienteComponent {
 
 
   salvar() {
-    if (this.imagemPaciente != null)
-      this.paciente.foto = this.imagemPaciente;
+    var retorno = false;
 
-    this.activeModal.close(this.paciente);
+    if (!this.util.validaData(this.util.dataParaString(this.paciente.dataNascimento))) {
+      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modalErro.componentInstance.mensagemErro = "Data inválida.";
+      retorno = true;
+    }
+    if (!retorno) {
+      if (this.imagemPaciente != null)
+        this.paciente.foto = this.imagemPaciente;
+
+      this.activeModal.close(this.paciente);
+    }
   }
 
   fechar() {

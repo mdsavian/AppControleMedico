@@ -18,8 +18,10 @@
                     </select>
                     <div *ngIf="funcionarioModel.invalid || existeCaixaAbertoParaFuncionario"
                         class="alert alert-danger">
-                        <div *ngIf="funcionarioModel.invalid && funcionarioModel.errors.required"> Funcionário Obrigatório. </div>
-                        <div *ngIf="existeCaixaAbertoParaFuncionario"> Já existe um caixa aberto para o funcionário selecionado. </div>
+                        <div *ngIf="funcionarioModel.invalid && funcionarioModel.errors.required"> Funcionário
+                            Obrigatório. </div>
+                        <div *ngIf="existeCaixaAbertoParaFuncionario"> Já existe um caixa aberto para o funcionário
+                            selecionado. </div>
                     </div>
                 </div>
             </div>
@@ -28,7 +30,8 @@
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
                     <label class="control-label" for="senha">Senha(*)</label>
-                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha" placeholder="senha" required #senha>
+                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha"
+                        placeholder="senha" required #senha>
                     <div *ngIf="senha.value == '' || senhaValida" class="alert alert-danger">
                         <div *ngIf="senha.value == ''"> Senha Obrigatória. </div>
                         <div *ngIf="senhaValida"> Senha Inválida. </div>
@@ -59,8 +62,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <input type="text" mask="00/00/0000" id="dataAbertura" name="dataAbertura" placeholder="dd/mm/yyyy"
-                        class="form-control" [(ngModel)]="caixa.dataAbertura" #dataAbertura="ngModel" readonly>
+                    <input type="text" mask="00/00/0000" appValidaDataModal id="dataAbertura" name="dataAbertura"
+                        placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="caixa.dataAbertura"
+                        #dataAbertura="ngModel" readonly>
+                </div>
+                <div *ngIf="dataAbertura.invalid && dataAbertura.errors?.validaDataModal" class="alert alert-danger">
+                    <div *ngIf="dataAbertura.errors?.validaDataModal"> Data Inválida.</div>
                 </div>
             </div>
             <div class="col-xs-4 col-md-4">
@@ -78,7 +85,7 @@
     </div>
 </form>
 <div class="modal-footer">
-    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning"  type="submit">Cancelar</button>
-    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" 
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
         [disabled]="!aberturaCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
 </div>

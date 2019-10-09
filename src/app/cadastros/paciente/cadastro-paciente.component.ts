@@ -40,6 +40,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   estados = Estados;
   dataNasci: string = "01/01/1901"
   dataValidade: string = "01/01/1901"
+  dataUltimaMenstru: string = "01/01/1901"
   descricaos: Array<string>;
   falhaNaBusca: boolean;
   medico: Medico;
@@ -62,6 +63,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       this.paciente = this.pacienteService.paciente;
       this.dataNasci = this.util.dataParaString(this.paciente.dataNascimento);
       this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
+      this.dataUltimaMenstru = this.util.dataParaString(this.paciente.dataUltimaMenstruacao);
 
       if (!this.util.isNullOrWhitespace(this.paciente.fotoId))
         this.downloadFoto();
@@ -126,10 +128,13 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     )
 
   public formataData(e): void {
+    console.log(e.target.value);
     if (e.target.id == "dataNascimento")
       this.paciente.dataNascimento = this.util.stringParaData(e.target.value);
-    else
+    else if (e.target.id == "dataValidadeCartao")
       this.paciente.dataValidadeCartao = this.util.stringParaData(e.target.value);
+    else if (e.target.id == "dataUltimaMenstruacao")
+      this.paciente.dataUltimaMenstruacao = this.util.stringParaData(e.target.value);
   }
 
   public tirarFoto() {
@@ -160,6 +165,10 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     this.uploadService.downloadImagem(this.pacienteService.paciente.id, "paciente").subscribe(byte => {
       this.imageUrl = "data:image/jpeg;base64," + byte['value'];
     });
+  }
+
+  public validaDat(valor) {
+
   }
 
   public salvar(): void {

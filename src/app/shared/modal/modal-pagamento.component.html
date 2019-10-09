@@ -31,7 +31,7 @@
                 <label class="control-label" for="parcela">Parcela</label>
                 <div class="input-group">
                     <input type="number" min="1" id="parcela" name="parcela" class="form-control" required
-                        [(ngModel)]="pagamento.parcela" #parcela="ngModel">
+                        [(ngModel)]="pagamento.parcela" #parcela="ngModel"> 
                 </div>
                 <div *ngIf="parcela.invalid" class="alert alert-danger">
                     <div *ngIf="parcela.errors.required">Parcela Obrigatória. </div>
@@ -52,7 +52,6 @@
                     </div>
                     <div *ngIf="dataPagamento.invalid" class="alert alert-danger">
                         <div *ngIf="dataPagamento.errors.required"> Data Obrigatória.</div>
-                        <div *ngIf="dataPagamento.errors.pattern"> Data Inválida.</div>
                     </div>
                 </div>
             </div>

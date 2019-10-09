@@ -81,8 +81,11 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
+                            placeholder="dd/mm/yyyy" appValidaData class="form-control" [(ngModel)]="dataNasci"
                             #dataNascimento="ngModel" (blur)="formataData($event)">
+                        </div>
+                        <div *ngIf="dataNascimento.invalid && dataNascimento.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataNascimento.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
 
@@ -92,9 +95,12 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" id="dataAdmis" name="dataAdmis" placeholder="dd/mm/yyyy"
+                          <input type="text" mask="00/00/0000" appValidaData id="dataAdmis" name="dataAdmis" placeholder="dd/mm/yyyy"
                             class="form-control" [(ngModel)]="dataAdmis" #dataAdmissao="ngModel"
                             (blur)="formataData($event)">
+                        </div>
+                        <div *ngIf="dataAdmissao.invalid && dataAdmissao.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataAdmissao.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
                     </div>
@@ -129,8 +135,11 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" id="dataDemis" name="dataDemis" placeholder="dd/mm/yyyy"
-                            class="form-control" [(ngModel)]="dataDemis" #dataDemissao="ngModel"
+                            class="form-control" appValidaData [(ngModel)]="dataDemis" #dataDemissao="ngModel"
                             (blur)="formataData($event)">
+                        </div>
+                        <div *ngIf="dataDemissao.invalid && dataDemissao.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataDemissao.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
                     </div>

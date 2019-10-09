@@ -62,14 +62,23 @@ export class ModalPagamentoComponent {
   }
 
   salvar() {
+    var retorno = false;
     var valor = this.pagamento.valor;
-    if ((parseFloat(valor.toString()) * this.pagamento.parcela) > this.saldo) {
+
+    if (!this.util.validaData(this.pagamento.dataPagamento)){
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Data de pagamento inválida";      
+      retorno = true;
+    } else if ((parseFloat(valor.toString()) * this.pagamento.parcela) > this.saldo) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Valor informado maior do que valor de saldo.";
+      retorno = true;
     }
-    else {
+    
+    if (!retorno){
       this.activeModal.close(this.pagamento);
     }
+    
   }
 
   fechar() {

@@ -14,13 +14,13 @@
                       <img [src]="imageUrl" width="200" height="220" />
                       <br />
                       <br />
-                      <button class="btn btn-rounded btn-warning" (click)="tirarFoto()">Tirar Foto</button>
+                      <button class="btn btn-rounded btn-warning" type="button" (click)="tirarFoto()">Tirar
+                        Foto</button>
                       <br />
                       <br />
-                      <button
-                       class="btn btn-rounded" style="background-color: rgba(117, 117, 212, 0.835)"
+                      <button class="btn btn-rounded" type="button" style="background-color: rgba(117, 117, 212, 0.835)"
                         (click)="importarArquivo()">Importar Arquivo</button>
-                        <input id="fileInput" #fileInput type="file" (change)="changefile($event)"
+                      <input id="fileInput" #fileInput type="file" (change)="changefile($event)"
                         accept=".jpeg, .png, .jpg;" name="fileInput" style="display: none;" />
                     </div>
 
@@ -113,9 +113,12 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
+                          <input type="text" mask="00/00/0000" appValidaData id="dataNascimento" name="dataNascimento"
                             placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
                             #dataNascimento="ngModel" (blur)="formataData($event)">
+                        </div>
+                        <div *ngIf="dataNascimento.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataNascimento.errors?.validaData"> Data Inválida. </div>
                         </div>
                       </div>
                     </div>
@@ -314,9 +317,12 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" id="dataValidadeCartao" name="dataValidadeCartao"
-                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataValidade" #dataValidadeCartao
-                            (blur)="formataData($event)">
+                          <input type="text" mask="00/00/0000" appValidaData id="dataValidadeCartao" name="dataValidadeCartao"
+                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataValidade" #dataValidadeCartao="ngModel"
+                            (blur)="formataData($event)">                            
+                        </div>
+                        <div *ngIf="dataValidadeCartao.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataValidadeCartao.errors?.validaData"> Data Inválida. </div>
                         </div>
                       </div>
                     </div>
@@ -355,8 +361,11 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" id="dataUltimaMenstruacao" name="dataUltimaMenstruacao"
-                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataValidade"
-                            #dataUltimaMenstruacao (blur)="formataData($event)">
+                            placeholder="dd/mm/yyyy" appValidaData class="form-control" [(ngModel)]="dataUltimaMenstru"
+                            #dataUltimaMenstruacao="ngModel" (blur)="formataData($event)">
+                        </div>
+                        <div *ngIf="dataUltimaMenstruacao.errors?.validaData" class="alert alert-danger">
+                          <div *ngIf="dataUltimaMenstruacao.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
                     </div>
@@ -393,8 +402,9 @@
           <div class="panel-footer rowcadastro">
             <div class="form-group">
               <div class="col-xs-8 col-md-6">
+                  <ng-template #tipSalvar>Revise os campos em todas abas.</ng-template>
                 <button style="width:40%" class="btn btn-rounded btn-success" [disabled]="!pacienteForm.form.valid"
-                  (click)="salvar()">Salvar</button>
+                  (click)="salvar()" [ngbTooltip]="tipSalvar" >Salvar</button>
                 <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
               </div>
             </div>

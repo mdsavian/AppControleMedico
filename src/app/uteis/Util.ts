@@ -83,6 +83,34 @@ export class Util {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4");
     }
 
+    public validaData(data:string): boolean {
+    
+        if (this.isNullOrWhitespace(data))
+            return false;
+        var date = data;
+        var ardt = new Array;
+        var ExpReg = new RegExp("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[12][0-9]{3}");    
+        var erro = false;
+        ardt = date.split("/");
+    
+        if (date.search(ExpReg) == -1) {
+          erro = true;
+        }
+        else if (((ardt[1] == 4) || (ardt[1] == 6) || (ardt[1] == 9) || (ardt[1] == 11)) && (ardt[0] > 30))
+          erro = true;
+        else if (ardt[1] == 2) {
+    
+          if ((ardt[0] > 28) && ((ardt[2] % 4) != 0))
+            erro = true;
+          if ((ardt[0] > 29) && ((ardt[2] % 4) == 0))
+            erro = true;
+        }
+        
+        if (erro)
+          return false;
+    
+        return true;
+      }
 
     public formataTelefone(telefone: string) {
         telefone = telefone.replace(/\D/g, "");             //Remove tudo o que não é dígito
