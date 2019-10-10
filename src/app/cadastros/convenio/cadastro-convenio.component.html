@@ -4,7 +4,7 @@
       <div class="card-body">
         <form (ngSubmit)="onSubmit()" #convenioForm="ngForm">
           <div [hidden]="convenioForm.submitted">
-            <ngb-tabset type="pills">
+            <ngb-tabset type="pills" [destroyOnHide]="false">
               <ngb-tab title="Dados">
                 <ng-template ngbTabContent>
                   <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">

@@ -3,12 +3,11 @@
     <div class="card">
       <div class="card-body">
         <form #clinicaForm="ngForm">
-          <ngb-tabset type="pills">
+          <ngb-tabset type="pills" [destroyOnHide]="false">
             <ngb-tab title="Informações">
               <ng-template ngbTabContent>
                 <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
-
                   <div class="row rowcadastro">
                     <div class="col-xs-12 col-md-6">
                       <div class="form-group">

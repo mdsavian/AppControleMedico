@@ -1,4 +1,3 @@
-import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -45,7 +44,7 @@ import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-
 
 
 @NgModule({
-  imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, SharedModalModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
+  imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,

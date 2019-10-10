@@ -250,6 +250,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
 
   deletarPagamento(event: any) {
 
+    console.log(event.data.codigo);
     this.modalService.open(ModalExcluirRegistroComponent).result.then(
       result => {
         if (result == 'Sim') {

@@ -3,8 +3,7 @@
     <div class="card">
       <div class="card-body">
         <form #medicoForm="ngForm">
-
-          <ngb-tabset type="pills">
+          <ngb-tabset type="pills" [destroyOnHide]="false">
             <ngb-tab title="Informações Pessoais">
               <ng-template ngbTabContent>
                 <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">

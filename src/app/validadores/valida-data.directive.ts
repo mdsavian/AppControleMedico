@@ -16,15 +16,12 @@ export class ValidaDataDirective implements Validator {
     if (control.value == '' || control.value == null)
       return null;
 
-      console.log(control.value, this.validaData(control.value));
-
     if (!this.validaData(control.value)) return { 'validaData': { value: control.value } };
     else return null;
   }
 
-  public validaData(data:string): boolean {
+  public validaData(data:string): boolean {    
     
-    console.log(data);
     var date = this.util.formatarData(data);
     var ardt = new Array;
     var ExpReg = new RegExp("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[12][0-9]{3}");    

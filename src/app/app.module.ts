@@ -30,6 +30,7 @@ import { SpinnerComponent } from './shared/spinner.component';
 import { ModalErrorComponent } from './shared/modal/modal-error.component';
 import { environment } from '../environments/environment';
 import { UsuarioService } from './services/usuario.service';
+import { SharedModalModule } from './shared/modal/shared-modal.module';
 
 
 import { NgxMaskModule } from 'ngx-mask'
@@ -55,8 +56,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbModule.forRoot(),
     NgxMaskModule.forRoot(),
     PerfectScrollbarModule,
-    AppRoutingModule,
-    
+    SharedModalModule,  
+    AppRoutingModule,    
   ],
   declarations: [
     AppComponent,

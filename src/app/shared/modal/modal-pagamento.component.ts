@@ -81,6 +81,11 @@ export class ModalPagamentoComponent {
     
   }
 
+  formatarDecimal(valor)
+  {
+    console.log(valor, this.util.formatarDecimalBlur(valor));
+  }
+
   fechar() {
     this.activeModal.close();
   }

@@ -8,6 +8,11 @@ export class Util {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
     }
 
+    formatarDecimalBlur(valor: number) {
+        console.log(valor.toString(), valor.toString().indexOf(','));
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: '', minimumFractionDigits: 2 }).format(valor);
+    }
+
     public converteData(data: NgbDate): Date {
         var dataNova: Date = new Date(data.year, data.month, data.day);
         return dataNova;
