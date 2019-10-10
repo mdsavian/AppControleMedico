@@ -224,6 +224,12 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
     }, error => { });
   }
 
+  formatarDecimal(valor)  
+  {
+    console.log(valor, this.util.formatarDecimalBlur(valor));
+    this.valor.nativeElement.value = this.util.formatarDecimalBlur(valor);
+  }
+
   adicionaFornecedor() {
     var modalNovoFornecedor = this.modalService.open(ModalCadastroFornecedorComponent, { size: 'lg' });
 
@@ -233,11 +239,13 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
         if (fornecedorExistente != null) {
           this.fornecedorSelecionado = fornecedorExistente.razaoSocial;
           this.contaPagar.fornecedorId = fornecedorExistente.id;
+          this.falhaNaBusca = false;
         }
         else {
           this.fornecedores.push(fornecedor);
           this.nomeFornecedores.push(fornecedor.razaoSocial);
           this.fornecedorSelecionado = fornecedor.razaoSocial;
+          this.falhaNaBusca = false;
 
           this.fornecedorService.salvar(fornecedor).subscribe(fornecedorCadastrado => {
             this.contaPagar.fornecedorId = fornecedorCadastrado.id;

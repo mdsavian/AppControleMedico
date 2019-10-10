@@ -138,7 +138,7 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text">R$</span>
                         </div>
-                        <input type="text" id="valor" (blur)="calcularJurosDesconto($event.target.value, 'valor')"
+                        <input type="text" id="valor" (blur)="calcularJurosDesconto($event.target.value, 'valor'); formatarDecimal($event.target.value);"
                           mask="dot_separator.2" name="valor" placeholder="000,00" class="form-control" required
                           min="0.1" [(ngModel)]="contaPagar.valor" #valor="ngModel">
                       </div>
