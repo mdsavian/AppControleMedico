@@ -1,22 +1,30 @@
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
-import { compileInjectable } from "@angular/compiler";
 
 export class Util {
 
-    formatarDecimal(valor: number) {
+    formatarDecimal(valor: number, ) {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
     }
 
-    formatarDecimalBlur(valor: number) {
-        console.log(valor.toString(), valor.toString().indexOf('.'));
-        console.log(new Intl.NumberFormat('pt-BR', { style: 'decimal', minimumFractionDigits: 2 }).format(valor));
-        console.log(new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2 }).format(valor));
+    formatarDecimalBlur(valor: number) :string{
 
-        if (valor.toString().indexOf(',') > 0)
-            return valor;
+        let valorString = valor.toString();
+
+        if (valorString.indexOf(',') > 0) {   
+            if (valorString.substring(valorString.indexOf(',') + 1, valorString.length).length == 0)
+                return valorString + "00";
+            //quando é digitado com apenas 1 casa decimal ex: 87,9         
+            else if (valorString.substring(valorString.indexOf(',') + 1, valorString.length).length == 1)
+                return valorString + "0";
+
+            return valor.toString();
+        }
+        else if (valorString.indexOf('.') > 0) {
+            return valorString + ",00";
+        }
         else
-            return new Intl.NumberFormat('pt-BR', { style: 'decimal', minimumFractionDigits: 2 }).format(valor);
+            return new Intl.NumberFormat('pt-BR', { style: 'decimal', minimumFractionDigits: 2 }).format(valor).toString();
     }
 
     public converteData(data: NgbDate): Date {

@@ -18,6 +18,7 @@ import { AppService } from '../../services/app.service';
 export class ModalAberturaCaixaComponent   {
   @ViewChild('funcionarioModel', { read: ElementRef, static:true}) private funcionarioModel: ElementRef;
   @ViewChild('senha', { read: ElementRef, static:false}) private senha: ElementRef;
+  @ViewChild('trocoAbertura', { read: ElementRef, static:false}) private trocoAbertura: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   caixa: Caixa = new Caixa();
@@ -44,6 +45,11 @@ export class ModalAberturaCaixaComponent   {
     this.caixaService.retornarCaixaAbertoFuncionario(this.caixa.funcionarioId).subscribe(caixa => {
       this.existeCaixaAbertoParaFuncionario = caixa != null;
     });
+  }
+
+  formatarDecimal(e: any) {
+    if (e.target.id == "trocoAbertura")
+      this.trocoAbertura.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
   }
 
   validaSenha() {

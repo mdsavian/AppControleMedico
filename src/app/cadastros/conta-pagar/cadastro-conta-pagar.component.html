@@ -115,7 +115,7 @@
                           <span class="input-group-text">R$</span>
                         </div>
                         <input type="text" id="desconto" mask="dot_separator.2"
-                          (blur)="calcularJurosDesconto($event.target.value, 'desconto')" name="desconto"
+                          (blur)="calcularJurosDesconto($event.target.value, 'desconto');  formatarDecimal($event);" name="desconto"
                           placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.desconto"
                           #desconto="ngModel">
                       </div>
@@ -127,9 +127,9 @@
                           <span class="input-group-text">R$</span>
                         </div>
                         <input type="text" id="jurosMulta" mask="dot_separator.2"
-                          (blur)="calcularJurosDesconto($event.target.value, 'juros')" name="jurosMulta"
+                          (blur)="calcularJurosDesconto($event.target.value, 'juros'); formatarDecimal($event);" name="jurosMulta"
                           placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.jurosMulta"
-                          #juros="ngModel">
+                          #jurosMulta="ngModel">
                       </div>
                     </div>
                     <div class="col-xs-3 col-md-3">
@@ -138,7 +138,7 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text">R$</span>
                         </div>
-                        <input type="text" id="valor" (blur)="calcularJurosDesconto($event.target.value, 'valor'); formatarDecimal($event.target.value);"
+                        <input type="text" id="valor" (blur)="calcularJurosDesconto($event.target.value, 'valor'); formatarDecimal($event);"
                           mask="dot_separator.2" name="valor" placeholder="000,00" class="form-control" required
                           min="0.1" [(ngModel)]="contaPagar.valor" #valor="ngModel">
                       </div>

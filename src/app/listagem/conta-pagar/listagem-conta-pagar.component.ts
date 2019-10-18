@@ -87,7 +87,7 @@ export class ListagemContaPagarComponent implements OnInit {
         }
       },
       dataEmissao: {
-        title: 'Data Emissão',
+        title: 'Emissão',
         filter: true
       },
       numeroFatura: {
@@ -98,6 +98,16 @@ export class ListagemContaPagarComponent implements OnInit {
         title: 'Tipo Conta',
         filter: true,
         valuePrepareFunction: (tipoContaPagar) => {return ETipoContaPagar[tipoContaPagar].toString()}
+      },
+      desconto:{
+        title: 'Desconto',
+        filter: true,
+        valuePrepareFunction: (desconto) => {return this.util.formatarDecimal(desconto)}
+      },
+      jurosMulta:{
+        title: 'Juros/Multa',
+        filter: true,
+        valuePrepareFunction: (jurosMulta) => {return this.util.formatarDecimal(jurosMulta)}
       },
       valor: {
         title: 'Valor',

@@ -16,6 +16,7 @@ import { ModalErrorComponent } from './modal-error.component';
 
 export class ModalPagamentoComponent {
   @ViewChild('formaPagamentoModel', { read: ElementRef, static: true }) private formaPagamentoModel: ElementRef;
+  @ViewChild('valor', { read: ElementRef, static: true }) private valor: ElementRef;
   @ViewChild('tipoPagamento', { read: ElementRef, static: true }) private tipoPagamento: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private modalService: NgbModal, private appService: AppService, private formaPagamentoService: FormaDePagamentoService) { }
@@ -61,6 +62,11 @@ export class ModalPagamentoComponent {
     }
   }
 
+  formatarDecimal(e: any) {
+    if (e.target.id == "valor")
+      this.valor.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
+  }
+
   salvar() {
     var retorno = false;
     var valor = this.pagamento.valor;
@@ -79,11 +85,6 @@ export class ModalPagamentoComponent {
       this.activeModal.close(this.pagamento);
     }
     
-  }
-
-  formatarDecimal(valor)
-  {
-    console.log(valor, this.util.formatarDecimalBlur(valor));
   }
 
   fechar() {

@@ -77,7 +77,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">R$</span>
                     </div>
-                    <input type="text" id="valor" mask="dot_separator.2" name="valor" placeholder="000,00"
+                    <input type="text" id="valor" mask="dot_separator.2" (blur)="formatarDecimal($event)" name="valor" placeholder="000,00"
                         class="form-control" required [(ngModel)]="agendamentoPagamento.valor" #valor="ngModel">
                 </div>
                 <div *ngIf="valor.invalid" class="alert alert-danger">

@@ -19,6 +19,7 @@ export class ModalFechamentoCaixaComponent {
   @ViewChild('caixaModel', { read: ElementRef, static: true }) private caixaModel: ElementRef;
   @ViewChild('login', { read: ElementRef, static: true }) private login: ElementRef;
   @ViewChild('senha', { read: ElementRef, static: false }) private senha: ElementRef;
+  @ViewChild('trocoFechamento', { read: ElementRef, static: false }) private trocoFechamento: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   caixa: Caixa = new Caixa
@@ -36,22 +37,23 @@ export class ModalFechamentoCaixaComponent {
     this.caixaModel.nativeElement.focus();
     var horaString = this.util.horaAgoraString();
     var dataString = this.util.dataParaString(new Date());
-    
+
     this.caixa.dataFechamento = dataString;
     this.caixa.horaFechamento = horaString;
-    var usuario = this.appService.retornarUsuarioCorrente().id;
+    var usuarioId = this.appService.retornarUsuarioCorrente().id;
 
     this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
       this.funcionarioService.Todos().subscribe(funcs => {
         this.funcionarios = funcs;
         caixas.forEach(caix => {
-          let func = funcs.find(c => c.id == caix.funcionarioId);          
+          let func = funcs.find(c => c.id == caix.funcionarioId);
 
           caix.dataFechamento = dataString;
           caix.horaFechamento = horaString;
-          caix.usuarioFechamentoId = usuario;
+          caix.usuarioFechamentoId = usuarioId;
 
-          caix.descricao = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caix.dataAbertura)
+
+          caix.descricao = "Caixa aberto por " + (func != null ? func.nomeCompleto : "") + " em " + this.util.formatarData(caix.dataAbertura)
             + " " + this.util.formatarHora(caix.horaAbertura);
         });
         this.caixas = caixas
@@ -59,9 +61,16 @@ export class ModalFechamentoCaixaComponent {
     });
   }
 
+  formatarDecimal(e: any) {
+    if (e.target.id == "trocoFechamento")
+      this.trocoFechamento.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
+  }
+
   descricaoCaixa(e: any) {
     let caix = this.caixas.find(c => c.id == this.caixa.id);
-    this.login.nativeElement.value = this.funcionarios.find(c => c.id == caix.funcionarioId).email;
+    let func = this.funcionarios.find(c => c.id == caix.funcionarioId);
+    if (func != null)
+      this.login.nativeElement.value = func.email;
   }
 
   validaSenha() {

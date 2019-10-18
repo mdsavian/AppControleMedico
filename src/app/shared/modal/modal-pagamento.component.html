@@ -58,7 +58,7 @@
             <div class="col-xs-3 col-md-4">
                 <label class="control-label" for="valor">Valor</label>
                 <input type="text" id="valor" mask="dot_separator.2" name="valor" placeholder="000,00"
-                    class="form-control" [(ngModel)]="pagamento.valor" required (blur)="formatarDecimal($event.target.value)" #valor="ngModel">
+                    class="form-control" [(ngModel)]="pagamento.valor" required (blur)="formatarDecimal($event)" #valor="ngModel">
                 <div *ngIf="valor.invalid" class="alert alert-danger">
                     <div *ngIf="valor.errors.required">Valor Obrigatório.</div>
                 </div>

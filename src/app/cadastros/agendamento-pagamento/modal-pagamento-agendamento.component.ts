@@ -35,6 +35,7 @@ export class ModalPagamentoAgendamentoComponent {
   @ViewChild('formaPagamentoModel', { read: ElementRef, static: true }) private formaPagamentoModel: ElementRef;
   @ViewChild('tipoPagamento', { read: ElementRef, static: true }) private tipoPagamento: ElementRef;
   @ViewChild('senha', { read: ElementRef, static: false }) private senha: ElementRef;
+  @ViewChild('valor', { read: ElementRef, static: false }) private valorModel: ElementRef;
 
   patternHora = "([01][0-9]|2[0-3])[0-5][0-9]";
   caixa: Caixa = new Caixa();
@@ -214,6 +215,11 @@ export class ModalPagamentoAgendamentoComponent {
       total = total + parseFloat(c.valor.toString());
     });
     return total;
+  }
+
+  formatarDecimal(e: any) {
+    if (e.target.id == "valor")
+      this.valorModel.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
   }
 
   salvar() {

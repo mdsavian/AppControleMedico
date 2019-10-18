@@ -47,7 +47,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">R$</span>
                     </div>
-                    <input type="text" id="trocoAbertura" mask="dot_separator.2" name="trocoAbertura"
+                    <input type="text" id="trocoAbertura" (blur)="formatarDecimal($event)" mask="dot_separator.2" name="trocoAbertura"
                         placeholder="000,00" class="form-control" required [(ngModel)]="caixa.trocoAbertura"
                         #trocoAbertura="ngModel">
                 </div>

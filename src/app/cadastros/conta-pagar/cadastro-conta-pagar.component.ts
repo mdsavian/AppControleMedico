@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { ContaPagar } from '../../modelos/contaPagar';
 import { ContaPagarService } from '../../services/contaPagar.service';
 import { FornecedorService } from '../../services/fornecedor.service';
@@ -27,11 +27,15 @@ import { FormaDePagamento } from '../../modelos/formaDePagamento';
   styleUrls: ['../../cadastros/cadastros.scss'],
 })
 
-export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
+export class CadastroContaPagarComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   @ViewChild('fornecedorModel', { read: ElementRef, static: false }) private fornecedorModel: ElementRef;
   @ViewChild('tipoContaModel', { read: ElementRef, static: false }) private tipoContaModel: ElementRef;
   @ViewChild('valor', { read: ElementRef, static: false }) private valor: ElementRef;
+  @ViewChild('saldo', { read: ElementRef, static: false }) private saldo: ElementRef;
+  @ViewChild('valorTotal', { read: ElementRef, static: false }) private valorTotal: ElementRef;
+  @ViewChild('jurosMulta', { read: ElementRef, static: false }) private jurosMulta: ElementRef;
+  @ViewChild('desconto', { read: ElementRef, static: false }) private desconto: ElementRef;
   @ViewChild('numeroDocumento', { read: ElementRef, static: false }) private numeroDocumento: ElementRef;
   @ViewChild('numeroFatura', { read: ElementRef, static: false }) private numeroFatura: ElementRef;
 
@@ -111,6 +115,37 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
       this.contaPagar.tipoContaPagar = ETipoContaPagar["Lançamento Manual"];
       this.contaPagar.dataEmissao = this.util.dataParaString(new Date());
     }
+  }
+
+  ngAfterViewChecked(): void {
+
+    if (this.valorTotal != null)
+      this.valorTotal.nativeElement.value = this.util.formatarDecimalBlur(this.valorTotal.nativeElement.value);
+
+    if (this.saldo != null)
+      this.saldo.nativeElement.value = this.util.formatarDecimalBlur(this.saldo.nativeElement.value);
+
+    if (this.valor != null) {
+      if (this.util.hasItems(this.contaPagar.pagamentos))
+        this.valor.nativeElement.setAttribute('readonly', true);
+
+      this.valor.nativeElement.value = this.util.formatarDecimalBlur(this.valor.nativeElement.value);
+    }
+
+    if (this.desconto != null) {
+      if (this.util.hasItems(this.contaPagar.pagamentos))
+        this.desconto.nativeElement.setAttribute('readonly', true);
+
+      this.desconto.nativeElement.value = this.util.formatarDecimalBlur(this.desconto.nativeElement.value);
+    }
+
+    if (this.jurosMulta != null) {
+      if (this.util.hasItems(this.contaPagar.pagamentos))
+        this.jurosMulta.nativeElement.setAttribute('readonly', true);
+
+      this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(this.jurosMulta.nativeElement.value);
+    }
+
   }
 
   calcularSaldo() {
@@ -224,10 +259,14 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit {
     }, error => { });
   }
 
-  formatarDecimal(valor)  
-  {
-    console.log(valor, this.util.formatarDecimalBlur(valor));
-    this.valor.nativeElement.value = this.util.formatarDecimalBlur(valor);
+  formatarDecimal(e: any) {
+
+    if (e.target.id == "valor")
+      this.valor.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
+    if (e.target.id == "desconto")
+      this.desconto.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
+    if (e.target.id == "jurosMulta")
+      this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
   }
 
   adicionaFornecedor() {
