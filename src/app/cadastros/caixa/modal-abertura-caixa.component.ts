@@ -34,7 +34,8 @@ export class ModalAberturaCaixaComponent   {
     this.funcionarioModel.nativeElement.focus();
     this.caixa.clinicaId = this.appService.retornarClinicaCorrente().id;
     this.caixa.horaAbertura = this.util.horaAgoraString();
-    this.caixa.dataAbertura = this.util.dataParaString(new Date());
+    this.caixa.dataAbertura = new Date();
+    this.dataAber = this.util.dataParaString(new Date());
     this.caixa.usuarioAberturaId = this.appService.retornarUsuarioCorrente().id;
     this.funcionarioService.Todos().subscribe(funcs => {
       this.funcionarios = funcs;      

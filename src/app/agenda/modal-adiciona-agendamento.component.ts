@@ -129,7 +129,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
           this.agendamento.procedimento = this.procedimentos.find(c => c.id == this.agendamento.procedimentoId);
       }
 
-      this.dataAgenda = this.agendamento.dataAgendamento;
+      this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
 
     }
     else {
@@ -137,7 +137,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento.medicoId = this.medico.id;
       this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;      
       this.agendamento.funcionarioId = this.appService.retornarUsuarioCorrente().funcionarioId;
-      this.agendamento.dataAgendamento = this.util.dataParaString(new Date());
+      this.agendamento.dataAgendamento = new Date();
     }
 
     this.tituloTela += this.medico.nomeCompleto;
@@ -155,7 +155,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         retorno = true;
       }
 
-      if (!this.util.validaData(this.agendamento.dataAgendamento)) {
+      if (!this.util.validaData(this.util.dataParaString(this.agendamento.dataAgendamento))) {
         var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
         retorno = true;
@@ -166,7 +166,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Agendado;
       
     var validaHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
-      this.agendamento.dataAgendamento, this.agendamento.horaInicial, this.agendamento.horaFinal, this.agendamento.tipoAgendamento);
+      this.util.dataParaString(this.agendamento.dataAgendamento), this.agendamento.horaInicial, this.agendamento.horaFinal, this.agendamento.tipoAgendamento);
 
     if (validaHoras != "") {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
@@ -184,10 +184,15 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     this.activeModal.close();
   }
 
-  public formataData(e): void {
-    if (e.target.id == "dataAgendamento" && e.target.value.length == 10) {
-      this.agendamento.dataAgendamento = e.target.value;
+  public formataData(e): void {    
+    var dataFormatada = "";
 
+    if (!this.util.isNullOrWhitespace(e.target.value))
+      dataFormatada = this.util.formatarDataBlur(e.target.value);
+
+    if (e.target.id == "dataAgendamento") {
+      this.agendamento.dataAgendamento = this.util.stringParaData(dataFormatada);
+      this.dataAgenda = dataFormatada;
     }
   }
 

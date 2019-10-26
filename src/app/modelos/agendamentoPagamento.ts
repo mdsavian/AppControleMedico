@@ -11,7 +11,7 @@ export class AgendamentoPagamento extends Entidade {
   formaPagamentoId:string;
   caixaId:string;
   usuarioId:string;
-  data:string;
+  data:Date;
   vistaPrazo:EVistaPrazo;
   parcela:number;
   valor:number;

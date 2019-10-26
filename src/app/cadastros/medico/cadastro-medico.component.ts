@@ -164,8 +164,17 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   public formataData(e): void {
-    this.medico.dataNascimento = this.util.stringParaData(e.target.value);
+    {
+      var dataFormatada = "";
+
+      if (!this.util.isNullOrWhitespace(e.target.value))
+        dataFormatada = this.util.formatarDataBlur(e.target.value);
+
+      this.medico.dataNascimento = this.util.stringParaData(dataFormatada);
+      this.data = dataFormatada;
+    }
   }
 
   configurarAgendaMedico() {

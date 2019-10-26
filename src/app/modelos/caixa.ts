@@ -9,17 +9,14 @@ export class Caixa extends Entidade {
 
   clinicaId:string;
   funcionarioId:string;
-  dataAbertura:string;
-  horaAbertura:string;  
-  dataFechamento:string;
+  dataAbertura:Date;
+  horaAbertura:string; 
+  dataFechamento:Date;
   horaFechamento:string;
-
   trocoAbertura:number;
   trocoFechamento:number;
-
   descricao:string;
-  funcionario:Funcionario;
-  
+  funcionario:Funcionario;  
   usuarioFechamentoId:string;
   usuarioAberturaId:string;
 }

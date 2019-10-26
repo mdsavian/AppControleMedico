@@ -19,7 +19,7 @@ export class Agendamento extends Entidade {
         this.tipoAgendamento = ETipoAgendamento.Consulta;
     }
 
-    dataAgendamento: string;
+    dataAgendamento: Date;
     horaInicial: string;
     horaFinal: string;
     observacao: string;

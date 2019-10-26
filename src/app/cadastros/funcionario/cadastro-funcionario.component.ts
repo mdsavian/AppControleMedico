@@ -50,9 +50,9 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   oficioSelecionado: string;
   util = new Util();
   estados = Estados;
-  dataNasci: string = "01/01/1901"
-  dataAdmis: string = "01/01/1901"
-  dataDemis: string = "01/01/1901"
+  dataNasci: string = ""
+  dataAdmis: string = ""
+  dataDemis: string = ""
   usuario: Usuario;
   clinicas: Clinica[] = [];
   clinicaModel: Clinica;
@@ -78,6 +78,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     if (this.funcionarioService.funcionario != null) {
 
       this.funcionario = this.funcionarioService.funcionario;
+      console.log(this.funcionario.dataNascimento);
       this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
       this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
       this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
@@ -88,7 +89,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
     this.alimentarModelos();
   }
-  
+
   deletarMedico(event) {
     var medico = this.funcionario.medicos.find(c => c.id == event.data.id);
     this.funcionario.medicos.splice(this.funcionario.medicos.indexOf(medico), 1);
@@ -282,12 +283,24 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   }
 
   public formataData(e): void {
-    if (e.target.id == "dataNascimento")
-      this.funcionario.dataNascimento = this.util.stringParaData(e.target.value);
-    else if (e.target.id == "dataAdmissao")
-      this.funcionario.dataAdmissao = this.util.stringParaData(e.target.value);
-    else if (e.target.id == "dataDemissao")
-      this.funcionario.dataDemissao = this.util.stringParaData(e.target.value);
+    var dataFormatada = "";
+
+    if (!this.util.isNullOrWhitespace(e.target.value))
+      dataFormatada = this.util.formatarDataBlur(e.target.value);
+
+    if (e.target.id == "dataNascimento") {
+      this.funcionario.dataNascimento = this.util.stringParaData(dataFormatada);
+      this.dataNasci = dataFormatada;
+    }
+    else if (e.target.id == "dataAdmissao") {
+
+      this.funcionario.dataAdmissao = this.util.stringParaData(dataFormatada);
+      this.dataAdmis = dataFormatada;
+    }
+    else if (e.target.id == "dataDemissao") {
+      this.funcionario.dataDemissao = this.util.stringParaData(dataFormatada);
+      this.dataDemis = dataFormatada;
+    }
   }
 
   public adicionaOficio(): void {
@@ -353,6 +366,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
+    console.log(this.funcionario.dataNascimento);
     this.funcionarioService.funcionario = null;
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {

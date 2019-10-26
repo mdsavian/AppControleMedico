@@ -10,7 +10,7 @@ export class Funcionario extends Pessoa {
     super();
 
     this.id = ""; this.nomeCompleto = ""; this.cpfCnpj = ""; this.dataAdmissao = new Date('01/01/0001'); this.dataDemissao = new Date('01/01/0001');
-    this.dataNascimento = new Date('01/01/0001'); this.rg = ""; this.ativo = true; this.genero = 1; this.celular = ""; this.email = "";
+    this.dataNascimento = new Date('01/01/0001'); this.rg = ""; this.ativo = true; this.genero = 1; this.celular  = ""; this.email = "";
     this.cep = ""; this.endereco = ""; this.oficioId = ""; this.usuarioId = ""; this.numero = ""; this.complemento = ""; this.bairro = ""; this.cidade = ""; this.uf = ""; this.oficio = new Oficio(); this.usuario = new Usuario(); this.permissaoAdministrador = false; this.visualizaAgenda = false;
   }
 

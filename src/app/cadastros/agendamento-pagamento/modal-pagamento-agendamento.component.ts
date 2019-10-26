@@ -100,7 +100,7 @@ export class ModalPagamentoAgendamentoComponent {
     this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
       caixas.forEach(caixa => {
         this.funcionarioService.buscarPorId(caixa.funcionarioId).subscribe(func => {
-          caixa.descricao = func.nomeCompleto + " - " + this.util.formatarData(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+          caixa.descricao = func.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
         });
       });
 
@@ -197,7 +197,7 @@ export class ModalPagamentoAgendamentoComponent {
     if (!retornar) {
       this.agendamentoPagamento.caixaId = this.caixa.id;
       this.agendamentoPagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
-      this.agendamentoPagamento.data = this.util.dataParaString(new Date());
+      this.agendamentoPagamento.data = new Date();
 
       this.listaPagamentos.push(this.agendamentoPagamento);
       this.valorTotal = this.util.formatarDecimal(this.somaPagamentos());

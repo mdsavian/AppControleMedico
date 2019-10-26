@@ -11,8 +11,8 @@ export class ContaPagar extends Entidade {
   clinicaId: string;
   fornecedorId: string;
   usuarioId: string;
-  dataEmissao: string;
-  dataVencimento: string;
+  dataEmissao: Date;
+  dataVencimento: Date;
   numeroDocumento: string;
   numeroFatura: number;  
   jurosMulta:number;

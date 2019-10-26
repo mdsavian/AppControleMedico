@@ -67,7 +67,7 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" id="dataFechamento" appValidaDataModal name="dataFechamento" placeholder="dd/mm/yyyy"
-                        class="form-control" [(ngModel)]="caixa.dataFechamento" #dataFechamento="ngModel" readonly>                        
+                        class="form-control" [(ngModel)]="dataFecha" #dataFechamento="ngModel" readonly>                        
                 </div>
                 <div *ngIf="dataFechamento.invalid && dataFechamento.errors?.validaDataModal" class="alert alert-danger">
                     <div *ngIf="dataFechamento.errors?.validaDataModal"> Data Inválida.</div>

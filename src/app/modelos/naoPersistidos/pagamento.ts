@@ -5,7 +5,7 @@ export class Pagamento {
   constructor() {
   }
 
-  dataPagamento:string;
+  dataPagamento:Date;
   valor:number;
   formaPagamentoId:string;
   usuarioId:string;

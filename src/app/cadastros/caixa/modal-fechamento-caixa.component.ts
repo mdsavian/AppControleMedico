@@ -26,7 +26,7 @@ export class ModalFechamentoCaixaComponent {
   caixas: Array<Caixa>;
   util = new Util();
   funcionarios: Array<Funcionario>;
-  dataAber: string;
+  dataFecha: string;
   testPrice: any;
   existeCaixaAbertoParaFuncionario: boolean;
   senhaValida: boolean;
@@ -37,8 +37,8 @@ export class ModalFechamentoCaixaComponent {
     this.caixaModel.nativeElement.focus();
     var horaString = this.util.horaAgoraString();
     var dataString = this.util.dataParaString(new Date());
-
-    this.caixa.dataFechamento = dataString;
+    this.dataFecha = dataString;
+    this.caixa.dataFechamento = this.util.stringParaData(dataString);
     this.caixa.horaFechamento = horaString;
     var usuarioId = this.appService.retornarUsuarioCorrente().id;
 
@@ -48,12 +48,12 @@ export class ModalFechamentoCaixaComponent {
         caixas.forEach(caix => {
           let func = funcs.find(c => c.id == caix.funcionarioId);
 
-          caix.dataFechamento = dataString;
+          caix.dataFechamento = this.util.stringParaData(dataString);
           caix.horaFechamento = horaString;
           caix.usuarioFechamentoId = usuarioId;
 
 
-          caix.descricao = "Caixa aberto por " + (func != null ? func.nomeCompleto : "") + " em " + this.util.formatarData(caix.dataAbertura)
+          caix.descricao = "Caixa aberto por " + (func != null ? func.nomeCompleto : "") + " em " + this.util.dataParaString(caix.dataAbertura)
             + " " + this.util.formatarHora(caix.horaAbertura);
         });
         this.caixas = caixas

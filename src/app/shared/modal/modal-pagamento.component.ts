@@ -30,7 +30,7 @@ export class ModalPagamentoComponent {
   dataPag = this.util.dataParaString(new Date());
 
   ngOnInit() {
-    this.pagamento.dataPagamento = this.util.dataParaString(new Date());
+    this.pagamento.dataPagamento = new Date();
     this.pagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
     this.pagamento.vistaPrazo = EVistaPrazo["À Vista"];
     this.pagamento.descricaoPagamento = "DINHEIRO";
@@ -55,10 +55,17 @@ export class ModalPagamentoComponent {
       this.visualizaParcela = false;
     }
   }
-  
+
   public formataData(e): void {
-    if (e.target.id == "dataPagamento" && e.target.value.length == 10) {
-      this.pagamento.dataPagamento = e.target.value;
+    var dataFormatada = "";
+
+    if (!this.util.isNullOrWhitespace(e.target.value))
+      dataFormatada = this.util.formatarDataBlur(e.target.value);
+
+    if (e.target.id == "dataPagamento") {
+      this.pagamento.dataPagamento = this.util.stringParaData(dataFormatada);
+      this.dataPag = dataFormatada;
+
     }
   }
 
@@ -71,20 +78,20 @@ export class ModalPagamentoComponent {
     var retorno = false;
     var valor = this.pagamento.valor;
 
-    if (!this.util.validaData(this.pagamento.dataPagamento)){
+    if (!this.util.validaData(this.util.dataParaString(this.pagamento.dataPagamento))) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Data de pagamento inválida";      
+      modal.componentInstance.mensagemErro = "Data de pagamento inválida";
       retorno = true;
     } else if ((parseFloat(valor.toString()) * this.pagamento.parcela) > this.saldo) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Valor informado maior do que valor de saldo.";
       retorno = true;
     }
-    
-    if (!retorno){
+
+    if (!retorno) {
       this.activeModal.close(this.pagamento);
     }
-    
+
   }
 
   fechar() {

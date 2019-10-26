@@ -28,9 +28,9 @@ export class ListagemContaPagarComponent implements OnInit {
 
   ngOnInit() {
     this.isSpinnerVisible = true;
-    this.buscaContaPagars();
+    this.buscaContasPagar();
   }
-  buscaContaPagars(): void {
+  buscaContasPagar(): void {
     this.fornecedorService.Todos().subscribe(c => {
     this.fornecedores = c;
 
@@ -56,7 +56,7 @@ export class ListagemContaPagarComponent implements OnInit {
           if (result == 'Sim') {
             this.contaPagarService.Excluir(event.data.id).subscribe(retorno => {
               if (retorno) {
-                this.buscaContaPagars();
+                this.buscaContasPagar();
               }
             });
           }
@@ -88,7 +88,8 @@ export class ListagemContaPagarComponent implements OnInit {
       },
       dataEmissao: {
         title: 'Emissão',
-        filter: true
+        filter: true,
+        valuePrepareFunction: (dataEmissao) => {return this.util.dataParaString(dataEmissao)}
       },
       numeroFatura: {
         title: 'Número',

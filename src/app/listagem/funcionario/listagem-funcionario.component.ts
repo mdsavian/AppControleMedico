@@ -32,6 +32,7 @@ export class ListagemFuncionarioComponent implements OnInit{
     this.funcionarioService.Todos().subscribe(dados => {
       this.isSpinnerVisible = false;
       this.listaFuncionarios = dados;
+      console.log(dados);
       this.source = new LocalDataSource(this.listaFuncionarios);
     });
   }

@@ -103,7 +103,7 @@ export class AgendaComponent implements OnInit {
           this.visualizaBotoesAberturaFechamentoCaixa = true;
           this.caixaService.retornarCaixaAbertoFuncionario(func.id).subscribe(caixa => {
             if (caixa != null) {
-              this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.formatarData(caixa.dataAbertura)
+              this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.dataParaString(caixa.dataAbertura)
                 + " " + this.util.formatarHora(caixa.horaAbertura);
             }
 
@@ -162,7 +162,7 @@ export class AgendaComponent implements OnInit {
   converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
     var novoAgendamento = new Agendamento();
 
-    novoAgendamento.dataAgendamento = this.util.dataParaString(evento.start);
+    novoAgendamento.dataAgendamento = evento.start;
     if (evento.start != null)
       novoAgendamento.horaInicial = evento.start.toTimeString().substr(0, 5).replace(":", "");
 
@@ -581,7 +581,7 @@ export class AgendaComponent implements OnInit {
         this.modalService.open(this.modalAgendamentoEmHorarioIntervalo).result.then(
           result => {
             if (result == 'Ok') {
-              agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
+              agendamentoAntigo.dataAgendamento = event.start;
               agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
               agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
               this.agendamentoService.salvar(agendamentoAntigo).subscribe(retorno => {
@@ -603,7 +603,7 @@ export class AgendaComponent implements OnInit {
       }
     }
     else {
-      agendamentoAntigo.dataAgendamento = this.util.dataParaString(event.start);
+      agendamentoAntigo.dataAgendamento = event.start;
       agendamentoAntigo.horaFinal = event.end.toTimeString().substr(0, 5).replace(":", "");
       agendamentoAntigo.horaInicial = event.start.toTimeString().substr(0, 5).replace(":", "");
       this.agendamentoService.salvar(agendamentoAntigo).subscribe(retorno => {
@@ -631,7 +631,7 @@ export class AgendaComponent implements OnInit {
 
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
     lista.forEach(agendamento => {
-      var dataHoraInicial = this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaInicial);
+      var dataHoraInicial = this.util.concatenaDataHora(this.util.dataParaString(agendamento.dataAgendamento), agendamento.horaInicial);
 
       var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
       if (eventoBancoVelho != null) {
@@ -650,7 +650,7 @@ export class AgendaComponent implements OnInit {
       {
         id: agendamento.id,
         start: dataHoraInicial,
-        end: this.util.concatenaDataHora(agendamento.dataAgendamento, agendamento.horaFinal),
+        end: this.util.concatenaDataHora(this.util.dataParaString(agendamento.dataAgendamento), agendamento.horaFinal),
         title: this.montaTituloAgendamento(agendamento),
         color: { primary: agendamento.corFundo, secondary: agendamento.corFundo },
         // actions: this.acoesEventosCalendario,

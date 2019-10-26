@@ -128,13 +128,24 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
     )
 
   public formataData(e): void {
-    console.log(e.target.value);
-    if (e.target.id == "dataNascimento")
-      this.paciente.dataNascimento = this.util.stringParaData(e.target.value);
-    else if (e.target.id == "dataValidadeCartao")
-      this.paciente.dataValidadeCartao = this.util.stringParaData(e.target.value);
-    else if (e.target.id == "dataUltimaMenstruacao")
-      this.paciente.dataUltimaMenstruacao = this.util.stringParaData(e.target.value);
+
+    var dataFormatada = "";
+
+    if (!this.util.isNullOrWhitespace(e.target.value))
+      dataFormatada = this.util.formatarDataBlur(e.target.value);
+      
+    if (e.target.id == "dataNascimento") {
+      this.paciente.dataNascimento = this.util.stringParaData(dataFormatada);
+      this.dataNasci = dataFormatada;
+    }
+    else if (e.target.id == "dataValidadeCartao") {
+      this.paciente.dataValidadeCartao = this.util.stringParaData(dataFormatada);
+      this.dataValidade = dataFormatada;
+    }
+    else if (e.target.id == "dataUltimaMenstruacao") {
+      this.paciente.dataUltimaMenstruacao = this.util.stringParaData(dataFormatada);
+      this.dataUltimaMenstru = dataFormatada;
+    }
   }
 
   public tirarFoto() {

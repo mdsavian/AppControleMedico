@@ -81,7 +81,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                            placeholder="dd/mm/yyyy" appValidaData class="form-control" [(ngModel)]="dataNasci"
+                            placeholder="01/01/1901" appValidaData class="form-control" [(ngModel)]="dataNasci"
                             #dataNascimento="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataNascimento.invalid && dataNascimento.errors?.validaData" class="alert alert-danger">
@@ -90,12 +90,12 @@
                       </div>
 
                       <div class="form-group">
-                        <label class="control-label" for="dataAdmis">Data de Admissão</label>
+                        <label class="control-label" for="dataAdmissao">Data de Admissão</label>
                         <div class="input-group">
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" appValidaData id="dataAdmis" name="dataAdmis" placeholder="dd/mm/yyyy"
+                          <input type="text" mask="00/00/0000" appValidaData id="dataAdmissao" name="dataAdmissao" placeholder="01/01/1901"
                             class="form-control" [(ngModel)]="dataAdmis" #dataAdmissao="ngModel"
                             (blur)="formataData($event)">
                         </div>
@@ -129,12 +129,12 @@
                       </div>
 
                       <div class="form-group">
-                        <label class="control-label" for="dataDemis">Data de Demissão</label>
+                        <label class="control-label" for="dataDemissao">Data de Demissão</label>
                         <div class="input-group">
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" id="dataDemis" name="dataDemis" placeholder="dd/mm/yyyy"
+                          <input type="text" mask="00/00/0000" id="dataDemissao" name="dataDemissao" placeholder="01/01/1901"
                             class="form-control" appValidaData [(ngModel)]="dataDemis" #dataDemissao="ngModel"
                             (blur)="formataData($event)">
                         </div>

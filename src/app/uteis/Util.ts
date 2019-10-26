@@ -7,11 +7,11 @@ export class Util {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
     }
 
-    formatarDecimalBlur(valor: number) :string{
+    formatarDecimalBlur(valor: number): string {
 
         let valorString = valor.toString();
 
-        if (valorString.indexOf(',') > 0) {   
+        if (valorString.indexOf(',') > 0) {
             if (valorString.substring(valorString.indexOf(',') + 1, valorString.length).length == 0)
                 return valorString + "00";
             //quando é digitado com apenas 1 casa decimal ex: 87,9         
@@ -25,6 +25,39 @@ export class Util {
         }
         else
             return new Intl.NumberFormat('pt-BR', { style: 'decimal', minimumFractionDigits: 2 }).format(valor).toString();
+    }
+
+    public formatarDataBlur(data: string): string {
+        let dataSplit = data.split('/');
+        let dataHoje = new Date();
+
+        if (dataSplit.length > 1) { //informado mais do que somente o dia
+            var dataString = ("0" + dataSplit[0]).slice(-2) + "/";
+            var mes = parseInt(dataSplit[1]);
+
+            if (dataSplit.length == 2) { //data e mes informados
+                dataString = dataString + ("0" + mes).slice(-2) + "/" + dataHoje.getFullYear();
+                return dataString;
+            }
+            else if (dataSplit.length == 3) //data mes e ano
+            {
+                var ano = dataSplit[2];
+                var inteiroSubs = 4 - ano.length;
+
+                if (inteiroSubs == 0)
+                    return data;
+                else {
+                    let anoString = dataHoje.getFullYear().toString().substr(0, inteiroSubs) + ano;
+
+                    var dataString = dataString + ("0" + mes).slice(-2) + '/' + anoString;
+                    return dataString;
+                }
+            }
+        }
+        else { //apenas data informada
+            var dataString = ("0" + data).slice(-2) + "/" + ("0" + (dataHoje.getMonth() + 1)).slice(-2) + "/" + dataHoje.getFullYear();
+            return dataString;
+        }        
     }
 
     public converteData(data: NgbDate): Date {
@@ -104,6 +137,7 @@ export class Util {
 
     public validaData(data: string): boolean {
 
+        console.log(data);
         if (this.isNullOrWhitespace(data))
             return false;
         var date = data;

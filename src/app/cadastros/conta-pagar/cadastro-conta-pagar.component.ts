@@ -106,14 +106,14 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
 
     if (this.contaPagarService.contaPagar != null) {
       this.contaPagar = this.contaPagarService.contaPagar;
-      this.dataEmi = this.contaPagar.dataEmissao;
-      this.dataVenc = this.contaPagar.dataVencimento;
+      this.dataEmi = this.util.dataParaString(this.contaPagar.dataEmissao);
+      this.dataVenc = this.util.dataParaString(this.contaPagar.dataVencimento);
     }
     else {
       this.contaPagar.usuarioId = this.appService.retornarUsuarioCorrente().id;
       this.contaPagar.clinicaId = this.appService.retornarClinicaCorrente().id;
       this.contaPagar.tipoContaPagar = ETipoContaPagar["Lançamento Manual"];
-      this.contaPagar.dataEmissao = this.util.dataParaString(new Date());
+      this.contaPagar.dataEmissao = new Date();
     }
   }
 
@@ -219,11 +219,18 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   }
 
   public formataData(e): void {
-    if (e.target.id == "dataVencimento" && e.target.value.length == 10) {
-      this.contaPagar.dataVencimento = e.target.value;
+    var dataFormatada = "";
+
+    if (!this.util.isNullOrWhitespace(e.target.value))
+      dataFormatada = this.util.formatarDataBlur(e.target.value);
+
+    if (e.target.id == "dataVencimento") {
+      this.dataVenc = dataFormatada;
+      this.contaPagar.dataVencimento = this.util.stringParaData(dataFormatada);
     }
-    if (e.target.id == "dataEmissao" && e.target.value.length == 10) {
-      this.contaPagar.dataEmissao = e.target.value;
+    if (e.target.id == "dataEmissao") {
+      this.dataEmi = dataFormatada;
+      this.contaPagar.dataEmissao = this.util.stringParaData(dataFormatada);
     }
   }
 
@@ -260,6 +267,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   }
 
   formatarDecimal(e: any) {
+    console.log("entrei2");
 
     if (e.target.id == "valor")
       this.valor.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
@@ -328,7 +336,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
 
   public validar(): boolean {
 
-    if (this.util.stringParaData(this.contaPagar.dataEmissao) > this.util.stringParaData(this.contaPagar.dataVencimento)) {
+    if (this.contaPagar.dataEmissao > this.contaPagar.dataVencimento) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Data de vencimento menor do que data de emissão.";
       return false;
