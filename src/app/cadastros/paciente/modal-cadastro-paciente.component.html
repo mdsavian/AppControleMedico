@@ -81,7 +81,7 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" id="dataNascimento" name="dataNascimento"
-                        placeholder="dd/mm/yyyy" class="form-control" appvalidaDataModal [(ngModel)]="dataNasci"
+                        placeholder="01/01/1901" class="form-control" appvalidaDataModal [(ngModel)]="dataNasci"
                         #dataNascimento="ngModel" (blur)="formataData($event)">
                 </div>
                 <div *ngIf="dataNascimento.errors?.validaDataModal" class="alert alert-danger">

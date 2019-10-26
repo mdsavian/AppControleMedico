@@ -191,7 +191,7 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" required id="dataAgendamento" name="dataAgendamento"
-                        placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataAgenda"
+                        placeholder="01/01/1901" class="form-control" [(ngModel)]="dataAgenda"
                         #dataAgendamento="ngModel" (blur)="formataData($event)">
                 </div>
                 <div *ngIf="dataAgendamento.invalid || dataAgendamento.errors?.validaData" class="alert alert-danger">

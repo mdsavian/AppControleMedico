@@ -63,7 +63,7 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" appValidaDataModal id="dataAbertura" name="dataAbertura"
-                        placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataAber"
+                        placeholder="01/01/1901" class="form-control" [(ngModel)]="dataAber"
                         #dataAbertura="ngModel" readonly>
                 </div>
                 <div *ngIf="dataAbertura.invalid && dataAbertura.errors?.validaDataModal" class="alert alert-danger">

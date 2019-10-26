@@ -114,7 +114,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" appValidaData id="dataNascimento" name="dataNascimento"
-                            placeholder="dd/mm/yyyy" class="form-control" [(ngModel)]="dataNasci"
+                            placeholder="01/01/1901" class="form-control" [(ngModel)]="dataNasci"
                             #dataNascimento="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataNascimento.errors?.validaData" class="alert alert-danger">
@@ -318,7 +318,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" appValidaData id="dataValidadeCartao"
-                            name="dataValidadeCartao" placeholder="dd/mm/yyyy" class="form-control"
+                            name="dataValidadeCartao" placeholder="01/01/1901" class="form-control"
                             [(ngModel)]="dataValidade" #dataValidadeCartao="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataValidadeCartao.errors?.validaData" class="alert alert-danger">
@@ -361,7 +361,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" id="dataUltimaMenstruacao" name="dataUltimaMenstruacao"
-                            placeholder="dd/mm/yyyy" appValidaData class="form-control" [(ngModel)]="dataUltimaMenstru"
+                            placeholder="01/01/1901" appValidaData class="form-control" [(ngModel)]="dataUltimaMenstru"
                             #dataUltimaMenstruacao="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataUltimaMenstruacao.errors?.validaData" class="alert alert-danger">

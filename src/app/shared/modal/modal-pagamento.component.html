@@ -47,7 +47,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                         </div>
                         <input type="text" mask="00/00/0000" required id="dataPagamento" name="dataPagamento"
-                            placeholder="dd/mm/aaaa" class="form-control" [(ngModel)]="dataPag" #dataPagamento="ngModel"
+                            placeholder="01/01/1901" class="form-control" [(ngModel)]="dataPag" #dataPagamento="ngModel"
                             (blur)="formataData($event)">
                     </div>
                     <div *ngIf="dataPagamento.invalid" class="alert alert-danger">

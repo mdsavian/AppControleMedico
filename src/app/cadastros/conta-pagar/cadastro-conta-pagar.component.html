@@ -66,7 +66,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" required id="dataEmissao" name="dataEmissao"
-                            placeholder="dd/mm/aaaa" class="form-control" appValidaData [(ngModel)]="dataEmi" #dataEmissao="ngModel"
+                            placeholder="01/01/1901" class="form-control" appValidaData [(ngModel)]="dataEmi" #dataEmissao="ngModel"
                             (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataEmissao.invalid || dataEmissao.errors?.validaData" class="alert alert-danger">
@@ -83,7 +83,7 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" required id="dataVencimento" name="dataVencimento"
-                            placeholder="dd/mm/aaaa" appValidaData class="form-control" [(ngModel)]="dataVenc"
+                            placeholder="01/01/1901" appValidaData class="form-control" [(ngModel)]="dataVenc"
                             #dataVencimento="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataVencimento.invalid || dataVencimento.errors?.validaData" class="alert alert-danger">
