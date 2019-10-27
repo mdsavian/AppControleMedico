@@ -111,8 +111,6 @@ export class ModalPagamentoAgendamentoComponent {
         this.caixaUsuario = caixaAbertoUsuario != null;
         this.caixa = caixaAbertoUsuario;
       }
-      else
-        this.caixa = this.caixas.find(c => true);
     });
 
   }
@@ -151,8 +149,9 @@ export class ModalPagamentoAgendamentoComponent {
     this.selecionaTipoPagamento(EVistaPrazo[this.agendamentoPagamento.vistaPrazo]);
   }
 
-  selecionaCaixa(e: Caixa) {
-    this.caixaUsuario = this.caixa.id == this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId).id;
+  selecionaCaixa(e: Caixa) { 
+    var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);   
+    this.caixaUsuario = caixaAbertoUsuario != null && this.caixa.id == caixaAbertoUsuario.id;
   }
 
   validaCaixaFuncionario() {

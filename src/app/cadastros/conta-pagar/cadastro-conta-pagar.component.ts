@@ -129,21 +129,21 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
       if (this.util.hasItems(this.contaPagar.pagamentos))
         this.valor.nativeElement.setAttribute('readonly', true);
 
-      this.valor.nativeElement.value = this.util.formatarDecimalBlur(this.valor.nativeElement.value);
+      // this.valor.nativeElement.value = this.util.formatarDecimalBlur(this.valor.nativeElement.value);
     }
 
     if (this.desconto != null) {
       if (this.util.hasItems(this.contaPagar.pagamentos))
         this.desconto.nativeElement.setAttribute('readonly', true);
 
-      this.desconto.nativeElement.value = this.util.formatarDecimalBlur(this.desconto.nativeElement.value);
+      // this.desconto.nativeElement.value = this.util.formatarDecimalBlur(this.desconto.nativeElement.value);
     }
 
     if (this.jurosMulta != null) {
       if (this.util.hasItems(this.contaPagar.pagamentos))
         this.jurosMulta.nativeElement.setAttribute('readonly', true);
 
-      this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(this.jurosMulta.nativeElement.value);
+      // this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(this.jurosMulta.nativeElement.value);
     }
 
   }
@@ -267,7 +267,6 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   }
 
   formatarDecimal(e: any) {
-    console.log("entrei2");
 
     if (e.target.id == "valor")
       this.valor.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
@@ -305,7 +304,6 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
 
   deletarPagamento(event: any) {
 
-    console.log(event.data.codigo);
     this.modalService.open(ModalExcluirRegistroComponent).result.then(
       result => {
         if (result == 'Sim') {
@@ -341,7 +339,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
       modal.componentInstance.mensagemErro = "Data de vencimento menor do que data de emissão.";
       return false;
     }
-    else if (this.contaPagar.desconto > this.contaPagar.valorTotal) {
+    else if (this.contaPagar.desconto > (this.contaPagar.valor + this.contaPagar.jurosMulta)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Desconto maior do que valor total";
       return false;
@@ -364,7 +362,10 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
     columns: {
       dataPagamento: {
         title: 'Data',
-        filter: true
+        filter: true,
+        valuePrepareFunction: (dataPagamento) => {
+          return this.util.dataParaString(dataPagamento);;
+        }
       },
       formaPagamentoId: {
         title: 'Forma Pagamento',
