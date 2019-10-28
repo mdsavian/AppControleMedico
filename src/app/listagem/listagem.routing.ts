@@ -14,6 +14,7 @@ import { ListagemClinicaComponent } from './clinica/listagem-clinica.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.component';
 import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
+import { ListagemContaReceberComponent } from './conta-receber/listagem-conta-receber.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -36,6 +37,16 @@ export const ListagemRoutes: Routes = [
           title: 'Conta Pagar',
           urls: [
             { title: 'Conta Pagar' }
+          ] 
+        }
+      },
+      {
+        path: 'listagemcontareceber',
+        component: ListagemContaReceberComponent,
+        data: {
+          title: 'Conta Receber',
+          urls: [
+            { title: 'Conta Receber' }
           ] 
         }
       },

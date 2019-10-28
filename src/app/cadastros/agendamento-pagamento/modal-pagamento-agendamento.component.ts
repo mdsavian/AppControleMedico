@@ -88,6 +88,7 @@ export class ModalPagamentoAgendamentoComponent {
         this.agendamento.horaFinal.substring(0, 2) + ":" + this.agendamento.horaFinal.substring(2, 4);
     }
 
+    this.funcionarioService.Todos().subscribe(func=> {this.funcionarios = func;});
 
     this.formaPagamentoModel.nativeElement.focus();
     this.usuarioCorrente = this.appService.retornarUsuarioCorrente();
@@ -161,8 +162,10 @@ export class ModalPagamentoAgendamentoComponent {
   }
 
   validaSenha() {
-    if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
-      this.loginService.validaSenha(this.funcionarios.find(c => c.id == this.caixa.funcionarioId).email, this.senha.nativeElement.value).subscribe(senhaValidada => {
+    console.log(this.funcionarios);
+    if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId) && this.util.hasItems(this.funcionarios)) {      
+      var funcionario = this.funcionarios.find(c => c.id == this.caixa.funcionarioId);
+      this.loginService.validaSenha(funcionario.email, this.senha.nativeElement.value).subscribe(senhaValidada => {
         this.senhaValida = !senhaValidada;
       });
     }

@@ -8,20 +8,22 @@ import { Exame } from '../modelos/exame';
 import { Cirurgia } from '../modelos/cirurgia';
 import { Procedimento } from '../modelos/procedimento';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
-
+import { CirurgiaService } from '../services/cirurgia.service';
+import { ExameService } from '../services/exame.service';
+import { ProcedimentoService } from '../services/procedimento.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AgendamentoService {
-  
+
 
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -40,32 +42,32 @@ export class AgendamentoService {
   public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario: string) {
 
     let parametros = new HttpParams().set("medicoId", medicoId).set("data", data).set("tipoCalendario", tipoCalendario);
-    return this.http.get<Agendamento[]>  (this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
   }
 
   buscarAgendamentoMedicoExcluir(medicoId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentoMedicoExcluir/" + medicoId);
-  }  
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentoMedicoExcluir/" + medicoId);
+  }
   buscarAgendamentosPaciente(pacienteId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId);
   }
   buscarAgendamentosLocal(localId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosLocal/" + localId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosLocal/" + localId);
   }
   buscarPagamentoAgendamentoForma(formaPagamentoId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId);
   }
   buscarAgendamentosProcedimento(procedimentoId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId);
   }
   buscarAgendamentosExame(exameId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosExame/" + exameId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId);
   }
   buscarAgendamentosCirurgia(cirurgiaId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId);
   }
   buscarAgendamentosFuncionario(funcionarioId: any) {
-    return this.http.get<Agendamento[]> (this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId);
   }
 
   public Excluir(agendamentoId) {
@@ -75,20 +77,41 @@ export class AgendamentoService {
   public retornarOperacaoAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>): string {
 
-    if (!this.util.isNullOrWhitespace(agendamento.exameId) && this.util.hasItems(exames)) {
-      var exame = exames.find(c => c.id == agendamento.exameId);
-      if (exame != null)
-        return exame.descricao;
+    if (!this.util.isNullOrWhitespace(agendamento.exameId)) {
+      if (!this.util.hasItems(exames)) {
+        this.exameService.buscarPorId(agendamento.exameId).subscribe(exame => {
+          return exame.descricao;
+        });
+      }
+      else {
+        var exame = exames.find(c => c.id == agendamento.exameId);
+        if (exame != null)
+          return exame.descricao;
+      }
     }
-    else if (!this.util.isNullOrWhitespace(agendamento.cirurgiaId) && this.util.hasItems(cirurgias)) {
-      var cirurgia = cirurgias.find(c => c.id == agendamento.cirurgiaId);
-      if (cirurgia != null)
-        return cirurgia.descricao;
+    else if (!this.util.isNullOrWhitespace(agendamento.cirurgiaId)) {
+      if (!this.util.hasItems(cirurgias)) {
+        this.cirurgiaService.buscarPorId(agendamento.cirurgiaId).subscribe(cirurgia => {
+          return cirurgia.descricao;
+        });
+      }
+      else {
+        var cirurgia = cirurgias.find(c => c.id == agendamento.cirurgiaId);
+        if (cirurgia != null)
+          return cirurgia.descricao;
+      }
     }
-    else if (!this.util.isNullOrWhitespace(agendamento.procedimentoId) && this.util.hasItems(procedimentos)) {
-      var procedimento = procedimentos.find(c => c.id == agendamento.procedimentoId);
-      if (procedimento != null)
-        return procedimento.descricao;
+    else if (!this.util.isNullOrWhitespace(agendamento.procedimentoId)) {
+      if (!this.util.hasItems(procedimentos)) {
+        this.procedimentoService.buscarPorId(agendamento.procedimentoId).subscribe(procedimento => {
+          return procedimento.descricao;
+        });
+      }
+      else {
+        var procedimento = procedimentos.find(c => c.id == agendamento.procedimentoId);
+        if (procedimento != null)
+          return procedimento.descricao;
+      }
     }
     else {
       return ETipoAgendamento[agendamento.tipoAgendamento];
@@ -97,7 +120,7 @@ export class AgendamentoService {
 
   public tratarCorAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>) {
-      
+
     if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Pago/Finalizado"]) {
       agendamento.corFundo = "#656565";
       agendamento.corLetra = "#656565";

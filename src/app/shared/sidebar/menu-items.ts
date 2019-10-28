@@ -246,6 +246,16 @@ export const ROUTES: RouteInfo[] = [
         labelClass: '',
         extralink: false,
         submenu: []
+      },
+      {
+        path: '/listagem/listagemcontareceber',
+        title: 'Conta Receber',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
       }
     ]
   },

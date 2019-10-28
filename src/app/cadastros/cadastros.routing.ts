@@ -14,6 +14,7 @@ import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
 import { CadastroFornecedorComponent } from './fornecedor/cadastro-fornecedor.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { CadastroContaPagarComponent } from './conta-pagar/cadastro-conta-pagar.component';
+import { CadastroContaReceberComponent } from './conta-receber/cadastro-conta-receber.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -166,6 +167,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Conta a Pagar',
           urls: [
             { title: 'Cadastro Conta a Pagar', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastrocontareceber',
+        component: CadastroContaReceberComponent,
+        data: {
+          title: 'Cadastro Conta a Receber',
+          urls: [
+            { title: 'Cadastro Conta a Receber', url: '/cadastros/cadastrar' }
           ]
         }
       }

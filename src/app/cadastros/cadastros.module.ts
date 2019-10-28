@@ -38,6 +38,7 @@ import { CadastroCirurgiaComponent } from './cirurgia/cadastro-cirurgia.componen
 import { CadastroClinicaComponent } from './clinica/cadastro-clinica.component';
 import { CadastroFornecedorComponent } from './fornecedor/cadastro-fornecedor.component';
 import { CadastroContaPagarComponent } from './conta-pagar/cadastro-conta-pagar.component';
+import { CadastroContaReceberComponent } from './conta-receber/cadastro-conta-receber.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 
@@ -46,7 +47,7 @@ import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-
 @NgModule({
   imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
-  declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
+  declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent,CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,

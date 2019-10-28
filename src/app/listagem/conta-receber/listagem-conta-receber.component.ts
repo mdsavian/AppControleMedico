@@ -1,62 +1,62 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { ContaPagarService } from '../../services/contaPagar.service';
-import { ContaPagar } from '../../modelos/contaPagar';
+import { ContaReceberService } from '../../services/contaReceber.service';
+import { ContaReceber } from '../../modelos/contaReceber';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
-import { FornecedorService } from '../../services/fornecedor.service';
-import { Fornecedor } from '../../modelos/fornecedor';
-import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
+import { PacienteService } from '../../services/paciente.service';
+import { Paciente } from '../../modelos/paciente';
+import { ETipoContaReceber } from '../../enums/ETipoContaReceber';
 import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
-  templateUrl: './listagem-conta-pagar.component.html'
+  templateUrl: './listagem-conta-receber.component.html'
 })
-export class ListagemContaPagarComponent implements OnInit {
+export class ListagemContaReceberComponent implements OnInit {
   source: LocalDataSource;
-  listaContaPagars: Array<ContaPagar>;
+  listaContaRecebers: Array<ContaReceber>;
   public isSpinnerVisible = false;
   closeResult: string;
   util = new Util();
-  fornecedores = new Array<Fornecedor>();
+  pacientees = new Array<Paciente>();
 
-  constructor(private contaPagarService: ContaPagarService, private fornecedorService: FornecedorService, private router: Router, private modalService: NgbModal) {
+  constructor(private contaReceberService: ContaReceberService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.isSpinnerVisible = true;
-    this.buscaContasPagar();
+    this.buscaContasReceber();
   }
-  buscaContasPagar(): void {
-    this.fornecedorService.Todos().subscribe(c => {
-    this.fornecedores = c;
+  buscaContasReceber(): void {
+    this.pacienteService.Todos().subscribe(c => {
+    this.pacientees = c;
 
-      this.contaPagarService.Todos().subscribe(dados => {
-        this.listaContaPagars = dados;
+      this.contaReceberService.Todos().subscribe(dados => {
+        this.listaContaRecebers = dados;
         this.isSpinnerVisible = false;
-        this.contaPagarService.listaContaPagar = this.listaContaPagars;
-        this.source = new LocalDataSource(this.listaContaPagars);
+        this.contaReceberService.listaContaReceber = this.listaContaRecebers;
+        this.source = new LocalDataSource(this.listaContaRecebers);
       });
     });
   }
 
   deletarRegistro(event) {
-    var conta = this.listaContaPagars.find(c => c.id == event.data.id);
+    var conta = this.listaContaRecebers.find(c => c.id == event.data.id);
 
     if (this.util.hasItems(conta.pagamentos)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Não é possível excluir conta a pagar que já contém pagamento(s).";
+      modal.componentInstance.mensagemErro = "Não é possível excluir conta a receber que já contém pagamento(s).";
     }
     else {
       this.modalService.open(ModalExcluirRegistroComponent).result.then(
         result => {
           if (result == 'Sim') {
-            this.contaPagarService.Excluir(event.data.id).subscribe(retorno => {
+            this.contaReceberService.Excluir(event.data.id).subscribe(retorno => {
               if (retorno) {
-                this.buscaContasPagar();
+                this.buscaContasReceber();
               }
             });
           }
@@ -66,24 +66,24 @@ export class ListagemContaPagarComponent implements OnInit {
   }
 
   editarRegistro(event) {
-    this.contaPagarService.contaPagar = this.listaContaPagars.find(c => c.id == event.data.id);
-    this.router.navigate(['/cadastros/cadastrocontapagar']);
+    this.contaReceberService.contaReceber = this.listaContaRecebers.find(c => c.id == event.data.id);
+    this.router.navigate(['/cadastros/cadastrocontareceber']);
   }
 
   criarRegistro(event) {
-    this.contaPagarService.contaPagar = null;
-    this.router.navigate(['/cadastros/cadastrocontapagar']);
+    this.contaReceberService.contaReceber = null;
+    this.router.navigate(['/cadastros/cadastrocontareceber']);
   }
 
   settings = {
     mode: 'external',
     noDataMessage: "Não foi encontrado nenhum registro",
     columns: {
-      fornecedorId: {
-        title: 'Fornecedor',
+      pacienteId: {
+        title: 'Paciente',
         filter: true,
-        valuePrepareFunction: (fornecedorId) => {
-          return fornecedorId == null || !this.util.hasItems(this.fornecedores) ? "" : this.fornecedores.find(c => c.id == fornecedorId).razaoSocial;
+        valuePrepareFunction: (pacienteId) => {
+          return pacienteId == null || !this.util.hasItems(this.pacientees) ? "" : this.pacientees.find(c => c.id == pacienteId).nomeCompleto;
         }
       },
       dataEmissao: {
@@ -95,14 +95,17 @@ export class ListagemContaPagarComponent implements OnInit {
         title: 'Número',
         filter: true
       },
+      
       tipoContaDescricao: {
         title: 'Tipo Conta',
-        filter: true
+        filter: true,
+        valuePrepareFunction: (tipoContaDescricao) => {return this.util.isNullOrWhitespace(tipoContaDescricao) ? "Lançamento Manual" : tipoContaDescricao}
+
       },
       desconto:{
         title: 'Desconto',
         filter: true,
-        valuePrepareFunction: (desconto) => {return this.util.formatarDecimal(desconto)}
+        valuePrepareFunction: (desconto) => {console.log(desconto); return this.util.formatarDecimal(desconto)}
       },
       jurosMulta:{
         title: 'Juros/Multa',
