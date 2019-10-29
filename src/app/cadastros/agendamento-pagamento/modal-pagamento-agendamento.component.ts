@@ -162,7 +162,6 @@ export class ModalPagamentoAgendamentoComponent {
   }
 
   validaSenha() {
-    console.log(this.funcionarios);
     if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId) && this.util.hasItems(this.funcionarios)) {      
       var funcionario = this.funcionarios.find(c => c.id == this.caixa.funcionarioId);
       this.loginService.validaSenha(funcionario.email, this.senha.nativeElement.value).subscribe(senhaValidada => {
@@ -214,7 +213,7 @@ export class ModalPagamentoAgendamentoComponent {
   somaPagamentos() {
     var total = 0;
     this.listaPagamentos.forEach(c => {
-      total = total + parseFloat(c.valor.toString());
+      total = total + (parseFloat(c.valor.toString()) * c.parcela);
     });
     return total;
   }

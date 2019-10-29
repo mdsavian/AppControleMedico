@@ -92,10 +92,13 @@ export class ListagemContaReceberComponent implements OnInit {
         valuePrepareFunction: (dataEmissao) => {return this.util.dataParaString(dataEmissao)}
       },
       numeroFatura: {
-        title: 'Número',
+        title: 'Fatura',
         filter: true
       },
-      
+      numeroDocumento: {
+        title: 'Documento',
+        filter: true
+      },      
       tipoContaDescricao: {
         title: 'Tipo Conta',
         filter: true,
@@ -105,7 +108,7 @@ export class ListagemContaReceberComponent implements OnInit {
       desconto:{
         title: 'Desconto',
         filter: true,
-        valuePrepareFunction: (desconto) => {console.log(desconto); return this.util.formatarDecimal(desconto)}
+        valuePrepareFunction: (desconto) => {return this.util.formatarDecimal(desconto)}
       },
       jurosMulta:{
         title: 'Juros/Multa',

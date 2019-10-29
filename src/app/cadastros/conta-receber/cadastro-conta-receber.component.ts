@@ -41,10 +41,10 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
 
   sourcePagamentos: LocalDataSource;
   mensagemErro: string;
+  contaDeAgendamento: boolean;
   util = new Util();
   dataEmi = this.util.dataParaString(new Date());
   dataVenc: string;
-  tipoContaDescricao: string;
   id: string;
   formaDePagamentos = new Array<FormaDePagamento>();
   contaReceber = new ContaReceber();
@@ -106,16 +106,13 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
       this.contaReceber = this.contaReceberService.contaReceber;
       this.dataEmi = this.util.dataParaString(this.contaReceber.dataEmissao);
       this.dataVenc = this.util.dataParaString(this.contaReceber.dataVencimento);
+      this.contaDeAgendamento = !this.util.isNullOrWhitespace(this.contaReceber.agendamentoId);
 
-      if (!this.util.isNullOrWhitespace(this.contaReceber.agendamentoId))
-        this.tipoContaDescricao = this.contaReceberService.retornarDescricaoTipoConta(this.contaReceber.agendamentoId)
-      else
-        this.tipoContaDescricao = ETipoContaReceber[this.contaReceber.tipoContaReceber].valueOf();
 
     }
     else {
       this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];
-      this.tipoContaDescricao = "Lançamento Manual";
+      this.contaReceber.tipoContaDescricao = "Lançamento Manual";
       this.contaReceber.usuarioId = this.appService.retornarUsuarioCorrente().id;
       this.contaReceber.clinicaId = this.appService.retornarClinicaCorrente().id;
       this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];
@@ -241,31 +238,37 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   }
 
   adicionarPagamento() {
-    var modalPagamento = this.modalService.open(ModalPagamentoComponent, { size: "lg" });
-    modalPagamento.componentInstance.saldo = this.contaReceber.saldo;
-    modalPagamento.result.then(pagamento => {
-      if (pagamento != null) {
-        var contaPagamento = new ContaReceberPagamento();
-        contaPagamento.dataPagamento = pagamento.dataPagamento;
-        contaPagamento.valor = pagamento.valor;
-        contaPagamento.formaPagamentoId = pagamento.formaPagamentoId;
-        contaPagamento.usuarioId = pagamento.usuarioId;
-        contaPagamento.vistaPrazo = pagamento.vistaPrazo;
-        contaPagamento.parcela = pagamento.parcela;
-        contaPagamento.descricaoPagamento = pagamento.descricaoPagamento;
+    if (this.contaDeAgendamento) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Operação não permitida para conta a receber de agendamento.";
+    }
+    else {
+      var modalPagamento = this.modalService.open(ModalPagamentoComponent, { size: "lg" });
+      modalPagamento.componentInstance.saldo = this.contaReceber.saldo;
+      modalPagamento.result.then(pagamento => {
+        if (pagamento != null) {
+          var contaPagamento = new ContaReceberPagamento();
+          contaPagamento.dataPagamento = pagamento.dataPagamento;
+          contaPagamento.valor = pagamento.valor;
+          contaPagamento.formaPagamentoId = pagamento.formaPagamentoId;
+          contaPagamento.usuarioId = pagamento.usuarioId;
+          contaPagamento.vistaPrazo = pagamento.vistaPrazo;
+          contaPagamento.parcela = pagamento.parcela;
+          contaPagamento.descricaoPagamento = pagamento.descricaoPagamento;
 
-        if (!this.util.hasItems(this.contaReceber.pagamentos)) {
-          this.contaReceber.pagamentos = new Array<ContaReceberPagamento>();
-          contaPagamento.codigo = 1;
+          if (!this.util.hasItems(this.contaReceber.pagamentos)) {
+            this.contaReceber.pagamentos = new Array<ContaReceberPagamento>();
+            contaPagamento.codigo = 1;
+          }
+          else
+            contaPagamento.codigo = this.contaReceber.pagamentos.length + 1;
+
+          this.contaReceber.pagamentos.push(contaPagamento);
+          this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
+          this.calcularSaldo();
         }
-        else
-          contaPagamento.codigo = this.contaReceber.pagamentos.length + 1;
-
-        this.contaReceber.pagamentos.push(contaPagamento);
-        this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
-        this.calcularSaldo();
-      }
-    }, error => { });
+      }, error => { });
+    }
   }
 
   formatarDecimal(e: any) {
@@ -305,17 +308,22 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   }
 
   deletarPagamento(event: any) {
-
-    this.modalService.open(ModalExcluirRegistroComponent).result.then(
-      result => {
-        if (result == 'Sim') {
-          var index = this.contaReceber.pagamentos.indexOf(event.data.codigo);
-          this.contaReceber.pagamentos.splice(index, 1);
-          this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
-          this.calcularSaldo();
+    if (this.contaDeAgendamento) {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Operação não permitida para conta a receber de agendamento.";
+    }
+    else {
+      this.modalService.open(ModalExcluirRegistroComponent).result.then(
+        result => {
+          if (result == 'Sim') {
+            var index = this.contaReceber.pagamentos.indexOf(event.data.codigo);
+            this.contaReceber.pagamentos.splice(index, 1);
+            this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
+            this.calcularSaldo();
+          }
         }
-      }
-    );
+      );
+    }
   }
 
   public salvar(): void {
