@@ -11,6 +11,7 @@ import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
+import { Caixa } from '../modelos/caixa';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,10 @@ export class AgendamentoService {
   }
   buscarAgendamentosProcedimento(procedimentoId: any) {
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId);
+  }
+  buscarAgendamentosCaixa(caixa: Caixa) {
+    let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros);
   }
   buscarAgendamentosExame(exameId: any) {
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId);

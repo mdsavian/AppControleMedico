@@ -15,6 +15,7 @@ import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem
 import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.component';
 import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
 import { ListagemContaReceberComponent } from './conta-receber/listagem-conta-receber.component';
+import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
 
 export const ListagemRoutes: Routes = [
   {
@@ -31,12 +32,22 @@ export const ListagemRoutes: Routes = [
         }
       },
       {
+        path: 'listagemcaixa',
+        component: ListagemCaixaComponent,
+        data: {
+          title: 'Caixas',
+          urls: [
+            { title: 'Caixas' }
+          ] 
+        }
+      },
+      {
         path: 'listagemcontapagar',
         component: ListagemContaPagarComponent,
         data: {
-          title: 'Conta Pagar',
+          title: 'Conta a Pagar',
           urls: [
-            { title: 'Conta Pagar' }
+            { title: 'Conta a Pagar' }
           ] 
         }
       },
@@ -44,9 +55,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemcontareceber',
         component: ListagemContaReceberComponent,
         data: {
-          title: 'Conta Receber',
+          title: 'Conta a Receber',
           urls: [
-            { title: 'Conta Receber' }
+            { title: 'Conta a Receber' }
           ] 
         }
       },

@@ -1,0 +1,148 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form #caixaForm="ngForm">
+          <ngb-tabset type="pills" [destroyOnHide]="false">
+            <ngb-tab title="Informações">
+              <ng-template ngbTabContent>
+                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row"></div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-2 col-md-4">
+                      <div class="form-group">
+                        <label class="control-label" for="funcionarioCaixa">Funcionário</label>
+                        <input type="text" id="funcionarioCaixa" readonly name="funcionarioCaixa"
+                          class="form-control" [(ngModel)]="nomeFuncionarioCaixa" #funcionarioCaixa="ngModel">
+                      </div>
+                    </div>
+                    <div class="col-xs-2 col-md-4">
+                      <div class="form-group">
+                        <label class="control-label" for="">Usuário Abertura</label>
+                        <input type="text" id="usuarioAbertura" readonly name="usuarioAbertura"
+                          class="form-control" [(ngModel)]="nomeUsuarioAbertura" #usuarioAbertura="ngModel">
+                      </div>
+                    </div>
+                    <div class="col-xs-2 col-md-4">
+                      <div class="form-group">
+                        <label class="control-label" for="usuarioFechamento">Usuário Fechamento</label>
+                        <input type="text" id="usuarioFechamento" readonly name="usuarioFechamento"
+                          class="form-control" [(ngModel)]="nomeUsuarioFechamento"
+                          #usuarioFechamento="ngModel">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row rowcadastro">
+                    <div class="col-xs-2 col-md-3">
+                      <div class="form-group">
+                        <label class="control-label" for="dataAbertura">Data Abertura</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <input type="text" readonly id="dataAbertura" name="dataAbertura" class="form-control"
+                            [(ngModel)]="dataAber" #dataAbertura="ngModel" readonly>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-2 col-md-2">
+                      <div class="form-group">
+                        <label class="control-label" for="horaAbertura">Hora Abertura</label>
+                        <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaAbertura"
+                          name="horaAbertura" placeholder="HH:mm" class="form-control" readonly
+                          [(ngModel)]="caixa.horaAbertura" #horaAbertura="ngModel">
+                      </div>
+                    </div>
+
+                    <div class="col-xs-3 col-md-3">
+                      <label class="control-label" for="trocoAbertura">Troco Abertura</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" id="trocoAbertura" readonly mask="dot_separator.2" name="trocoAbertura"
+                          placeholder="000,00" class="form-control" [(ngModel)]="trocoAberturaFormatado"
+                          #trocoAbertura="ngModel">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row rowcadastro">
+
+                      <div class="col-xs-2 col-md-3">
+                        <div class="form-group">
+                          <label class="control-label" for="dataFechamento">Data Fechamento</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <input type="text" readonly id="dataFechamento" name="dataFechamento" class="form-control"
+                              [(ngModel)]="dataFech" #dataFechamento="ngModel" readonly>
+                          </div>
+                        </div>
+                      </div>
+  
+                      <div class="col-xs-2 col-md-2">
+                        <div class="form-group">
+                          <label class="control-label" for="horaFechamento">Hora Fechamento</label>
+                          <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]" id="horaFechamento"
+                            name="horaFechamento" placeholder="HH:mm" class="form-control" readonly
+                            [(ngModel)]="caixa.horaFechamento" #horaFechamento="ngModel">
+                        </div>
+                      </div>
+  
+                      <div class="col-xs-3 col-md-3">
+                        <label class="control-label" for="trocoFechamento">Troco Fechamento</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">R$</span>
+                          </div>
+                          <input type="text" id="trocoFechamento" readonly mask="dot_separator.2" name="trocoFechamento"
+                            placeholder="000,00" class="form-control" [(ngModel)]="trocoFechamentoFormatado"
+                            #trocoFechamento="ngModel">
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Recebimentos">
+              <ng-template ngbTabContent>
+                <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-2 col-md-3">
+                      <label class="control-label" for="saldo">Total Recebimentos</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" id="totalRecebimentos" mask="dot_separator.2" name="totalRecebimentos" placeholder="000,00"
+                          class="form-control" readonly [(ngModel)]="totalRecebimentos" #totalRecebimentosModel="ngModel">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="table table-responsive smart-table">
+                      <ng2-smart-table [(settings)]="settingsRecebimentos" [(source)]="sourceRecebimentos"
+                        (edit)="visualizarRecebimento($event.data)">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Voltar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

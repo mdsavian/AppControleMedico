@@ -239,7 +239,7 @@ export const ROUTES: RouteInfo[] = [
     submenu: [
       {
         path: '/listagem/listagemcontapagar',
-        title: 'Conta Pagar',
+        title: 'Conta a Pagar',
         icon: '',
         class: '',
         label: '',
@@ -249,7 +249,17 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/listagem/listagemcontareceber',
-        title: 'Conta Receber',
+        title: 'Conta a Receber',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: []
+      },
+      {
+        path: '/listagem/listagemcaixa',
+        title: 'Caixas',
         icon: '',
         class: '',
         label: '',

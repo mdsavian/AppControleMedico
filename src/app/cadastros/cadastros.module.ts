@@ -41,6 +41,8 @@ import { CadastroContaPagarComponent } from './conta-pagar/cadastro-conta-pagar.
 import { CadastroContaReceberComponent } from './conta-receber/cadastro-conta-receber.component';
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
+import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component'
+import { ModalDetalhesAgendamentoComponent } from '../agenda/modal-detalhes-agendamento.component'
 
 
 
@@ -48,13 +50,13 @@ import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-
   imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent,CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
-    CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
+    CadastroFornecedorComponent, ConfiguracaoAgendaComponent,ModalDetalhesAgendamentoComponent, CadastroFormaDePagamentoComponent,DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective,ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
 
-  entryComponents: [ModalAdicionaConvenioComponent, ModalCadastroFornecedorComponent]
+  entryComponents: [ModalAdicionaConvenioComponent,ModalDetalhesAgendamentoComponent, ModalCadastroFornecedorComponent]
 })
 export class CadastrosModule { }

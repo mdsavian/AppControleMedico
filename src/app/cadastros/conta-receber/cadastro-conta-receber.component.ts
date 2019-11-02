@@ -131,22 +131,16 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
     if (this.valor != null) {
       if (this.util.hasItems(this.contaReceber.pagamentos))
         this.valor.nativeElement.setAttribute('readonly', true);
-
-      // this.valor.nativeElement.value = this.util.formatarDecimalBlur(this.valor.nativeElement.value);
     }
 
     if (this.desconto != null) {
       if (this.util.hasItems(this.contaReceber.pagamentos))
         this.desconto.nativeElement.setAttribute('readonly', true);
-
-      // this.desconto.nativeElement.value = this.util.formatarDecimalBlur(this.desconto.nativeElement.value);
     }
 
     if (this.jurosMulta != null) {
       if (this.util.hasItems(this.contaReceber.pagamentos))
         this.jurosMulta.nativeElement.setAttribute('readonly', true);
-
-      // this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(this.jurosMulta.nativeElement.value);
     }
 
   }
@@ -356,7 +350,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
     }
     else if (this.util.hasItems(this.contaReceber.pagamentos)) {
       let soma = 0;
-      this.contaReceber.pagamentos.forEach(pag => soma = +soma + +pag.valor);
+      this.contaReceber.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
       if (soma > this.contaReceber.valorTotal) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Soma dos pagamentos maior do que valor total";

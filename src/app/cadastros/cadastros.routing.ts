@@ -15,6 +15,7 @@ import { CadastroFornecedorComponent } from './fornecedor/cadastro-fornecedor.co
 import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro-forma-de-pagamento.component';
 import { CadastroContaPagarComponent } from './conta-pagar/cadastro-conta-pagar.component';
 import { CadastroContaReceberComponent } from './conta-receber/cadastro-conta-receber.component';
+import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -157,6 +158,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Forma De Pagamento',
           urls: [
             { title: 'Cadastro Forma De Pagamento', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'detalhescaixa',
+        component: DetalhesCaixaComponent,
+        data: {
+          title: 'Detalhes Caixa',
+          urls: [
+            { title: 'Detalhes Caixa', url: '/cadastros/cadastrar' }
           ]
         }
       },

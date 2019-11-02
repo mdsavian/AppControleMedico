@@ -7,10 +7,18 @@ export class Util {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
     }
 
+    formatatest(valor:number)
+    {
+        var regexHora = new RegExp("^\s*(?:[1-9]\d{0,2}(?:\.\d{3})*|0)(?:,\d{1,2})?$");
+
+        console.log("teste", regexHora.test(valor.toString()));
+
+        
+    }
     formatarDecimalBlur(valor: number): string {
 
         let valorString = valor.toString();
-
+        
         if (valorString.indexOf(',') > 0) {
             if (valorString.substring(valorString.indexOf(',') + 1, valorString.length).length == 0)
                 return valorString + "00";
@@ -20,7 +28,7 @@ export class Util {
 
             return valor.toString();
         }
-        else if (valorString.indexOf('.') > 0) {
+        else if (valorString.indexOf('.') > 0 && valorString.indexOf('.') != 3) {
             return valorString + ",00";
         }
         else
@@ -57,7 +65,7 @@ export class Util {
         else { //apenas data informada
             var dataString = ("0" + data).slice(-2) + "/" + ("0" + (dataHoje.getMonth() + 1)).slice(-2) + "/" + dataHoje.getFullYear();
             return dataString;
-        }        
+        }
     }
 
     public converteData(data: NgbDate): Date {
@@ -123,6 +131,8 @@ export class Util {
     }
 
     public formatarHora(hora: string) {
+        if (hora == null)
+            return "";
         return (hora.substr(0, 2) + ":" + hora.substr(2, 2));
     }
 
@@ -137,9 +147,9 @@ export class Util {
 
     public validaData(data: string): boolean {
 
-        console.log(data);
         if (this.isNullOrWhitespace(data))
             return false;
+
         var date = data;
         var ardt = new Array;
         var ExpReg = new RegExp("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[12][0-9]{3}");
@@ -180,6 +190,9 @@ export class Util {
     }
 
     public dataParaString(data: Date): string {
+        if (data == null)
+            return "";
+
         var datepipe: DatePipe = new DatePipe('pt-BR');
         return datepipe.transform(data, "dd/MM/yyyy");
     }

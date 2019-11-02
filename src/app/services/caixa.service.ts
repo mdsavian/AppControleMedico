@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Caixa } from '../modelos/Caixa'
 import { environment } from '../../environments/environment';
 import { AppService } from './app.service';
+import { Funcionario } from '../modelos/funcionario';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class CaixaService {
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'caixa/';
 
+  public listaFuncionarios:Array<Funcionario>;
   public caixa: Caixa;
   public listaCaixa: Array<Caixa>;
 

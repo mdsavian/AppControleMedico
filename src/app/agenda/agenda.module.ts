@@ -16,6 +16,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
 import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
 import { ModalFechamentoCaixaComponent } from '../cadastros/caixa/modal-fechamento-caixa.component';
+
 import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 

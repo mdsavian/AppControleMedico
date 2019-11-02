@@ -51,7 +51,7 @@
                         <label class="control-label" for="numeroDocumento">Número Documento</label>
                         <input type="text" id="numeroDocumento" placeholder="Número Documento" name="numeroDocumento"
                           class="form-control" [(ngModel)]="contaPagar.numeroDocumento" #numeroDocumento="ngModel"
-                          [required]="(numeroFatura.value == '' || numeroFatura.value == null)">
+                          [required]="(numeroDocumento.value == '' || numeroDocumento.value == null)">
                         <div *ngIf="numeroDocumento.invalid" class="alert alert-danger">
                           <div *ngIf="numeroDocumento.errors.required"> Número Documento/Fatura obrigatório(a).</div>
                         </div>

@@ -98,10 +98,10 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   public ngOnInit(): void {
 
     this.formaPagamentoService.Todos().subscribe(formas => {
+      this.formaDePagamentos = formas;
       if (this.contaPagarService.contaPagar != null && this.util.hasItems(this.contaPagar.pagamentos)) {
         this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
-      }
-      this.formaDePagamentos = formas;
+      }      
     });
 
     if (this.contaPagarService.contaPagar != null) {
@@ -128,22 +128,16 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
     if (this.valor != null) {
       if (this.util.hasItems(this.contaPagar.pagamentos))
         this.valor.nativeElement.setAttribute('readonly', true);
-
-      // this.valor.nativeElement.value = this.util.formatarDecimalBlur(this.valor.nativeElement.value);
     }
 
     if (this.desconto != null) {
       if (this.util.hasItems(this.contaPagar.pagamentos))
         this.desconto.nativeElement.setAttribute('readonly', true);
-
-      // this.desconto.nativeElement.value = this.util.formatarDecimalBlur(this.desconto.nativeElement.value);
     }
 
     if (this.jurosMulta != null) {
       if (this.util.hasItems(this.contaPagar.pagamentos))
         this.jurosMulta.nativeElement.setAttribute('readonly', true);
-
-      // this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(this.jurosMulta.nativeElement.value);
     }
 
   }
@@ -153,7 +147,6 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
       var pagamentos = 0;
 
       this.contaPagar.pagamentos.forEach(pagamento => {
-
         let val = pagamento.valor * pagamento.parcela;
         pagamentos = +pagamentos + +val;
       });
@@ -346,7 +339,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
     }
     else if (this.util.hasItems(this.contaPagar.pagamentos)) {
       let soma = 0;
-      this.contaPagar.pagamentos.forEach(pag => soma = +soma + +pag.valor);
+      this.contaPagar.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
       if (soma > this.contaPagar.valorTotal) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Soma dos pagamentos maior do que valor total";

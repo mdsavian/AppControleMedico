@@ -19,6 +19,7 @@ import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.co
 import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
 import { ListagemContaReceberComponent } from './conta-receber/listagem-conta-receber.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
+import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
 import { CorComponent } from './shared/cor-component';
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
@@ -32,7 +33,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent, ListagemContaPagarComponent,ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemMedicoComponent, ListagemPacienteComponent,ListagemCaixaComponent, ListagemContaPagarComponent,ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
     ListagemConvenioComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent, CorComponent
   ],

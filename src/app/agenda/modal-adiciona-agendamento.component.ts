@@ -87,7 +87,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     }
   }
 
-
   ngOnInit() {
 
     this.nomePacientes = new Array<string>();
