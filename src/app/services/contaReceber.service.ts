@@ -36,13 +36,4 @@ export class ContaReceberService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + contaReceberId);
   }
 
-  public retornarDescricaoTipoConta(agendamentoId: string) {
-    this.agendamentoService.buscarPorId(agendamentoId).subscribe(agendamento => {
-      var teste = this.agendamentoService.retornarOperacaoAgendamento(agendamento, [], [], []);
-      console.log("retornarDescricaoTipoConta", teste);
-      return teste;
-    });
-    return "";
-  }
-
 }

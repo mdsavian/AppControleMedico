@@ -724,6 +724,7 @@ export class AgendaComponent implements OnInit {
     if (!this.util.isNullOrWhitespace(agendamento.pacienteId)) {
       var paciente = this.pacientes.find(c => c.id == agendamento.pacienteId);
       var convenio = this.convenios.find(c => c.id == agendamento.convenioId);
+      
       var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos).toUpperCase();
 
       var mensagem = operacao + " - ";
