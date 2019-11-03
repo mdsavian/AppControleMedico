@@ -18,6 +18,7 @@ export const routes: Routes = [
       { path: 'cadastros', loadChildren: () => import('./cadastros/cadastros.module').then(m =>  m.CadastrosModule), canActivate: [AuthGuard] },
       { path: 'importador', loadChildren: () => import('./importador/importador.module').then(m =>  m.ImportadorModule), canActivate: [AuthGuard] },
       { path: 'agenda', loadChildren: () => import('./agenda/agenda.module').then(m => m.AgendaModule), canActivate: [AuthGuard] },
+      { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [AuthGuard] },
     ]
   },
   {

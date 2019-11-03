@@ -1,0 +1,14 @@
+.piechart{
+    height:375px; 
+    width:280px;
+    margin: 0 auto;
+}
+.ct-series-c .ct-slice-donut {
+	stroke: #6772e5;
+}
+.ct-series-b .ct-slice-donut {
+	stroke: #20aee3;
+}
+.ct-series-a .ct-slice-donut {
+	stroke: #24d2b5;
+}
