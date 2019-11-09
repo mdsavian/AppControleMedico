@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContaReceber } from '../modelos/contaReceber'
 import { environment } from '../../environments/environment';
 import { AgendamentoService } from '../services/agendamento.service';
@@ -8,7 +8,7 @@ import { Agendamento } from "../modelos/agendamento";
 @Injectable({
   providedIn: 'root'
 })
-export class ContaReceberService {
+export class ContaReceberService {  
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'contaReceber/';
 
@@ -34,6 +34,11 @@ export class ContaReceberService {
 
   public Excluir(contaReceberId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + contaReceberId);
+  }
+
+  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any) {
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje);    
+    return this.http.get<ContaReceber[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 
 }

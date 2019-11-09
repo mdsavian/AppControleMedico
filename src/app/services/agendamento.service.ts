@@ -18,8 +18,6 @@ import { Caixa } from '../modelos/caixa';
 })
 
 export class AgendamentoService {
-
-
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
@@ -46,33 +44,20 @@ export class AgendamentoService {
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
   }
 
-  buscarAgendamentoMedicoExcluir(medicoId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentoMedicoExcluir/" + medicoId);
-  }
-  buscarAgendamentosPaciente(pacienteId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId);
-  }
-  buscarAgendamentosLocal(localId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosLocal/" + localId);
-  }
-  buscarPagamentoAgendamentoForma(formaPagamentoId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId);
-  }
-  buscarAgendamentosProcedimento(procedimentoId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId);
-  }
-  buscarAgendamentosCaixa(caixa: Caixa) {
-    let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId);
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros);
-  }
-  buscarAgendamentosExame(exameId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId);
-  }
-  buscarAgendamentosCirurgia(cirurgiaId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId);
-  }
-  buscarAgendamentosFuncionario(funcionarioId: any) {
-    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId);
+  buscarAgendamentoMedicoExcluir(medicoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentoMedicoExcluir/" + medicoId); }
+  buscarAgendamentosPaciente(pacienteId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId); }
+  buscarAgendamentosLocal(localId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosLocal/" + localId); }
+  buscarPagamentoAgendamentoForma(formaPagamentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId); }
+  buscarAgendamentosProcedimento(procedimentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId); }
+  buscarAgendamentosCaixa(caixa: Caixa) { let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId); return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros); }
+  buscarAgendamentosExame(exameId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId); }
+  buscarAgendamentosCirurgia(cirurgiaId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId); }
+  buscarAgendamentosFuncionario(funcionarioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId); }
+
+  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any) {
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje); 
+    return this.http.get<Array<Agendamento>>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
+
   }
 
   public Excluir(agendamentoId) {
@@ -81,7 +66,7 @@ export class AgendamentoService {
 
   public retornarOperacaoAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>): string {
-
+      
     if (!this.util.isNullOrWhitespace(agendamento.exameId)) {
       if (!this.util.hasItems(exames)) {
         this.exameService.buscarPorId(agendamento.exameId).subscribe(exame => {

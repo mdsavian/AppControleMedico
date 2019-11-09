@@ -9,9 +9,6 @@ import { DashboardRoutes } from './dashboard.routing';
 import { ChartistModule } from 'ng-chartist';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
-import { IncomeCounterComponent } from './dashboard-components/income-counter/income-counter.component';
-
-
 @NgModule({
   imports: [
     FormsModule,
@@ -23,8 +20,8 @@ import { IncomeCounterComponent } from './dashboard-components/income-counter/in
     RouterModule.forChild(DashboardRoutes)
   ],
   declarations: [
-    DashboardAnaliticoComponent,
-    IncomeCounterComponent
+    DashboardAnaliticoComponent
+
   ]
 })
 export class DashboardModule {}

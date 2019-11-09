@@ -6,19 +6,10 @@ export class Util {
     formatarDecimal(valor: number, ) {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
     }
-
-    formatatest(valor:number)
-    {
-        var regexHora = new RegExp("^\s*(?:[1-9]\d{0,2}(?:\.\d{3})*|0)(?:,\d{1,2})?$");
-
-        console.log("teste", regexHora.test(valor.toString()));
-
-        
-    }
     formatarDecimalBlur(valor: number): string {
 
         let valorString = valor.toString();
-        
+
         if (valorString.indexOf(',') > 0) {
             if (valorString.substring(valorString.indexOf(',') + 1, valorString.length).length == 0)
                 return valorString + "00";
@@ -74,9 +65,17 @@ export class Util {
     }
 
     public concatenaDataHora(dataString: string, horaMinuto: string) {
-        var hora = parseInt(horaMinuto.substring(0, 2));
-        var minutos = parseInt(horaMinuto.substring(2, 4));
-
+        var hora = 0, minutos = 0;
+        
+        if (horaMinuto.indexOf(":") > 0) {
+            var horaSplit = horaMinuto.split(":");
+            hora = parseInt(horaSplit[0]);
+            minutos = parseInt(horaSplit[1]);
+        }
+        else {
+            hora = parseInt(horaMinuto.substring(0, 2));
+            minutos = parseInt(horaMinuto.substring(2, 4));
+        }
         var data = this.stringParaData(dataString);
         var novaData = new Date(data.getFullYear(), data.getMonth(), data.getDate(), hora, minutos, 0);
         return novaData;

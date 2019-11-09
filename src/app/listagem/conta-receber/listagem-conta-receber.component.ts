@@ -32,7 +32,7 @@ export class ListagemContaReceberComponent implements OnInit {
   }
   buscaContasReceber(): void {
     this.pacienteService.Todos().subscribe(c => {
-    this.pacientees = c;
+      this.pacientees = c;
 
       this.contaReceberService.Todos().subscribe(dados => {
         this.listaContaRecebers = dados;
@@ -66,7 +66,7 @@ export class ListagemContaReceberComponent implements OnInit {
   }
 
   editarRegistro(event) {
-    this.contaReceberService.contaReceber = this.listaContaRecebers.find(c => c.id == event.data.id);
+    this.contaReceberService.contaReceber = this.listaContaRecebers.find(c => c.id == event.data.id && c.agendamentoId == event.data.agendamentoId);
     this.router.navigate(['/cadastros/cadastrocontareceber']);
   }
 
@@ -89,7 +89,7 @@ export class ListagemContaReceberComponent implements OnInit {
       dataEmissao: {
         title: 'Emissão',
         filter: true,
-        valuePrepareFunction: (dataEmissao) => {return this.util.dataParaString(dataEmissao)}
+        valuePrepareFunction: (dataEmissao) => { return this.util.dataParaString(dataEmissao) }
       },
       numeroFatura: {
         title: 'Fatura',
@@ -98,33 +98,33 @@ export class ListagemContaReceberComponent implements OnInit {
       numeroDocumento: {
         title: 'Documento',
         filter: true
-      },      
+      },
       tipoContaDescricao: {
         title: 'Tipo Conta',
         filter: true,
-        valuePrepareFunction: (tipoContaDescricao) => {return this.util.isNullOrWhitespace(tipoContaDescricao) ? "Lançamento Manual" : tipoContaDescricao}
+        valuePrepareFunction: (tipoContaDescricao) => { return this.util.isNullOrWhitespace(tipoContaDescricao) ? "Lançamento Manual" : tipoContaDescricao }
 
       },
-      desconto:{
+      desconto: {
         title: 'Desconto',
         filter: true,
-        valuePrepareFunction: (desconto) => {return this.util.formatarDecimal(desconto)}
+        valuePrepareFunction: (desconto) => { return this.util.formatarDecimal(desconto) }
       },
-      jurosMulta:{
+      jurosMulta: {
         title: 'Juros/Multa',
         filter: true,
-        valuePrepareFunction: (jurosMulta) => {return this.util.formatarDecimal(jurosMulta)}
+        valuePrepareFunction: (jurosMulta) => { return this.util.formatarDecimal(jurosMulta) }
       },
       valor: {
         title: 'Valor',
         filter: true,
-        valuePrepareFunction: (valor) => {return this.util.formatarDecimal(valor)}
+        valuePrepareFunction: (valor) => { return this.util.formatarDecimal(valor) }
 
       },
       saldo: {
         title: 'Saldo',
         filter: true,
-        valuePrepareFunction: (saldo) => {return this.util.formatarDecimal(saldo)}
+        valuePrepareFunction: (saldo) => { return this.util.formatarDecimal(saldo) }
       }
     },
     actions:

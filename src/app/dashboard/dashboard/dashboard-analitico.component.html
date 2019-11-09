@@ -3,74 +3,96 @@
 <!-- ============================================================== -->
 <div class="row">
     <div class="col-12">
-        <app-income-counter></app-income-counter>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-success"><i class="ti-wallet"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">$18090</h3>
+                                <h5 class="text-muted m-b-0">Contas a Receber</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-info"><i class="ti-user"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">2690</h3>
+                                <h5 class="text-muted m-b-0">Contas a Pagar</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-primary"><i class="ti-calendar"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">20 march</h3>
+                                <h5 class="text-muted m-b-0">Lucro Bruto</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-danger"><i class="ti-settings"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">6540</h3>
+                                <h5 class="text-muted m-b-0">Projeção Lucro Bruto</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </div>
     </div>
 </div>
-<!-- ============================================================== -->
-<!-- Campaign -->
-<!-- ============================================================== -->
+
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex m-b-30">
                     <h5 class="card-title m-b-0 align-self-center">Agendamentos</h5>
-                    <div class="ml-auto align-self-center">
-                        <ul class="list-inline font-12">
-                            <li><i class="fa fa-circle" style="color: rgb(0,153,0);"></i> Confirmado(s)</li> 
-                            <li><i class="fa fa-circle" style="color: rgb(0,0,255);"></i> Pago/Finalizado(s)</li> 
-                            <li><i class="fa fa-circle" style="color: rgb(255,0,0);"></i> Cancelado(s)</li> 
-                            <li><i class="fa fa-circle" style="color: rgb(255,102,0);"></i> Atrasado(s)</li>
-                        </ul>
-                    </div>
                 </div>
                 <div style="height:350px;">
-                    <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-                        [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"> </canvas>
+                    <canvas baseChart [datasets]="dadosGraficoLinhas" [labels]="labelsGraficoLinhas" [options]="opcoesGraficoLinhas"
+                        [colors]="coresGraficoLinhas" [legend]="false" [chartType]="'line'"> </canvas>
                 </div>
                 <div class="row text-center">
                     <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">5098</h2><small>Confirmado(s)</small>
+                        <h2 class="m-b-0 font-light">5098</h2><small><i class="fa fa-circle" style="color: rgb(0,153,0);"></i> Confirmado(s)</small>
                     </div>
                     <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">5098</h2><small>Pago/Finalizado(s)</small>
+                        <h2 class="m-b-0 font-light">5098</h2><small><i class="fa fa-circle" style="color: rgb(0,0,255);"></i> Pago/Finalizado(s)</small>
                     </div>
                     <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">4156</h2><small>Cancelado(s)</small>
+                        <h2 class="m-b-0 font-light">4156</h2><small><i class="fa fa-circle" style="color: rgb(255,0,0);"></i> Cancelado(s)</small>
                     </div>
                     <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">1369</h2><small>Atrasado(s)</small>
+                        <h2 class="m-b-0 font-light">1369</h2><small><i class="fa fa-circle" style="color: rgb(255,102,0);"></i> Atrasado(s)</small>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex m-b-30 no-block">
-                    <h5 class="card-title m-b-0 align-self-center">Agendamentos Por Médico</h5>
-                </div>
-                <div class="piechart">
-                    <x-chartist class="" [data]="donuteChart1.data" [type]="donuteChart1.type" [options]="donuteChart1.options"
-                        [responsiveOptions]="donuteChart1.responsiveOptions" [events]="donuteChart1.events">
-                    </x-chartist>
-                </div>
-                <ul class="list-inline m-t-30 text-center font-12">
-                    <li><i class="fa fa-circle text-purple"></i> Médico 1</li>
-                    <li><i class="fa fa-circle text-success"></i> Médico 2</li>
-                    <li><i class="fa fa-circle text-info"></i> Médico 3</li>
-                </ul>
             </div>
         </div>
     </div>
 </div>
-<!-- ============================================================== -->
-<!-- End Campaign -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Today's Schedule and sales overview -->
-<!-- ============================================================== -->
+
 <div class="row">
     <!-- Column -->
     <div class="col-lg-12">

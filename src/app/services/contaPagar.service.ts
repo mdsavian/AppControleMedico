@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContaPagar } from '../modelos/contaPagar'
 import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ContaPagarService {
-
-  private headers: HttpHeaders;
+    private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'contaPagar/';
 
   public contaPagar:ContaPagar;
@@ -35,6 +34,13 @@ export class ContaPagarService {
 
   public Excluir(contaPagarId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + contaPagarId);
+  }
+
+  TodosPorPeriodo(primeiroDiaMes: string, dataHoje: string) {
+
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje);
+    
+    return this.http.get<Array<ContaPagar>>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 
 }
