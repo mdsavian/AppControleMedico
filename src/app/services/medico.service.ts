@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Medico } from '../modelos/medico';
 import { Usuario } from '../modelos/usuario';
 import { environment } from '../../environments/environment';
@@ -8,9 +8,7 @@ import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 @Injectable({
   providedIn: 'root'
 })
-export class MedicoService {
- 
-  
+export class MedicoService {   
   public medico:Medico;
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'medico/';
@@ -31,7 +29,15 @@ export class MedicoService {
     return this.http.get<Array<Medico>>(this.accessPointUrl + "buscarMedicoEspecialidade/"+ especialidadeId);
   }
 
-  buscarMedicoConvenio(convenioId: string) {
+  buscarMedicosPorUsuario(usuarioId: string, clinicaId: string) {
+    let parametros = new HttpParams().set("usuarioId", usuarioId).set("clinicaId", clinicaId); 
+    
+    
+    return this.http.get<Medico[]>(this.accessPointUrl + "buscarMedicosPorUsuario?" + parametros); 
+
+  }
+
+  buscarMedicoConvenio(convenioId: string) {    
     return this.http.get<Array<Medico>>(this.accessPointUrl + "buscarMedicoConvenio/"+ convenioId);
   }
 

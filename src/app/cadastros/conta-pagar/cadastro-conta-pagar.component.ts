@@ -9,6 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Estados } from "../../enums/estados";
 import { Paises } from "../../enums/paises";
 import { Fornecedor } from '../../modelos/fornecedor';
+import { Medico } from '../../modelos/medico';
 import { Observable } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -22,6 +23,8 @@ import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-
 import { ContaPagarPagamento } from '../../modelos/contaPagarPagamento';
 import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
 import { FormaDePagamento } from '../../modelos/formaDePagamento';
+import { MedicoService } from '../../services/medico.service';
+
 @Component({
   templateUrl: './cadastro-conta-pagar.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
@@ -30,6 +33,7 @@ import { FormaDePagamento } from '../../modelos/formaDePagamento';
 export class CadastroContaPagarComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   @ViewChild('fornecedorModel', { read: ElementRef, static: false }) private fornecedorModel: ElementRef;
+  @ViewChild('medico', { read: ElementRef, static: false }) private medicoModel: ElementRef;
   @ViewChild('tipoContaModel', { read: ElementRef, static: false }) private tipoContaModel: ElementRef;
   @ViewChild('valor', { read: ElementRef, static: false }) private valor: ElementRef;
   @ViewChild('saldo', { read: ElementRef, static: false }) private saldo: ElementRef;
@@ -45,6 +49,8 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   dataEmi = this.util.dataParaString(new Date());
   dataVenc: string;
   id: string;
+  medicos: Array<Medico> = new Array<Medico>();
+  medicoSelecionado: Medico;
   formaDePagamentos = new Array<FormaDePagamento>();
   contaPagar = new ContaPagar();
   tipoConta = ETipoContaPagar[1].toString();
@@ -57,10 +63,24 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   falhaNaBusca: boolean;
   tiposConta = ETipoContaPagar;
 
-  constructor(private fornecedorService: FornecedorService, private formaPagamentoService: FormaDePagamentoService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
+  constructor(private fornecedorService: FornecedorService, private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
   }
-
+ 
   ngAfterViewInit(): void {
+    this.medicoService.todos().subscribe(medicos => {
+      this.medicos = medicos;
+      if (this.util.isNullOrWhitespace(this.contaPagar.medicoId)) {
+        let medicoTodos = new Medico();
+        medicoTodos.nomeCompleto = "Todos";
+        medicoTodos.id = "";
+        this.medicos.push(medicoTodos);
+
+        this.contaPagar.medicoId = this.medicos.find(c => c == medicoTodos).id;
+      }
+      else if (this.medicoModel != null)
+        this.medicoModel.nativeElement.setAttribute('readonly', true);
+    });
+
     this.fornecedorService.Todos().subscribe(fornec => {
       this.fornecedores = fornec;
 
@@ -101,7 +121,7 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
       this.formaDePagamentos = formas;
       if (this.contaPagarService.contaPagar != null && this.util.hasItems(this.contaPagar.pagamentos)) {
         this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
-      }      
+      }
     });
 
     if (this.contaPagarService.contaPagar != null) {

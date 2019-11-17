@@ -1,187 +1,164 @@
-<!-- ============================================================== -->
-<!-- Info box -->
-<!-- ============================================================== -->
-<div class="row">
-    <div class="col-12">
-        <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round align-self-center round-success"><i class="ti-wallet"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0">$18090</h3>
-                                <h5 class="text-muted m-b-0">Contas a Receber</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-lg-3 col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round align-self-center round-info"><i class="ti-user"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0">2690</h3>
-                                <h5 class="text-muted m-b-0">Contas a Pagar</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-lg-3 col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round align-self-center round-primary"><i class="ti-calendar"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0">20 march</h3>
-                                <h5 class="text-muted m-b-0">Lucro Bruto</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-lg-3 col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round align-self-center round-danger"><i class="ti-settings"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0">6540</h3>
-                                <h5 class="text-muted m-b-0">Projeção Lucro Bruto</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>        
-        </div>
-    </div>
+<div class="spinner" *ngIf=isSpinnerVisible>
+    <div class="double-bounce1"></div>
+    <div class="double-bounce2"></div>
 </div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex m-b-30">
-                    <h5 class="card-title m-b-0 align-self-center">Agendamentos</h5>
-                </div>
-                <div style="height:350px;">
-                    <canvas baseChart [datasets]="dadosGraficoLinhas" [labels]="labelsGraficoLinhas" [options]="opcoesGraficoLinhas"
-                        [colors]="coresGraficoLinhas" [legend]="false" [chartType]="'line'"> </canvas>
-                </div>
-                <div class="row text-center">
-                    <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">5098</h2><small><i class="fa fa-circle" style="color: rgb(0,153,0);"></i> Confirmado(s)</small>
-                    </div>
-                    <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">5098</h2><small><i class="fa fa-circle" style="color: rgb(0,0,255);"></i> Pago/Finalizado(s)</small>
-                    </div>
-                    <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">4156</h2><small><i class="fa fa-circle" style="color: rgb(255,0,0);"></i> Cancelado(s)</small>
-                    </div>
-                    <div class="col-lg-3 col-md-3 m-t-20">
-                        <h2 class="m-b-0 font-light">1369</h2><small><i class="fa fa-circle" style="color: rgb(255,102,0);"></i> Atrasado(s)</small>
+<div *ngIf="!isSpinnerVisible">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="card col-12">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <label style="display: block;" for="dataInicio">Período</label>
+                            <div class="input-group col-md-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <input type="text" mask="00/00/0000" required id="dataInicio" name="dataInicio"
+                                    placeholder="01/01/1901" class="form-control" [(ngModel)]="dataInicial"
+                                    #dataInicio="ngModel" (blur)="formataData($event)">
+                            </div>
+                            <label style="display: block;">Até</label>
+                            <div class="input-group col-md-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <input type="text" mask="00/00/0000" required id="dataFim" name="dataFim"
+                                    placeholder="01/01/1901" class="form-control" [(ngModel)]="dataFinal"
+                                    #dataFim="ngModel" (blur)="formataData($event)">
+                            </div>
+                            <div class="input-group col-md-2">
+                                <button class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <!-- Column -->
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex">
-                    <div>
-                        <h5 class="card-title">Agendamentos Por Médico</h5>
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row">
+                                <div class="round align-self-center round-success"><i class="ti-wallet"></i></div>
+                                <div class="m-l-10 align-self-center">
+                                    <h3 class="m-b-0">{{totalRecebido}}</h3>
+                                    <h5 class="text-muted m-b-0">Total Recebido</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row">
+                                <div class="round align-self-center round-info"><i class="ti-wallet"></i></div>
+                                <div class="m-l-10 align-self-center">
+                                    <h3 class="m-b-0">{{totalAPagar}}</h3>
+                                    <h5 class="text-muted m-b-0">Total a Pagar</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row">
+                                <div class="round align-self-center round-primary"><i class="ti-wallet"></i></div>
+                                <div class="m-l-10 align-self-center">
+                                    <h3 class="m-b-0">{{lucroBruto}}</h3>
+                                    <h5 class="text-muted m-b-0">Lucro Bruto</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row">
+                                <div class="round align-self-center round-danger"><i class="ti-wallet"></i></div>
+                                <div class="m-l-10 align-self-center">
+                                    <h3 class="m-b-0">{{projecaoLucroBruto}}</h3>
+                                    <h5 class="text-muted m-b-0">Projeção Lucro Bruto</h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body bg-light">
-                <div class="row">
-                    <div class="col-6">
-                        <h4 class="font-light m-t-0">Total Agendamentos</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex m-b-30">
+                        <h5 class="card-title m-b-0 align-self-center">Agendamentos</h5>
                     </div>
-                    <div class="col-6 align-self-center display-6 text-info text-right">R$ 3,690</div>
+                    <div style="height:350px;">
+                        <canvas baseChart [datasets]="dadosGraficoLinhas" [labels]="labelsGraficoLinhas"
+                            [options]="opcoesGraficoLinhas" [colors]="coresGraficoLinhas" [legend]="false"
+                            [chartType]="'line'"> </canvas>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-lg-3 col-md-3 m-t-20">
+                            <h2 class="m-b-0 font-light">{{totalAgendados}}</h2><small><i class="fa fa-circle"
+                                    style="color: rgb(255,102,0);"></i> Agendado(s)</small>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 m-t-20">
+                            <h2 class="m-b-0 font-light">{{totalConfirmados}}</h2><small><i class="fa fa-circle"
+                                    style="color: rgb(0,153,0);"></i> Confirmado(s)</small>
+                        </div>
+                        <div class="col-lg-3 col-md-3 m-t-20">
+                            <h2 class="m-b-0 font-light">{{totalPagosFinalizados}}</h2><small><i class="fa fa-circle"
+                                    style="color: rgb(0,0,255);"></i> Pago/Finalizado(s)</small>
+                        </div>
+                        <div class="col-lg-3 col-md-3 m-t-20">
+                            <h2 class="m-b-0 font-light">{{totalCancelados}}</h2><small><i class="fa fa-circle"
+                                    style="color: rgb(255,0,0);"></i> Cancelado(s)</small>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th>Nome</th>
-                            <th>Qtd. Agendamentos</th>
-                            <th>Total</th>
-                            <th>Média por Agendamento</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td class="txt-oflo">Elite admin</td>
-                            <td><span class="label label-success label-rouded">SALE</span> </td>
-                            <td class="txt-oflo">April 18, 2017</td>
-                            <td><span class="text-success">$24</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td class="txt-oflo">Real Homes WP Theme</td>
-                            <td><span class="label label-info label-rouded">EXTENDED</span></td>
-                            <td class="txt-oflo">April 19, 2017</td>
-                            <td><span class="text-info">$1250</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">3</td>
-                            <td class="txt-oflo">Ample Admin</td>
-                            <td><span class="label label-info label-rouded">EXTENDED</span></td>
-                            <td class="txt-oflo">April 19, 2017</td>
-                            <td><span class="text-info">$1250</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">4</td>
-                            <td class="txt-oflo">Medical Pro WP Theme</td>
-                            <td><span class="label label-danger label-rouded">TAX</span></td>
-                            <td class="txt-oflo">April 20, 2017</td>
-                            <td><span class="text-danger">-$24</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">5</td>
-                            <td class="txt-oflo">Hosting press html</td>
-                            <td><span class="label label-warning label-rouded">SALE</span></td>
-                            <td class="txt-oflo">April 21, 2017</td>
-                            <td><span class="text-success">$24</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">6</td>
-                            <td class="txt-oflo">Digital Agency PSD</td>
-                            <td><span class="label label-success label-rouded">SALE</span> </td>
-                            <td class="txt-oflo">April 23, 2017</td>
-                            <td><span class="text-danger">-$14</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">7</td>
-                            <td class="txt-oflo">Helping Hands WP Theme</td>
-                            <td><span class="label label-warning label-rouded">member</span></td>
-                            <td class="txt-oflo">April 22, 2017</td>
-                            <td><span class="text-success">$64</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">8</td>
-                            <td class="txt-oflo">Ample Admin</td>
-                            <td><span class="label label-info label-rouded">EXTENDED</span></td>
-                            <td class="txt-oflo">April 19, 2017</td>
-                            <td><span class="text-info">$1250</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <div>
+                            <h5 class="card-title">Agendamentos Por Médico</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="row">
+                        <div class="col-6">
+                            <h4 class="font-light m-t-0">Total Agendamentos</h4>
+                        </div>
+                        <div class="col-6 align-self-center display-6 text-info text-right">{{totalAgendamentosMedicos}}
+                        </div>
+                    </div>
+                </div>
+                <div class="table table-responsive smart-table">
+                    <ng2-smart-table [(settings)]="settingsAgendamentosMedicos" [(source)]="sourceAgendamentosMedicos"
+                        class=""></ng2-smart-table>
+                </div>
             </div>
         </div>
     </div>

@@ -22,6 +22,8 @@ import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-
 import { ContaReceberPagamento } from '../../modelos/contaReceberPagamento';
 import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
 import { FormaDePagamento } from '../../modelos/formaDePagamento';
+import { Medico } from '../../modelos/medico';
+import { MedicoService } from '../../services/medico.service';
 @Component({
   templateUrl: './cadastro-conta-receber.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
@@ -38,6 +40,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   @ViewChild('desconto', { read: ElementRef, static: false }) private desconto: ElementRef;
   @ViewChild('numeroDocumento', { read: ElementRef, static: false }) private numeroDocumento: ElementRef;
   @ViewChild('numeroFatura', { read: ElementRef, static: false }) private numeroFatura: ElementRef;
+  @ViewChild('medico', { read: ElementRef, static: false }) private medicoModel: ElementRef;
 
   sourcePagamentos: LocalDataSource;
   mensagemErro: string;
@@ -57,11 +60,27 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   paciente: Paciente;
   falhaNaBusca: boolean;
   tiposConta = ETipoContaReceber;
+  medicos: Array<Medico> = new Array<Medico>();
+  medicoSelecionado: Medico;
 
-  constructor(private pacienteService: PacienteService, private formaPagamentoService: FormaDePagamentoService, private appService: AppService, private contaReceberService: ContaReceberService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
+  constructor(private pacienteService: PacienteService,private medicoService: MedicoService, private formaPagamentoService: FormaDePagamentoService, private appService: AppService, private contaReceberService: ContaReceberService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngAfterViewInit(): void {
+    this.medicoService.todos().subscribe(medicos => {
+      this.medicos = medicos;
+      if (this.util.isNullOrWhitespace(this.contaReceber.medicoId)) {
+        let medicoTodos = new Medico();
+        medicoTodos.nomeCompleto = "Todos";
+        medicoTodos.id = "";
+        this.medicos.push(medicoTodos);
+
+        this.contaReceber.medicoId = this.medicos.find(c => c == medicoTodos).id;
+      }
+      else if (this.medicoModel != null)
+        this.medicoModel.nativeElement.setAttribute('readonly', true);
+    });
+
     this.pacienteService.Todos().subscribe(fornec => {
       this.pacientees = fornec;
 
@@ -220,7 +239,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
 
     if (!this.util.isNullOrWhitespace(e.target.value))
       dataFormatada = this.util.formatarDataBlur(e.target.value);
-
+      
     if (e.target.id == "dataVencimento") {
       this.dataVenc = dataFormatada;
       this.contaReceber.dataVencimento = this.util.stringParaData(dataFormatada);

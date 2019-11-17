@@ -8,6 +8,20 @@
               <ng-template ngbTabContent>
                 <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-12 col-md-12">
+                      <div class="form-group">
+                        <label class="control-label" for="medico">Médico</label>
+                        <select class="form-control" [(ngModel)]="contaPagar.medicoId" #medico="ngModel" id="medico"
+                          name="medico">
+                          <option *ngFor="let med of medicos" [ngValue]="med.id">
+                            {{med.nomeCompleto}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row" style="list-style: heigth 0.4;">
                     <div class="col-xs-12 col-md-12">
                       <div class="form-group">
@@ -39,7 +53,7 @@
                         <label class="control-label" for="numeroFatura">Número Fatura</label>
                         <input type="number" min="1" id="numeroFatura" placeholder="Número Fatura" name="numeroFatura"
                           class="form-control" [(ngModel)]="contaPagar.numeroFatura" #numeroFatura="ngModel"
-                          [required]=" (numeroDocumento.value == '' || numeroDocumento.value == null)">
+                          [required]="(numeroDocumento.value == '' || numeroDocumento.value == null) && (numeroFatura.value == '' || numeroFatura.value == null)">
                         <div *ngIf="numeroFatura.invalid" class="alert alert-danger">
                           <div *ngIf="numeroFatura.errors.required"> Número Fatura/Documento obrigatória(o).</div>
                         </div>
@@ -51,7 +65,7 @@
                         <label class="control-label" for="numeroDocumento">Número Documento</label>
                         <input type="text" id="numeroDocumento" placeholder="Número Documento" name="numeroDocumento"
                           class="form-control" [(ngModel)]="contaPagar.numeroDocumento" #numeroDocumento="ngModel"
-                          [required]="(numeroDocumento.value == '' || numeroDocumento.value == null)">
+                          [required]="(numeroDocumento.value == '' || numeroDocumento.value == null) && (numeroFatura.value == '' || numeroFatura.value == null)">
                         <div *ngIf="numeroDocumento.invalid" class="alert alert-danger">
                           <div *ngIf="numeroDocumento.errors.required"> Número Documento/Fatura obrigatório(a).</div>
                         </div>
@@ -66,8 +80,8 @@
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
                           <input type="text" mask="00/00/0000" required id="dataEmissao" name="dataEmissao"
-                            placeholder="01/01/1901" class="form-control" appValidaData [(ngModel)]="dataEmi" #dataEmissao="ngModel"
-                            (blur)="formataData($event)">
+                            placeholder="01/01/1901" class="form-control" appValidaData [(ngModel)]="dataEmi"
+                            #dataEmissao="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataEmissao.invalid || dataEmissao.errors?.validaData" class="alert alert-danger">
                           <div *ngIf="dataEmissao.errors?.required"> Data Obrigatória.</div>
@@ -86,7 +100,8 @@
                             placeholder="01/01/1901" appValidaData class="form-control" [(ngModel)]="dataVenc"
                             #dataVencimento="ngModel" (blur)="formataData($event)">
                         </div>
-                        <div *ngIf="dataVencimento.invalid || dataVencimento.errors?.validaData" class="alert alert-danger">
+                        <div *ngIf="dataVencimento.invalid || dataVencimento.errors?.validaData"
+                          class="alert alert-danger">
                           <div *ngIf="dataVencimento.errors.required"> Data Obrigatória.</div>
                           <div *ngIf="dataVencimento.errors?.validaData"> Data Inválida.</div>
 
@@ -115,8 +130,8 @@
                           <span class="input-group-text">R$</span>
                         </div>
                         <input type="text" id="desconto" mask="dot_separator.2"
-                          (blur)="calcularJurosDesconto($event.target.value, 'desconto');  formatarDecimal($event);" name="desconto"
-                          placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.desconto"
+                          (blur)="calcularJurosDesconto($event.target.value, 'desconto');  formatarDecimal($event);"
+                          name="desconto" placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.desconto"
                           #desconto="ngModel">
                       </div>
                     </div>
@@ -127,18 +142,19 @@
                           <span class="input-group-text">R$</span>
                         </div>
                         <input type="text" id="jurosMulta" mask="dot_separator.2"
-                          (blur)="calcularJurosDesconto($event.target.value, 'juros'); formatarDecimal($event);" name="jurosMulta"
-                          placeholder="000,00" class="form-control" [(ngModel)]="contaPagar.jurosMulta"
-                          #jurosMulta="ngModel">
+                          (blur)="calcularJurosDesconto($event.target.value, 'juros'); formatarDecimal($event);"
+                          name="jurosMulta" placeholder="000,00" class="form-control"
+                          [(ngModel)]="contaPagar.jurosMulta" #jurosMulta="ngModel">
                       </div>
                     </div>
                     <div class="col-xs-3 col-md-3">
-                      <label class="control-label" for="valor">Valor(*)</label> 
+                      <label class="control-label" for="valor">Valor(*)</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
                           <span class="input-group-text">R$</span>
                         </div>
-                        <input type="text" id="valor" (blur)="calcularJurosDesconto($event.target.value, 'valor'); formatarDecimal($event);"
+                        <input type="text" id="valor"
+                          (blur)="calcularJurosDesconto($event.target.value, 'valor'); formatarDecimal($event);"
                           mask="dot_separator.2" name="valor" placeholder="000,00" class="form-control" required
                           min="0.1" [(ngModel)]="contaPagar.valor" #valor="ngModel">
                       </div>

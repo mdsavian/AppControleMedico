@@ -35,9 +35,7 @@ export class AppService {
   }
 
   buscarClinicasUsuario(usuario: Usuario) {
-    this.http.get<Array<Clinica>>(this.accessPointUrl + "buscarClinicasUsuario/" + usuario.id).subscribe(clinicas => {
-      this.armazenarClinica( clinicas.find(c => true));      
-    })
+    return this.http.get<Array<Clinica>>(this.accessPointUrl + "buscarClinicasUsuario/" + usuario.id);
   }
 
   armazenarClinica(clinica:Clinica)

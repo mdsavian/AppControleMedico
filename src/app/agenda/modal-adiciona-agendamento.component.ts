@@ -101,7 +101,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
       this.tituloTela = "Editar Agendamento - ";
       this.falhaNaBusca = false;
-      console.log(this.agendamento.tipoAgendamento, ETipoAgendamento[this.agendamento.tipoAgendamento]);
       this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
 
 
@@ -142,6 +141,11 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     this.tituloTela += this.medico.nomeCompleto;
 
+  }
+
+  selecionaMedico()
+  {
+    
   }
 
   salvar() {    

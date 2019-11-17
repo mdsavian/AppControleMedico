@@ -8,6 +8,20 @@
               <ng-template ngbTabContent>
                 <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
+
+                  <div class="row rowcadastro">
+                    <div class="col-xs-12 col-md-12">
+                      <div class="form-group">
+                        <label class="control-label" for="medico">Médico</label>
+                        <select class="form-control" [(ngModel)]="contaReceber.medicoId" #medico="ngModel" id="medico"
+                          name="medico">
+                          <option *ngFor="let med of medicos" [ngValue]="med.id">
+                            {{med.nomeCompleto}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row" style="list-style: heigth 0.4;">
                     <div class="col-xs-12 col-md-12">
                       <div class="form-group">
@@ -38,7 +52,7 @@
                         <label class="control-label" for="numeroFatura">Número Fatura</label>
                         <input type="number" min="1" id="numeroFatura" placeholder="Número Fatura" name="numeroFatura"
                           class="form-control" [(ngModel)]="contaReceber.numeroFatura" #numeroFatura="ngModel"
-                          [required]=" (numeroFatura.value == '' || numeroFatura.value == null)">
+                          [required]="(numeroDocumento.value == '' || numeroDocumento.value == null) && (numeroFatura.value == '' || numeroFatura.value == null)">
                         <div *ngIf="numeroFatura.invalid" class="alert alert-danger">
                           <div *ngIf="numeroFatura.errors.required"> Número Fatura/Documento obrigatória(o).</div>
                         </div>
@@ -50,7 +64,7 @@
                         <label class="control-label" for="numeroDocumento">Número Documento</label>
                         <input type="text" id="numeroDocumento" placeholder="Número Documento" name="numeroDocumento"
                           class="form-control" [(ngModel)]="contaReceber.numeroDocumento" #numeroDocumento="ngModel"
-                          [required]="(numeroDocumento.value == '' || numeroDocumento.value == null)">
+                          [required]="((numeroDocumento.value == '' || numeroDocumento.value == null) && (numeroFatura.value == '' || numeroFatura.value == null))">
                         <div *ngIf="numeroDocumento.invalid" class="alert alert-danger">
                           <div *ngIf="numeroDocumento.errors.required"> Número Documento/Fatura obrigatório(a).</div>
                         </div>

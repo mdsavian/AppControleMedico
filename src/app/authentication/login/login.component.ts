@@ -34,14 +34,12 @@ export class LoginComponent implements OnInit {
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";
         }
         else {
-          this.appService.buscarClinicasUsuario(data);
-          if (data.medicoId != "") {
-            this.router.navigate(['/agenda/agenda']);
-          }
-          else
-            this.router.navigate(["/agenda/agenda/"]);
+          this.appService.buscarClinicasUsuario(data).subscribe(clinicas=> {
+            
+            this.appService.armazenarClinica(clinicas.find(c => true));            
+            this.router.navigate(['/dashboard/dashboardanalitico']);
+          });          
         }
-
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent);

@@ -97,7 +97,8 @@ export class ListagemContaPagarComponent implements OnInit {
       },
       tipoContaDescricao: {
         title: 'Tipo Conta',
-        filter: true
+        filter: true,
+        valuePrepareFunction: (tipoContaDescricao) => { return this.util.isNullOrWhitespace(tipoContaDescricao) ? "Lançamento Manual" : tipoContaDescricao }
       },
       desconto:{
         title: 'Desconto',

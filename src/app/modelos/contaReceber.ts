@@ -10,6 +10,7 @@ export class ContaReceber extends Entidade {
 
   clinicaId: string;
   pacienteId: string;
+  medicoId: string;
   usuarioId: string;
   dataEmissao: Date;
   dataVencimento: Date;

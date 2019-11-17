@@ -54,6 +54,7 @@ export class Util {
             }
         }
         else { //apenas data informada
+            console.log()
             var dataString = ("0" + data).slice(-2) + "/" + ("0" + (dataHoje.getMonth() + 1)).slice(-2) + "/" + dataHoje.getFullYear();
             return dataString;
         }

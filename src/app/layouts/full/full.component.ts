@@ -22,7 +22,7 @@ export class FullComponent implements OnInit {
 
   ngOnInit() {
     if (this.router.url === '/') {
-      this.router.navigate(['/listagem/listagemconvenio']);
+      this.router.navigate(['/dashboard/dashboardanalitico']);
     }
   }
 }

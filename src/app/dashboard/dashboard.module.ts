@@ -8,6 +8,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardRoutes } from './dashboard.routing';
 import { ChartistModule } from 'ng-chartist';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { NgxMaskModule } from 'ngx-mask';
+
 
 @NgModule({
   imports: [
@@ -17,6 +19,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
     ChartsModule,
     ChartistModule,
     Ng2SmartTableModule,
+    NgxMaskModule.forRoot(),
     RouterModule.forChild(DashboardRoutes)
   ],
   declarations: [
