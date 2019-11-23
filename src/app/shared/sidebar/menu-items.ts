@@ -207,27 +207,6 @@ export const ROUTES: RouteInfo[] = [
       },
     ]
   },
-  // {
-  //   path: '',
-  //   title: 'Dashboard Analítico',
-  //   icon: 'icon-Calendar-4',
-  //   class: '',
-  //   label: '',
-  //   labelClass: '',
-  //   extralink: false,
-  //   submenu: [
-  //     {
-  //       path: '/dashboard/dashboardanalitico',
-  //       title: 'Dashboard',
-  //       icon: '',
-  //       class: '',
-  //       label: '',
-  //       labelClass: '',
-  //       extralink: false,
-  //       submenu: []
-  //     }
-  //   ]
-  // },
   {
     path: '',
     title: 'Agenda',
@@ -258,6 +237,27 @@ export const ROUTES: RouteInfo[] = [
     labelClass: '',
     extralink: false,
     submenu: [
+      {
+        path: '',
+        title: 'Dashboard Analítico',
+        icon: '',
+        class: '',
+        label: '',
+        labelClass: '',
+        extralink: false,
+        submenu: [
+          {
+            path: '/dashboard/dashboardanalitico',
+            title: 'Dashboard',
+            icon: '',
+            class: '',
+            label: '',
+            labelClass: '',
+            extralink: false,
+            submenu: []
+          }
+        ]
+      },
       {
         path: '/listagem/listagemcontapagar',
         title: 'Conta a Pagar',

@@ -37,11 +37,12 @@ export class DashboardAnaliticoComponent implements OnInit {
   contasReceber: Array<ContaReceber> = new Array<ContaReceber>();
   contasPagar: Array<ContaPagar> = new Array<ContaPagar>();
   medicos: Array<Medico> = new Array<Medico>();
+  medico: Medico = new Medico();
   agendamentos: Array<Agendamento> = new Array<Agendamento>();
   util = new Util();
   dataHoje = new Date();
   sourceAgendamentosMedicos: LocalDataSource;
-  dataInicial = this.util.dataParaString(new Date());  
+  dataInicial = this.util.dataParaString(new Date());
   dataFinal = this.util.dataParaString(new Date());
 
   totalRecebido = this.util.formatarDecimal(0);
@@ -57,8 +58,8 @@ export class DashboardAnaliticoComponent implements OnInit {
   usuario = this.appService.retornarUsuarioCorrente();
 
 
-  constructor(private contaPagarService: ContaPagarService,private modalService: NgbModal, private appService: AppService, 
-              private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService) { }
+  constructor(private contaPagarService: ContaPagarService, private modalService: NgbModal, private appService: AppService,
+    private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService) { }
 
   public dadosGraficoLinhas: Array<any> = [];
 
@@ -84,23 +85,20 @@ export class DashboardAnaliticoComponent implements OnInit {
     });
   }
 
-  buscar()
-  {
+  buscar() {
     let retorno = false;
-    
+
     //transforma 01112019 para 01/11/2019
     var dataInicioBusca = this.util.formatarData(this.dataInicial);
     var dataFimBusca = this.util.formatarData(this.dataFinal);
-    
-    if (!this.util.validaData(dataInicioBusca) || !this.util.validaData(dataFimBusca) || this.util.stringParaData(dataInicioBusca) > this.util.stringParaData(dataFimBusca))
-    {
+
+    if (!this.util.validaData(dataInicioBusca) || !this.util.validaData(dataFimBusca) || this.util.stringParaData(dataInicioBusca) > this.util.stringParaData(dataFimBusca)) {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modalErro.componentInstance.mensagemErro = "Data inválida.";
-        retorno = true;
+      modalErro.componentInstance.mensagemErro = "Data inválida.";
+      retorno = true;
     }
 
-    if (!retorno)
-    {
+    if (!retorno) {
       var dataInicio = this.util.stringParaData(dataInicioBusca);
       var dataFim = this.util.stringParaData(dataFimBusca);
       this.isSpinnerVisible = true;
@@ -109,9 +107,9 @@ export class DashboardAnaliticoComponent implements OnInit {
         this.calcularTotais();
         this.montarGrafico();
         this.montarListagemMedico();
-  
+
         this.isSpinnerVisible = false;
-  
+
       });
     }
   }
@@ -133,8 +131,12 @@ export class DashboardAnaliticoComponent implements OnInit {
   montarListagemMedico() {
     let dados = new Array<any>();
     var totalAgendamentos = 0;
+    this.sourceAgendamentosMedicos = new LocalDataSource();
 
     this.medicos.forEach(medico => {
+      if (this.medico != null && !this.util.isNullOrWhitespace(this.medico.id) && medico.id != this.medico.id)
+        return;
+
       let agendamentosMedicos = this.agendamentos.filter(c => c.medicoId == medico.id);
 
       let totalRecebidoAgendamentos = 0;
@@ -205,7 +207,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.totalPagosFinalizados = pagosFinalizados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalCancelados = cancelados.reduce(function (total, valor) { return total + valor; }, 0);
 
-    
+
     this.dadosGraficoLinhas = [
       { data: agendados, label: 'Agendados(s)' },
       { data: confirmados, label: 'Confirmado(s)' },
@@ -252,7 +254,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.projecaoLucroBruto = this.util.formatarDecimal((lucroBrutoDecimal / this.dataHoje.getDate()) * 30);
   }
 
-  buscarDadosDashboard(dataInicio:Date,dataFim:Date) {
+  buscarDadosDashboard(dataInicio: Date, dataFim: Date) {
     this.isSpinnerVisible = true;
 
     var diferencaTempo = Math.abs(dataInicio.getTime() - dataFim.getTime());
@@ -267,17 +269,32 @@ export class DashboardAnaliticoComponent implements OnInit {
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario(this.usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
       this.medicos = dados;
+
+      if (this.medicos.length > 1) {
+        let medicoTodos = new Medico();
+        medicoTodos.nomeCompleto = "Todos";
+        medicoTodos.id = "";
+        this.medicos.push(medicoTodos);
+
+        if (this.medico == null)
+          this.medico = this.medicos.find(c => c == medicoTodos);
+        else
+          this.medico = this.medicos.find(c => c.id == this.medico.id);
+      }
+      else
+        this.medico = this.medicos.find(c => true);
+
     });
 
-    let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim)).map(dados => {
+    let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
       this.contasReceber = dados;
     });
 
-    let reqContaPagar = this.contaPagarService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim)).map(dados => {
+    let reqContaPagar = this.contaPagarService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
       this.contasPagar = dados;
     });
 
-    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim)).map(dados => {
+    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
       this.agendamentos = dados;
     });
 

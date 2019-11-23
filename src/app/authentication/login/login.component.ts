@@ -20,26 +20,26 @@ export class LoginComponent implements OnInit {
     this.loginService.logout();
   }
 
-  usuario: Usuario = {
-    login: "", senha: "", ultimoLogin: "", ativo: true, tipoUsuario: 0,
-    medicoId: "", funcionarioId: "", id: ""
-  };
+  usuario = new Usuario();
 
   onLoggedin() {
     this.loginService.login(this.usuario).pipe(first()).subscribe(
-      data => {
+      usuarioRetorno => {
 
-        if (data == null) {
+        if (usuarioRetorno == null) {
           var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";
         }
         else {
-          this.appService.buscarClinicasUsuario(data).subscribe(clinicas=> {
-            
-            this.appService.armazenarClinica(clinicas.find(c => true));            
-            this.router.navigate(['/dashboard/dashboardanalitico']);
-          });          
+          if (usuarioRetorno.login != "admin")
+            this.appService.buscarClinicasUsuario(usuarioRetorno).subscribe(clinicas => {
+              this.appService.armazenarClinica(clinicas.find(c => true));
+              this.router.navigate(['/dashboard/dashboardanalitico']);
+            });
+            else 
+              this.router.navigate(['/dashboard/dashboardanalitico']);            
         }
+        
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent);

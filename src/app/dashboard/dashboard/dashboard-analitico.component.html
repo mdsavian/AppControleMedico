@@ -9,6 +9,7 @@
                 <div class="card col-12">
                     <div class="card-body">
                         <div class="d-flex flex-row">
+                            
                             <label style="display: block;" for="dataInicio">Período</label>
                             <div class="input-group col-md-2">
                                 <div class="input-group-prepend">
@@ -18,6 +19,7 @@
                                     placeholder="01/01/1901" class="form-control" [(ngModel)]="dataInicial"
                                     #dataInicio="ngModel" (blur)="formataData($event)">
                             </div>
+
                             <label style="display: block;">Até</label>
                             <div class="input-group col-md-2">
                                 <div class="input-group-prepend">
@@ -27,7 +29,17 @@
                                     placeholder="01/01/1901" class="form-control" [(ngModel)]="dataFinal"
                                     #dataFim="ngModel" (blur)="formataData($event)">
                             </div>
-                            <div class="input-group col-md-2">
+
+                            <label style="display:block;" for="medicoModel">Médico</label>
+                            <div class="col-md-3">
+                                <select class="form-control" [(ngModel)]="medico" #medicoModel="ngModel" id="medicoModel"
+                                    name="medicoModel">
+                                    <option *ngFor="let med of medicos" [ngValue]="med">
+                                        {{med.nomeCompleto}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <button class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
                             </div>
                         </div>

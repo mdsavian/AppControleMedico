@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -10,6 +10,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { AppService } from './app.service';
+import { Util } from '../uteis/Util';
+
 
 @Injectable({
   providedIn: 'root'
@@ -27,15 +29,27 @@ export class LoginService {
   }
 
   public login(usuario: Usuario) {
-    return this.http.post<Usuario>(this.accessPointUrl, usuario, { headers: this.headers }).pipe(map(usuario => {
-      if (usuario != null && usuario.ativo) {
+    var util = new Util();
 
-        localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
-        this.usuarioCorrenteSubject.next(usuario);
-      }
-      return usuario;
-    }));
+    let parametros = new HttpParams().set("login", usuario.login).set("senha", usuario.senha);
+
+    return this.http.get<Usuario>
+      (this.accessPointUrl + "validarLogin?" + parametros).pipe(map(usuario => {
+        if (usuario != null && util.validaUsuarioAtivo(usuario)) {
+
+          if (usuario.login != "admin" && ((usuario.funcionario != null && !util.hasItems(usuario.funcionario.clinicasId)) || (usuario.medico != null && !util.hasItems(usuario.medico.clinicasId))))
+            return null;
+            
+          localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
+          this.usuarioCorrenteSubject.next(usuario);
+          return usuario;
+        }
+
+        return null;
+
+      }));
   }
+
 
   public validaSenha(login: string, senha: string) {
     var usuario = new Usuario();

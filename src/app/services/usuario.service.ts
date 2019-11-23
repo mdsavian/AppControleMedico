@@ -23,7 +23,10 @@ export class UsuarioService {
 
   public todos() {
     return this.http.get<Array<Usuario>>(this.accessPointUrl, { headers: this.headers });
+  }
 
+  public BuscarUsuarioComModelos (usuarioId:string) {
+    return this.http.get<Usuario>(this.accessPointUrl  + "buscarUsuarioComModelos/"+ usuarioId);
   }
 
   public add(usuario) {
@@ -31,11 +34,11 @@ export class UsuarioService {
   }
 
   public remove(usuario) {
-    return this.http.delete(this.accessPointUrl + '/' + usuario.id, { headers: this.headers });
+    return this.http.delete(this.accessPointUrl + usuario.id, { headers: this.headers });
   }
 
   public update(usuario) {
-    return this.http.put(this.accessPointUrl + '/' + usuario.id, usuario, { headers: this.headers });
+    return this.http.put(this.accessPointUrl +  usuario.id, usuario, { headers: this.headers });
   }
 
   public alterarSenha(alterarSenha: AlteraSenha) {

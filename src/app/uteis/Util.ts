@@ -1,5 +1,6 @@
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
+import { Usuario } from "../modelos/usuario";
 
 export class Util {
 
@@ -200,5 +201,10 @@ export class Util {
     horaAgoraString(): string {
         var d = new Date();
         return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
+    }
+
+    validaUsuarioAtivo(usuario: Usuario):boolean
+    {
+        return (usuario.funcionario != null && usuario.funcionario.ativo) || (usuario.medicoId != null && usuario.medico.ativo) || (usuario.login === "admin" && usuario.ativo);
     }
 }
