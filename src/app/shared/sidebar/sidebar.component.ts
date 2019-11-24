@@ -1,6 +1,4 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ROUTES } from './menu-items';
 import { RouteInfo } from './sidebar.metadata';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AppService } from '../../services/app.service';
@@ -48,7 +46,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
 
     var usuario = this.appService.retornarUsuarioCorrente();
-    var itensSideBar = ROUTES.filter(sidebarnavItem => sidebarnavItem);
+    var itensSideBar = this.ROUTES;
 
     if (usuario != null) {
 
@@ -56,19 +54,24 @@ export class SidebarComponent implements OnInit {
 
         var funcionario = usuario.funcionario;
 
-        if (!funcionario.permissaoAdministrador)
-          itensSideBar = this.removeMenu(itensSideBar, "Financeiro", "Dashboard Analítico");
-
-        if (!this.util.hasItems(funcionario.medicosId) && !funcionario.visualizaAgenda) {
-          itensSideBar = this.removeMenu(itensSideBar, "Agenda", "");
+        if (!funcionario.permissaoAdministrador) {
+          itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Dashboard Analítico");                
+          itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Caixas");
+          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Médico");
+          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Financeiro/Forma de Pagamento");
+          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Funcionário/Ofício");
         }
+
+        if (!this.util.hasItems(funcionario.medicosId) || !funcionario.visualizaAgenda) {
+          itensSideBar = this.removeMenu(itensSideBar, "Agenda");
+        }
+
+        this.sidebarnavItems = itensSideBar;
       }
       else if (usuario.medico != null && usuario.medico.ativo) {
-
+        this.sidebarnavItems = this.ROUTES;
       }
     }
-
-    this.sidebarnavItems = itensSideBar;
 
     $(function () {
       $('.sidebartoggler').on('click', function () {
@@ -83,27 +86,352 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  removeMenu(itens: RouteInfo[], titulo: string, submenu: string) {
-    var menuAgenda = itens.find(c => c.title == titulo);
+  removeMenu(itens: RouteInfo[], caminho: string) {
 
-    if (menuAgenda != null) {
-      if (!this.util.isNullOrWhitespace(submenu) && menuAgenda.submenu != null) {
-        let subMenu = menuAgenda.submenu.find(c => c.title == titulo);
+    var menusSplit = caminho.split("/");
+    var menuRemover: RouteInfo;
+    var subMenus: RouteInfo[];
+    var menuAnterior: RouteInfo;
 
-        console.log("antes", menuAgenda);
+    for (var i = 0; i < menusSplit.length; i++) {
+      var titulo = menusSplit[i];      
 
-        var index = menuAgenda.submenu.indexOf(subMenu);
-        menuAgenda.submenu.splice(index, 1);
+      var menu = subMenus == null ? itens.find(c => c.title == titulo) : subMenus.find(c => c.title == titulo);
 
-        console.log("depois menuAgenda", menuAgenda);
+      if (menu != null) {
+        menuAnterior = menuRemover;
+        menuRemover = menu;
+        subMenus = menu.submenu;
       }
-      var index = itens.indexOf(menuAgenda);
-      itens.splice(index, 1);
     }
 
+    //primeiro menu
+    if (menuAnterior == null) {
+      var index = itens.indexOf(menuRemover);
+      itens.splice(index, 1);
+    }
+    else {
+      var index = menuAnterior.submenu.indexOf(menuRemover);
+      menuAnterior.submenu.splice(index, 1);
+
+      //quando remove-se todos submenus do menu, remove o menu tbm
+      if (menuAnterior.submenu.length == 0)
+      {
+        caminho = "";
+        menusSplit.forEach(menu => {
+          caminho = caminho + menu + "/";
+          if (menu == menuAnterior.title)
+          stop;
+        });
+
+        itens = this.removeMenu(itens, caminho);
+      }
+    }
 
     return itens;
   }
 
+  ROUTES: RouteInfo[] = [
+    {
+      path: '',
+      title: 'Cadastro',
+      icon: 'icon-Double-Circle',
+      class: 'has-arrow',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
+        {
+          path: '/listagem/listagemclinica',
+          title: 'Clínica',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '',
+          title: 'Pessoas',
+          icon: '',
+          class: 'has-arrow',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: [
+            {
+              path: '/listagem/listagempaciente',
+              title: 'Paciente',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+            {
+              path: '/listagem/listagemfornecedor',
+              title: 'Fornecedor',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            }
+          ]
+        },
+        {
+          path: '',
+          title: 'Funcionário',
+          icon: '',
+          class: 'has-arrow',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: [
+            {
+              path: '/listagem/listagemfuncionario',
+              title: 'Funcionário',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+            {
+              path: '/listagem/listagemoficio',
+              title: 'Ofício',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+          ]
+        },
+        {
+          path: '/listagem/listagemmedico',
+          title: 'Médico',
+          icon: '',
+          class: 'has-arrow',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: [
+            {
+              path: '/listagem/listagemmedico',
+              title: 'Médico',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+            {
+              path: '/listagem/listagemespecialidade',
+              title: 'Especialidade',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+            {
+              path: '/cadastros/configuracaoagenda',
+              title: 'Configuração Agenda',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+          ]
+        },
+        {
+          path: '/listagem/listagemprocedimento',
+          title: 'Procedimentos',
+          icon: '',
+          class: 'has-arrow',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: [
+            {
+              path: '/listagem/listagemprocedimento',
+              title: 'Procedimento',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+            {
+              path: '/listagem/listagemexame',
+              title: 'Exame',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+            {
+              path: '/listagem/listagemcirurgia',
+              title: 'Cirurgia',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+          ]
+        },
+        {
+          path: '',
+          title: 'Financeiro',
+          icon: '',
+          class: 'has-arrow',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: [
+            {
+              path: '/listagem/listagemformadepagamento',
+              title: 'Forma de Pagamento',
+              icon: '',
+              class: '',
+              label: '',
+              labelClass: '',
+              extralink: false,
+              submenu: []
+            },
+          ]
+        },
+        {
+          path: '/listagem/listagemlocal',
+          title: 'Local',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemconvenio',
+          title: 'Convênio',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Agenda',
+      icon: 'icon-Calendar-4',
+      class: '',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
+        {
+          path: '/agenda/agenda',
+          title: 'Agenda',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        }
+      ]
+    },
+    {
+      path: '',
+      title: 'Financeiro',
+      icon: 'icon-Calendar-4',
+      class: '',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
+        {
+          path: '/dashboard/dashboardanalitico',
+          title: 'Dashboard Analítico',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        }
+        ,
+        {
+          path: '/listagem/listagemcontapagar',
+          title: 'Conta a Pagar',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemcontareceber',
+          title: 'Conta a Receber',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemcaixa',
+          title: 'Caixas',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        }
+      ]
+    },
+    {
+      path: '',
+      title: 'Importador',
+      icon: 'icon-Double-Circle',
+      class: '',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
+        {
+          path: '/importador/importarconferencia',
+          title: 'Arquivo Conferência',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        }
+      ]
+    },
+  ];
 
 }

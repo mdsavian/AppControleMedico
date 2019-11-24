@@ -24,7 +24,7 @@ export class AppService {
     this.clinicaCorrenteSubject = new BehaviorSubject<Clinica>(JSON.parse(localStorage.getItem('clinicaCorrente')));
   }
 
-  public retornarUsuarioAdministrador(): boolean {
+  public retornarUsuarioAdministradorSistema(): boolean {
     var usuario = this.retornarUsuarioCorrente();
     return ((usuario.medicoId == "" || usuario.medicoId == null) && (usuario.funcionarioId == null || usuario.funcionarioId == ""));
   }

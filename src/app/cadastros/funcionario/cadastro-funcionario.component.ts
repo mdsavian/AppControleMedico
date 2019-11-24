@@ -19,7 +19,6 @@ import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.componen
 import { LoginService } from '../../services/login.service';
 import { UsuarioService } from '../../services/usuario.service';
 import * as tableDataClinica from './listagem-clinica-funcionario-settings';
-import * as tableDataMedico from './listagem-medico-funcionario-settings';
 import { ClinicaService } from '../../services/clinica.service';
 import { MedicoService } from '../../services/medico.service';
 import { Clinica } from '../../modelos/clinica';
@@ -41,9 +40,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   funcionario = new Funcionario();
 
   settingsClinica = tableDataClinica.settingsClinica;
-  settingsMedico = tableDataMedico.settingsMedico;
   usuarioAdministrador = false;
-  permiteAlterarSenha = false;
   oficios = new Array<Oficio>();
   nomeOficios: Array<string>;
   falhaNaBusca: boolean;
@@ -63,6 +60,8 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   imagemFuncionario: any;
 
+  usuarioEditandoFuncionario: boolean;
+
   constructor(private appService: AppService, private uploadService: UploadService, private loginService: LoginService, private medicoService: MedicoService, private clinicaService: ClinicaService, private usuarioService: UsuarioService, public router: Router, private funcionarioService: FuncionarioService, private enderecoService: EnderecoService,
     private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
@@ -73,16 +72,16 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.usuario = this.appService.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.appService.retornarUsuarioAdministrador();
+    this.usuarioAdministrador = this.util.retornaUsuarioAdmOuMedico(this.usuario);
 
     if (this.funcionarioService.funcionario != null) {
 
       this.funcionario = this.funcionarioService.funcionario;
-      console.log(this.funcionario.dataNascimento);
+      this.usuarioEditandoFuncionario = this.usuario.funcionarioId == this.funcionario.id;
+
       this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
       this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
       this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
-      this.permiteAlterarSenha = this.usuario.funcionarioId == this.funcionario.id;
 
       if (!this.util.isNullOrWhitespace(this.funcionario.fotoId))
         this.downloadFoto();
@@ -105,7 +104,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
 
   alterarSenha() {
 
-    if (this.permiteAlterarSenha) {
+    if (this.usuarioEditandoFuncionario) {
       var modal = this.modalService.open(ModalAlteraSenhaComponent, { windowClass: "modal-holder" });
 
       modal.result.then((alteraSenha) => {
@@ -366,7 +365,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
-    console.log(this.funcionario.dataNascimento);
     this.funcionarioService.funcionario = null;
     this.funcionarioService.salvar(this.funcionario).subscribe(
       data => {
@@ -385,4 +383,31 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       }
     )
   }
+
+  settingsMedico = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum registro",
+    columns: {
+      nomeCompleto: {
+        title: 'Nome',
+        filter: true
+      },
+      especialida: {
+        title: 'Especialidade',
+        filter: true
+      }
+    },
+    actions:
+    {
+      columnTitle: '',
+      add: false,
+      edit: false,
+      delete: this.usuarioAdministrador
+    },
+    delete: {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    },
+  };
 }

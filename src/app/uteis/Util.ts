@@ -203,8 +203,13 @@ export class Util {
         return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
     }
 
-    validaUsuarioAtivo(usuario: Usuario):boolean
+    retornaUsuarioAdmOuMedico(usuario:Usuario)
     {
-        return (usuario.funcionario != null && usuario.funcionario.ativo) || (usuario.medicoId != null && usuario.medico.ativo) || (usuario.login === "admin" && usuario.ativo);
+        if (usuario != null) {
+
+            return (usuario.funcionario != null && usuario.funcionario.permissaoAdministrador) || usuario.medico != null;
+        }
+
     }
+
 }

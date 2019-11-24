@@ -77,7 +77,7 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
 
     this.usuario = this.appService.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.appService.retornarUsuarioAdministrador();
+    this.usuarioAdministrador = this.appService.retornarUsuarioAdministradorSistema();
 
     if (this.medicoService.medico != null) {
       this.medico = this.medicoService.medico;

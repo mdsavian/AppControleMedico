@@ -35,11 +35,11 @@ export class LoginService {
 
     return this.http.get<Usuario>
       (this.accessPointUrl + "validarLogin?" + parametros).pipe(map(usuario => {
-        if (usuario != null && util.validaUsuarioAtivo(usuario)) {
+        if (usuario != null && this.validaUsuarioAtivo(usuario)) {
 
           if (usuario.login != "admin" && ((usuario.funcionario != null && !util.hasItems(usuario.funcionario.clinicasId)) || (usuario.medico != null && !util.hasItems(usuario.medico.clinicasId))))
             return null;
-            
+
           localStorage.setItem("usuarioCorrente", JSON.stringify(usuario))
           this.usuarioCorrenteSubject.next(usuario);
           return usuario;
@@ -50,6 +50,9 @@ export class LoginService {
       }));
   }
 
+  validaUsuarioAtivo(usuario: Usuario): boolean {
+    return (usuario.funcionario != null && usuario.funcionario.ativo) || (usuario.medicoId != null && usuario.medico.ativo) || (usuario.login === "admin" && usuario.ativo);
+  }
 
   public validaSenha(login: string, senha: string) {
     var usuario = new Usuario();
@@ -65,11 +68,6 @@ export class LoginService {
     this.appService.removeClinica();
     this.router.navigate(["authentication/login"]);
   }
-
-  // public get usuarioCorrenteValor(): Usuario {
-  //   var usuario = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem('usuarioCorrente'))).value;
-  //   return usuario;
-  // }
 
   public validaUsuario(usuario: Usuario) {
     return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {

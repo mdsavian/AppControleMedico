@@ -170,13 +170,13 @@
                         value="checked" type="checkbox">
                     </div>
 
-                    <div class="col-xs-5 col-md-3">
+                    <div class="col-xs-5 col-md-3" [hidden]="!usuarioAdministrador">
                       <label class="form-check-inline" for="permissaoAdministrador">Permissão Administrador</label>
                       <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador"
                         name="permissaoAdministrador" id="permissaoAdministrador" type="checkbox">
                     </div>
 
-                    <div class="col-xs-5 col-md-3">
+                    <div class="col-xs-5 col-md-3" [hidden]="!usuarioAdministrador">
                       <label class="form-check-inline" for="visualizaAgenda">Visualiza Agenda</label>
                       <input class="form-check-inline" [(ngModel)]="funcionario.visualizaAgenda" name="visualizaAgenda"
                         id="visualizaAgenda" type="checkbox">
@@ -303,7 +303,7 @@
 
 
             <!--*ngIf=""-->
-            <ngb-tab title="Médicos" *ngIf="funcionario != null && funcionario.visualizaAgenda">
+            <ngb-tab title="Médicos" *ngIf="funcionario != null && funcionario.visualizaAgenda && usuarioAdministrador">
               <ng-template ngbTabContent>
                 <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
@@ -340,12 +340,12 @@
           </ngb-tabset>
           <div class="panel-footer row rowcadastro">
             <div class="col-xs-6 col-md-6">
-              <button class="btn btn-rounded btn-danger" style="width:30%" [disabled]="!permiteAlterarSenha"
+              <button class="btn btn-rounded btn-danger" style="width:30%" [disabled]="!usuarioEditandoFuncionario"
                 (click)="alterarSenha()">Alterar Senha</button>
             </div>
             <div class="col-xs-6 col-md-6">
               <button class="btn btn-rounded btn-success" style="width:30%;right:200px;  position: absolute;"
-                [disabled]="!funcionarioForm.form.valid" (click)="salvar()">Salvar</button>
+                [disabled]="(!funcionarioForm.form.valid || (!usuarioEditandoFuncionario && !usuarioAdministrador))" (click)="salvar()">Salvar</button>
               <a href="javascript:history.back()" style="width:30%; right:0px; position: absolute;"
                 class="btn btn-rounded btn-danger">Cancelar</a>
             </div>

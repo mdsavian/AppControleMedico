@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as tableData from './listagem-funcionario-settings';
 import { LocalDataSource } from 'ng2-smart-table';
 import { FuncionarioService } from '../../services/funcionario.service';
 import { Funcionario } from '../../modelos/funcionario';
@@ -11,6 +10,7 @@ import { AgendamentoService } from '../../services/agendamento.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { Usuario } from '../../modelos/usuario';
 import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
+import { AppService } from '../../services/app.service';
 
 @Component({
   templateUrl: './listagem-funcionario.component.html'
@@ -21,9 +21,9 @@ export class ListagemFuncionarioComponent implements OnInit{
   public isSpinnerVisible = false;
   closeResult: string;
   util = new Util();
-  usuarios:Array<Usuario>;
+  usuarios:Array<Usuario>;  
   
-  constructor(private funcionarioService: FuncionarioService, private usuarioService:UsuarioService, private agendamentoService:AgendamentoService,private router: Router, private modalService: NgbModal) {
+  constructor(private appService:AppService, private funcionarioService: FuncionarioService, private usuarioService:UsuarioService, private agendamentoService:AgendamentoService,private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
     
   }
@@ -32,12 +32,9 @@ export class ListagemFuncionarioComponent implements OnInit{
     this.funcionarioService.Todos().subscribe(dados => {
       this.isSpinnerVisible = false;
       this.listaFuncionarios = dados;
-      console.log(dados);
       this.source = new LocalDataSource(this.listaFuncionarios);
     });
   }
-  settings = tableData.settings;
-
 
   public ngOnInit(): void {
     this.buscaFuncionarios();        
@@ -80,6 +77,54 @@ export class ListagemFuncionarioComponent implements OnInit{
     this.usuarioService.usuarioParaValidacao = this.funcionarioService.funcionario = null;
       this.router.navigate(['/cadastros/cadastrofuncionario']);
     }
+
+
+   settings = {
+      mode:'external',
+      noDataMessage:"Não foi encontrado nenhum registro",
+      columns: {
+        nomeCompleto: {
+          title: 'Nome',
+          filter: true
+        },   
+        dataAdmissao: {
+          title: 'Data De Admissão',
+          filter: false,
+          valuePrepareFunction: (data) => {this.util.dataParaString(data) }
+        },
+        dataDemissao: {
+          title: 'Data De Admissão',
+          filter: false,
+          valuePrepareFunction: (data) => {this.util.dataParaString(data) }
+        },    
+        ativo: {
+          title: 'Ativo',
+          filter: false,
+          valuePrepareFunction: (valor) => { return valor === true ? 'Sim' : 'false' }
+        }
+    
+      },  
+      actions:
+      {
+        columnTitle:'',
+        add: this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente()),
+        delete: this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente()),
+      },
+      delete: {
+        deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+        saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+        cancelButtonContent: '<i class="ti-close text-danger"></i>'
+      },
+      edit: {
+        editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+        saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+        cancelButtonContent: '<i class="ti-close text-danger"></i>',
+      },
+      add:
+      {
+        addButtonContent: 'Novo'
+      }
+    };
 }
 
 
