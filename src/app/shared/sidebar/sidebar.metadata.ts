@@ -8,4 +8,5 @@ export interface RouteInfo {
   labelClass: string;
   extralink: boolean;
   submenu: RouteInfo[];
+  // canActivate:any;
 }

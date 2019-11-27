@@ -41,12 +41,17 @@ export class ConfiguracaoAgendaComponent implements OnInit {
 
     this.criaConfiguracao();
 
+
     if (this.medicoService.medico != null) {
+
+      console.log(this.medicoService.medico);
       this.medico = this.medicoService.medico;
       this.medicoSelecionado = this.medico.nomeCompleto;
+      this.nomeMedicos.push(this.medicoSelecionado);
       this.buscaConfigMedico();
 
     }
+    else{
 
     this.medicoService.todos().subscribe(medicos => {
       this.medicos = medicos;
@@ -55,6 +60,7 @@ export class ConfiguracaoAgendaComponent implements OnInit {
         this.nomeMedicos.push(d.nomeCompleto);
       });
     });
+  }
   }
 
   public marcaTodos(e: any) {

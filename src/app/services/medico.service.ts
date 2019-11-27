@@ -64,4 +64,9 @@ export class MedicoService {
     return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarConfiguracaoAgendaMedico/"+ configuracaoAgendaId);
   }
 
+  tratarMedicosPorUsuario(usuario:Usuario)
+  {
+
+  }
+
 }
