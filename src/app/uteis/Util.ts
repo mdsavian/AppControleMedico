@@ -209,7 +209,7 @@ export class Util {
 
             return (usuario.funcionario != null && usuario.funcionario.permissaoAdministrador) || usuario.medico != null;
         }
-
+        else return false;
     }
 
 }

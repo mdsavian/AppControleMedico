@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Funcionario } from '../modelos/funcionario'
 import { environment } from '../../environments/environment';
+import{Util} from '../uteis/Util';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +12,7 @@ export class FuncionarioService {
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'funcionario/';
   public funcionario:Funcionario;
-
+  util = new Util();
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
@@ -41,4 +43,9 @@ export class FuncionarioService {
     return this.http.get<Array<Funcionario>>(this.accessPointUrl + "buscarPorOficio/" + oficioId);
   }
 
+
+  PermitirVisualizarAgenda(funcionario:Funcionario):boolean
+  {
+    return this.util.hasItems(funcionario.medicosId) && funcionario.visualizaAgenda;
+  }
 }

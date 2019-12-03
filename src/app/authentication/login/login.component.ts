@@ -6,6 +6,8 @@ import { first } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { AppService } from '../../services/app.service';
+import { Util } from '../../uteis/Util';
+import { FuncionarioService } from '../../services/funcionario.service';
 
 @Component({
   selector: 'app-login',
@@ -14,8 +16,11 @@ import { AppService } from '../../services/app.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(public router: Router, private loginService: LoginService, private modalService: NgbModal, public appService: AppService) { }
+  constructor(public router: Router, private loginService: LoginService, private funcionarioService: FuncionarioService,
+    private modalService: NgbModal, public appService: AppService) { }
   mensagemErro = "";
+
+  util = new Util();
   ngOnInit() {
     this.loginService.logout();
   }
@@ -34,12 +39,22 @@ export class LoginComponent implements OnInit {
           if (usuarioRetorno.login != "admin")
             this.appService.buscarClinicasUsuario(usuarioRetorno).subscribe(clinicas => {
               this.appService.armazenarClinica(clinicas.find(c => true));
-              this.router.navigate(['/dashboard/dashboardanalitico']);
+              
+
+              if (this.util.retornaUsuarioAdmOuMedico(usuarioRetorno))
+                this.router.navigate(['/dashboard/dashboardanalitico']);
+              else if (usuarioRetorno.funcionario != null && this.funcionarioService.PermitirVisualizarAgenda(usuarioRetorno.funcionario))
+                this.router.navigate(['/agenda/agenda']);
+              else //se o usuário for um funcionário sem permissão dash e agenda, redireciona para o cadastro do funcinario
+              {
+                this.router.navigate(['/listagem/listagemfuncionario']);
+              }
+
             });
-            else 
-              this.router.navigate(['/dashboard/dashboardanalitico']);            
+          else
+            this.router.navigate(['/dashboard/dashboardanalitico']);
         }
-        
+
       },
       error => {
         var modal = this.modalService.open(ModalErrorComponent);
