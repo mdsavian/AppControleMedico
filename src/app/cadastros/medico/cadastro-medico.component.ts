@@ -32,6 +32,8 @@ import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-conve
 import { AppService } from '../../services/app.service';
 import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
 import { UploadService } from '../../services/upload.service';
+import { AgendamentoService } from '../../services/agendamento.service';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './cadastro-medico.component.html',
@@ -70,14 +72,14 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   imagemMedico: any;
 
-  constructor(private appService: AppService, private uploadService: UploadService, private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private clinicaService: ClinicaService,
+  constructor(private appService: AppService, private agendamentoService: AgendamentoService, private uploadService: UploadService, private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private clinicaService: ClinicaService,
     private convenioService: ConvenioService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
 
   public ngOnInit(): void {
 
     this.usuario = this.appService.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.appService.retornarUsuarioAdministradorSistema();
+    this.usuarioAdministrador = this.util.retornarUsuarioAdministradorSistema(this.usuario);
 
     if (this.medicoService.medico != null) {
       this.medico = this.medicoService.medico;
@@ -254,6 +256,48 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     }
   }
 
+  deletarConvenioAssociado(convenioId) {
+
+    if (this.medico.convenios.find(c => c.id == convenioId) == null)
+      return;
+
+
+    this.agendamentoService.buscarAgendamentosConvenio(convenioId).subscribe(agendamentos => {
+
+      if (this.util.hasItems(agendamentos)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não é possível excluir convênio vínculado a agendamento(s).";
+      }
+      else {
+
+        this.modalService.open(ModalExcluirRegistroComponent).result.then(
+          result => {
+            if (result == 'Sim') {
+
+              var convenio = this.medico.convenios.find(c => c.id == convenioId);
+
+              var index = this.medico.convenios.indexOf(convenio);
+              this.medico.convenios.splice(index, 1);
+
+              index = this.medico.conveniosId.indexOf(convenioId);
+              this.medico.conveniosId.splice(index, 1);
+
+              this.convenios.push(convenio);
+
+              this.medicoService.salvar(this.medico).subscribe(medico => {
+                this.medico = medico;
+              });
+
+              this.sourceConvenio = new LocalDataSource(this.medico.convenios);
+              this.convenioModel = this.convenios.find(c => true);
+            }
+          }
+        );
+      }
+    });
+  }
+
+
   alterarSenhaMedico() {
 
     if (this.permiteAlterarSenha) {
@@ -364,23 +408,31 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public salvar(): void {
-    this.medicoService.medico = null;
-    this.medicoService.salvar(this.medico).subscribe(
-      data => {
-        if (this.imagemMedico != null) {
-          this.uploadService.salvarImagem(this.imagemMedico, "medico", data.id).subscribe(c => {
-            this.router.navigate(["listagem/listagemmedico"]);
-          });
-        }
-        else
-          this.router.navigate(["listagem/listagemmedico"]);
 
-      },
-      error => {
-        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
-      }
-    )
+
+  public salvar(): void {
+    if (this.usuarioAdministrador || !this.util.isNullOrWhitespace(this.medico.id)) {
+      this.medicoService.medico = null;
+      this.medicoService.salvar(this.medico).subscribe(
+        data => {
+          if (this.imagemMedico != null) {
+            this.uploadService.salvarImagem(this.imagemMedico, "medico", data.id).subscribe(c => {
+              this.router.navigate(["listagem/listagemmedico"]);
+            });
+          }
+          else
+            this.router.navigate(["listagem/listagemmedico"]);
+
+        },
+        error => {
+          var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+          modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
+        }
+      )
+    }
+    else {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Usuário sem permissão para cadastrar um novo médico.";
+    }
   }
 }

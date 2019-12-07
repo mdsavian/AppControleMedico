@@ -86,7 +86,7 @@ export class SidebarComponent implements OnInit {
         this.sidebarnavItems = itensSideBar;
         this.isSpinnerVisible = false;
       }
-      else if (usuario.medico != null && usuario.medico.ativo) {
+      else if ((usuario.medico != null && usuario.medico.ativo) || usuario.login == "admin") {
         this.sidebarnavItems = this.ROUTES;
         this.isSpinnerVisible = false;
       }

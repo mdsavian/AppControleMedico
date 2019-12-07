@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
 
             });
           else
-            this.router.navigate(['/dashboard/dashboardanalitico']);
+            this.router.navigate(['/listagem/listagemfuncionario']);
         }
 
       },

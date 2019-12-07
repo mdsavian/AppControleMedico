@@ -9,13 +9,13 @@
       <div class="double-bounce1"></div>
       <div class="double-bounce2"></div>
     </div>
-    <form #agendaFor="ngForm" *ngIf=!isSpinnerVisible>
+    <form #agendaForm="ngForm" *ngIf="!isSpinnerVisible">
       <div class="row col-12">
         <div class="col-xs-2 col-md-2 form-group">
           <div class="row col-xs-12 col-md-12">
             <div class="form-group">
               <label class="control-label" for="medicoSelect">Médico</label>
-              <select class="form-control" (change)="carregarConfiguracaoMedico()" [(ngModel)]="medico"
+              <select class="form-control" (change)="trocaMedico()" [(ngModel)]="medico"
                 id="medicoSelect" name="medicoSelect" #medicoSelect="ngModel">
                 <option *ngFor="let med of medicos" [ngValue]="med">
                   {{med.nomeCompleto}}
@@ -39,15 +39,15 @@
           <div class="row">
             <div class="col-md-2">
               <div class="btn-group">
-                <div class="btn" (click)="ajustarParametrosCalendario()" mwlCalendarPreviousView [view]="view"
+                <div class="btn" (click)="trocaData()" mwlCalendarPreviousView [view]="view"
                   [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()" [excludeDays]="diasExcluidos">
                   <span class="fa fa-backward" title="Anterior"></span>
                 </div>
-                <div class="btn btn-outline-secondary" (click)="ajustarParametrosCalendario()" mwlCalendarToday
+                <div class="btn btn-outline-secondary" (click)="trocaData()" mwlCalendarToday
                   [(viewDate)]="viewDate">
                   Hoje
                 </div>
-                <div class="btn" (click)="ajustarParametrosCalendario()" [excludeDays]="diasExcluidos"
+                <div class="btn" (click)="trocaData()" [excludeDays]="diasExcluidos"
                   mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
                   <span class="fa fa-forward" title="Próximo"></span>
                 </div>

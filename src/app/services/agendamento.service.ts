@@ -12,6 +12,7 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
+import { CalendarEvent } from 'calendar-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,7 @@ export class AgendamentoService {
   buscarAgendamentosPaciente(pacienteId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId); }
   buscarAgendamentosLocal(localId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosLocal/" + localId); }
   buscarPagamentoAgendamentoForma(formaPagamentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId); }
+  buscarAgendamentosConvenio(convenioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosConvenio/" + convenioId); }
   buscarAgendamentosProcedimento(procedimentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId); }
   buscarAgendamentosCaixa(caixa: Caixa) { let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId); return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros); }
   buscarAgendamentosExame(exameId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId); }

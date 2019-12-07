@@ -39,7 +39,7 @@ export class ListagemMedicoComponent implements OnInit {
   constructor(private appService: AppService, private usuarioService: UsuarioService, private agendamentoService: AgendamentoService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
 
-    this.administrador = this.appService.retornarUsuarioAdministradorSistema();
+    this.administrador = this.util.retornarUsuarioAdministradorSistema(this.appService.retornarUsuarioCorrente());
 
     this.settings = {
       mode: 'external',

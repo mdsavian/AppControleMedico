@@ -68,7 +68,7 @@ export class Util {
 
     public concatenaDataHora(dataString: string, horaMinuto: string) {
         var hora = 0, minutos = 0;
-        
+
         if (horaMinuto.indexOf(":") > 0) {
             var horaSplit = horaMinuto.split(":");
             hora = parseInt(horaSplit[0]);
@@ -203,8 +203,11 @@ export class Util {
         return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
     }
 
-    retornaUsuarioAdmOuMedico(usuario:Usuario)
-    {
+    public retornarUsuarioAdministradorSistema(usuario:Usuario): boolean {
+        return usuario.funcionario == null && usuario.medico == null && usuario.login == "admin";
+    }
+
+    retornaUsuarioAdmOuMedico(usuario: Usuario) {
         if (usuario != null) {
 
             return (usuario.funcionario != null && usuario.funcionario.permissaoAdministrador) || usuario.medico != null;

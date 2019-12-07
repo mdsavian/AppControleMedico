@@ -83,7 +83,7 @@ export class AgendaComponent implements OnInit {
   acoesPermitidas: Array<string> = [];
 
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
-    private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService,private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router,
+    private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }
@@ -93,7 +93,6 @@ export class AgendaComponent implements OnInit {
     var usuario = this.appService.retornarUsuarioCorrente();
 
     this.buscarModelosNovoAgendamento().subscribe(c => {
-      this.isSpinnerVisible = false;
 
       if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
         this.funcionarioService.buscarComMedicos(usuario.funcionarioId).subscribe(func => {
@@ -108,7 +107,9 @@ export class AgendaComponent implements OnInit {
             }
 
           });
+
           this.carregarConfiguracaoMedico();
+          this.carregarAgendamentosMedico();
 
         });
       }
@@ -119,14 +120,13 @@ export class AgendaComponent implements OnInit {
           this.medicos.push(medic);
           this.medico = this.medicos.find(c => true);
           this.carregarConfiguracaoMedico();
+          this.carregarAgendamentosMedico();
         });
       }
     });
   }
 
   buscarModelosNovoAgendamento() {
-    this.isSpinnerVisible = true;
-
     let reqPaciente = this.pacienteService.Todos().map(dados => {
       this.pacientes = dados;
     });
@@ -151,60 +151,45 @@ export class AgendaComponent implements OnInit {
     return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqConvenios]);
   }
 
+  trocaMedico() {
+    this.carregarConfiguracaoMedico();
+    this.carregarAgendamentosMedico();    
+  }
+
   carregarConfiguracaoMedico() {
-    if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId) && this.medico.configuracaoAgenda == null) {
+    if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
       this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).subscribe(config => {
         this.medico.configuracaoAgenda = config;
         this.ajustarParametrosCalendario();
       });
     }
-  }
-  converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
-    var novoAgendamento = new Agendamento();
-
-    novoAgendamento.dataAgendamento = evento.start;
-    if (evento.start != null)
-      novoAgendamento.horaInicial = evento.start.toTimeString().substr(0, 5).replace(":", "");
-
-    if (evento.end != null)
-      novoAgendamento.horaFinal = evento.end.toTimeString().substr(0, 5).replace(":", "");
     else {
-
-      var horaFinal = new Date();
-      horaFinal.setDate(evento.start.getDate());
-
-      var minutosFinal = this.configuracaoAgendaService.retornarMinutosConfiguracao(this.medico.configuracaoAgenda.configuracaoMinutosAgenda);
-
-      if (minutosFinal == 60) {
-        horaFinal.setHours(evento.start.getHours() + 1);
-        horaFinal.setMinutes(evento.start.getMinutes(), 0);
-      }
-      else {
-        horaFinal.setHours(evento.start.getHours());
-        horaFinal.setMinutes(evento.start.getMinutes() + minutosFinal, 0);
-      }
-      novoAgendamento.horaFinal = horaFinal.toTimeString().substr(0, 5).replace(":", "");
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado.";
+      this.diasExcluidos = [];
     }
-    return novoAgendamento;
-
   }
 
   carregarAgendamentosMedico() {
-    this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
-      .subscribe(dados => {
-        this.eventos = [];
-        this.eventosBanco = new Array<Agendamento>();
-        this.converteEAdicionaAgendamentoEvento(dados);
-      });
+    if (this.medico != null) {
+      this.isSpinnerVisible = true;
+      this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
+        .subscribe(dados => {
+          this.isSpinnerVisible = false;
+          this.eventos = [];
+          this.eventosBanco = new Array<Agendamento>();
+          this.converteEAdicionaAgendamentoEvento(dados);
+        });
+    }
   }
 
   ajustarParametrosCalendario() {
-
     if (this.medico != null) {
-      this.carregarAgendamentosMedico();
 
       if (this.medico.configuracaoAgenda != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
+
         var configuracaoAgenda = this.medico.configuracaoAgenda;
+
         this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
         this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
 
@@ -227,7 +212,7 @@ export class AgendaComponent implements OnInit {
         }
       }
 
-      this.refreshPage();
+      // this.refreshPage();
     }
   }
 
@@ -242,7 +227,7 @@ export class AgendaComponent implements OnInit {
       var configuracaoAgendaDias = this.medico.configuracaoAgenda.configuracaoAgendaDias[dia]
 
       var minutosFinal = this.configuracaoAgendaService.retornarMinutosConfiguracao(this.medico.configuracaoAgenda.configuracaoMinutosAgenda);
-      
+
       if (configuracaoAgendaDias != null) {
         var horaSegmentoInicial = hora * 60 + minutos;
         var horaSegmentoFinal = hora * 60 + minutos + minutosFinal;
@@ -251,9 +236,9 @@ export class AgendaComponent implements OnInit {
           var horarioInicioIntervalo = this.validadorAgendamento.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
           var horarioFimIntervalo = this.validadorAgendamento.converteHorarioParaMinutos(configuracaoAgendaDias.horarioFimIntervalo);
 
-          retorno =  ((horaSegmentoInicial >= horarioInicioIntervalo && horaSegmentoInicial <= horarioFimIntervalo)
-           || (horaSegmentoFinal >= horarioInicioIntervalo && horaSegmentoFinal <= horarioFimIntervalo)
-           || (horaSegmentoInicial <= horarioInicioIntervalo && horaSegmentoInicial >= horarioFimIntervalo));
+          retorno = ((horaSegmentoInicial >= horarioInicioIntervalo && horaSegmentoInicial <= horarioFimIntervalo)
+            || (horaSegmentoFinal >= horarioInicioIntervalo && horaSegmentoFinal <= horarioFimIntervalo)
+            || (horaSegmentoInicial <= horarioInicioIntervalo && horaSegmentoInicial >= horarioFimIntervalo));
         }
 
         if (retorno)
@@ -379,11 +364,11 @@ export class AgendaComponent implements OnInit {
     this.criarEventoNoCalendarioClicado(segment, segmentElement);
   }
 
-  validarBotoesAcoes(acao:string)
-  {
-    return this.acoesPermitidas.find(c=> c == acao.toUpperCase()) != null ;
+  validarBotoesAcoes(acao: string) {
+    return this.acoesPermitidas.find(c => c == acao.toUpperCase()) != null;
   }
-  tratarAcoesPermitidas(agendamento) {    
+
+  tratarAcoesPermitidas(agendamento) {
     this.acoesPermitidas = [];
     if (agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
       switch (agendamento.situacaoAgendamento) {
@@ -411,13 +396,12 @@ export class AgendaComponent implements OnInit {
             break;
           }
         case (ESituacaoAgendamento["Pago/Finalizado"].valueOf()):
-          { 
+          {
             break;
           }
       }
     }
-    else
-    {
+    else {
       this.acoesPermitidas.push("EDITAR");
       this.acoesPermitidas.push("EXCLUIR");
     }
@@ -615,9 +599,15 @@ export class AgendaComponent implements OnInit {
 
   }
 
+  trocaData() {
+    this.ajustarParametrosCalendario();
+    this.carregarAgendamentosMedico();
+  }
+
   setView(view: CalendarView) {
     this.view = view;
     this.ajustarParametrosCalendario();
+    this.carregarAgendamentosMedico();
   }
 
   closeOpenMonthViewDay() {
@@ -644,7 +634,7 @@ export class AgendaComponent implements OnInit {
       if (eventoVelho != null) {
         var index = this.eventos.indexOf(eventoVelho);
         this.eventos.splice(index, 1);
-      }     
+      }
 
       this.eventos = [...this.eventos,
       {
@@ -724,11 +714,7 @@ export class AgendaComponent implements OnInit {
     if (!this.util.isNullOrWhitespace(agendamento.pacienteId)) {
       var paciente = this.pacientes.find(c => c.id == agendamento.pacienteId);
       var convenio = this.convenios.find(c => c.id == agendamento.convenioId);
-      
-      if (this.agendamentoService.retornarOperacaoAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos) == null)
-      {
-        console.log(agendamento);
-      }
+
       var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos).toUpperCase();
 
       var mensagem = operacao + " - ";
@@ -748,6 +734,35 @@ export class AgendaComponent implements OnInit {
 
     return mensagem;
 
+  }
+
+  converteCalendarEventParaAgendamento(evento: CalendarEvent): Agendamento {
+    var novoAgendamento = new Agendamento();
+
+    novoAgendamento.dataAgendamento = evento.start;
+    if (evento.start != null)
+      novoAgendamento.horaInicial = evento.start.toTimeString().substr(0, 5).replace(":", "");
+
+    if (evento.end != null)
+      novoAgendamento.horaFinal = evento.end.toTimeString().substr(0, 5).replace(":", "");
+    else {
+
+      var horaFinal = new Date();
+      horaFinal.setDate(evento.start.getDate());
+
+      var minutosFinal = this.configuracaoAgendaService.retornarMinutosConfiguracao(this.medico.configuracaoAgenda.configuracaoMinutosAgenda);
+
+      if (minutosFinal == 60) {
+        horaFinal.setHours(evento.start.getHours() + 1);
+        horaFinal.setMinutes(evento.start.getMinutes(), 0);
+      }
+      else {
+        horaFinal.setHours(evento.start.getHours());
+        horaFinal.setMinutes(evento.start.getMinutes() + minutosFinal, 0);
+      }
+      novoAgendamento.horaFinal = horaFinal.toTimeString().substr(0, 5).replace(":", "");
+    }
+    return novoAgendamento;
   }
 }
 
@@ -772,3 +787,4 @@ function floorToNearest(amount: number, precision: number) {
 function ceilToNearest(amount: number, precision: number) {
   return Math.ceil(amount / precision) * precision;
 }
+

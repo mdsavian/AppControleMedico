@@ -84,7 +84,7 @@ export class ListagemFuncionarioComponent implements OnInit{
       noDataMessage:"Não foi encontrado nenhum registro",
       columns: {
         nomeCompleto: {
-          title: 'Nome',
+          title: 'Nome', 
           filter: true
         },   
         dataAdmissao: {
