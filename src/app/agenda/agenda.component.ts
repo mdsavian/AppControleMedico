@@ -42,8 +42,7 @@ import { Local } from '../modelos/local';
 import { ConfiguracaoAgendaService } from '../services/configuracaoAgenda.service';
 
 @Component({
-  selector: 'mwl-demo-component',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush, //com esta propriedade ativa a cada mudança deve ser chamado o refresh page manualmente
   styleUrls: ['styles.css'],
   templateUrl: 'agenda.component.html'
 })
@@ -72,7 +71,6 @@ export class AgendaComponent implements OnInit {
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
-  msgteste: string;
   isSpinnerVisible = false;
   exames: Array<Exame> = [];
   convenios: Array<Convenio> = [];
@@ -89,44 +87,18 @@ export class AgendaComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    var usuario = this.appService.retornarUsuarioCorrente();
-
+    this.isSpinnerVisible = true;
     this.buscarModelosNovoAgendamento().subscribe(c => {
-
-      if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
-        this.funcionarioService.buscarComMedicos(usuario.funcionarioId).subscribe(func => {
-          this.funcionario = func;
-          this.medicos = func.medicos;
-          this.medico = func.medicos.find(c => true);
-          this.visualizaBotoesAberturaFechamentoCaixa = true;
-          this.caixaService.retornarCaixaAbertoFuncionario(func.id).subscribe(caixa => {
-            if (caixa != null) {
-              this.mensagemCaixaAberto = "Caixa aberto por " + func.nomeCompleto + " em " + this.util.dataParaString(caixa.dataAbertura)
-                + " " + this.util.formatarHora(caixa.horaAbertura);
-            }
-
-          });
-
-          this.carregarConfiguracaoMedico();
-          this.carregarAgendamentosMedico();
-
-        });
-      }
-      else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
-        this.medicoService.buscarPorId(usuario.medicoId).subscribe(medic => {
-
-          this.visualizaBotoesAberturaFechamentoCaixa = false;
-          this.medicos.push(medic);
-          this.medico = this.medicos.find(c => true);
-          this.carregarConfiguracaoMedico();
-          this.carregarAgendamentosMedico();
-        });
-      }
+      this.buscarInformacoesMedico().subscribe(c => {
+        this.isSpinnerVisible = false;
+        this.refreshPage();
+      });
     });
   }
 
   buscarModelosNovoAgendamento() {
+    var usuario = this.appService.retornarUsuarioCorrente();
+
     let reqPaciente = this.pacienteService.Todos().map(dados => {
       this.pacientes = dados;
     });
@@ -136,88 +108,99 @@ export class AgendaComponent implements OnInit {
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
     let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
 
-    let reqConvenios = this.convenioService.Todos().map(dados => {
-      if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
-        dados.forEach(conv => {
-          var indexConvenio = this.medico.conveniosId.indexOf(conv.id);
-          if (indexConvenio >= 0)
-            this.convenios.push(conv);
-        });
-      }
-      else
-        this.convenios = dados;
+    let reqMedicos = this.medicoService.buscarMedicosPorUsuario(usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
+      this.medicos = dados;
+
+      // if (this.medicos.length > 1) {
+      //   let medicoTodos = new Medico();
+      //   medicoTodos.nomeCompleto = "Todos";
+      //   medicoTodos.id = "";
+      //   this.medicos.push(medicoTodos);
+
+      //   if (this.medico == null)
+      //     this.medico = this.medicos.find(c => c == medicoTodos);
+      //   else
+      //     this.medico = this.medicos.find(c => c.id == this.medico.id);
+      // }
+      // else
+      this.medico = this.medicos.find(c => true);
+
     });
 
-    return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqConvenios]);
+    return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
+  }
+
+  buscarInformacoesMedico() {
+    if (this.medico != null) {
+
+      //busca convenios do medico
+      let reqConvenios = this.convenioService.TodosFiltrandoMedico(this.medico.id).map(dados => { this.convenios = dados; });
+      let reqConfiguracao = new Observable;
+
+      let reqAgendamentos = this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
+        .map(dados => {
+          this.eventos = [];
+          this.eventosBanco = new Array<Agendamento>();          
+          this.converteEAdicionaAgendamentoEvento(dados);
+        });     
+
+      //Busca configuração do médico
+      if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
+        reqConfiguracao = this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).map(config => {
+          this.medico.configuracaoAgenda = config;
+          this.ajustarParametrosCalendario();
+        });
+      }
+      else {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado";
+        this.configuracaoMinutos = 3;
+        this.diasExcluidos = [];
+        this.horaInicialCalendario = "07";
+        this.horaFinalCalendario = "18";
+      }
+
+      return Observable.forkJoin([reqConvenios, reqConfiguracao, reqAgendamentos]);
+    }
   }
 
   trocaMedico() {
-    this.carregarConfiguracaoMedico();
-    this.carregarAgendamentosMedico();    
-  }
-
-  carregarConfiguracaoMedico() {
-    if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
-      this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).subscribe(config => {
-        this.medico.configuracaoAgenda = config;
-        this.ajustarParametrosCalendario();
-      });
-    }
-    else {
-      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado.";
-      this.diasExcluidos = [];
-    }
-  }
-
-  carregarAgendamentosMedico() {
-    if (this.medico != null) {
-      this.isSpinnerVisible = true;
-      this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
-        .subscribe(dados => {
-          this.isSpinnerVisible = false;
-          this.eventos = [];
-          this.eventosBanco = new Array<Agendamento>();
-          this.converteEAdicionaAgendamentoEvento(dados);
-        });
-    }
+    this.isSpinnerVisible = true;
+    this.buscarInformacoesMedico().subscribe(c => {
+      this.isSpinnerVisible = false;
+      this.refreshPage();
+    });
   }
 
   ajustarParametrosCalendario() {
-    if (this.medico != null) {
+    if (this.medico != null && this.medico.configuracaoAgenda != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
 
-      if (this.medico.configuracaoAgenda != null && this.medico.configuracaoAgenda.configuracaoAgendaDias.length > 0) {
+      var configuracaoAgenda = this.medico.configuracaoAgenda;
 
-        var configuracaoAgenda = this.medico.configuracaoAgenda;
+      this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
+      this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
 
-        this.diasExcluidos = configuracaoAgenda.diasNaoConfigurados;
-        this.configuracaoMinutos = configuracaoAgenda.configuracaoMinutosAgenda;
+      if (this.view == CalendarView.Week) {
+        this.horaInicialCalendario = configuracaoAgenda.primeiroHorario;
+        this.horaFinalCalendario = configuracaoAgenda.ultimoHorario;
 
-        if (this.view == CalendarView.Week) {
-          this.horaInicialCalendario = configuracaoAgenda.primeiroHorario;
-          this.horaFinalCalendario = configuracaoAgenda.ultimoHorario;
-
-        }
-        else if (this.view == CalendarView.Day) {
-          var configuracaoAgendaDias = configuracaoAgenda.configuracaoAgendaDias;
-          var dia = this.viewDate.getDay();
-
-          this.horaInicialCalendario = configuracaoAgendaDias[dia].segundoHorarioInicial != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioInicial) < parseInt(configuracaoAgendaDias[dia].segundoHorarioInicial)
-            ? configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioInicial.substring(0, 2))
-            : configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2);
-
-          this.horaFinalCalendario = configuracaoAgendaDias[dia].segundoHorarioFinal != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioFinal) > parseInt(configuracaoAgendaDias[dia].segundoHorarioFinal)
-            ? configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioFinal.substring(0, 2))
-            : configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2);
-        }
       }
+      else if (this.view == CalendarView.Day) {
+        var configuracaoAgendaDias = configuracaoAgenda.configuracaoAgendaDias;
+        var dia = this.viewDate.getDay();
 
-      // this.refreshPage();
+        this.horaInicialCalendario = configuracaoAgendaDias[dia].segundoHorarioInicial != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioInicial) < parseInt(configuracaoAgendaDias[dia].segundoHorarioInicial)
+          ? configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioInicial.substring(0, 2))
+          : configuracaoAgendaDias[dia].primeiroHorarioInicial.substring(0, 2);
+
+        this.horaFinalCalendario = configuracaoAgendaDias[dia].segundoHorarioFinal != "" ? (parseInt(configuracaoAgendaDias[dia].primeiroHorarioFinal) > parseInt(configuracaoAgendaDias[dia].segundoHorarioFinal)
+          ? configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2) : configuracaoAgendaDias[dia].segundoHorarioFinal.substring(0, 2))
+          : configuracaoAgendaDias[dia].primeiroHorarioFinal.substring(0, 2);
+      }
     }
   }
 
   validaHoraIntervaloComponente(data: Date) {
-
     var retorno = false;
     let dia = data.getDay();
     let hora = data.getHours();
@@ -256,9 +239,7 @@ export class AgendaComponent implements OnInit {
         var horaInicio = parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(0, 2)) * 60 + parseInt(configuracaoAgendaDias.primeiroHorarioInicial.substr(2, 2));
         retorno = horaSegmentoInicial < horaInicio;
       }
-
     }
-
     return retorno;
   }
 
@@ -328,9 +309,6 @@ export class AgendaComponent implements OnInit {
               criadoEvento = true;
             }
           }
-
-          this.refreshPage();
-
           if (criadoEvento) {
             var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
             this.chamarModalAdicionaAgendamento(novoAgendamento);
@@ -354,7 +332,6 @@ export class AgendaComponent implements OnInit {
         if (newEnd > segment.date && newEnd < endOfView) {
           eventoClicado.end = newEnd;
         }
-        this.refreshPage();
       });
 
     return eventoClicado;
@@ -410,7 +387,9 @@ export class AgendaComponent implements OnInit {
   actionAgendamento(evento: CalendarEvent, acao: string) {
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
     if (agendamento != null) {
+
       this.tratarAcoesPermitidas(agendamento);
+
       this.modalService.open(this.modalAcoes).result.then(result => {
         switch (result) {
           case ("Editar"):
@@ -480,9 +459,8 @@ export class AgendaComponent implements OnInit {
               },
               (() => { })
             );
-
-
             break;
+
           case ("Excluir"):
             this.acaoAgendamento = "Excluir";
             this.modalService.open(this.modalAcaoAgendamento).result.then(
@@ -494,7 +472,7 @@ export class AgendaComponent implements OnInit {
                       if (eventoVelho != null) {
                         var index = this.eventos.indexOf(eventoVelho);
                         this.eventos.splice(index, 1);
-                        this.refreshPage();
+
                       }
                     }
                   });
@@ -502,11 +480,10 @@ export class AgendaComponent implements OnInit {
               },
               (() => { })
             );
-
             break;
         }
       },
-        (() => { }));
+        (error => { }));
     }
   }
 
@@ -599,15 +576,25 @@ export class AgendaComponent implements OnInit {
 
   }
 
-  trocaData() {
-    this.ajustarParametrosCalendario();
-    this.carregarAgendamentosMedico();
+  trocarData() {
+    this.isSpinnerVisible = true;
+    if (this.view == CalendarView.Day) //quando for dia tem de ajustar os horários permitido do dia
+      this.ajustarParametrosCalendario();
+
+    this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
+      .subscribe(dados => {
+        this.eventos = [];
+        this.eventosBanco = new Array<Agendamento>();
+        this.converteEAdicionaAgendamentoEvento(dados);
+
+        this.isSpinnerVisible = false;
+        this.refreshPage();
+      });
   }
 
   setView(view: CalendarView) {
     this.view = view;
-    this.ajustarParametrosCalendario();
-    this.carregarAgendamentosMedico();
+    this.trocarData();
   }
 
   closeOpenMonthViewDay() {
@@ -620,7 +607,7 @@ export class AgendaComponent implements OnInit {
   }
 
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
-    lista.forEach(agendamento => {
+    lista.forEach(agendamento => {      
       var dataHoraInicial = this.util.concatenaDataHora(this.util.dataParaString(agendamento.dataAgendamento), agendamento.horaInicial);
 
       var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
@@ -651,7 +638,6 @@ export class AgendaComponent implements OnInit {
         // draggable: true
       }];
     });
-    this.refreshPage();
   }
 
   chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
@@ -666,7 +652,7 @@ export class AgendaComponent implements OnInit {
     modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
     modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
 
-    if (agendamento != null) {
+    if (agendamento != null) {      
       modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
     }
 
@@ -675,11 +661,11 @@ export class AgendaComponent implements OnInit {
     }
 
     modalAdicionaAgendamento.result.then((agendamentoResult: Agendamento) => {
-      if (agendamentoResult != null) {
+      if (agendamentoResult != null) {        
         this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoResult));
       }
-    }).catch((error) => {
-    })
+      this.refreshPage();
+    }).catch((error) => { })
   }
 
   abrirFecharCaixa(acao: string) {

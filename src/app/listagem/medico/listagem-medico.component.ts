@@ -21,8 +21,6 @@ export class ListagemMedicoComponent implements OnInit {
   listaMedicos: Array<Medico>;
   public isSpinnerVisible = false;
   closeResult: string;
-  administrador: boolean;
-  settings = {};
   util = new Util();
   usuarios: Array<Usuario>;
 
@@ -38,51 +36,7 @@ export class ListagemMedicoComponent implements OnInit {
 
   constructor(private appService: AppService, private usuarioService: UsuarioService, private agendamentoService: AgendamentoService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
-
-    this.administrador = this.util.retornarUsuarioAdministradorSistema(this.appService.retornarUsuarioCorrente());
-
-    this.settings = {
-      mode: 'external',
-      noDataMessage: "Não foi encontrado nenhum registro",
-      columns: {
-        nomeCompleto: {
-          title: 'Nome',
-          filter: true
-        },
-        email: {
-          title: 'Email',
-          filter: false
-        },
-        celular: {
-          title: 'Celular',
-          filter: false,
-          valuePrepareFunction: (celular) => { return celular === null ? "" : this.util.formataCelular(celular) }
-        }
-      },
-      actions:
-      {
-        delete: this.administrador,
-        add: this.administrador,
-        columnTitle: ''
-      },
-      delete: {
-        deleteButtonContent: this.administrador ? '<i class="ti-trash text-danger m-r-10"></i>' : '',
-        saveButtonContent: this.administrador ? '<i class="ti-save text-success m-r-10"></i>' : '',
-        cancelButtonContent: this.administrador ? '<i class="ti-close text-danger"></i>' : '',
-      },
-      edit: {
-        editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
-        saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
-        cancelButtonContent: '<i class="ti-close text-danger"></i>',
-      },
-      add:
-      {
-        addButtonContent: this.administrador ? 'Novo' : ''
-      }
-    };
-
     
-
   }
 
   buscaMedicos(): void {
@@ -125,4 +79,44 @@ export class ListagemMedicoComponent implements OnInit {
     this.usuarioService.usuarioParaValidacao = this.medicoService.medico = null;
     this.router.navigate(['/cadastros/cadastromedico']);
   }
+
+  settings = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum registro",
+    columns: {
+      nomeCompleto: {
+        title: 'Nome',
+        filter: true
+      },
+      email: {
+        title: 'Email',
+        filter: false
+      },
+      celular: {
+        title: 'Celular',
+        filter: false,
+        valuePrepareFunction: (celular) => { return celular === null ? "" : this.util.formataCelular(celular) }
+      }
+    },
+    actions:
+    {
+      delete: this.util.retornarUsuarioAdministradorSistema(this.appService.retornarUsuarioCorrente()),
+      add: this.util.retornarUsuarioAdministradorSistema(this.appService.retornarUsuarioCorrente()),
+      columnTitle: ''
+    },
+    delete: {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>',
+    },
+    edit: {
+      editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>',
+    },
+    add:
+    {
+      addButtonContent: 'Novo'
+    }
+  };
 }

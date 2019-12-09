@@ -107,8 +107,8 @@ export class ListagemFuncionarioComponent implements OnInit{
       actions:
       {
         columnTitle:'',
-        add: this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente()),
-        delete: this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente()),
+        add: (this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente()) || this.util.retornarUsuarioAdministradorSistema(this.appService.retornarUsuarioCorrente())),
+        delete: (this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente()) || this.util.retornarUsuarioAdministradorSistema(this.appService.retornarUsuarioCorrente())),
       },
       delete: {
         deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',

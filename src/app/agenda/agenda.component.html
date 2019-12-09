@@ -1,22 +1,22 @@
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
 <div class="row">
   <div class="col-12">
     <h4 *ngIf="mensagemCaixaAberto != ''">{{mensagemCaixaAberto}}</h4>
   </div>
 </div>
-<div class="row">
-  <div class="col-12">
-    <div class="spinner" *ngIf=isSpinnerVisible>
-      <div class="double-bounce1"></div>
-      <div class="double-bounce2"></div>
-    </div>
-    <form #agendaForm="ngForm" *ngIf="!isSpinnerVisible">
+<div class="row" *ngIf="!isSpinnerVisible">
+  <div class="col-12">    
       <div class="row col-12">
         <div class="col-xs-2 col-md-2 form-group">
           <div class="row col-xs-12 col-md-12">
             <div class="form-group">
               <label class="control-label" for="medicoSelect">Médico</label>
-              <select class="form-control" (change)="trocaMedico()" [(ngModel)]="medico"
-                id="medicoSelect" name="medicoSelect" #medicoSelect="ngModel">
+
+              <select class="form-control" [(ngModel)]="medico" id="medicoSelect" name="medicoSelect"
+                #medicoSelect="ngModel" (change)="trocaMedico()">
                 <option *ngFor="let med of medicos" [ngValue]="med">
                   {{med.nomeCompleto}}
                 </option>
@@ -39,16 +39,15 @@
           <div class="row">
             <div class="col-md-2">
               <div class="btn-group">
-                <div class="btn" (click)="trocaData()" mwlCalendarPreviousView [view]="view"
-                  [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()" [excludeDays]="diasExcluidos">
+                <div class="btn" (click)="trocarData()" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+                  (viewDateChange)="closeOpenMonthViewDay()" [excludeDays]="diasExcluidos">
                   <span class="fa fa-backward" title="Anterior"></span>
                 </div>
-                <div class="btn btn-outline-secondary" (click)="trocaData()" mwlCalendarToday
-                  [(viewDate)]="viewDate">
+                <div class="btn btn-outline-secondary" (click)="trocarData()" mwlCalendarToday [(viewDate)]="viewDate">
                   Hoje
                 </div>
-                <div class="btn" (click)="trocaData()" [excludeDays]="diasExcluidos"
-                  mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+                <div class="btn" (click)="trocarData()" [excludeDays]="diasExcluidos" mwlCalendarNextView [view]="view"
+                  [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
                   <span class="fa fa-forward" title="Próximo"></span>
                 </div>
               </div>
@@ -115,8 +114,7 @@
             </ng-template>
           </div>
         </div>
-      </div>
-    </form>
+      </div>    
   </div>
 </div>
 

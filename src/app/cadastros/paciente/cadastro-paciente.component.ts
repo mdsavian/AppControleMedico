@@ -43,7 +43,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   dataUltimaMenstru: string = "01/01/1901"
   descricaos: Array<string>;
   falhaNaBusca: boolean;
-  medico: Medico;
+  medicos: Array<Medico>;
   exibeAbaEspecialidade: boolean;
   imagemPaciente: any;
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
@@ -69,14 +69,12 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.downloadFoto();
     }
 
-    var usuario = this.appService.retornarUsuarioCorrente();
-
-    if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
-      this.medicoService.buscarMedicoUsuario(usuario).subscribe(medicoRetorno => {
-        this.medico = medicoRetorno;
+    this.medicoService.buscarMedicosPorUsuario(this.appService.retornarUsuarioCorrente().id, this.appService.retornarClinicaCorrente().id, true)
+      .subscribe(medicoRetorno => {
+        this.medicos = medicoRetorno;
         this.ExibeAbaEspecialidade("obstetrícia");
       });
-    }
+
     this.convenioService.Todos().subscribe(dados => {
       this.convenios = dados;
     });
@@ -106,13 +104,20 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   ExibeAbaEspecialidade(especialidade: string) {
-    if (this.medico != null && !this.util.isNullOrWhitespace(this.medico.especialidadeId)) {
 
-      this.especialidadeService.buscarPorId(this.medico.especialidadeId).subscribe(espec => {
-        this.medico.especialidade = espec;
+    console.log(this.medicos);
 
-        this.exibeAbaEspecialidade = espec.descricao.toUpperCase().includes(especialidade.toUpperCase());
+    if (this.util.hasItems(this.medicos)) {
+
+      let achei = false;
+      this.medicos.forEach(medico => {        
+        if (!this.exibeAbaEspecialidade) {
+          this.exibeAbaEspecialidade = medico.especialidade.descricao.toUpperCase().includes(especialidade.toUpperCase());
+          if (this.exibeAbaEspecialidade)
+            return;
+        }
       });
+
     }
   }
 
@@ -133,7 +138,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
     if (!this.util.isNullOrWhitespace(e.target.value))
       dataFormatada = this.util.formatarDataBlur(e.target.value);
-      
+
     if (e.target.id == "dataNascimento") {
       this.paciente.dataNascimento = this.util.stringParaData(dataFormatada);
       this.dataNasci = dataFormatada;

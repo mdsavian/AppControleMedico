@@ -1,4 +1,8 @@
-<div class="row">
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+<div class="row" *ngIf=!isSpinnerVisible>
   <div class="col-12">
     <div class="card">
       <div class="card-body">
@@ -201,7 +205,7 @@
                       <input class="form-check-inline" [(ngModel)]="medico.ativo" checked name="ativo" id="ativo"
                         value="checked" type="checkbox">
                     </div>
-                    <div class="col-xs-4 col-md-2" *ngIf="!usuarioAdministrador">
+                    <div class="col-xs-4 col-md-2" *ngIf="usuarioAdministrador">
                       <label class="form-check-inline" for="Administrador">Administrador</label>
                       <input class="form-check-inline" [(ngModel)]="medico.administrador" name="administrador"
                         id="administrador" value="checked" type="checkbox">

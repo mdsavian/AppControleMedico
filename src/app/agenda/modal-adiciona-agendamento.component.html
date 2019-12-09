@@ -55,8 +55,8 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoProcedimento">Procedimento</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.procedimentoId" #tipoProcedimento="ngModel"
-                            id="tipoProcedimento" name="tipoProcedimento"
+                        <select class="form-control" [(ngModel)]="agendamento.procedimentoId"
+                            #tipoProcedimento="ngModel" id="tipoProcedimento" name="tipoProcedimento"
                             [required]="tipoAgendamento.value=='Procedimento'">
                             <option *ngFor="let procedimento of procedimentos" [ngValue]="procedimento.id">
                                 {{procedimento.descricao}}
@@ -81,8 +81,8 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoExame">Exame</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.exameId" #tipoExame="ngModel" id="tipoExame"
-                            name="tipoExame" [required]="tipoAgendamento.value=='Exame'">
+                        <select class="form-control" [(ngModel)]="agendamento.exameId" #tipoExame="ngModel"
+                            id="tipoExame" name="tipoExame" [required]="tipoAgendamento.value=='Exame'">
                             <option *ngFor="let exame of exames" [ngValue]="exame.id">
                                 {{exame.descricao}}
                             </option>
@@ -127,8 +127,8 @@
                 <div class="form-group">
                     <label class="control-label" for="tipoLocal">Local Cirurgia</label>
                     <div class="input-group">
-                        <select class="form-control" [(ngModel)]="agendamento.localId" #tipoLocal="ngModel" id="tipoLocal"
-                            name="tipoLocal" [required]="tipoAgendamento.value=='Cirurgia'">
+                        <select class="form-control" [(ngModel)]="agendamento.localId" #tipoLocal="ngModel"
+                            id="tipoLocal" name="tipoLocal" [required]="tipoAgendamento.value=='Cirurgia'">
                             <option *ngFor="let local of locais" [ngValue]="local.id">
                                 {{local.descricao}}
                             </option>
@@ -237,9 +237,8 @@
     </div>
 
     <div class="modal-footer" [hidden]=isSpinnerVisible>
-        <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
-        <ng-template #tipInvalidos>Verifique os campos inválidos</ng-template>
         <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
             [disabled]="(!adicionaAgendamento.form.valid || falhaNaBusca)" type="submit">Salvar</button>
+        <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
     </div>
 </form>

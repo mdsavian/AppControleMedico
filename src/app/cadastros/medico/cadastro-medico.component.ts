@@ -1,9 +1,8 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Estados } from "../../enums/estados";
 import { Medico } from '../../modelos/medico';
 import { MedicoService } from '../../services/medico.service';
-
 import { Router } from '@angular/router';
 import { ConvenioService } from '../../services/convenio.service';
 import { ClinicaService } from '../../services/clinica.service';
@@ -22,7 +21,6 @@ import { LocalDataSource } from 'ng2-smart-table';
 import * as tableDataGestantes from './listagem-paciente-gestante-settings';
 import * as tableDataConvenio from './listagem-convenio-medico-settings';
 import * as tableDataClinica from './listagem-clinica-medico-settings';
-import { ConfiguracaoAgenda } from '../../modelos/configuracaoAgenda';
 import { ModalAlteraSenhaComponent } from '../../shared/modal/modal-altera-senha.component';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
 import { UsuarioService } from '../../services/usuario.service';
@@ -40,9 +38,8 @@ import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-
   styleUrls: ['./cadastro-medico.component.scss', '../../cadastros/cadastros.scss']
 })
 
-export class CadastroMedicoComponent implements OnInit, AfterViewInit {
-
-  @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
+export class CadastroMedicoComponent implements OnInit {
+  
   @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
   @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
@@ -71,37 +68,45 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   clinicaModel: Clinica;
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   imagemMedico: any;
+  isSpinnerVisible = false;
 
   constructor(private appService: AppService, private agendamentoService: AgendamentoService, private uploadService: UploadService, private loginService: LoginService, private usuarioService: UsuarioService, private medicoService: MedicoService, private especialidadeService: EspecialidadeService, private enderecoService: EnderecoService, private clinicaService: ClinicaService,
     private convenioService: ConvenioService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
 
   public ngOnInit(): void {
-
-    this.usuario = this.appService.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.util.retornarUsuarioAdministradorSistema(this.usuario);
-
-    if (this.medicoService.medico != null) {
-      this.medico = this.medicoService.medico;
-      this.data = this.util.dataParaString(this.medico.dataNascimento);
-
-      this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
-
-      if (!this.util.isNullOrWhitespace(this.medico.fotoId))
-        this.downloadFoto();
-
-      this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).subscribe(gestantes => {
-        this.pacientesGestantes = gestantes;
-        this.sourceGestante = new LocalDataSource(this.pacientesGestantes);
-      });
-    }
-
-    this.alimentarModelos();
+    this.isSpinnerVisible = true;
+    this.alimentarModelos().subscribe(c => { this.isSpinnerVisible = false; });
   }
 
   private alimentarModelos() {
 
-    this.convenioService.Todos().subscribe(dados => {
+    this.usuario = this.appService.retornarUsuarioCorrente();
+    this.usuarioAdministrador = this.util.retornarUsuarioAdministradorSistema(this.usuario);
+
+
+    let observableBatch = [];
+
+    if (this.medicoService.medico != null) {
+      this.medico = this.medicoService.medico;
+      this.data = this.util.dataParaString(this.medico.dataNascimento);
+      this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
+
+      if (!this.util.isNullOrWhitespace(this.medico.fotoId)) {
+        let reqFoto = this.uploadService.downloadImagem(this.medicoService.medico.id, "medico").map(byte => {
+          this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+        });
+        observableBatch.push(reqFoto);
+      }
+
+      let reqGestantes = this.pacienteService.TodosGestantesFiltrandoMedico(this.medico.id).map(gestantes => {
+        this.pacientesGestantes = gestantes;
+        this.sourceGestante = new LocalDataSource(this.pacientesGestantes);
+      });
+      observableBatch.push(reqGestantes);
+    }
+
+    let reqConvenio = this.convenioService.Todos().map(dados => {
 
       if (this.medico != null && this.util.hasItems(this.medico.conveniosId)) {
         if (this.medico.convenios == null)
@@ -127,7 +132,9 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
         this.convenioModel = this.convenios.find(c => true);
     });
 
-    this.clinicaService.Todos().subscribe(dados => {
+    observableBatch.push(reqConvenio);
+
+    let reqClinica = this.clinicaService.Todos().map(dados => {
 
       if (this.medico != null && this.util.hasItems(this.medico.clinicasId)) {
         if (this.medico.clinicas == null)
@@ -152,7 +159,9 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
         this.clinicaModel = this.clinicas.find(c => true);
     });
 
-    this.especialidadeService.Todos().subscribe(c => {
+    observableBatch.push(reqClinica);
+
+    let reqEspecialidade = this.especialidadeService.Todos().map(c => {
       this.especialidades = c;
 
       this.nomeEspecialidades = new Array<string>();
@@ -165,6 +174,13 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
         this.especialidadeSelecionada = this.nomeEspecialidades.find(c => c === this.medico.especialidade.descricao);
       }
     });
+
+    observableBatch.push(reqEspecialidade);
+
+
+
+
+    return Observable.forkJoin(observableBatch);
   }
 
   public formataData(e): void {
@@ -261,10 +277,8 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     if (this.medico.convenios.find(c => c.id == convenioId) == null)
       return;
 
-
-    this.agendamentoService.buscarAgendamentosConvenio(convenioId).subscribe(agendamentos => {
-
-      if (this.util.hasItems(agendamentos)) {
+    this.medicoService.validarDeleteConvenioMedico(this.medico.id, convenioId).subscribe(retorno => {
+      if (retorno) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir convênio vínculado a agendamento(s).";
       }
@@ -297,7 +311,6 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   alterarSenhaMedico() {
 
     if (this.permiteAlterarSenha) {
@@ -325,13 +338,11 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  public ngAfterViewInit(): void {
-    this.nomeCompleto.nativeElement.focus();
-  }
-
   editarPaciente(event) {
-    this.router.navigate(['/cadastros/cadastropaciente', { id: event.data.id }]);
+    this.pacienteService.buscarPorId(event.data.id).subscribe(paciente => {
+      this.pacienteService.paciente = paciente;
+      this.router.navigate(['/cadastros/cadastropaciente']);
+    });
   }
 
   ExibeAbaEspecialidade(especialidade: string): boolean {
@@ -403,9 +414,7 @@ export class CadastroMedicoComponent implements OnInit, AfterViewInit {
   }
 
   public downloadFoto() {
-    this.uploadService.downloadImagem(this.medicoService.medico.id, "medico").subscribe(byte => {
-      this.imageUrl = "data:image/jpeg;base64," + byte['value'];
-    });
+
   }
 
 

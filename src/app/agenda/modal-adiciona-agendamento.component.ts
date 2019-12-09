@@ -136,16 +136,11 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento.medicoId = this.medico.id;
       this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;      
       this.agendamento.funcionarioId = this.appService.retornarUsuarioCorrente().funcionarioId;
-      this.agendamento.dataAgendamento = new Date();
+      this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);            
     }
 
     this.tituloTela += this.medico.nomeCompleto;
 
-  }
-
-  selecionaMedico()
-  {
-    
   }
 
   salvar() {    
@@ -180,7 +175,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     if (!retorno) {
       this.agendamento = this.agendamentoService.tratarCorAgendamento(this.agendamento, this.exames, this.cirurgias, this.procedimentos);
-      this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => { this.activeModal.close(novoAgendamento) });
+      this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => {
+       this.activeModal.close(novoAgendamento) });
     }
   }
 
