@@ -84,7 +84,6 @@ export class CadastroMedicoComponent implements OnInit {
     this.usuario = this.appService.retornarUsuarioCorrente();
     this.usuarioAdministrador = this.util.retornarUsuarioAdministradorSistema(this.usuario);
 
-
     let observableBatch = [];
 
     if (this.medicoService.medico != null) {

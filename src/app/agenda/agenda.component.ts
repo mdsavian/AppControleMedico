@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
-import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
+import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { addMinutes, endOfWeek } from 'date-fns';
 import { fromEvent, Observable } from 'rxjs';
@@ -21,7 +21,6 @@ import { AgendamentoService } from '../services/agendamento.service';
 import { ValidadorAgendamento } from './validadorAgendamento';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
-import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda';
 import { Funcionario } from '../modelos/funcionario';
 import { FuncionarioService } from '../services/funcionario.service';
 import { CaixaService } from '../services/caixa.service';
@@ -57,7 +56,7 @@ export class AgendaComponent implements OnInit {
   eventosBanco: Array<Agendamento>;
   validadorAgendamento = new ValidadorAgendamento();
   CalendarView = CalendarView;
-  view: CalendarView = CalendarView.Day;
+  view: CalendarView = CalendarView.Week;
   dragToCreateActive = false;
   activeDayIsOpen = true;
   mensagemCaixaAberto = "";
@@ -65,7 +64,7 @@ export class AgendaComponent implements OnInit {
   util = new Util();
   medico: Medico;
   funcionario: Funcionario;
-  medicos: Medico[] = [];
+  medicos: Medico[] = new Array<Medico>();
   visualizaBotoesAberturaFechamentoCaixa = false;
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
@@ -109,59 +108,95 @@ export class AgendaComponent implements OnInit {
     let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario(usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
-      this.medicos = dados;
 
-      // if (this.medicos.length > 1) {
-      //   let medicoTodos = new Medico();
-      //   medicoTodos.nomeCompleto = "Todos";
-      //   medicoTodos.id = "";
-      //   this.medicos.push(medicoTodos);
+      if (dados.length > 1) {
 
-      //   if (this.medico == null)
-      //     this.medico = this.medicos.find(c => c == medicoTodos);
-      //   else
-      //     this.medico = this.medicos.find(c => c.id == this.medico.id);
-      // }
-      // else
-      this.medico = this.medicos.find(c => true);
+        let medicoTodos = new Medico();
+        medicoTodos.nomeCompleto = "Todos";
+        medicoTodos.id = "";
+        this.medicos.push(medicoTodos);
+
+        //adiciona depois para o Todos ficar encima
+        this.medicos = this.medicos.concat(dados);
+
+        this.medico = this.medicos.find(c => c == medicoTodos);
+      }
+      else {
+        this.medicos = dados;
+        this.medico = this.medicos.find(c => true);
+      }
+
+      //quando usuário for um médico traz ele selecionado primeiro
+      if (!this.util.isNullOrWhitespace(usuario.medicoId))
+          this.medico = this.medicos.find(c=> c.id == usuario.medicoId);
 
     });
 
     return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
   }
 
+  tratarMedicosParaBuscaAgendamento() {
+    var medicosABuscar = "";
+
+    if (this.selecionadoTodosMedicos()) {
+      this.medicos.filter(c => c.nomeCompleto != "Todos").forEach(medico => {
+        medicosABuscar = medicosABuscar + medico.id + ",";
+      });
+    }
+    else
+      medicosABuscar = this.medico.id;
+
+    return medicosABuscar;
+  }
+
+
   buscarInformacoesMedico() {
     if (this.medico != null) {
 
-      //busca convenios do medico
-      let reqConvenios = this.convenioService.TodosFiltrandoMedico(this.medico.id).map(dados => { this.convenios = dados; });
-      let reqConfiguracao = new Observable;
+      let observableBatch = [];
 
-      let reqAgendamentos = this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
+      //busca convenios do medico
+      let reqConvenios = this.selecionadoTodosMedicos() ? this.convenioService.Todos().map(dados => { this.convenios = dados; })
+        : this.convenioService.TodosFiltrandoMedico(this.medico.id).map(dados => { this.convenios = dados; });
+      observableBatch.push(reqConvenios);
+
+      let medicosABuscar = this.tratarMedicosParaBuscaAgendamento();
+
+      let reqAgendamentos = this.agendamentoService.buscarAgendamentosMedico(medicosABuscar, this.util.dataParaString(this.viewDate), this.view.valueOf())
         .map(dados => {
           this.eventos = [];
-          this.eventosBanco = new Array<Agendamento>();          
-          this.converteEAdicionaAgendamentoEvento(dados);
-        });     
+          this.eventosBanco = new Array<Agendamento>();
+          if (this.util.hasItems(dados))
+            this.converteEAdicionaAgendamentoEvento(dados);
+        });
+
+      observableBatch.push(reqAgendamentos);
 
       //Busca configuração do médico
-      if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
-        reqConfiguracao = this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).map(config => {
-          this.medico.configuracaoAgenda = config;
-          this.ajustarParametrosCalendario();
-        });
-      }
-      else {
-        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado";
-        this.configuracaoMinutos = 3;
-        this.diasExcluidos = [];
-        this.horaInicialCalendario = "07";
-        this.horaFinalCalendario = "18";
+      if (!this.selecionadoTodosMedicos()) {
+        if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
+          let reqConfiguracao = this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).map(config => {
+            this.medico.configuracaoAgenda = config;
+            this.ajustarParametrosCalendario();
+          });
+          observableBatch.push(reqConfiguracao);
+        }
+        else {
+          var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+          modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado";
+          this.configuracaoMinutos = 3;
+          this.diasExcluidos = [];
+          this.horaInicialCalendario = "07";
+          this.horaFinalCalendario = "18";
+        }
       }
 
-      return Observable.forkJoin([reqConvenios, reqConfiguracao, reqAgendamentos]);
+      return Observable.forkJoin(observableBatch);
     }
+  }
+
+  selecionadoTodosMedicos() {
+    return this.medico.nomeCompleto == "Todos";
   }
 
   trocaMedico() {
@@ -573,7 +608,6 @@ export class AgendaComponent implements OnInit {
         }
       });
     }
-
   }
 
   trocarData() {
@@ -581,7 +615,9 @@ export class AgendaComponent implements OnInit {
     if (this.view == CalendarView.Day) //quando for dia tem de ajustar os horários permitido do dia
       this.ajustarParametrosCalendario();
 
-    this.agendamentoService.buscarAgendamentosMedico(this.medico.id, this.util.dataParaString(this.viewDate), this.view.valueOf())
+    let medicosABuscar = this.tratarMedicosParaBuscaAgendamento();
+
+    this.agendamentoService.buscarAgendamentosMedico(medicosABuscar, this.util.dataParaString(this.viewDate), this.view.valueOf())
       .subscribe(dados => {
         this.eventos = [];
         this.eventosBanco = new Array<Agendamento>();
@@ -607,7 +643,7 @@ export class AgendaComponent implements OnInit {
   }
 
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
-    lista.forEach(agendamento => {      
+    lista.forEach(agendamento => {
       var dataHoraInicial = this.util.concatenaDataHora(this.util.dataParaString(agendamento.dataAgendamento), agendamento.horaInicial);
 
       var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
@@ -652,7 +688,7 @@ export class AgendaComponent implements OnInit {
     modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
     modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
 
-    if (agendamento != null) {      
+    if (agendamento != null) {
       modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
     }
 
@@ -661,7 +697,7 @@ export class AgendaComponent implements OnInit {
     }
 
     modalAdicionaAgendamento.result.then((agendamentoResult: Agendamento) => {
-      if (agendamentoResult != null) {        
+      if (agendamentoResult != null) {
         this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoResult));
       }
       this.refreshPage();
@@ -698,12 +734,20 @@ export class AgendaComponent implements OnInit {
     var mensagem = "";
 
     if (!this.util.isNullOrWhitespace(agendamento.pacienteId)) {
+
+      var mensagem = "";
+
       var paciente = this.pacientes.find(c => c.id == agendamento.pacienteId);
       var convenio = this.convenios.find(c => c.id == agendamento.convenioId);
 
       var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos).toUpperCase();
 
-      var mensagem = operacao + " - ";
+      if (this.selecionadoTodosMedicos()) {
+        var medico = this.medicos.find(c => c.id == agendamento.medicoId);
+        mensagem = medico.nomeCompleto.split(' ')[0].toUpperCase() + " - ";
+      }
+
+      mensagem = mensagem + operacao + " - ";
 
       if (paciente != null)
         mensagem = mensagem + paciente.nomeCompleto.split(' ')[0] + " - ";
