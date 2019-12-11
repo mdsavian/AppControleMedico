@@ -268,13 +268,15 @@ export class DashboardAnaliticoComponent implements OnInit {
     }
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario(this.usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
-      this.medicos = dados;
+      
 
-      if (this.medicos.length > 1) {
+      if (dados.length > 1) {
         let medicoTodos = new Medico();
         medicoTodos.nomeCompleto = "Todos";
         medicoTodos.id = "";
         this.medicos.push(medicoTodos);
+
+        this.medicos = this.medicos.concat(dados);
 
         if (this.medico == null)
           this.medico = this.medicos.find(c => c == medicoTodos);
@@ -283,6 +285,10 @@ export class DashboardAnaliticoComponent implements OnInit {
       }
       else
         this.medico = this.medicos.find(c => true);
+
+      //quando usuário for um médico traz ele selecionado primeiro
+      if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
+          this.medico = this.medicos.find(c=> c.id == this.usuario.medicoId);
 
     });
 

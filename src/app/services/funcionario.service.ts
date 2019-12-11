@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Funcionario } from '../modelos/funcionario'
 import { environment } from '../../environments/environment';
 import{Util} from '../uteis/Util';
@@ -43,6 +43,11 @@ export class FuncionarioService {
     return this.http.get<Array<Funcionario>>(this.accessPointUrl + "buscarPorOficio/" + oficioId);
   }
 
+  validarDeleteMedicoFuncionario(funcionarioId:string, medicoId:string)
+  {
+    let parametros = new HttpParams().set("funcionarioId", funcionarioId).set("medicoId", medicoId);  
+    return this.http.get<boolean>(this.accessPointUrl + "validarDeleteMedicoFuncionario?" + parametros);
+  }
 
   PermitirVisualizarAgenda(funcionario:Funcionario):boolean
   {

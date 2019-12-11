@@ -4,7 +4,7 @@ import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { addMinutes, endOfWeek } from 'date-fns';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, forkJoin } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AppService } from '../services/app.service';
@@ -132,7 +132,7 @@ export class AgendaComponent implements OnInit {
 
     });
 
-    return Observable.forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
+    return forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
   }
 
   tratarMedicosParaBuscaAgendamento() {
@@ -191,7 +191,7 @@ export class AgendaComponent implements OnInit {
         }
       }
 
-      return Observable.forkJoin(observableBatch);
+      return forkJoin(observableBatch);
     }
   }
 

@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Funcionario } from "../../modelos/funcionario";
 import { Estados } from "../../enums/estados";
@@ -31,14 +31,13 @@ import { UploadService } from '../../services/upload.service';
   templateUrl: './cadastro-funcionario.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
 })
-export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
+export class CadastroFuncionarioComponent implements OnInit {
 
-  @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
   @ViewChild('numero', { read: ElementRef, static: false }) private numero: ElementRef;
   @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
   funcionario = new Funcionario();
-
+  isSpinnerVisible = false;
   settingsClinica = tableDataClinica.settingsClinica;
   usuarioAdministrador = false;
   oficios = new Array<Oficio>();
@@ -66,13 +65,11 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     private oficioService: OficioService, private route: ActivatedRoute, private modalService: NgbModal) {
   }
 
-  public ngAfterViewInit(): void {
-    this.nomeCompleto.nativeElement.focus();
-  }
-
   public ngOnInit(): void {
     this.usuario = this.appService.retornarUsuarioCorrente();
     this.usuarioAdministrador = this.util.retornaUsuarioAdmOuMedico(this.usuario);
+
+    this.isSpinnerVisible = true;
 
     if (this.funcionarioService.funcionario != null) {
 
@@ -82,23 +79,34 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
       this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
       this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
-
-      if (!this.util.isNullOrWhitespace(this.funcionario.fotoId))
-        this.downloadFoto();
     }
-    this.alimentarModelos();
+    this.alimentarModelos().subscribe(c => {
+      this.isSpinnerVisible = false;
+    });
   }
 
   deletarMedico(event) {
-    var medico = this.funcionario.medicos.find(c => c.id == event.data.id);
-    this.funcionario.medicos.splice(this.funcionario.medicos.indexOf(medico), 1);
 
-    this.medicos.push(medico);
+    this.funcionarioService.validarDeleteMedicoFuncionario(this.funcionario.id, event.data.id).subscribe(retorno => {
+      if (retorno) {
+        var medico = this.funcionario.medicos.find(c => c.id == event.data.id);
+        this.funcionario.medicos.splice(this.funcionario.medicos.indexOf(medico), 1);
 
-    this.funcionario.medicosId.splice(this.funcionario.medicosId.indexOf(event.data.id), 1);
+        this.medicos.push(medico);
 
-    this.funcionarioService.salvar(this.funcionario).subscribe(c => { });
-    this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
+        this.funcionario.medicosId.splice(this.funcionario.medicosId.indexOf(event.data.id), 1);
+
+        this.funcionarioService.salvar(this.funcionario).subscribe(c => { this.funcionario = c; });
+
+        this.sourceMedico = new LocalDataSource(this.funcionario.medicos);
+
+        this.medicoModel = this.medicos.find(c => true);
+      }
+      else {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Existe(m) agendamento(s) vínculado ao médico e funcionário.";
+      }
+    });
 
   }
 
@@ -127,7 +135,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         });
     }
   }
-
 
   associarMedicoFuncionario() {
     if (this.medicoModel == null)
@@ -186,7 +193,17 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
   }
 
   alimentarModelos() {
-    this.oficioService.Todos().subscribe(oficioBanco => {
+
+    let observableBatch = [];
+
+    if (!this.util.isNullOrWhitespace(this.funcionario.fotoId)) {
+      var reqFoto = this.uploadService.downloadImagem(this.funcionarioService.funcionario.id, "funcionario").map(byte => {
+        this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+      });
+      observableBatch.push(reqFoto);
+    }
+
+    var reqOficio = this.oficioService.Todos().map(oficioBanco => {
       this.oficios = oficioBanco;
       this.nomeOficios = new Array<string>();
 
@@ -199,7 +216,9 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       });
     });
 
-    this.medicoService.todos().subscribe(dados => {
+    observableBatch.push(reqOficio);
+
+    var reqMedico = this.medicoService.todos(true).map(dados => {
 
       if (this.funcionario != null && this.util.hasItems(this.funcionario.medicosId)) {
         if (this.funcionario.medicos == null)
@@ -224,8 +243,9 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         this.medicoModel = this.medicos.find(c => true);
     });
 
+    observableBatch.push(reqMedico);
 
-    this.clinicaService.Todos().subscribe(dados => {
+    var reqClinica = this.clinicaService.Todos().map(dados => {
 
       if (this.funcionario != null && this.util.hasItems(this.funcionario.clinicasId)) {
         if (this.funcionario.clinicas == null)
@@ -249,6 +269,11 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       if (this.util.hasItems(this.clinicas))
         this.clinicaModel = this.clinicas.find(c => true);
     });
+
+    observableBatch.push(reqClinica);
+
+    return forkJoin(observableBatch);
+
   }
 
   search = (text$: Observable<string>) =>
@@ -358,12 +383,6 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public downloadFoto() {
-    this.uploadService.downloadImagem(this.funcionarioService.funcionario.id, "funcionario").subscribe(byte => {
-      this.imageUrl = "data:image/jpeg;base64," + byte['value'];
-    });
-  }
-
   public salvar(): void {
     this.funcionarioService.funcionario = null;
     this.funcionarioService.salvar(this.funcionario).subscribe(
@@ -392,9 +411,10 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
         title: 'Nome',
         filter: true
       },
-      especialida: {
+      especialidade: {
         title: 'Especialidade',
-        filter: true
+        filter: true,
+        valuePrepareFunction: (especialidade) => { return especialidade === null ? "" : especialidade.descricao }
       }
     },
     actions:
@@ -402,7 +422,7 @@ export class CadastroFuncionarioComponent implements OnInit, AfterViewInit {
       columnTitle: '',
       add: false,
       edit: false,
-      delete: this.usuarioAdministrador
+      delete: this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente())
     },
     delete: {
       deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',

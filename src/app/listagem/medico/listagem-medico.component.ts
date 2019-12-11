@@ -35,12 +35,11 @@ export class ListagemMedicoComponent implements OnInit {
   }
 
   constructor(private appService: AppService, private usuarioService: UsuarioService, private agendamentoService: AgendamentoService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
-    this.isSpinnerVisible = true;
-    
+    this.isSpinnerVisible = true;    
   }
 
   buscaMedicos(): void {
-    this.medicoService.todos().subscribe(dados => {
+    this.medicoService.todos(true).subscribe(dados => {
       this.listaMedicos = dados;
       this.source = new LocalDataSource(this.listaMedicos);
       this.isSpinnerVisible = false;
@@ -91,6 +90,11 @@ export class ListagemMedicoComponent implements OnInit {
       email: {
         title: 'Email',
         filter: false
+      },
+      especialidade: {
+        title: 'Especialidade',
+        filter: true,
+        valuePrepareFunction: (especialidade) => { return especialidade === null ? "" : especialidade.descricao }
       },
       celular: {
         title: 'Celular',

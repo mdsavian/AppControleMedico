@@ -13,7 +13,7 @@ import { EnderecoService } from '../../services/endereco.service';
 import { Usuario } from '../../modelos/usuario';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { EspecialidadeService } from '../../services/especialidade.service';
 import { Paciente } from '../../modelos/paciente';
 import { PacienteService } from '../../services/paciente.service';
@@ -156,7 +156,7 @@ export class CadastroMedicoComponent implements OnInit {
 
       if (this.util.hasItems(this.clinicas))
         this.clinicaModel = this.clinicas.find(c => true);
-    });
+    });    
 
     observableBatch.push(reqClinica);
 
@@ -176,10 +176,7 @@ export class CadastroMedicoComponent implements OnInit {
 
     observableBatch.push(reqEspecialidade);
 
-
-
-
-    return Observable.forkJoin(observableBatch);
+    return forkJoin(observableBatch);
   }
 
   public formataData(e): void {

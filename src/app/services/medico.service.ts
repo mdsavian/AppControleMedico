@@ -38,15 +38,15 @@ export class MedicoService {
   buscarMedicosPorUsuario(usuarioId: string, clinicaId: string, carregarEspecialidade:boolean = false) {
     let parametros = new HttpParams().set("usuarioId", usuarioId).set("clinicaId", clinicaId).set("carregarEspecialidade",carregarEspecialidade.toString());    
     return this.http.get<Medico[]>(this.accessPointUrl + "buscarMedicosPorUsuario?" + parametros); 
-
   }
 
   buscarMedicoConvenio(convenioId: string) {    
     return this.http.get<Array<Medico>>(this.accessPointUrl + "buscarMedicoConvenio/"+ convenioId);
   }
 
-  public todos() {
-    return this.http.get<Array<Medico>>(this.accessPointUrl);
+  public todos(carregarEspecialidade:boolean = false) {
+    let parametros = new HttpParams().set("carregarEspecialidade",carregarEspecialidade.toString());    
+    return this.http.get<Array<Medico>>(this.accessPointUrl + "todos?" + parametros);
   }
 
   public Excluir(medicoId) {
