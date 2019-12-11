@@ -128,7 +128,7 @@ export class AgendaComponent implements OnInit {
 
       //quando usuário for um médico traz ele selecionado primeiro
       if (!this.util.isNullOrWhitespace(usuario.medicoId))
-          this.medico = this.medicos.find(c=> c.id == usuario.medicoId);
+        this.medico = this.medicos.find(c => c.id == usuario.medicoId);
 
     });
 
@@ -175,7 +175,7 @@ export class AgendaComponent implements OnInit {
       //Busca configuração do médico
       if (!this.selecionadoTodosMedicos()) {
         if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
-          let reqConfiguracao = this.medicoService.buscarConfiguracaoAgendaMedico(this.medico.configuracaoAgendaId).map(config => {
+          let reqConfiguracao = this.medicoService.buscarConfiguracaoAgenda(this.medico.configuracaoAgendaId).map(config => {
             this.medico.configuracaoAgenda = config;
             this.ajustarParametrosCalendario();
           });
@@ -638,8 +638,10 @@ export class AgendaComponent implements OnInit {
   }
 
   configurarAgendaMedico() {
-    this.medicoService.medico = this.medico;
-    this.router.navigate(['/cadastros/configuracaoagenda']);
+    if (!this.selecionadoTodosMedicos()) {
+      this.medicoService.medico = this.medico;
+      this.router.navigate(['/cadastros/configuracaoagenda']);
+    }
   }
 
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {

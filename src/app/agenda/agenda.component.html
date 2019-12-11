@@ -14,7 +14,6 @@
           <div class="row col-xs-12 col-md-12">
             <div class="form-group">
               <label class="control-label" for="medicoSelect">Médico</label>
-
               <select class="form-control" [(ngModel)]="medico" id="medicoSelect" name="medicoSelect"
                 #medicoSelect="ngModel" (change)="trocaMedico()">
                 <option *ngFor="let med of medicos" [ngValue]="med">

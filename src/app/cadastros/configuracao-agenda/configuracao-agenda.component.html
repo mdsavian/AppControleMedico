@@ -1,4 +1,8 @@
-<div class="row">
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+<div class="row" *ngIf=!isSpinnerVisible>
   <div class="col-12">
     <div class="card">
       <div class="card-body">
@@ -7,15 +11,15 @@
             <div class="row">
               <div class="col-xs-6 col-md-3">
                 <div class="form-group">
-                  <label class="control-label" for="medicoSelecionado">Médico</label>
-                  <input id="medicoSelecionado" name="medicoSelecionado" type="text"
-                    (selectItem)="selecionaMedico($event)" required placeholder="Digite o nome do médico"
-                    [ngbTypeahead]="buscaMedico" class="form-control" #medico="ngModel"
-                    [(ngModel)]="medicoSelecionado" />
-                  <div *ngIf="(falhaNaBusca || medico.invalid)" class="alert alert-danger">
-                    <div *ngIf="falhaNaBusca">Não foi possível encontrar um médico com este nome.
-                    </div>
-                    <div *ngIf="medico.errors?.required">Medico obrigatório.</div>
+                  <label class="control-label" for="medicoSelect">Médico</label>
+                  <select class="form-control" [(ngModel)]="medico" id="medicoSelect" name="medicoSelect"
+                    #medicoSelect="ngModel" (change)="trocaMedico()">
+                    <option *ngFor="let med of medicos" [ngValue]="med">
+                      {{med.nomeCompleto}}
+                    </option>
+                  </select>
+                  <div *ngIf="medicoSelect.invalid" class="alert alert-danger">
+                    <div *ngIf="medicoSelect.errors?.required">Medico obrigatório.</div>
                   </div>
                 </div>
               </div>
@@ -50,7 +54,8 @@
                       <div class="row">
                         <div class="col-xs-3 col-md-4">
                           <div class="form-group">
-                            <input checked="checked" (change)="marcaTodos($event)" checked id="checkTodos" name="checkTodos"  type="checkbox">
+                            <input checked="checked" (change)="marcaTodos($event)" checked id="checkTodos"
+                              name="checkTodos" type="checkbox">
                           </div>
                         </div>
                       </div>

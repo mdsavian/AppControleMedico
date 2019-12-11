@@ -57,7 +57,7 @@ export class MedicoService {
     return this.http.post<Medico>(this.accessPointUrl + "salvarConfiguracaoAgendaMedico/", medico);
   }
 
-  buscarConfiguracaoAgendaMedico(configuracaoAgendaId: string) {
-    return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarConfiguracaoAgendaMedico/"+ configuracaoAgendaId);
+  buscarConfiguracaoAgenda(configuracaoAgendaId: string) {
+    return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarConfiguracaoAgenda/"+ configuracaoAgendaId);
   }
 }
