@@ -9,6 +9,22 @@
         <form (ngSubmit)="onSubmit()" #configuracaoAgendaForm="ngForm">
           <div id="tab" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
             <div class="row">
+
+              <div class="col-xs-6 col-md-3">
+                <div class="form-group">
+                  <label class="control-label" for="clinicaSelect">Clínica</label>
+                  <select class="form-control" [(ngModel)]="clinica" id="clinicaSelect" name="clinicaSelect"
+                    #clinicaSelect="ngModel" (change)="trocaMedico()">
+                    <option *ngFor="let cli of clinicas" [ngValue]="cli">
+                      {{cli.razaoSocial}}
+                    </option>
+                  </select>
+                  <div *ngIf="clinicaSelect.invalid" class="alert alert-danger">
+                    <div *ngIf="clinicaSelect.errors?.required">Clínica obrigatória.</div>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-xs-6 col-md-3">
                 <div class="form-group">
                   <label class="control-label" for="medicoSelect">Médico</label>

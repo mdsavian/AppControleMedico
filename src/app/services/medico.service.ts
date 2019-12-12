@@ -52,12 +52,4 @@ export class MedicoService {
   public Excluir(medicoId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + medicoId);
   }
-
-  salvarConfiguracaoAgendaMedico(medico: Medico) {
-    return this.http.post<Medico>(this.accessPointUrl + "salvarConfiguracaoAgendaMedico/", medico);
-  }
-
-  buscarConfiguracaoAgenda(configuracaoAgendaId: string) {
-    return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarConfiguracaoAgenda/"+ configuracaoAgendaId);
-  }
 }

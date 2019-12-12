@@ -39,6 +39,7 @@ import { Exame } from '../modelos/exame';
 import { Procedimento } from '../modelos/procedimento';
 import { Local } from '../modelos/local';
 import { ConfiguracaoAgendaService } from '../services/configuracaoAgenda.service';
+import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush, //com esta propriedade ativa a cada mudança deve ser chamado o refresh page manualmente
@@ -174,21 +175,27 @@ export class AgendaComponent implements OnInit {
 
       //Busca configuração do médico
       if (!this.selecionadoTodosMedicos()) {
-        if (!this.util.isNullOrWhitespace(this.medico.configuracaoAgendaId)) {
-          let reqConfiguracao = this.medicoService.buscarConfiguracaoAgenda(this.medico.configuracaoAgendaId).map(config => {
+
+        let reqConfiguracao = this.configuracaoAgendaService.buscarConfiguracaoAgenda(this.medico.id, this.appService.retornarClinicaCorrente().id).map(config => {
+          if (config == null) {
+            var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+            modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado";
+            this.configuracaoMinutos = 3;
+            this.diasExcluidos = [];
+            this.horaInicialCalendario = "08";
+            this.horaFinalCalendario = "18";
+          }
+          else {
             this.medico.configuracaoAgenda = config;
             this.ajustarParametrosCalendario();
-          });
-          observableBatch.push(reqConfiguracao);
-        }
-        else {
-          var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-          modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado";
-          this.configuracaoMinutos = 3;
-          this.diasExcluidos = [];
-          this.horaInicialCalendario = "07";
-          this.horaFinalCalendario = "18";
-        }
+          }
+        });
+        observableBatch.push(reqConfiguracao);
+      }
+      else
+      {
+        this.medico.configuracaoAgenda = new ConfiguracaoAgenda();
+        this.ajustarParametrosCalendario();
       }
 
       return forkJoin(observableBatch);
@@ -641,6 +648,10 @@ export class AgendaComponent implements OnInit {
     if (!this.selecionadoTodosMedicos()) {
       this.medicoService.medico = this.medico;
       this.router.navigate(['/cadastros/configuracaoagenda']);
+    }
+    else {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Selecione um médico para configurar a agenda.";
     }
   }
 

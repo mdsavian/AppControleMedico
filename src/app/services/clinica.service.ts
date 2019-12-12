@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Clinica } from '../modelos/clinica'
 import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,6 +32,11 @@ export class ClinicaService {
 
   public Excluir(clinicaId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + clinicaId);
+  }
+
+  public buscarPorUsuario(usuarioId:string)
+  {
+    return this.http.get<Array<Clinica>>(this.accessPointUrl + "buscarPorUsuario/" + usuarioId);
   }
 
 }

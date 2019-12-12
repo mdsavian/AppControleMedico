@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 import { environment } from '../../environments/environment';
 import { EConfiguracaoMinutosAgenda } from '../enums/EConfiguracaoMinutosAgenda';
@@ -13,10 +13,6 @@ export class ConfiguracaoAgendaService {
   listaConfiguracaoAgenda : Array<ConfiguracaoAgenda>;
   configuracaoAgenda:ConfiguracaoAgenda;
 
-  public buscarMedicosPorConfiguracaoAgenda(configuracaoAgendaId: string): any {
-    return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarMedicosPorConfiguracaoAgenda/" + configuracaoAgendaId);
-  }
-
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'configuracaoAgenda/';
 
@@ -25,6 +21,7 @@ export class ConfiguracaoAgendaService {
   }
 
   public salvar(configuracaoAgenda: ConfiguracaoAgenda) {
+    console.log(configuracaoAgenda);
     return this.http.post<ConfiguracaoAgenda>(this.accessPointUrl, configuracaoAgenda, { headers: this.headers }); 
   }
 
@@ -42,6 +39,11 @@ export class ConfiguracaoAgendaService {
 
   public Excluir(configuracaoAgendaId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + configuracaoAgendaId);
+  }
+
+  buscarConfiguracaoAgenda(medicoId: string, clinicaId:string) {
+    let parametros = new HttpParams().set("medicoId", medicoId).set("clinicaId", clinicaId);
+    return this.http.get<ConfiguracaoAgenda>(this.accessPointUrl + "buscarConfiguracaoAgenda?"+ parametros);
   }
 
   retornarMinutosConfiguracao(configuracaoMinutosAgenda:EConfiguracaoMinutosAgenda)
