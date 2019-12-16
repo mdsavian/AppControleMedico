@@ -21,7 +21,6 @@ export class ConfiguracaoAgendaService {
   }
 
   public salvar(configuracaoAgenda: ConfiguracaoAgenda) {
-    console.log(configuracaoAgenda);
     return this.http.post<ConfiguracaoAgenda>(this.accessPointUrl, configuracaoAgenda, { headers: this.headers }); 
   }
 

@@ -13,6 +13,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { WebcamModule } from 'ngx-webcam';
 
 
+
 @NgModule({
   imports: [CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
   declarations: [ModalWebcamComponent,ModalExcluirRegistroComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],

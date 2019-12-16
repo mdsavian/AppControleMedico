@@ -44,9 +44,7 @@ export class LoginService {
           this.usuarioCorrenteSubject.next(usuario);
           return usuario;
         }
-
         return null;
-
       }));
   }
 
@@ -70,7 +68,7 @@ export class LoginService {
   }
 
   public validaUsuario(usuario: Usuario) {
-    return this.http.post(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {
+    return this.http.post<Usuario>(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {
       return retorno;
     }));
   }

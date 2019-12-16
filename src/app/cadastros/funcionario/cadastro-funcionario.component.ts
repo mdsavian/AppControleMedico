@@ -67,19 +67,21 @@ export class CadastroFuncionarioComponent implements OnInit {
 
   public ngOnInit(): void {
     this.usuario = this.appService.retornarUsuarioCorrente();
-    this.usuarioAdministrador = this.util.retornaUsuarioAdmOuMedico(this.usuario);
+    this.usuarioEditandoFuncionario = this.usuarioAdministrador = this.util.retornaUsuarioAdmOuMedico(this.usuario);
 
     this.isSpinnerVisible = true;
 
     if (this.funcionarioService.funcionario != null) {
 
       this.funcionario = this.funcionarioService.funcionario;
-      this.usuarioEditandoFuncionario = this.usuario.funcionarioId == this.funcionario.id;
+      
+      this.usuarioEditandoFuncionario = this.usuario.funcionarioId == this.funcionario.id || this.usuarioAdministrador;
 
       this.dataNasci = this.util.dataParaString(this.funcionario.dataNascimento);
       this.dataAdmis = this.util.dataParaString(this.funcionario.dataAdmissao);
       this.dataDemis = this.util.dataParaString(this.funcionario.dataDemissao);
     }
+
     this.alimentarModelos().subscribe(c => {
       this.isSpinnerVisible = false;
     });

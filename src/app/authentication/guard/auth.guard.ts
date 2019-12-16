@@ -18,10 +18,7 @@ export class AuthGuard implements CanActivate {
 
         const usuarioCorrente = this.appService.retornarUsuarioCorrente();
         if (usuarioCorrente && this.ValidaUsuario(usuarioCorrente)) {
-            
-            if (this.validaPermissao(state.url, usuarioCorrente))
-                return true;
-            else return false;
+            return this.validaPermissao(state.url, usuarioCorrente);
         }
         else {
             // not logged in so redirect to login page with the return url
@@ -55,8 +52,8 @@ export class AuthGuard implements CanActivate {
     }
 
     ValidaUsuario(usuario: Usuario): boolean {
-        this.loginService.validaUsuario(usuario).subscribe(c => {
-            if (c == false) {
+        this.loginService.validaUsuario(usuario).subscribe(usuario => {
+            if (usuario.sessaoAtiva == false) {
                 this.loginService.logout();
                 this.router.navigate(['/authentication/login']);
             }

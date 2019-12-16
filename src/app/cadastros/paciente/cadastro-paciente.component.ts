@@ -104,9 +104,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   ExibeAbaEspecialidade(especialidade: string) {
-
-    console.log(this.medicos);
-
     if (this.util.hasItems(this.medicos)) {
 
       let achei = false;

@@ -25,10 +25,6 @@ export class UsuarioService {
     return this.http.get<Array<Usuario>>(this.accessPointUrl, { headers: this.headers });
   }
 
-  public BuscarUsuarioComModelos (usuarioId:string) {
-    return this.http.get<Usuario>(this.accessPointUrl  + "buscarUsuarioComModelos/"+ usuarioId);
-  }
-
   public add(usuario) {
     return this.http.post(this.accessPointUrl, usuario, { headers: this.headers });
   }

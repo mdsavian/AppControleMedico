@@ -29,8 +29,7 @@ export class ModalPagamentoComponent {
   saldo: number;
   dataPag = this.util.dataParaString(new Date());
 
-  ngOnInit() {
-    console.log(this.util.stringParaData(this.util.dataParaString(new Date())), this.util.dataParaString(new Date()));
+  ngOnInit() {    
     this.pagamento.dataPagamento = this.util.stringParaData(this.util.dataParaString(new Date()));
     this.pagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
     this.pagamento.vistaPrazo = EVistaPrazo["À Vista"];

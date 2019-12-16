@@ -66,7 +66,6 @@ export class AgendaComponent implements OnInit {
   medico: Medico;
   funcionario: Funcionario;
   medicos: Medico[] = new Array<Medico>();
-  visualizaBotoesAberturaFechamentoCaixa = false;
   configuracaoMinutos: number = 3;
   diasExcluidos: number[] = [];
   horaInicialCalendario = "07";
@@ -81,7 +80,7 @@ export class AgendaComponent implements OnInit {
   acoesPermitidas: Array<string> = [];
 
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
-    private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private funcionarioService: FuncionarioService, private medicoService: MedicoService, private router: Router,
+    private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
     private pacienteService: PacienteService, private convenioService: ConvenioService) {
   }

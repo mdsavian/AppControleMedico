@@ -10,7 +10,7 @@ export class Usuario extends Entidade {
     super();
 
     this.tipoUsuario = ETipoUsuario.Comum, this.login = "", this.senha = "", this.ultimoLogin = "", this.ativo = false, this.medicoId = "", this.funcionarioId = ""
-    this.funcionario = new Funcionario(), this.medico =null;
+    this.funcionario = new Funcionario(), this.medico =null, this.sessaoAtiva = true, this.senhaPadrao = false;
   }
 
 
@@ -21,7 +21,8 @@ export class Usuario extends Entidade {
   ativo: boolean;
   medicoId: string;
   funcionarioId: string;
-
+  sessaoAtiva:boolean;
+  senhaPadrao:boolean;
   funcionario: Funcionario;
   medico: Medico;
 }

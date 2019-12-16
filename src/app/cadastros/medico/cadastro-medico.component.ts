@@ -89,7 +89,7 @@ export class CadastroMedicoComponent implements OnInit {
     if (this.medicoService.medico != null) {
       this.medico = this.medicoService.medico;
       this.data = this.util.dataParaString(this.medico.dataNascimento);
-      this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id;
+      this.permiteAlterarSenha = this.usuario.medicoId == this.medico.id || this.usuarioAdministrador;
 
       if (!this.util.isNullOrWhitespace(this.medico.fotoId)) {
         let reqFoto = this.uploadService.downloadImagem(this.medicoService.medico.id, "medico").map(byte => {
