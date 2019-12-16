@@ -20,20 +20,20 @@ export class LoginComponent implements OnInit {
 
   constructor(public router: Router, private loginService: LoginService, private usuarioService: UsuarioService, private funcionarioService: FuncionarioService,
     private modalService: NgbModal, public appService: AppService) { }
+
   mensagemErro = "";
-
-  capsOn;
   util = new Util();
-  ngOnInit() {
-    this.loginService.logout();
-  }
-
   usuario = new Usuario();
 
+  ngOnInit() {
+    this.loginService.logout();
+  }  
+
   onLoggedin() {
+    console.log("OPAAA");
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       usuarioRetorno => {
-
+        
         if (usuarioRetorno == null) {
           var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";

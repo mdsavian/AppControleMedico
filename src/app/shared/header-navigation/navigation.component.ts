@@ -1,23 +1,32 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import {
-  NgbModal,
-  ModalDismissReasons,
-  NgbPanelChangeEvent,
-  NgbCarouselConfig
-} from '@ng-bootstrap/ng-bootstrap';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { LoginService } from '../../services/login.service';
 import { AppService } from '../../services/app.service';
+import {Util} from '../../uteis/Util';
+import { Usuario } from '../../modelos/usuario';
+
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html'
 })
-export class NavigationComponent implements AfterViewInit {
-  name: string;
-  clinicaDescricao = "tomaaa fdppp";
+export class NavigationComponent implements AfterViewInit, OnInit {
+
+  tituloDescricao = "Controle Médico";
+  util = new Util();
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal, private router: Router, private loginService : LoginService, private appService:AppService) {}  
+  constructor(private modalService: NgbModal, private router: Router, private loginService: LoginService, private appService: AppService) { }
+
+
+  ngOnInit(): void {
+    var clinica = this.appService.retornarClinicaCorrente();
+    var usuario = this.appService.retornarUsuarioCorrente();
+
+    var nomeUsuario = !this.util.isNullOrWhitespace(usuario.funcionarioId) ? usuario.funcionario.nomeCompleto : !this.util.isNullOrWhitespace(usuario.medicoId) ? usuario.medico.nomeCompleto : "Admin";
+
+    this.tituloDescricao = this.tituloDescricao + " - Bem vindo " + nomeUsuario.toUpperCase() + " - Clínica " + clinica.razaoSocial.toUpperCase();
+  }
 
   // This is for Notifications
   notifications: Object[] = [
@@ -83,14 +92,13 @@ export class NavigationComponent implements AfterViewInit {
     }
   ];
 
-  public logout()
-  {
+  public logout() {
     this.loginService.logout();
     this.router.navigate(["authentication/login"]);
   }
 
   ngAfterViewInit() {
-    const set = function() {
+    const set = function () {
       const width =
         window.innerWidth > 0 ? window.innerWidth : this.screen.width;
       const topOffset = 0;
@@ -105,7 +113,7 @@ export class NavigationComponent implements AfterViewInit {
 
     $('.search-box a, .search-box .app-search .srh-btn').on(
       'click',
-      function() {
+      function () {
         $('.app-search').toggle(200);
       }
     );
