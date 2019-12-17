@@ -43,11 +43,11 @@ import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component'
 import { ModalDetalhesAgendamentoComponent } from '../agenda/modal-detalhes-agendamento.component'
-
-
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-  imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, DragulaModule.forRoot(), NgxMaskModule.forRoot()],
+  imports: [NgbModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule, 
+    QuillModule.forRoot(), DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent,CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent,ModalDetalhesAgendamentoComponent, CadastroFormaDePagamentoComponent,DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,

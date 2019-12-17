@@ -33,6 +33,8 @@ export class Paciente extends Pessoa {
   convenio: Convenio;
   fotoId: string;
 
+  prontuario:any;
+
   // não mapeadas
   foto: any;
 
