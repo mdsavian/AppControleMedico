@@ -17,11 +17,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
-import { EspecialidadeService } from '../../services/especialidade.service';
 import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
 import { UploadService } from '../../services/upload.service';
-
-import { QuillEditorComponent } from 'ngx-quill';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
@@ -33,10 +30,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   @ViewChild('numero', { read: ElementRef, static: true }) private numero: ElementRef;
   @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
-
-
-  paciente = new Paciente();
-  editorModel;
+  paciente = new Paciente();  
   semanasGestacao = ESemanasGestacao;
   diasGestacao = EDiasGestacao;
   convenios: Array<Convenio> = [];
@@ -52,29 +46,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   imagemPaciente: any;
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
 
-  customToolbar = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-      ['blockquote', 'code-block'],
-
-      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-      [{ 'direction': 'rtl' }],                         // text direction
-
-      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-      [{ 'font': [] }],
-      [{ 'align': [] }],
-
-      ['clean'],                                         // remove formatting button
-
-      //['link', 'image', 'video']                          link and image, video
-    ]
-  };
+ 
   constructor(public router: Router, private uploadService: UploadService, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private modalService: NgbModal,
     private appService: AppService, private medicoService: MedicoService) {
@@ -82,22 +54,13 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.nomeCompleto.nativeElement.focus();
-  }
-  getEditorInstance(editorInstance: any) {
-  }
-
-  teste() {
-    console.log(this.editorModel);
-  }
+  }  
 
   public ngOnInit(): void {
 
     if (this.pacienteService.paciente != null) {
 
       this.paciente = this.pacienteService.paciente;
-
-      this.editorModel = this.paciente.prontuario;
-
       this.dataNasci = this.util.dataParaString(this.paciente.dataNascimento);
       this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
       this.dataUltimaMenstru = this.util.dataParaString(this.paciente.dataUltimaMenstruacao);
@@ -218,7 +181,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   public salvar(): void {
-    this.paciente.prontuario = this.editorModel;
     this.pacienteService.paciente = null;
     this.pacienteService.salvar(this.paciente).subscribe(
       data => {

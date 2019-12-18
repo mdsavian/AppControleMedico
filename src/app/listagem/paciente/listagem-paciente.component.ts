@@ -82,7 +82,7 @@ export class ListagemPacienteComponent {
           },
           celular: {
             title: 'Celular',
-            filter: false,
+            filter: true,
             valuePrepareFunction: (celular) => { return celular === null ? "" : new Util().formataCelular(celular) }
           },
           convenioId: {

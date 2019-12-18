@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FileUploader, FileItem, ParsedResponseHeaders } from 'ng2-file-upload/ng2-file-upload';
+
 import { HttpClient } from '@angular/common/http'
 import { UploadService } from '../../services/upload.service';
 import { Router } from '@angular/router';

@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form #prontuarioForm="ngForm">
+          <ngb-tabset type="pills" [destroyOnHide]="false">
+            <ngb-tab title="Informações">
+              <ng-template ngbTabContent>
+                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <quill-editor [(ngModel)]="editorModel" [modules]="customToolbar" id="editorModel" name="editorModel"
+                    (onEditorCreated)="getEditorInstance($event)" [sanitize]="true"
+                    [placeholder]="'Monte o prontuário aqui...'" [styles]="{height: '350px'}"></quill-editor>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Arquivos e Imagens">
+              <ng-template ngbTabContent>
+                <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+
+                </div>
+              </ng-template>
+            </ngb-tab>
+
+          </ngb-tabset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

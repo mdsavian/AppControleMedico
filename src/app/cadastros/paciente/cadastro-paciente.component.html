@@ -345,30 +345,6 @@
                 </div>
               </ng-template>
             </ngb-tab>
-            <ngb-tab title="Prontuário">
-              <ng-template ngbTabContent>
-                <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                  <ngb-tabset type="pills" [destroyOnHide]="false">
-
-                    <ngb-tab title="Informações">
-                      <ng-template ngbTabContent>
-                        <div id="tab_5" style="margin-top: 10px;" class="container col-sm-12 col-md-12">                          
-                          <quill-editor [(ngModel)]="editorModel" [modules]="customToolbar" id="editorModel" name="editorModel"
-                            (onEditorCreated)="getEditorInstance($event)" [sanitize]="true"
-                            [placeholder]="'Monte o prontuário aqui...'" [styles]="{height: '350px'}"></quill-editor>
-                        </div>
-                      </ng-template>
-                    </ngb-tab>
-                    <ngb-tab title="Arquivos e Imagens">
-                      <ng-template ngbTabContent>
-                      </ng-template>
-                    </ngb-tab>
-
-                  </ngb-tabset>
-                </div>
-              </ng-template>
-            </ngb-tab>
-
             <ngb-tab title="Obstetrícia" *ngIf="exibeAbaEspecialidade">
               <ng-template ngbTabContent>
                 <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">

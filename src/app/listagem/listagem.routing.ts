@@ -16,6 +16,8 @@ import { ListagemFornecedorComponent } from './fornecedor/listagem-fornecedor.co
 import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.component';
 import { ListagemContaReceberComponent } from './conta-receber/listagem-conta-receber.component';
 import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
+import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.component';
+
 
 export const ListagemRoutes: Routes = [
   {
@@ -42,12 +44,22 @@ export const ListagemRoutes: Routes = [
         }
       },
       {
+        path: 'listagemprontuario',
+        component: ListagemProntuarioComponent,
+        data: {
+          title: 'Prontuário',
+          urls: [
+            { title: 'Prontuários' }
+          ] 
+        }
+      },
+      {
         path: 'listagemcontapagar',
         component: ListagemContaPagarComponent,
         data: {
-          title: 'Conta a Pagar',
+          title: 'Contas a Pagar',
           urls: [
-            { title: 'Conta a Pagar' }
+            { title: 'Contas a Pagar' }
           ] 
         }
       },
@@ -55,9 +67,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemcontareceber',
         component: ListagemContaReceberComponent,
         data: {
-          title: 'Conta a Receber',
+          title: 'Contas a Receber',
           urls: [
-            { title: 'Conta a Receber' }
+            { title: 'Contas a Receber' }
           ] 
         }
       },
@@ -75,9 +87,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemespecialidade',
         component: ListagemEspecialidadeComponent,
         data: {
-          title: 'Especialidade',
+          title: 'Especialidades',
           urls: [
-            { title: 'Especialidade' }
+            { title: 'Especialidades' }
           ]
         }
       },
@@ -85,9 +97,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemprocedimento',
         component: ListagemProcedimentoComponent,
         data: {
-          title: 'Procedimento',
+          title: 'Procedimentos',
           urls: [
-            { title: 'Procedimento' }
+            { title: 'Procedimentos' }
           ]
         }
       },
@@ -116,9 +128,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemoficio',
         component: ListagemOficioComponent,
         data: {
-          title: 'Ofício',
+          title: 'Ofícios',
           urls: [
-            { title: 'Ofício' }
+            { title: 'Ofícios' }
           ]
         }
       },
@@ -126,9 +138,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemconvenio',
         component: ListagemConvenioComponent,
         data: {
-          title: 'Convênio',
+          title: 'Convênios',
           urls: [
-            { title: 'Convênio' }
+            { title: 'Convênios' }
           ]
         }
       },
@@ -136,9 +148,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemexame',
         component: ListagemExameComponent,
         data: {
-          title: 'Exame',
+          title: 'Exames',
           urls: [
-            { title: 'Convênio' }
+            { title: 'Exames' }
           ]
         }
       },
@@ -146,9 +158,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemlocal',
         component: ListagemLocalComponent,
         data: {
-          title: 'Local',
+          title: 'Locais',
           urls: [
-            { title: 'Local' }
+            { title: 'Locais' }
           ]
         }
       },
@@ -156,9 +168,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemcirurgia',
         component: ListagemCirurgiaComponent,
         data: {
-          title: 'Cirurgia',
+          title: 'Cirurgias',
           urls: [
-            { title: 'Cirurgia' }
+            { title: 'Cirurgias' }
           ]
         }
       },
@@ -166,9 +178,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemclinica',
         component: ListagemClinicaComponent,
         data: {
-          title: 'Clínica',
+          title: 'Clínicas',
           urls: [
-            { title: 'Clínica' }
+            { title: 'Clínicas' }
           ]
         }
       },
@@ -176,9 +188,9 @@ export const ListagemRoutes: Routes = [
         path: 'listagemformadepagamento',
         component: ListagemFormaDePagamentoComponent,
         data: {
-          title: 'Forma de Pagamento',
+          title: 'Formas de Pagamento',
           urls: [
-            { title: 'Forma De Pagamento' }
+            { title: 'Formas De Pagamento' }
           ]
         }
       }

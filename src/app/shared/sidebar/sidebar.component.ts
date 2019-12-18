@@ -16,6 +16,7 @@ declare var $: any;
 export class SidebarComponent implements OnInit {
   showMenu = '';
   showSubMenu = '';
+  showSubThirdMenu = '';
   util = new Util();
   isSpinnerVisible = false;
 
@@ -28,11 +29,18 @@ export class SidebarComponent implements OnInit {
       this.showMenu = element;
     }
   }
-  addActiveClass(element: any) {
+  addActiveClass(element: any) {    
     if (element === this.showSubMenu) {
       this.showSubMenu = '0';
     } else {
       this.showSubMenu = element;
+    }
+  }
+  addActiveThirdClass(element: any) {    
+    if (element === this.showSubThirdMenu) {
+      this.showSubThirdMenu = '0';
+    } else {
+      this.showSubThirdMenu = element;
     }
   }
 
@@ -135,8 +143,6 @@ export class SidebarComponent implements OnInit {
     return itens;
   }
 
-
-
   ROUTES: RouteInfo[] = [
     {
       path: '',
@@ -167,14 +173,35 @@ export class SidebarComponent implements OnInit {
           extralink: false,
           submenu: [
             {
-              path: '/listagem/listagempaciente',
+              path: '',
               title: 'Paciente',
               icon: '',
-              class: '',
+              class: 'has-arrow',
               label: '',
               labelClass: '',
               extralink: false,
-              submenu: []
+              submenu: [
+                {
+                  path: '/listagem/listagempaciente',
+                  title: 'Paciente',
+                  icon: '',
+                  class: '',
+                  label: '',
+                  labelClass: '',
+                  extralink: false,
+                  submenu: []
+                },
+                {
+                  path: '/listagem/listagemprontuario',
+                  title: 'Prontuário',
+                  icon: '',
+                  class: '',
+                  label: '',
+                  labelClass: '',
+                  extralink: false,
+                  submenu: []
+                }
+              ]
             },
             {
               path: '/listagem/listagemfornecedor',
