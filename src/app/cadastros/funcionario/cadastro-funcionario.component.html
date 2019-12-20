@@ -16,6 +16,12 @@
                   <div class="row rowcadastro">
                     <div class="col-xs-4 col-md-2" style="text-align:center">
                       <img [src]="imageUrl" width="200" height="220" />
+                      <br />
+                      <br />
+                      <button class="btn btn-rounded btn-warning" type="button" (click)="tirarFoto()">Tirar
+                        Foto</button>
+                      <br />
+                      <br />
                       <button class="btn btn-rounded" style="background-color: rgba(117, 117, 212, 0.835)"
                         (click)="importarArquivo()">Importar Arquivo</button>
                       <input id="fileInput" #fileInput type="file" (change)="changefile($event)"

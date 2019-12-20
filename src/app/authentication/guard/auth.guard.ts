@@ -38,6 +38,7 @@ export class AuthGuard implements CanActivate {
                     || url == '/listagem/listagemcaixa'
                     || url == '/listagem/listagemmedico'
                     || url == '/cadastros/cadastromedico'
+                    || url == '/cadastros/cadastroprontuario'
                     || url == '/listagem/listagemformadepagamento'
                     || url == '/cadastros/cadastroformadepagamento'
                     || url == '/listagem/listagemoficio'

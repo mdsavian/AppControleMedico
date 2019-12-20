@@ -86,6 +86,7 @@ export class SidebarComponent implements OnInit {
           itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Médico");
           itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Financeiro/Forma de Pagamento");
           itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Funcionário/Ofício");
+          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Pessoas/Paciente/Prontuário");
         }
 
         if (!this.funcionarioService.PermitirVisualizarAgenda(funcionario)) {
@@ -107,6 +108,7 @@ export class SidebarComponent implements OnInit {
     var subMenus: RouteInfo[];
     var menuAnterior: RouteInfo;
 
+    console.log(menusSplit);
     for (var i = 0; i < menusSplit.length; i++) {
 
       var titulo = menusSplit[i];
