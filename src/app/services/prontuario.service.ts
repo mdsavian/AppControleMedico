@@ -38,4 +38,8 @@ export class ProntuarioService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + prontuarioId);
   }
 
+  downloadArquivo(idArquivo: string) {
+    return this.http.get(this.accessPointUrl + "downloadArquivo/" + idArquivo);
+}
+
 }

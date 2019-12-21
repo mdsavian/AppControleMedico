@@ -1,4 +1,5 @@
 import { Entidade } from "./entidade";
+import { AnexoProntuario } from "./anexoProntuario";
 
 export class Prontuario extends Entidade {
 
@@ -8,6 +9,6 @@ export class Prontuario extends Entidade {
 
     pacienteId:string;    
     descricao:string;
-    anexos:Array<Prontuario>;
+    anexos:Array<AnexoProntuario>;
 
 }

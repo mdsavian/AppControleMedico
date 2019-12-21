@@ -7,6 +7,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FileUploader, FileItem, ParsedResponseHeaders } from 'ng2-file-upload/ng2-file-upload';
 import { environment } from '../../../environments/environment';
 import { Util } from '../../uteis/Util'
+import { BotaoDownloadComponent } from './botao-download-component';
+import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
   templateUrl: './cadastro-prontuario.component.html',
@@ -22,6 +24,7 @@ export class CadastroProntuarioComponent implements OnInit {
   public message: string;
   public uploader: FileUploader;
   prontuario: Prontuario;
+  sourceArquivos: LocalDataSource;
 
   customToolbar = {
     toolbar: [
@@ -49,9 +52,12 @@ export class CadastroProntuarioComponent implements OnInit {
 
     else {
       this.prontuarioService.buscarPorPaciente(this.prontuarioService.pacienteId).subscribe(prontuario => {
-        console.log(prontuario);
+        this.prontuarioService.prontuario = prontuario;
         this.prontuario = prontuario;
         this.editorModel = prontuario.descricao;
+
+        if (this.util.hasItems(this.prontuario.anexos))
+          this.sourceArquivos = new LocalDataSource(this.prontuario.anexos);
       });
     }
   }
@@ -63,11 +69,13 @@ export class CadastroProntuarioComponent implements OnInit {
       itemAlias: 'pacienteId=' + this.prontuarioService.pacienteId
     });
 
-    this.uploader.onCompleteItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
-      console.log("opa 1", response);
-    };
 
     this.uploader.onCompleteAll = () => {
+      this.prontuarioService.buscarPorId(this.prontuario.id).subscribe(prontuario => {
+        this.prontuario = prontuario;
+        if (this.util.hasItems(this.prontuario.anexos))
+          this.sourceArquivos = new LocalDataSource(this.prontuario.anexos);
+      });
     }
   }
 
@@ -81,14 +89,14 @@ export class CadastroProntuarioComponent implements OnInit {
     if (this.util.isNullOrWhitespace(this.prontuarioService.pacienteId)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
-      validou =  false;
+      validou = false;
     }
     else if (this.uploader.getNotUploadedItems().length > 0) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Existem arquivos anexados que não foram salvos. É necessário que seja feito o upload dos arquivos para prosseguir com o cadastro.";
-      validou =  false;
+      validou = false;
     }
-    
+
     return validou;
 
   }
@@ -108,5 +116,41 @@ export class CadastroProntuarioComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
 
   }
+
+  settingsArquivos = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum arquivo",
+    columns: {
+      nomeArquivo: {
+        title: 'Nome',
+        filter: true
+      },
+      extensaoArquivo: {
+        title: 'Extensão',
+        filter: true
+      },
+      id: {
+        title: "Download",
+        type: "custom",
+        filter: false,
+        renderComponent: BotaoDownloadComponent,
+      }
+    },
+    actions:
+    {
+      columnTitle: '',
+      delete: true,
+      edit: false
+    },
+    add:
+    {
+      addButtonContent: 'Importar Novo Arquivo'
+    },
+    delete: {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    },
+  };
 
 }

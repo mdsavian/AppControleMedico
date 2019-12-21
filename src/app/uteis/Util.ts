@@ -101,6 +101,20 @@ export class Util {
         return new Blob([ab], { type: 'image/jpeg' });
     }
 
+    public base64ParaBlob(base64: Object, tipo) {
+
+        var byteCharacters = atob(base64['value']);
+        var byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        var blob = new Blob([byteArray], { type: tipo });
+
+        return blob;
+
+    }
+
     public stringParaData(dataString: string): Date {
         if (dataString.length > 8) {
             var dataPartes = dataString.split("/");
@@ -203,7 +217,7 @@ export class Util {
         return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
     }
 
-    public retornarUsuarioAdministradorSistema(usuario:Usuario): boolean {
+    public retornarUsuarioAdministradorSistema(usuario: Usuario): boolean {
         return usuario.funcionario == null && usuario.medico == null && usuario.login == "admin";
     }
 

@@ -46,6 +46,7 @@ import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component'
 import { ModalDetalhesAgendamentoComponent } from '../agenda/modal-detalhes-agendamento.component'
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
+import{BotaoDownloadComponent} from './prontuario/botao-download-component';
 
 
 @NgModule({
@@ -58,8 +59,8 @@ import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
-    ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
+    ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective, BotaoDownloadComponent],
 
-  entryComponents: [ModalAdicionaConvenioComponent, ModalDetalhesAgendamentoComponent, ModalCadastroFornecedorComponent]
+  entryComponents: [BotaoDownloadComponent,ModalAdicionaConvenioComponent, ModalDetalhesAgendamentoComponent, ModalCadastroFornecedorComponent]
 })
 export class CadastrosModule { }

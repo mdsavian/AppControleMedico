@@ -153,7 +153,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   public tirarFoto() {
     var modalWebcam = this.modalService.open(ModalWebcamComponent, { size: "lg" });
     modalWebcam.result.then(imagem => {
-      this.imagemPaciente = this.util.dataURIparaBlob(imagem);
+      this.imagemPaciente = this.util.dataURIparaBlob(imagem,'image/jpeg');
       this.imageUrl = "data:image/jpeg;base64," + imagem;
     },
       error => { });
@@ -168,7 +168,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.onload = ((e) => {
         this.imageUrl = e.target['result'];
-        this.imagemPaciente = this.util.dataURIparaBlob(this.imageUrl.split(',')[1]);
+        this.imagemPaciente = this.util.dataURIparaBlob(this.imageUrl.split(',')[1], 'image/jpeg');
       });
       reader.readAsDataURL(event.target.files[0]);
     }

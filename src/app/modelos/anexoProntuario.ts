@@ -8,4 +8,5 @@ export class AnexoProntuario extends Entidade {
 
     extensaoArquivo:string;    
     nomeArquivo:string;
+    contentType:string;
 }
