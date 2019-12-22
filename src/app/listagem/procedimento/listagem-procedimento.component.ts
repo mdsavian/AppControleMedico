@@ -62,7 +62,7 @@ export class ListagemProcedimentoComponent {
     this.router.navigate(['/cadastros/cadastroprocedimento']);
   }
 
-  criarRegistro(event) {
+  criarRegistro() {
     this.procedimentoService.procedimento = null;
     this.router.navigate(['/cadastros/cadastroprocedimento']);
   }

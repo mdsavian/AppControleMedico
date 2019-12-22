@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Prontuario } from '../modelos/prontuario'
 import { environment } from '../../environments/environment';
 @Injectable({
@@ -40,6 +40,11 @@ export class ProntuarioService {
 
   downloadArquivo(idArquivo: string) {
     return this.http.get(this.accessPointUrl + "downloadArquivo/" + idArquivo);
+}
+
+deletarArquivo(prontuarioId:string, arquivoId:string) {
+  var parametros = new HttpParams().set("prontuarioId", prontuarioId).set("arquivoId",arquivoId);
+  return this.http.get<Prontuario>(this.accessPointUrl + "deletarArquivo?" + parametros);
 }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Prontuario } from '../../modelos/prontuario';
 import { ProntuarioService } from '../../services/prontuario.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environment';
 import { Util } from '../../uteis/Util'
 import { BotaoDownloadComponent } from './botao-download-component';
 import { LocalDataSource } from 'ng2-smart-table';
+import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 
 @Component({
   templateUrl: './cadastro-prontuario.component.html',
@@ -16,6 +17,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 })
 
 export class CadastroProntuarioComponent implements OnInit {
+  @ViewChild('modalImportarArquivo', { read: TemplateRef, static: false }) modalImportarArquivo: TemplateRef<any>;
 
   editorModel;
   util = new Util();
@@ -25,6 +27,8 @@ export class CadastroProntuarioComponent implements OnInit {
   public uploader: FileUploader;
   prontuario: Prontuario;
   sourceArquivos: LocalDataSource;
+  isSpinnerVisible = false;
+  isSpinnerArquivosVisible = false;
 
   customToolbar = {
     toolbar: [
@@ -51,13 +55,17 @@ export class CadastroProntuarioComponent implements OnInit {
       this.router.navigate(["listagem/listagemprontuario"]);
 
     else {
+      this.isSpinnerVisible = true;
       this.prontuarioService.buscarPorPaciente(this.prontuarioService.pacienteId).subscribe(prontuario => {
-        this.prontuarioService.prontuario = prontuario;
-        this.prontuario = prontuario;
+
+        this.prontuarioService.prontuario = this.prontuario = prontuario;
+        
         this.editorModel = prontuario.descricao;
 
         if (this.util.hasItems(this.prontuario.anexos))
           this.sourceArquivos = new LocalDataSource(this.prontuario.anexos);
+
+        this.isSpinnerVisible = false;
       });
     }
   }
@@ -71,42 +79,66 @@ export class CadastroProntuarioComponent implements OnInit {
 
 
     this.uploader.onCompleteAll = () => {
+
       this.prontuarioService.buscarPorId(this.prontuario.id).subscribe(prontuario => {
-        this.prontuario = prontuario;
-        if (this.util.hasItems(this.prontuario.anexos))
-          this.sourceArquivos = new LocalDataSource(this.prontuario.anexos);
+        this.prontuarioService.prontuario = this.prontuario = prontuario;
+
+        this.atualizarArquivos();
+
+        this.isSpinnerArquivosVisible = false;
+        this.uploader.clearQueue();
+        this.modalService.dismissAll(this.modalImportarArquivo);
       });
     }
+  }
+
+  atualizarArquivos() {
+    if (this.util.hasItems(this.prontuario.anexos))
+      this.sourceArquivos = new LocalDataSource(this.prontuario.anexos);
+    else
+      this.sourceArquivos = new LocalDataSource();
+  }
+
+  importarNovoArquivo() {
+    var modalImportarArquivo = this.modalService.open(this.modalImportarArquivo, { size: 'lg' });
+  }
+
+  uploadTodos() {
+    this.isSpinnerArquivosVisible = true;
+    this.uploader.uploadAll();
+  }
+
+  deletarArquivo(e: any) {
+    this.modalService.open(ModalExcluirRegistroComponent).result.then(
+      result => {
+        this.isSpinnerVisible = true;
+        if (result == 'Sim') {
+          this.prontuarioService.deletarArquivo(this.prontuario.id, e.data.id).subscribe(prontuario => {
+            this.prontuarioService.prontuario = this.prontuario = prontuario;
+
+            this.atualizarArquivos();
+
+            this.isSpinnerVisible = false;
+          }, error => {
+            console.log(error);
+          });
+        }
+      });
   }
 
   getEditorInstance(editorInstance: any) {
   }
 
-  validarSalvar() {
-
-    var validou = true;
-
+  salvar() {
     if (this.util.isNullOrWhitespace(this.prontuarioService.pacienteId)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde.";
-      validou = false;
+
     }
-    else if (this.uploader.getNotUploadedItems().length > 0) {
-      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Existem arquivos anexados que não foram salvos. É necessário que seja feito o upload dos arquivos para prosseguir com o cadastro.";
-      validou = false;
-    }
-
-    return validou;
-
-  }
-
-  salvar() {
-    if (this.validarSalvar()) {
+    else {
       this.prontuario.descricao = this.editorModel;
       this.prontuarioService.salvar(this.prontuario).subscribe(c => {
-        this.router.navigate(["listagem/listagempaciente"]);
-
+        this.router.navigate(["listagem/listagemprontuario"]);
       });
 
     }
