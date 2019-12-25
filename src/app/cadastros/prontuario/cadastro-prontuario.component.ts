@@ -119,8 +119,7 @@ export class CadastroProntuarioComponent implements OnInit {
             this.atualizarArquivos();
 
             this.isSpinnerVisible = false;
-          }, error => {
-            console.log(error);
+          }, error => {            
           });
         }
       });

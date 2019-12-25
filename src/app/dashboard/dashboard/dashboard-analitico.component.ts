@@ -67,7 +67,14 @@ export class DashboardAnaliticoComponent implements OnInit {
   public opcoesGraficoLinhas: any = {
     lineTension: 1,
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
+    scales: {
+      yAxes: [{
+        ticks: {
+          max: 100,
+        }
+      }]
+    }
   };
 
   ngOnInit(): void {
@@ -173,11 +180,6 @@ export class DashboardAnaliticoComponent implements OnInit {
     let cancelados = new Array<number>();
 
     this.dadosGraficoLinhas = [];
-    this.opcoesGraficoLinhas = {
-      lineTension: 1,
-      responsive: true,
-      maintainAspectRatio: false
-    }
 
     //inicializa os arrays para começarem em 0, se nã o gráfico começa encima
     confirmados[0] = 0;
@@ -185,6 +187,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     agendados[0] = 0;
     cancelados[0] = 0;
 
+    let maiorValorAxesY = 0;
     for (var i = 1; i <= this.dataHoje.getDate(); i++) {
       confirmados[i] = 0;
       pagosFinalizados[i] = 0;
@@ -200,13 +203,37 @@ export class DashboardAnaliticoComponent implements OnInit {
         agendados[i] = agendados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Agendado).length;
         cancelados[i] = cancelados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Cancelado).length;
       });
+
+      if (confirmados[i] > maiorValorAxesY)
+        maiorValorAxesY = confirmados[i];
+
+      if (pagosFinalizados[i] > maiorValorAxesY)
+        maiorValorAxesY = pagosFinalizados[i];
+
+      if (agendados[i] > maiorValorAxesY)
+        maiorValorAxesY = agendados[i];
+
+      if (cancelados[i] > maiorValorAxesY)
+        maiorValorAxesY = cancelados[i];
     }
 
     this.totalConfirmados = confirmados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalAgendados = agendados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalPagosFinalizados = pagosFinalizados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalCancelados = cancelados.reduce(function (total, valor) { return total + valor; }, 0);
-
+    
+    this.opcoesGraficoLinhas = {
+      lineTension: 1,
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            max: Math.round(maiorValorAxesY * 1.25),
+          }
+        }]
+      }
+    };
 
     this.dadosGraficoLinhas = [
       { data: agendados, label: 'Agendados(s)' },
@@ -214,6 +241,8 @@ export class DashboardAnaliticoComponent implements OnInit {
       { data: pagosFinalizados, label: 'Finalizado(s)' },
       { data: cancelados, label: 'Cancelado(s)' },
     ];
+
+
   }
 
   calcularTotais() {
@@ -268,7 +297,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     }
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario(this.usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
-      
+
 
       if (dados.length > 1) {
         let medicoTodos = new Medico();
@@ -288,7 +317,7 @@ export class DashboardAnaliticoComponent implements OnInit {
 
       //quando usuário for um médico traz ele selecionado primeiro
       if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
-          this.medico = this.medicos.find(c=> c.id == this.usuario.medicoId);
+        this.medico = this.medicos.find(c => c.id == this.usuario.medicoId);
 
     });
 

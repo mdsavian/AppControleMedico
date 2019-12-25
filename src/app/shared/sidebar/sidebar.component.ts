@@ -107,8 +107,7 @@ export class SidebarComponent implements OnInit {
     var menuRemover: RouteInfo;
     var subMenus: RouteInfo[];
     var menuAnterior: RouteInfo;
-
-    console.log(menusSplit);
+    
     for (var i = 0; i < menusSplit.length; i++) {
 
       var titulo = menusSplit[i];

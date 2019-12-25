@@ -29,8 +29,7 @@ export class LoginComponent implements OnInit {
     this.loginService.logout();
   }  
 
-  onLoggedin() {
-    console.log("OPAAA");
+  onLoggedin() {    
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       usuarioRetorno => {
         
