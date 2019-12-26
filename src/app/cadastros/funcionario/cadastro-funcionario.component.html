@@ -3,7 +3,29 @@
   <div class="double-bounce2"></div>
 </div>
 <div class="row" *ngIf=!isSpinnerVisible>
-  <div class="col-12">
+
+  <div class="col-lg-3 col-xlg-3 col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="m-t-30 text-center"> <img [src]="imageUrl" class="img-circle" width="200" height="200" />
+          <br />
+          <div class="row text-center justify-content-md-center">
+            <button class="btn btn-rounded btn-warning" type="button" (click)="tirarFoto()">Tirar Foto</button>
+          </div>
+          <br />
+          <div class="row text-center justify-content-md-center">
+            <button class="btn btn-rounded" type="button" style="background-color: rgba(117, 117, 212, 0.835)"
+              (click)="importarArquivo()">Importar Arquivo</button>
+            <input id="fileInput" #fileInput type="file" (change)="changefile($event)" accept=".jpeg, .png, .jpg;"
+              name="fileInput" style="display: none;" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-9 col-xlg-9 col-md-8">
     <div class="card">
       <div class="card-body">
         <form #funcionarioForm="ngForm">
@@ -14,22 +36,8 @@
                   <div class="row"></div>
 
                   <div class="row rowcadastro">
-                    <div class="col-xs-4 col-md-2" style="text-align:center">
-                      <img [src]="imageUrl" width="200" height="220" />
-                      <br />
-                      <br />
-                      <button class="btn btn-rounded btn-warning" type="button" (click)="tirarFoto()">Tirar
-                        Foto</button>
-                      <br />
-                      <br />
-                      <button class="btn btn-rounded" style="background-color: rgba(117, 117, 212, 0.835)"
-                        (click)="importarArquivo()">Importar Arquivo</button>
-                      <input id="fileInput" #fileInput type="file" (change)="changefile($event)"
-                        accept=".jpeg, .png, .jpg;" name="fileInput" style="display: none;" />
-                    </div>
 
-
-                    <div class="col-xs-10 col-md-4">
+                    <div class="col-xs-12 col-md-5">
                       <div class="form-group">
                         <label class="control-label" for="nomeCompleto">Nome Completo(*)</label>
                         <input type="text" id="nomeCompleto" placeholder="Nome Completo" name="nomeCompleto"
@@ -71,10 +79,26 @@
                         </div>
                       </div>
 
+                      <div class="form-group">
+                        <label class="control-label" for="oficioSelecionado">Ofício</label>
+                        <div class="input-group">
+                          <input id="oficioSelecionado" name="oficioSelecionado" type="text"
+                            (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
+                            #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
+                          <div class="input-group-prepend">
+                            <span (click)="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
+                                class="fa fa-pencil"></i></span>
+                          </div>
+                        </div>
+                        <div *ngIf="(falhaNaBusca || oficio.invalid)" class="alert alert-danger">
+                          <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
+                        </div>
+                      </div>
+
                     </div>
 
 
-                    <div class="col-xs-3 col-md-2">
+                    <div class="col-xs-6 col-md-3">
                       <div class="form-group">
                         <label class="control-label" for="cpf">CPF</label>
                         <input type="text" id="cpf" appValidacpf mask="000.000.000-00" placeholder="CPF" name="cpf"
@@ -94,7 +118,8 @@
                             placeholder="01/01/1901" appValidaData class="form-control" [(ngModel)]="dataNasci"
                             #dataNascimento="ngModel" (blur)="formataData($event)">
                         </div>
-                        <div *ngIf="dataNascimento.invalid && dataNascimento.errors?.validaData" class="alert alert-danger">
+                        <div *ngIf="dataNascimento.invalid && dataNascimento.errors?.validaData"
+                          class="alert alert-danger">
                           <div *ngIf="dataNascimento.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
@@ -105,9 +130,9 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" appValidaData id="dataAdmissao" name="dataAdmissao" placeholder="01/01/1901"
-                            class="form-control" [(ngModel)]="dataAdmis" #dataAdmissao="ngModel"
-                            (blur)="formataData($event)">
+                          <input type="text" mask="00/00/0000" appValidaData id="dataAdmissao" name="dataAdmissao"
+                            placeholder="01/01/1901" class="form-control" [(ngModel)]="dataAdmis"
+                            #dataAdmissao="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataAdmissao.invalid && dataAdmissao.errors?.validaData" class="alert alert-danger">
                           <div *ngIf="dataAdmissao.errors?.validaData"> Data Inválida.</div>
@@ -115,7 +140,7 @@
                       </div>
                     </div>
 
-                    <div class="col-xs-3 col-md-2">
+                    <div class="col-xs-6 col-md-3">
                       <div class="form-group">
                         <label class="control-label" for="rg">RG</label>
                         <input type="text" id="rg" placeholder="RG" name="rg" class="form-control"
@@ -144,58 +169,38 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                           </div>
-                          <input type="text" mask="00/00/0000" id="dataDemissao" name="dataDemissao" placeholder="01/01/1901"
-                            class="form-control" appValidaData [(ngModel)]="dataDemis" #dataDemissao="ngModel"
-                            (blur)="formataData($event)">
+                          <input type="text" mask="00/00/0000" id="dataDemissao" name="dataDemissao"
+                            placeholder="01/01/1901" class="form-control" appValidaData [(ngModel)]="dataDemis"
+                            #dataDemissao="ngModel" (blur)="formataData($event)">
                         </div>
                         <div *ngIf="dataDemissao.invalid && dataDemissao.errors?.validaData" class="alert alert-danger">
                           <div *ngIf="dataDemissao.errors?.validaData"> Data Inválida.</div>
                         </div>
                       </div>
                     </div>
-
-                    <div class="col-xs-3 col-md-2">
-                      <div class="form-group">
-                        <label class="control-label" for="oficioSelecionado">Ofício</label>
-                        <div class="input-group">
-                          <input id="oficioSelecionado" name="oficioSelecionado" type="text"
-                            (selectItem)="selectedItem($event)" [ngbTypeahead]="search" class="form-control"
-                            #oficio="ngModel" [(ngModel)]="oficioSelecionado" />
-                          <div class="input-group-prepend">
-                            <span (click)="adicionaOficio()" class="input-group-text" id="img-adiciona-oficio"><i
-                                class="fa fa-pencil"></i></span>
-                          </div>
-                        </div>
-                        <div *ngIf="(falhaNaBusca || oficio.invalid)" class="alert alert-danger">
-                          <div *ngIf="falhaNaBusca">Não foi possível encontrar um ofício com esta descrição.</div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
-
-                  <div class="row rowcadastro">
-                    <div class="col-xs-4 col-md-2">
-                      <label class="form-check-inline" for="ativo">Ativo</label>
-                      <input class="form-check-inline" [(ngModel)]="funcionario.ativo" checked name="ativo" id="ativo"
-                        value="checked" type="checkbox">
-                    </div>
-
-                    <div class="col-xs-5 col-md-3" [hidden]="!usuarioAdministrador">
-                      <label class="form-check-inline" for="permissaoAdministrador">Permissão Administrador</label>
-                      <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador"
-                        name="permissaoAdministrador" id="permissaoAdministrador" type="checkbox">
-                    </div>
-
-                    <div class="col-xs-5 col-md-3" [hidden]="!usuarioAdministrador">
-                      <label class="form-check-inline" for="visualizaAgenda">Visualiza Agenda</label>
-                      <input class="form-check-inline" [(ngModel)]="funcionario.visualizaAgenda" name="visualizaAgenda"
-                        id="visualizaAgenda" type="checkbox">
-                    </div>
-
-
-                  </div>
-
                 </div>
+
+                <div class="row rowcadastro">
+                  <div class="col-xs-6 col-md-2">
+                    <label class="form-check-inline" for="ativo">Ativo</label>
+                    <input class="form-check-inline" [(ngModel)]="funcionario.ativo" checked name="ativo" id="ativo"
+                      value="checked" type="checkbox">
+                  </div>
+
+                  <div class="col-xs-6 col-md-4" [hidden]="!usuarioAdministrador">
+                    <label class="form-check-inline" for="permissaoAdministrador">Permissão Administrador</label>
+                    <input class="form-check-inline" [(ngModel)]="funcionario.permissaoAdministrador"
+                      name="permissaoAdministrador" id="permissaoAdministrador" type="checkbox">
+                  </div>
+
+                  <div class="col-xs-6 col-md-3" [hidden]="!usuarioAdministrador">
+                    <label class="form-check-inline" for="visualizaAgenda">Visualiza Agenda</label>
+                    <input class="form-check-inline" [(ngModel)]="funcionario.visualizaAgenda" name="visualizaAgenda"
+                      id="visualizaAgenda" type="checkbox">
+                  </div>
+                </div>
+
               </ng-template>
             </ngb-tab>
 
@@ -282,7 +287,7 @@
                 <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
                   <div class="row">
-                    <div class="col-xs-6 col-md-3">
+                    <div class="col-xs-6 col-md-6">
                       <div class="form-group">
                         <label class="control-label" for="clinica">Clínica</label>
                         <div class="input-group">
@@ -318,7 +323,7 @@
                 <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
                   <div class="row">
-                    <div class="col-xs-6 col-md-3">
+                    <div class="col-xs-6 col-md-6">
                       <div class="form-group">
                         <label class="control-label" for="medico">Médico</label>
                         <div class="input-group">
@@ -350,13 +355,14 @@
           </ngb-tabset>
           <div class="panel-footer row rowcadastro">
             <div class="col-xs-6 col-md-6">
-              <button class="btn btn-rounded btn-danger" style="width:30%" [disabled]="!usuarioEditandoFuncionario"
+              <button class="btn btn-rounded btn-danger" style="width:40%" [disabled]="!usuarioEditandoFuncionario"
                 (click)="alterarSenha()">Alterar Senha</button>
             </div>
             <div class="col-xs-6 col-md-6">
-              <button class="btn btn-rounded btn-success" style="width:30%;right:200px;  position: absolute;"
-                [disabled]="(!funcionarioForm.form.valid || (!usuarioEditandoFuncionario && !usuarioAdministrador))" (click)="salvar()">Salvar</button>
-              <a href="javascript:history.back()" style="width:30%; right:0px; position: absolute;"
+              <button class="btn btn-rounded btn-success" style="width:40%;right:200px;  position: absolute;"
+                [disabled]="(!funcionarioForm.form.valid || (!usuarioEditandoFuncionario && !usuarioAdministrador))"
+                (click)="salvar()">Salvar</button>
+              <a href="javascript:history.back()" style="width:40%; right:0px; position: absolute;"
                 class="btn btn-rounded btn-danger">Cancelar</a>
             </div>
           </div>
