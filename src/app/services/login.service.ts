@@ -8,9 +8,10 @@ import { Usuario } from '../modelos/usuario';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AppService } from './app.service';
 import { Util } from '../uteis/Util';
+import { FuncionarioService } from './funcionario.service';
 
 
 @Injectable({
@@ -22,8 +23,9 @@ export class LoginService {
   private usuarioCorrenteSubject: BehaviorSubject<Usuario>;
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'login/';
+  util = new Util();
 
-  constructor(private http: HttpClient, private router: Router, private appService: AppService) {
+  constructor(private http: HttpClient, private router: Router, private appService: AppService, private route: ActivatedRoute, private funcionarioService: FuncionarioService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
     this.usuarioCorrenteSubject = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem('usuarioCorrente')));
   }
@@ -71,5 +73,21 @@ export class LoginService {
     return this.http.post<Usuario>(this.accessPointUrl + "validaUsuario/", usuario, { headers: this.headers }).pipe(map(retorno => {
       return retorno;
     }));
+  }
+
+  public redirecionarRota(usuarioRetorno: Usuario, login = false) {
+    var rota;
+    if (this.util.retornaUsuarioAdmOuMedico(usuarioRetorno))
+      rota = '/dashboard/dashboardanalitico';
+    else if (usuarioRetorno.funcionario != null && this.funcionarioService.PermitirVisualizarAgenda(usuarioRetorno.funcionario))
+      rota = '/agenda/agenda';
+    else //se o usuário for um funcionário sem permissão dash e agenda, redireciona para o cadastro do funcinario
+      rota = '/listagem/listagemfuncionario';
+
+    if (!login) 
+      location.reload();
+          
+    this.router.navigate([rota]);
+
   }
 }

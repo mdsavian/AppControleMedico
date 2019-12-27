@@ -39,9 +39,9 @@ export class AgendamentoService {
     return this.http.get<Agendamento>(this.accessPointUrl + "buscarPorId/" + agendamentoId);
   }
 
-  public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario: string) {
+  public buscarAgendamentosMedico(medicoId: string, data: string, tipoCalendario: string, clinicaId:string) {
 
-    let parametros = new HttpParams().set("medicoId", medicoId).set("data", data).set("tipoCalendario", tipoCalendario);
+    let parametros = new HttpParams().set("medicoId", medicoId).set("data", data).set("tipoCalendario", tipoCalendario).set("clinicaId", clinicaId);
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosMedico?" + parametros);
   }
 

@@ -151,6 +151,7 @@ export class AgendaComponent implements OnInit {
 
 
   buscarInformacoesMedico() {
+
     if (this.medico != null) {
 
       let observableBatch = [];
@@ -162,7 +163,7 @@ export class AgendaComponent implements OnInit {
 
       let medicosABuscar = this.tratarMedicosParaBuscaAgendamento();
 
-      let reqAgendamentos = this.agendamentoService.buscarAgendamentosMedico(medicosABuscar, this.util.dataParaString(this.viewDate), this.view.valueOf())
+      let reqAgendamentos = this.agendamentoService.buscarAgendamentosMedico(medicosABuscar, this.util.dataParaString(this.viewDate), this.view.valueOf(), this.appService.retornarClinicaCorrente().id)
         .map(dados => {
           this.eventos = [];
           this.eventosBanco = new Array<Agendamento>();
@@ -191,8 +192,7 @@ export class AgendaComponent implements OnInit {
         });
         observableBatch.push(reqConfiguracao);
       }
-      else
-      {
+      else {
         this.medico.configuracaoAgenda = new ConfiguracaoAgenda();
         this.ajustarParametrosCalendario();
       }
@@ -322,6 +322,7 @@ export class AgendaComponent implements OnInit {
                     if (result == 'Ok') {
                       // this.eventos = [...this.eventos, eventoClicado];
                       var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
+
                       this.chamarModalAdicionaAgendamento(novoAgendamento);
                     }
                   }, (erro) => {
@@ -341,6 +342,7 @@ export class AgendaComponent implements OnInit {
                   if (result == 'Ok') {
                     // this.eventos = [...this.eventos, eventoClicado];
                     var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
+
                     this.chamarModalAdicionaAgendamento(novoAgendamento);
                   }
                 }, () => { });
@@ -352,6 +354,7 @@ export class AgendaComponent implements OnInit {
           }
           if (criadoEvento) {
             var novoAgendamento = this.converteCalendarEventParaAgendamento(eventoClicado);
+
             this.chamarModalAdicionaAgendamento(novoAgendamento);
           }
         }),
@@ -434,6 +437,7 @@ export class AgendaComponent implements OnInit {
       this.modalService.open(this.modalAcoes).result.then(result => {
         switch (result) {
           case ("Editar"):
+
             this.chamarModalAdicionaAgendamento(agendamento, "editar");
             break;
           case ("Confirmar"):
@@ -623,7 +627,7 @@ export class AgendaComponent implements OnInit {
 
     let medicosABuscar = this.tratarMedicosParaBuscaAgendamento();
 
-    this.agendamentoService.buscarAgendamentosMedico(medicosABuscar, this.util.dataParaString(this.viewDate), this.view.valueOf())
+    this.agendamentoService.buscarAgendamentosMedico(medicosABuscar, this.util.dataParaString(this.viewDate), this.view.valueOf(), this.appService.retornarClinicaCorrente().id)
       .subscribe(dados => {
         this.eventos = [];
         this.eventosBanco = new Array<Agendamento>();
@@ -690,30 +694,37 @@ export class AgendaComponent implements OnInit {
 
   chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
 
-    var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
-
-    modalAdicionaAgendamento.componentInstance.medico = this.medico;
-    modalAdicionaAgendamento.componentInstance.pacientes = this.pacientes;
-    modalAdicionaAgendamento.componentInstance.cirurgias = this.cirurgias;
-    modalAdicionaAgendamento.componentInstance.locais = this.locais;
-    modalAdicionaAgendamento.componentInstance.exames = this.exames;
-    modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
-    modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
-
-    if (agendamento != null) {
-      modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
+    if (this.selecionadoTodosMedicos()) {      
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado.";
     }
+    else {
 
-    if (acao == "editar") {
-      modalAdicionaAgendamento.componentInstance.editando = true;
-    }
+      var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
 
-    modalAdicionaAgendamento.result.then((agendamentoResult: Agendamento) => {
-      if (agendamentoResult != null) {
-        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoResult));
+      modalAdicionaAgendamento.componentInstance.medico = this.medico;
+      modalAdicionaAgendamento.componentInstance.pacientes = this.pacientes;
+      modalAdicionaAgendamento.componentInstance.cirurgias = this.cirurgias;
+      modalAdicionaAgendamento.componentInstance.locais = this.locais;
+      modalAdicionaAgendamento.componentInstance.exames = this.exames;
+      modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
+      modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
+
+      if (agendamento != null) {
+        modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
       }
-      this.refreshPage();
-    }).catch((error) => { })
+
+      if (acao == "editar") {
+        modalAdicionaAgendamento.componentInstance.editando = true;
+      }
+
+      modalAdicionaAgendamento.result.then((agendamentoResult: Agendamento) => {
+        if (agendamentoResult != null) {
+          this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoResult));
+        }
+        this.refreshPage();
+      }).catch((error) => { })
+    }
   }
 
   abrirFecharCaixa(acao: string) {

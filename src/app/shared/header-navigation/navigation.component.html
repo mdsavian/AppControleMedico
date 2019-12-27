@@ -12,19 +12,7 @@
           <!-- Light Logo icon -->
           <img src="assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
           {{tituloDescricao}}
-        </b>
-        <span class="navbar-text">
-
-        </span>
-        <!--End Logo icon -->
-        <!-- Logo text --><span>
-          <!-- dark Logo text -->
-          <!-- <img src="assets/images/logo-text.png" alt="homepage" class="dark-logo" /> -->
-          <!-- Light Logo text 
-                <img src="assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
-              -->
-        </span></a>
-
+        </b></a>
     </div>
 
     <div class="navbar-collapse">
@@ -33,79 +21,33 @@
             href="javascript:void(0)"><i class="sl-icon-menu"></i></a> </li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <!-- <li class="nav-item hidden-xs-down search-box"> <a class="nav-link hidden-sm-down waves-effect waves-dark"
-            href="javascript:void(0)"><i class="icon-Magnifi-Glass2"></i></a>
-          <form class="app-search">
-            <input type="text" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i
-                class="ti-close"></i></a>
-          </form>
-        </li> -->
-        <li>
-          <button (click)="logout()" class="btn btn-primary-light">Sair</button>
+        <li class="nav-item" ngbDropdown display="dynamic" placement="bottom-right">
+
+          <a ngbDropdownToggle class="nav-link dropdown-toggle waves-effect waves-dark profile-pic"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdownUsuario" role="button">
+            <img [src]="imageUrl" alt="user" class="img-circle" width="30" />
+            <span class="hidden-md-down"> {{nomeUsuario}} &nbsp;<i class="fa fa-angle-down"></i></span>
+          </a>
+
+          <div ngbDropdownMenu aria-labelledby="navbarDropdownUsuario" class="dropdown-menu">
+            <ul class="dropdown-user">
+              <li>
+                <div class="dw-user-box">
+                  <div class="u-img"><img [src]="imageUrl" alt="user"></div>
+                  <div class="u-text">
+                    <h4>{{nomeUsuario}}</h4>
+                    <p class="text-muted">{{emailUsuario}}</p>
+                  </div>
+                </div>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li><a ngbDropdownItem (click)="perfilUsuario()"><i class="ti-user"></i> Meu Perfil</a></li>
+              <li><a ngbDropdownItem (click)="trocarClinica()"><i class="fa fa-exchange"></i> Trocar Clínica</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a ngbDropdownItem (click)="logout()"><i class="fa fa-power-off"></i> Sair</a></li>
+            </ul>
+          </div>
         </li>
-
-        <!-- <li class="nav-item dropdown" ngbDropdown placement="bottom-right">
-                  <a ngbDropdownToggle class="nav-link text-muted text-muted waves-effect waves-dark" href="javascript:void(0)">
-                    <i class="icon-Bell"></i>
-                    <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
-                  </a>
-                  <div class="dropdown-menu mailbox animated bounceInDown" ngbDropdownMenu>
-                    <ul>
-                      <li>
-                        <div class="drop-title">Notifications</div>
-                      </li>
-                      <li>
-                        <div class="message-center" [perfectScrollbar]="config">
-                          <a href="#" *ngFor="let notification of notifications">
-                            <div class="round {{notification.round}}"><i class="{{notification.icon}}"></i></div>
-                            <div class="mail-contnet">
-                              <h5>{{notification.title}}</h5> <span class="mail-desc">{{notification.subject}}</span> <span
-                                class="time">{{notification.time}}</span>
-                            </div>
-                          </a>
-                        </div>
-                      </li>
-                      <li>
-                        <a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong> <i
-                            class="fa fa-angle-right"></i> </a>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-        
-                <li class="nav-item dropdown" ngbDropdown placement="bottom-right">
-                  <a ngbDropdownToggle class="nav-link text-muted waves-effect waves-dark" href="javascript:void(0)"> <i
-                      class="icon-Mail"></i>
-                    <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
-                  </a>
-                  <div class="dropdown-menu mailbox animated bounceInDown" ngbDropdownMenu>
-                    <ul>
-                      <li>
-                        <div class="drop-title">You have 4 new messages</div>
-                      </li>
-                      <li>
-                        <div class="message-center" [perfectScrollbar]="config">
-                          <a href="#" *ngFor="let mymessage of mymessages">
-                            <div class="user-img"> <img src="{{mymessage.useravatar}}" alt="user" class="img-circle" width="40">
-                              <span class="profile-status {{mymessage.status}} pull-right"></span>
-                            </div>
-                            <div class="mail-contnet">
-                              <h5>{{mymessage.from}}</h5>
-                              <span class="mail-desc">{{mymessage.subject}}</span>
-                              <span class="time">{{mymessage.time}}</span>
-                            </div>
-                          </a>
-                        </div>
-                      </li>
-                      <li>
-                        <a class="nav-link text-center" href="javascript:void(0);"> <strong>See all e-Mails</strong> <i
-                            class="fa fa-angle-right"></i> </a>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-                 -->
-
       </ul>
     </div>
   </nav>

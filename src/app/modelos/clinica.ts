@@ -4,6 +4,7 @@ export class Clinica extends Entidade {
 
   constructor() {
     super();
+    this.ativo = true;
   }
 
   ativo:boolean;

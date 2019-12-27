@@ -32,6 +32,8 @@ export class LoginComponent implements OnInit {
   onLoggedin() {    
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       usuarioRetorno => {
+        console.log("opaa111");
+
         
         if (usuarioRetorno == null) {
           var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
@@ -40,20 +42,15 @@ export class LoginComponent implements OnInit {
         else {
           if (usuarioRetorno.login != "admin")
             this.appService.buscarClinicasUsuario(usuarioRetorno).subscribe(clinicas => {
+              console.log("opaa");
               this.appService.armazenarClinica(clinicas.find(c => true));
               
               if (usuarioRetorno.senhaPadrao) {
                 this.validaSenhaPadrao(usuarioRetorno);
               }
               else {
-                if (this.util.retornaUsuarioAdmOuMedico(usuarioRetorno))
-                  this.router.navigate(['/dashboard/dashboardanalitico']);
-                else if (usuarioRetorno.funcionario != null && this.funcionarioService.PermitirVisualizarAgenda(usuarioRetorno.funcionario))
-                  this.router.navigate(['/agenda/agenda']);
-                else //se o usuário for um funcionário sem permissão dash e agenda, redireciona para o cadastro do funcinario
-                {
-                  this.router.navigate(['/listagem/listagemfuncionario']);
-                }
+                console.log("eae");
+                this.loginService.redirecionarRota(usuarioRetorno, true);
               }
 
             });

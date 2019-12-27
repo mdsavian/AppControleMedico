@@ -31,6 +31,7 @@ import { ModalErrorComponent } from './shared/modal/modal-error.component';
 import { environment } from '../environments/environment';
 import { UsuarioService } from './services/usuario.service';
 import { SharedModalModule } from './shared/modal/shared-modal.module';
+import { ModalTrocaClinicaComponent } from './shared/modal/modal-troca-clinica.component';
 
 
 import { NgxMaskModule } from 'ngx-mask'
@@ -56,8 +57,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbModule.forRoot(),
     NgxMaskModule.forRoot(),
     PerfectScrollbarModule,
-    SharedModalModule,  
-    AppRoutingModule,    
+    SharedModalModule,
+    AppRoutingModule,
   ],
   declarations: [
     AppComponent,
@@ -67,7 +68,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NavigationComponent,
     BreadcrumbComponent,
     SidebarComponent,
-    ModalErrorComponent
+    ModalErrorComponent,
+    ModalTrocaClinicaComponent
   ],
 
   providers: [
@@ -84,7 +86,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     },
     UsuarioService
   ],
-  entryComponents: [ModalErrorComponent ],
+  entryComponents: [ModalErrorComponent, ModalTrocaClinicaComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

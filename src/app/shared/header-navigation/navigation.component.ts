@@ -4,9 +4,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { LoginService } from '../../services/login.service';
 import { AppService } from '../../services/app.service';
-import {Util} from '../../uteis/Util';
+import { Util } from '../../uteis/Util';
 import { Usuario } from '../../modelos/usuario';
-
+import { UploadService } from '../../services/upload.service';
+import { FuncionarioService } from '../../services/funcionario.service';
+import { MedicoService } from '../../services/medico.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { ModalTrocaClinicaComponent } from '../modal/modal-troca-clinica.component';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html'
@@ -14,87 +18,73 @@ import { Usuario } from '../../modelos/usuario';
 export class NavigationComponent implements AfterViewInit, OnInit {
 
   tituloDescricao = "Controle Médico";
+  nomeUsuario = "";
+  usuario = new Usuario();
+  emailUsuario = "";
   util = new Util();
+  imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal, private router: Router, private loginService: LoginService, private appService: AppService) { }
+  constructor(private modalService: NgbModal, private uploadService: UploadService, private medicoService: MedicoService, private funcionarioService: FuncionarioService,
+    private router: Router, private loginService: LoginService, private appService: AppService, private usuarioService: UsuarioService) { }
 
 
   ngOnInit(): void {
     var clinica = this.appService.retornarClinicaCorrente();
-    var usuario = this.appService.retornarUsuarioCorrente();
+    this.usuario = this.appService.retornarUsuarioCorrente();
 
-    var nomeUsuario = !this.util.isNullOrWhitespace(usuario.funcionarioId) ? usuario.funcionario.nomeCompleto : !this.util.isNullOrWhitespace(usuario.medicoId) ? usuario.medico.nomeCompleto : "Admin";
+    if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId)) {
+      var funcionario = this.usuario.funcionario;
+      this.nomeUsuario = funcionario.nomeCompleto.toUpperCase();
+      this.emailUsuario = funcionario.email;
 
-    this.tituloDescricao = this.tituloDescricao + " - Bem vindo " + nomeUsuario.toUpperCase() + " - Clínica " + clinica.razaoSocial.toUpperCase();
+      if (!this.util.isNullOrWhitespace(funcionario.fotoId)) {
+        this.uploadService.downloadImagem(funcionario.id, "funcionario").subscribe(byte => {
+          this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+        });
+      }
+
+    }
+    else if (!this.util.isNullOrWhitespace(this.usuario.medicoId)) {
+      var medico = this.usuario.medico;
+
+      this.nomeUsuario = medico.nomeCompleto.toUpperCase();
+      this.emailUsuario = medico.email;
+
+      if (!this.util.isNullOrWhitespace(medico.fotoId)) {
+        this.uploadService.downloadImagem(medico.id, "medico").subscribe(byte => {
+          this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+        });
+      }
+    }
+    else {
+      this.emailUsuario = this.nomeUsuario = "ADMIN";
+    }
+
+    this.tituloDescricao = this.tituloDescricao + " - Bem vindo " + this.nomeUsuario + " - Clínica " + clinica.razaoSocial.toUpperCase();
+
   }
-
-  // This is for Notifications
-  notifications: Object[] = [
-    {
-      round: 'round-danger',
-      icon: 'ti-link',
-      title: 'Luanch Admin',
-      subject: 'Just see the my new admin!',
-      time: '9:30 AM'
-    },
-    {
-      round: 'round-success',
-      icon: 'ti-calendar',
-      title: 'Event today',
-      subject: 'Just a reminder that you have event',
-      time: '9:10 AM'
-    },
-    {
-      round: 'round-info',
-      icon: 'ti-settings',
-      title: 'Settings',
-      subject: 'You can customize this template as you want',
-      time: '9:08 AM'
-    },
-    {
-      round: 'round-primary',
-      icon: 'ti-user',
-      title: 'Pavan kumar',
-      subject: 'Just see the my admin!',
-      time: '9:00 AM'
-    }
-  ];
-
-  // This is for Mymessages
-  mymessages: Object[] = [
-    {
-      useravatar: 'assets/images/users/1.jpg',
-      status: 'online',
-      from: 'Pavan kumar',
-      subject: 'Just see the my admin!',
-      time: '9:30 AM'
-    },
-    {
-      useravatar: 'assets/images/users/2.jpg',
-      status: 'busy',
-      from: 'Sonu Nigam',
-      subject: 'I have sung a song! See you at',
-      time: '9:10 AM'
-    },
-    {
-      useravatar: 'assets/images/users/2.jpg',
-      status: 'away',
-      from: 'Arijit Sinh',
-      subject: 'I am a singer!',
-      time: '9:08 AM'
-    },
-    {
-      useravatar: 'assets/images/users/4.jpg',
-      status: 'offline',
-      from: 'Pavan kumar',
-      subject: 'Just see the my admin!',
-      time: '9:00 AM'
-    }
-  ];
 
   public logout() {
     this.loginService.logout();
     this.router.navigate(["authentication/login"]);
+  }
+
+  trocarClinica() {
+    this.modalService.open(ModalTrocaClinicaComponent, {size:'lg'});
+  }
+
+  perfilUsuario() {
+
+    this.usuarioService.usuarioParaValidacao = this.usuario;
+
+    if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId)) {
+      this.funcionarioService.funcionario = this.usuario.funcionario;
+      this.router.navigate(['/cadastros/cadastrofuncionario']);
+    }
+    else if (!this.util.isNullOrWhitespace(this.usuario.medicoId)) {
+      this.medicoService.medico = this.usuario.medico;
+      this.router.navigate(['/cadastros/cadastromedico']);
+    }
   }
 
   ngAfterViewInit() {

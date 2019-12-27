@@ -72,6 +72,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       yAxes: [{
         ticks: {
           max: 100,
+          min: 0
         }
       }]
     }
@@ -222,6 +223,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.totalPagosFinalizados = pagosFinalizados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalCancelados = cancelados.reduce(function (total, valor) { return total + valor; }, 0);
     
+    maiorValorAxesY = Math.round(maiorValorAxesY * 1.25) == 0 ? 1 : Math.round(maiorValorAxesY * 1.25);
     this.opcoesGraficoLinhas = {
       lineTension: 1,
       responsive: true,
@@ -229,7 +231,8 @@ export class DashboardAnaliticoComponent implements OnInit {
       scales: {
         yAxes: [{
           ticks: {
-            max: Math.round(maiorValorAxesY * 1.25),
+            max: maiorValorAxesY,
+            min : 0
           }
         }]
       }

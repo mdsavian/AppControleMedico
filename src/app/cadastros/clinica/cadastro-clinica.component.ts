@@ -6,7 +6,6 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EnderecoService } from '../../services/endereco.service';
 import { Estados } from "../../enums/estados";
-import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
 import { UploadService } from '../../services/upload.service';
 import { Util } from '../../uteis/Util';
 
@@ -39,7 +38,7 @@ export class CadastroClinicaComponent implements OnInit, AfterViewInit {
       this.razaoSocial.nativeElement.setAttribute('readonly', true);
     }
 
-    if (this.cnpj != null)
+    if (this.cnpj != null && this.clinica.id)
       this.cnpj.nativeElement.setAttribute('readonly', true);
 
   }
