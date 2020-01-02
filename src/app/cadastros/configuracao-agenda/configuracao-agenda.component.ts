@@ -65,7 +65,7 @@ export class ConfiguracaoAgendaComponent implements OnInit {
 
     observableBatch.push(reqClinica);
 
-    let reqMedicos = this.medicoService.buscarMedicosPorUsuario(this.appService.retornarUsuarioCorrente().id, this.appService.retornarClinicaCorrente().id)
+    let reqMedicos = this.medicoService.buscarMedicosPorUsuario()
       .map(medicos => {
         this.medicos = medicos;
 

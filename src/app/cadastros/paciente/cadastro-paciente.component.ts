@@ -69,7 +69,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
         this.downloadFoto();
     }
 
-    this.medicoService.buscarMedicosPorUsuario(this.appService.retornarUsuarioCorrente().id, this.appService.retornarClinicaCorrente().id, true)
+    this.medicoService.buscarMedicosPorUsuario(true)
       .subscribe(medicoRetorno => {
         this.medicos = medicoRetorno;
         this.ExibeAbaEspecialidade("obstetrícia");

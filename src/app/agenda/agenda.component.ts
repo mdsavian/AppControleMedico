@@ -26,6 +26,7 @@ import { FuncionarioService } from '../services/funcionario.service';
 import { CaixaService } from '../services/caixa.service';
 import { ModalErrorComponent } from '../shared/modal/modal-error.component';
 import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
+import { ModalDetalhesAgendamentoComponent } from './modal-detalhes-agendamento.component';
 import { CirurgiaService } from '../services/cirurgia.service';
 import { PacienteService } from '../services/paciente.service';
 import { ProcedimentoService } from '../services/procedimento.service';
@@ -107,7 +108,7 @@ export class AgendaComponent implements OnInit {
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
     let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
 
-    let reqMedicos = this.medicoService.buscarMedicosPorUsuario(usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
+    let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
 
       if (dados.length > 1) {
 
@@ -400,17 +401,20 @@ export class AgendaComponent implements OnInit {
             this.acoesPermitidas.push("EDITAR");
             this.acoesPermitidas.push("CANCELAR");
             this.acoesPermitidas.push("EXCLUIR");
+            this.acoesPermitidas.push("DETALHES");
             break;
           }
         case (ESituacaoAgendamento.Cancelado.valueOf()):
           {
             this.acoesPermitidas.push("EDITAR");
+            this.acoesPermitidas.push("DETALHES");
             this.acoesPermitidas.push("EXCLUIR");
             break;
           }
         case (ESituacaoAgendamento.Confirmado.valueOf()):
           {
             this.acoesPermitidas.push("PAGAR/FINALIZAR");
+            this.acoesPermitidas.push("DETALHES");
             this.acoesPermitidas.push("EDITAR");
             this.acoesPermitidas.push("CANCELAR");
             this.acoesPermitidas.push("EXCLUIR");
@@ -418,24 +422,33 @@ export class AgendaComponent implements OnInit {
           }
         case (ESituacaoAgendamento["Pago/Finalizado"].valueOf()):
           {
+            this.acoesPermitidas.push("DETALHES");
             break;
           }
       }
     }
     else {
+      this.acoesPermitidas.push("DETALHES");
       this.acoesPermitidas.push("EDITAR");
       this.acoesPermitidas.push("EXCLUIR");
     }
+
+    console.log(this.acoesPermitidas);
   }
 
   actionAgendamento(evento: CalendarEvent, acao: string) {
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
+    console.log(agendamento);
     if (agendamento != null) {
 
       this.tratarAcoesPermitidas(agendamento);
 
       this.modalService.open(this.modalAcoes).result.then(result => {
         switch (result) {
+          case ("Detalhes"):
+            var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
+            modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
+            break;
           case ("Editar"):
 
             this.chamarModalAdicionaAgendamento(agendamento, "editar");
@@ -694,7 +707,7 @@ export class AgendaComponent implements OnInit {
 
   chamarModalAdicionaAgendamento(agendamento: Agendamento, acao: string = "") {
 
-    if (this.selecionadoTodosMedicos()) {      
+    if (this.selecionadoTodosMedicos()) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modal.componentInstance.mensagemErro = "Não existe configuração de agenda para o médico selecionado.";
     }

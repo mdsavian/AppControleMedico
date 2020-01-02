@@ -160,6 +160,12 @@
     </div>
 
     <div style="margin-top: 10px">
+      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn-info btn"
+        [disabled]="!validarBotoesAcoes('Detalhes')" (click)="c('Detalhes')"><span class="fa fa-info-circle"
+          title="Detalhes"></span> Detalhes </button>
+    </div>
+
+    <div style="margin-top: 10px">
       <button type="button" class="btn btn-warning btn-lg btn-block" style="margin:0 auto;"
         [disabled]="!validarBotoesAcoes('Cancelar')" (click)="c('Cancelar')"><span class="fa fa-times"
           title="Cancelar"></span> Cancelar</button>

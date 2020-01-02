@@ -67,7 +67,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   }
 
   ngAfterViewInit(): void {
-    this.medicoService.todos().subscribe(medicos => {
+    this.medicoService.buscarMedicosPorUsuario().subscribe(medicos => {
       this.medicos = medicos;
       if (this.util.isNullOrWhitespace(this.contaReceber.medicoId)) {
         let medicoTodos = new Medico();

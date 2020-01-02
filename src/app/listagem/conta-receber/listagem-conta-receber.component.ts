@@ -4,13 +4,15 @@ import { ContaReceberService } from '../../services/contaReceber.service';
 import { ContaReceber } from '../../modelos/contaReceber';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AgendamentoService } from '../../services/agendamento.service';
+import { MedicoService } from '../../services/medico.service';
 import { Util } from '../../uteis/Util';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { PacienteService } from '../../services/paciente.service';
+import { AppService } from '../../services/app.service';
 import { Paciente } from '../../modelos/paciente';
-import { ETipoContaReceber } from '../../enums/ETipoContaReceber';
 import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
+import { Medico } from '../../modelos/medico';
+import { forkJoin } from 'rxjs';
 
 @Component({
   templateUrl: './listagem-conta-receber.component.html'
@@ -21,26 +23,39 @@ export class ListagemContaReceberComponent implements OnInit {
   public isSpinnerVisible = false;
   closeResult: string;
   util = new Util();
-  pacientees = new Array<Paciente>();
+  pacientes = new Array<Paciente>();
+  medicos = new Array<Medico>();
 
-  constructor(private contaReceberService: ContaReceberService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
+  constructor(private contaReceberService: ContaReceberService, private pacienteService: PacienteService, private appService:AppService,
+    private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.isSpinnerVisible = true;
-    this.buscaContasReceber();
-  }
-  buscaContasReceber(): void {
-    this.pacienteService.Todos().subscribe(c => {
-      this.pacientees = c;
-
-      this.contaReceberService.Todos().subscribe(dados => {
-        this.listaContaRecebers = dados;
-        this.isSpinnerVisible = false;
-        this.contaReceberService.listaContaReceber = this.listaContaRecebers;
-        this.source = new LocalDataSource(this.listaContaRecebers);
-      });
+    this.alimentaModelos().subscribe(c => {
+      this.buscarContasReceber();
     });
+  }
+
+  buscarContasReceber()
+  {
+   this.contaReceberService.Todos().subscribe(dados => {
+      this.listaContaRecebers = dados;      
+      this.contaReceberService.listaContaReceber = this.listaContaRecebers;
+      this.source = new LocalDataSource(this.listaContaRecebers);
+      this.isSpinnerVisible = false;
+    });
+  }
+
+  alimentaModelos() {
+    let requisicoes = [];
+    var reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(medicos => this.medicos = medicos);
+    requisicoes.push(reqMedicos);
+
+    let reqPaciente = this.pacienteService.Todos().map(c => this.pacientes = c);
+    requisicoes.push(reqPaciente);    
+
+    return forkJoin(requisicoes);
   }
 
   deletarRegistro(event) {
@@ -56,7 +71,9 @@ export class ListagemContaReceberComponent implements OnInit {
           if (result == 'Sim') {
             this.contaReceberService.Excluir(event.data.id).subscribe(retorno => {
               if (retorno) {
-                this.buscaContasReceber();
+                this.isSpinnerVisible = true;
+
+                this.buscarContasReceber();
               }
             });
           }
@@ -83,7 +100,14 @@ export class ListagemContaReceberComponent implements OnInit {
         title: 'Paciente',
         filter: true,
         valuePrepareFunction: (pacienteId) => {
-          return pacienteId == null || !this.util.hasItems(this.pacientees) ? "" : this.pacientees.find(c => c.id == pacienteId).nomeCompleto;
+          return this.util.isNullOrWhitespace(pacienteId) || !this.util.hasItems(this.pacientes) ? "" : this.pacientes.find(c => c.id == pacienteId).nomeCompleto;
+        }
+      },
+      medicoId: {
+        title: 'Médico',
+        filter: true,
+        valuePrepareFunction: (medicoId) => {          
+          return this.util.isNullOrWhitespace(medicoId) || !this.util.hasItems(this.medicos) ? "Todos" : this.medicos.find(c => c.id == medicoId).nomeCompleto;
         }
       },
       dataEmissao: {

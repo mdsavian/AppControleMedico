@@ -11,6 +11,9 @@ import { FornecedorService } from '../../services/fornecedor.service';
 import { Fornecedor } from '../../modelos/fornecedor';
 import { ETipoContaPagar } from '../../enums/ETipoContaPagar';
 import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
+import { MedicoService } from '../../services/medico.service';
+import { forkJoin } from 'rxjs';
+import { Medico } from '../../modelos/medico';
 
 @Component({
   templateUrl: './listagem-conta-pagar.component.html'
@@ -22,24 +25,38 @@ export class ListagemContaPagarComponent implements OnInit {
   closeResult: string;
   util = new Util();
   fornecedores = new Array<Fornecedor>();
+  medicos = new Array<Medico>();
 
-  constructor(private contaPagarService: ContaPagarService, private fornecedorService: FornecedorService, private router: Router, private modalService: NgbModal) {
+  constructor(private contaPagarService: ContaPagarService, private fornecedorService: FornecedorService, private medicoService: MedicoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.isSpinnerVisible = true;
-    this.buscaContasPagar();
-  }
-  buscaContasPagar(): void {
-    this.fornecedorService.Todos().subscribe(c => {
-    this.fornecedores = c;
+    this.alimentaModelos().subscribe(c => {
+      this.buscaContasPagar();
 
-      this.contaPagarService.Todos().subscribe(dados => {
-        this.listaContaPagars = dados;
-        this.isSpinnerVisible = false;
-        this.contaPagarService.listaContaPagar = this.listaContaPagars;
-        this.source = new LocalDataSource(this.listaContaPagars);
-      });
+    });
+  }
+
+  alimentaModelos() {
+    let requisicoes = [];
+    
+    var reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(medicos => this.medicos = medicos);
+    requisicoes.push(reqMedicos);
+
+    let reqFornecedor = this.fornecedorService.Todos().map(c => this.fornecedores = c);
+    requisicoes.push(reqFornecedor);
+
+    return forkJoin(requisicoes);
+  }
+
+  buscaContasPagar(): void {
+
+    this.contaPagarService.Todos().subscribe(dados => {
+      this.listaContaPagars = dados;      
+      this.contaPagarService.listaContaPagar = this.listaContaPagars;
+      this.source = new LocalDataSource(this.listaContaPagars);
+      this.isSpinnerVisible = false;
     });
   }
 
@@ -56,6 +73,7 @@ export class ListagemContaPagarComponent implements OnInit {
           if (result == 'Sim') {
             this.contaPagarService.Excluir(event.data.id).subscribe(retorno => {
               if (retorno) {
+                this.isSpinnerVisible = true;
                 this.buscaContasPagar();
               }
             });
@@ -86,10 +104,17 @@ export class ListagemContaPagarComponent implements OnInit {
           return fornecedorId == null || !this.util.hasItems(this.fornecedores) ? "" : this.fornecedores.find(c => c.id == fornecedorId).razaoSocial;
         }
       },
+      medicoId: {
+        title: 'Médico',
+        filter: true,
+        valuePrepareFunction: (medicoId) => {          
+          return this.util.isNullOrWhitespace(medicoId) || !this.util.hasItems(this.medicos) ? "Todos" : this.medicos.find(c => c.id == medicoId).nomeCompleto;
+        }
+      },
       dataEmissao: {
         title: 'Emissão',
         filter: true,
-        valuePrepareFunction: (dataEmissao) => {return this.util.dataParaString(dataEmissao)}
+        valuePrepareFunction: (dataEmissao) => { return this.util.dataParaString(dataEmissao) }
       },
       numeroFatura: {
         title: 'Número',
@@ -100,26 +125,26 @@ export class ListagemContaPagarComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (tipoContaDescricao) => { return this.util.isNullOrWhitespace(tipoContaDescricao) ? "Lançamento Manual" : tipoContaDescricao }
       },
-      desconto:{
+      desconto: {
         title: 'Desconto',
         filter: true,
-        valuePrepareFunction: (desconto) => {return this.util.formatarDecimal(desconto)}
+        valuePrepareFunction: (desconto) => { return this.util.formatarDecimal(desconto) }
       },
-      jurosMulta:{
+      jurosMulta: {
         title: 'Juros/Multa',
         filter: true,
-        valuePrepareFunction: (jurosMulta) => {return this.util.formatarDecimal(jurosMulta)}
+        valuePrepareFunction: (jurosMulta) => { return this.util.formatarDecimal(jurosMulta) }
       },
       valor: {
         title: 'Valor',
         filter: true,
-        valuePrepareFunction: (valor) => {return this.util.formatarDecimal(valor)}
+        valuePrepareFunction: (valor) => { return this.util.formatarDecimal(valor) }
 
       },
       saldo: {
         title: 'Saldo',
         filter: true,
-        valuePrepareFunction: (saldo) => {return this.util.formatarDecimal(saldo)}
+        valuePrepareFunction: (saldo) => { return this.util.formatarDecimal(saldo) }
       }
     },
     actions:

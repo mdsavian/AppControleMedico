@@ -64,10 +64,11 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   tiposConta = ETipoContaPagar;
 
   constructor(private fornecedorService: FornecedorService, private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
-  }
+  }  
  
   ngAfterViewInit(): void {
-    this.medicoService.todos().subscribe(medicos => {
+
+    this.medicoService.buscarMedicosPorUsuario().subscribe(medicos => {
       this.medicos = medicos;
       if (this.util.isNullOrWhitespace(this.contaPagar.medicoId)) {
         let medicoTodos = new Medico();

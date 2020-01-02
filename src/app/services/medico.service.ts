@@ -4,6 +4,7 @@ import { Medico } from '../modelos/medico';
 import { Usuario } from '../modelos/usuario';
 import { environment } from '../../environments/environment';
 import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
+import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class MedicoService {
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'medico/';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appService:AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -35,7 +36,10 @@ export class MedicoService {
     return this.http.get<Medico[]>(this.accessPointUrl + "validarDeleteConvenioMedico?" + parametros); 
   }   
 
-  buscarMedicosPorUsuario(usuarioId: string, clinicaId: string, carregarEspecialidade:boolean = false) {
+  buscarMedicosPorUsuario(carregarEspecialidade:boolean = false) {
+  let usuarioId = this.appService.retornarUsuarioCorrente().id;
+  let clinicaId = this.appService.retornarClinicaCorrente().id;
+
     let parametros = new HttpParams().set("usuarioId", usuarioId).set("clinicaId", clinicaId).set("carregarEspecialidade",carregarEspecialidade.toString());    
     return this.http.get<Medico[]>(this.accessPointUrl + "buscarMedicosPorUsuario?" + parametros); 
   }

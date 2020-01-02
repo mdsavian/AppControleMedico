@@ -130,7 +130,7 @@ export class TimelineComponent implements OnInit {
     let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
     let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
-    let reqMedico = this.medicoService.buscarMedicosPorUsuario(this.appService.retornarUsuarioCorrente().id, this.appService.retornarClinicaCorrente().id, false)
+    let reqMedico = this.medicoService.buscarMedicosPorUsuario()
     .map(dados => { this.medicos = dados; });
 
     return forkJoin([reqExames,reqMedico, reqLocais, reqCirurgias, reqProcedimento]);

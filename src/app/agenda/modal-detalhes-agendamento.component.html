@@ -14,18 +14,31 @@
                 <ng-template ngbTabContent>
                     <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                         <div class="row rowcadastro">
-                            <div class="col-xs-6 col-md-6">
+                            <div class="col-xs-12 col-md-12">
+
                                 <div class="form-group">
                                     <label class="control-label" for="medicoModel">Médico</label>
                                     <input id="medicoModel" name="medicoModel" type="text" class="form-control"
                                         #medicoModel id="medicoModel" readonly [(ngModel)]="nomeMedico">
                                 </div>
                             </div>
-                            <div class="col-xs-6 col-md-6" [hidden]="tipoAgendamentoDescricao.value=='Bloqueio'">
+                        </div>
+                        <div class="row rowcadastro">
+                            <div class="col-xs-12 col-md-12" [hidden]="tipoAgendamentoDescricao.value=='Bloqueio'">
                                 <div class="form-group">
                                     <label class="control-label" for="pacienteModel">Paciente</label>
-                                    <input id="pacienteModel" name="pacienteModel" type="text" class="form-control"
-                                        #pacienteModel id="pacienteModel" readonly [(ngModel)]="nomePaciente">
+
+                                    <div class="input-group">
+                                        <input id="pacienteModel" name="pacienteModel" type="text" class="form-control"
+                                            #pacienteModel id="pacienteModel" readonly [(ngModel)]="nomePaciente">
+                                        <div class="input-group-prepend">
+                                            <ng-template #tipHistoricoPaciente>Histórico Paciente</ng-template>
+                                            <span (click)="historicoPaciente()" [ngbTooltip]="tipHistoricoPaciente"
+                                                class="input-group-text" id="img-historico-paciente">
+                                                <i class="fa fa-info-circle"></i></span>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

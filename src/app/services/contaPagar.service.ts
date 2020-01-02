@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContaPagar } from '../modelos/contaPagar'
 import { environment } from '../../environments/environment';
+import { AppService } from './app.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,12 +13,13 @@ export class ContaPagarService {
   public contaPagar:ContaPagar;
   public listaContaPagar :Array<ContaPagar>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appService:AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
   public Todos() {
-    return this.http.get<Array<ContaPagar>>(this.accessPointUrl);
+    let parametros = new HttpParams().set("usuarioId", this.appService.retornarUsuarioCorrente().id).set("clinicaId", this.appService.retornarClinicaCorrente().id);
+    return this.http.get<ContaPagar[]>(this.accessPointUrl + "todos?" + parametros);        
   }
   
   public salvar(contaPagar: ContaPagar) {

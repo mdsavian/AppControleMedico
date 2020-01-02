@@ -299,7 +299,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       this.labelsGraficoLinhas[i] = i;
     }
 
-    let reqMedicos = this.medicoService.buscarMedicosPorUsuario(this.usuario.id, this.appService.retornarClinicaCorrente().id).map(dados => {
+    let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
 
 
       if (dados.length > 1) {

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, AfterContentInit, TemplateRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
@@ -30,6 +30,8 @@ import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { UploadService } from '../services/upload.service';
+import { TimelineService } from '../services/timeline.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -70,8 +72,9 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('tipoLocal', { read: ElementRef, static: false }) private localCirurgiaModel: ElementRef;
   @ViewChild('tipoProcedimento', { read: ElementRef, static: false }) private procedimentoModel: ElementRef;
 
-  constructor(public activeModal: NgbActiveModal, private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
-    private uploadService:UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
+  constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router,
+    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
+    private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
   ngAfterViewInit(): void {
@@ -134,16 +137,16 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     else {
       this.tituloTela = "Novo Agendamento - ";
       this.agendamento.medicoId = this.medico.id;
-      this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;      
+      this.agendamento.clinicaId = this.appService.retornarClinicaCorrente().id;
       this.agendamento.funcionarioId = this.appService.retornarUsuarioCorrente().funcionarioId;
-      this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);            
+      this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
     }
 
     this.tituloTela += this.medico.nomeCompleto;
 
   }
 
-  salvar() {    
+  salvar() {
 
     var retorno = false;
 
@@ -163,7 +166,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado)
       this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Agendado;
-      
+
     var validaHoras = this.validadorAgendamento.validaHorasAgendamento(this.medico.configuracaoAgenda,
       this.util.dataParaString(this.agendamento.dataAgendamento), this.agendamento.horaInicial, this.agendamento.horaFinal, this.agendamento.tipoAgendamento);
 
@@ -176,7 +179,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     if (!retorno) {
       this.agendamento = this.agendamentoService.tratarCorAgendamento(this.agendamento, this.exames, this.cirurgias, this.procedimentos);
       this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => {
-       this.activeModal.close(novoAgendamento) });
+        this.activeModal.close(novoAgendamento)
+      });
     }
   }
 
@@ -184,7 +188,20 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     this.activeModal.close();
   }
 
-  public formataData(e): void {    
+  historicoPaciente() {
+    if (this.paciente != null && !this.util.isNullOrWhitespace(this.paciente.id)) {
+      this.timelineService.pacienteId = this.paciente.id;
+      this.timelineService.paciente = this.paciente;
+      this.activeModal.close();
+      this.router.navigate(['/listagem/timeline']);
+    }
+    else {
+      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modalErro.componentInstance.mensagemErro = "Paciente inválido.";
+    }
+  }
+
+  public formataData(e): void {
     var dataFormatada = "";
 
     if (!this.util.isNullOrWhitespace(e.target.value))

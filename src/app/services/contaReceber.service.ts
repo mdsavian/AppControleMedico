@@ -4,6 +4,7 @@ import { ContaReceber } from '../modelos/contaReceber'
 import { environment } from '../../environments/environment';
 import { AgendamentoService } from '../services/agendamento.service';
 import { Agendamento } from "../modelos/agendamento";
+import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,14 @@ export class ContaReceberService {
   public contaReceber: ContaReceber;
   public listaContaReceber: Array<ContaReceber>;
 
-  constructor(private http: HttpClient, private agendamentoService: AgendamentoService, ) {
+  constructor(private http: HttpClient, private appService:AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
   public Todos() {
-    return this.http.get<Array<ContaReceber>>(this.accessPointUrl);
+
+    let parametros = new HttpParams().set("usuarioId", this.appService.retornarUsuarioCorrente().id).set("clinicaId", this.appService.retornarClinicaCorrente().id);
+    return this.http.get<ContaReceber[]>(this.accessPointUrl + "todos?" + parametros);
   }
 
   public salvar(contaReceber: ContaReceber) {

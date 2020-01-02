@@ -6,9 +6,6 @@
 
     <div class="modal-header" [hidden]=isSpinnerVisible>
         <h4 class="modal-title">{{tituloTela}}</h4>
-        <!-- <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
-            <span aria-hidden="true">&times;</span>
-        </button> -->
     </div>
     <div class="modal-body" [hidden]=isSpinnerVisible>
         <div class="row rowcadastro">
@@ -34,11 +31,15 @@
                             [required]="tipoAgendamento.value!='Bloqueio'" [ngbTypeahead]="buscaPaciente"
                             class="form-control" minlength="3" #pacienteModel="ngModel" id="pacienteModel"
                             [(ngModel)]="pacienteSelecionado">
-                        <div class="input-group-prepend" *ngIf=!editando >
+                        <div class="input-group-prepend">
                             <ng-template #tipPaciente>Adiciona Paciente</ng-template>
-                            <span (click)="adicionaPaciente()" [ngbTooltip]="tipPaciente" class="input-group-text"
-                                id="img-adiciona-oficio">
+                            <span (click)="adicionaPaciente()" *ngIf=!editando [ngbTooltip]="tipPaciente"
+                                class="input-group-text" id="img-adiciona-oficio">
                                 <i class="fa fa-pencil"></i></span>
+                            <ng-template #tipHistoricoPaciente>Histórico Paciente</ng-template>
+                            <span (click)="historicoPaciente()" [ngbTooltip]="tipHistoricoPaciente"
+                                class="input-group-text" id="img-historico-paciente">
+                                <i class="fa fa-info-circle"></i></span>
                         </div>
                     </div>
                     <div *ngIf="(falhaNaBusca || pacienteModel.invalid) && tipoAgendamento.value!='Bloqueio'"
@@ -156,7 +157,7 @@
                             <option *ngFor="let convenio of convenios" [ngValue]="convenio.id">
                                 {{convenio.descricao}}
                             </option>
-                        </select>                        
+                        </select>
                         <div class="input-group-prepend">
                             <ng-template #tipConvenio>Adiciona Convênio</ng-template>
                             <span (click)="chamaModalAdiciona('Convenio')" [ngbTooltip]="tipConvenio"
