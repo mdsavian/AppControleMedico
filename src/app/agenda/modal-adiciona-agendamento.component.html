@@ -34,7 +34,7 @@
                             [required]="tipoAgendamento.value!='Bloqueio'" [ngbTypeahead]="buscaPaciente"
                             class="form-control" minlength="3" #pacienteModel="ngModel" id="pacienteModel"
                             [(ngModel)]="pacienteSelecionado">
-                        <div class="input-group-prepend">
+                        <div class="input-group-prepend" *ngIf=!editando >
                             <ng-template #tipPaciente>Adiciona Paciente</ng-template>
                             <span (click)="adicionaPaciente()" [ngbTooltip]="tipPaciente" class="input-group-text"
                                 id="img-adiciona-oficio">
@@ -62,7 +62,7 @@
                                 {{procedimento.descricao}}
                             </option>
                         </select>
-                        <div class="input-group-prepend">
+                        <div class="input-group-prepend" *ngIf=!editando>
                             <ng-template #tipProcedimento>Adiciona Procedimento</ng-template>
                             <span (click)="chamaModalAdiciona('Procedimento')" [ngbTooltip]="tipProcedimento"
                                 class="input-group-text" id="img-adiciona-oficio">
@@ -87,10 +87,10 @@
                                 {{exame.descricao}}
                             </option>
                         </select>
-                        <div class="input-group-prepend">
+                        <div class="input-group-prepend" *ngIf=!editando>
                             <ng-template #tipExame>Adiciona Exame</ng-template>
                             <span (click)="chamaModalAdiciona('Exame')" class="input-group-text" [ngbTooltip]="tipExame"
-                                id="img-adiciona-oficio">
+                                id="img-adiciona-exame">
                                 <i class="fa fa-pencil"></i></span>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                                 {{cirurgia.descricao}}
                             </option>
                         </select>
-                        <div class="input-group-prepend">
+                        <div class="input-group-prepend" *ngIf=!editando>
                             <ng-template #tipCirurgia>Adiciona Cirurgia</ng-template>
                             <span (click)="chamaModalAdiciona('Cirurgia')" class="input-group-text"
                                 [ngbTooltip]="tipCirurgia" id="img-adiciona-oficio">
@@ -156,7 +156,7 @@
                             <option *ngFor="let convenio of convenios" [ngValue]="convenio.id">
                                 {{convenio.descricao}}
                             </option>
-                        </select>
+                        </select>                        
                         <div class="input-group-prepend">
                             <ng-template #tipConvenio>Adiciona Convênio</ng-template>
                             <span (click)="chamaModalAdiciona('Convenio')" [ngbTooltip]="tipConvenio"

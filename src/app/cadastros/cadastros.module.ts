@@ -43,7 +43,6 @@ import { CadastroFormaDePagamentoComponent } from './forma-de-pagamento/cadastro
 import { CadastroProntuarioComponent } from './prontuario/cadastro-prontuario.component';
 import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-agenda.component'
 import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component'
-import { ModalDetalhesAgendamentoComponent } from '../agenda/modal-detalhes-agendamento.component'
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
 import{BotaoDownloadComponent} from './prontuario/botao-download-component';
@@ -54,13 +53,13 @@ import{BotaoDownloadComponent} from './prontuario/botao-download-component';
     QuillModule.forRoot(), DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
-    CadastroFornecedorComponent, ConfiguracaoAgendaComponent, ModalDetalhesAgendamentoComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
+    CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent,
     CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective, BotaoDownloadComponent],
 
-  entryComponents: [BotaoDownloadComponent,ModalAdicionaConvenioComponent, ModalDetalhesAgendamentoComponent, ModalCadastroFornecedorComponent]
+  entryComponents: [BotaoDownloadComponent,ModalAdicionaConvenioComponent, ModalCadastroFornecedorComponent]
 })
 export class CadastrosModule { }

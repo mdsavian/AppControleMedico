@@ -1,0 +1,182 @@
+<form #contaReceberForm="ngForm">
+
+  <div class="spinner" *ngIf=isSpinnerVisible>
+    <div class="double-bounce1"></div>
+    <div class="double-bounce2"></div>
+  </div>
+
+  <div class="modal-header" [hidden]=isSpinnerVisible>
+    <h4 class="modal-title">Detalhes Conta a Receber</h4>
+  </div>
+
+  <div class="modal-body" [hidden]=isSpinnerVisible>
+
+    <ngb-tabset type="pills" [destroyOnHide]="false">
+      <ngb-tab title="Informações">
+        <ng-template ngbTabContent>
+          <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+            <div class="row"></div>
+
+            <div class="row rowcadastro">
+              <div class="col-xs-12 col-md-6">
+
+                <div class="form-group">
+                  <label class="control-label" for="medico">Médico</label>
+                  <input name="medicoSelecionado" type="text" class="form-control" readonly #medicoModel="ngModel"
+                    id="medicoModel" [(ngModel)]="medicoSelecionado">
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                  <label class="control-label" for="paciente">Paciente(*)</label>
+                  <input name="pacienteSelecionado" type="text" class="form-control" readonly #pacienteModel="ngModel"
+                    id="pacienteModel" [(ngModel)]="pacienteSelecionado">
+                </div>
+              </div>
+            </div>
+
+            <div class="row rowcadastro">
+              <div class="col-xs-2 col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="numeroFatura">Número Fatura</label>
+                  <input type="number" min="1" id="numeroFatura" placeholder="Número Fatura" name="numeroFatura"
+                    class="form-control" [(ngModel)]="contaReceber.numeroFatura" #numeroFatura="ngModel" readonly>
+                </div>
+              </div>
+
+              <div class="col-xs-2 col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="numeroDocumento">Número Documento</label>
+                  <input type="text" id="numeroDocumento" placeholder="Número Documento" name="numeroDocumento" readonly
+                    class="form-control" [(ngModel)]="contaReceber.numeroDocumento" #numeroDocumento="ngModel">
+                </div>
+              </div>
+
+              <div class="col-xs-3 col-md-4">
+                <label class="control-label" for="tipoConta">Tipo Conta</label>
+                <input type="text" readonly id="tipoConta" name="tipoConta" class="form-control"
+                  [(ngModel)]="contaReceber.tipoContaDescricao" #tipoConta="ngModel">
+              </div>
+            </div>
+
+            <div class="row rowcadastro">
+              <div class="col-xs-2 col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="dataEmissao">Data Emissão</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <input type="text" mask="00/00/0000" required id="dataEmissao" name="dataEmissao"
+                      placeholder="01/01/1901" class="form-control" appValidaData [(ngModel)]="dataEmi"
+                      #dataEmissao="ngModel" readonly>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-2 col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="dataVencimento">Data Vencimento</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <input type="text" mask="00/00/0000" required id="dataVencimento" name="dataVencimento"
+                      placeholder="01/01/1901" appValidaData class="form-control" [(ngModel)]="dataVenc" readonly
+                      #dataVencimento="ngModel">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-3 col-md-4">
+                <label class="control-label" for="desconto">Desconto</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">R$</span>
+                  </div>
+                  <input type="text" id="desconto" readonly mask="dot_separator.2" name="desconto" placeholder="000,00"
+                    class="form-control" [(ngModel)]="contaReceber.desconto" #desconto="ngModel">
+                </div>
+              </div>
+            </div>
+
+            <div class="row rowcadastro">
+
+              <div class="col-xs-3 col-md-4">
+                <label class="control-label" for="jurosMulta">Juros/Multa</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">R$</span>
+                  </div>
+                  <input type="text" id="jurosMulta" readonly mask="dot_separator.2" name="jurosMulta"
+                    placeholder="000,00" class="form-control" [(ngModel)]="contaReceber.jurosMulta"
+                    #jurosMulta="ngModel">
+                </div>
+              </div>
+
+              <div class="col-xs-3 col-md-4">
+                <label class="control-label" for="valor">Valor(*)</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">R$</span>
+                  </div>
+                  <input readonly type="text" id="valor" mask="dot_separator.2" name="valor" placeholder="000,00"
+                    class="form-control" min="0.1" [(ngModel)]="contaReceber.valor" #valor="ngModel">
+                </div>
+              </div>
+
+              <div class="col-xs-3 col-md-4">
+                <label class="control-label" for="valorTotal">Valor Total</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">R$</span>
+                  </div>
+                  <input readonly type="text" id="valorTotal" mask="dot_separator.2"
+                    [(ngModel)]="contaReceber.valorTotal" readonly name="valorTotal" placeholder="000,00"
+                    class="form-control" #valorTotal="ngModel">
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row rowcadastro">
+              <div class="col-xs-12 col-md-12">
+                <label class="control-label" for="observacao">Observação</label>
+                <textarea id="observacao" name="observacao" placeholder="observação" class="form-control"
+                  [(ngModel)]="contaReceber.observacao" readonly] #observacao="ngModel"></textarea>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Pagamentos" [disabled]="!contaReceberForm.valid">
+        <ng-template ngbTabContent>
+          <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+            <br />
+            <div class="row">
+              <div class="col-xs-2 col-md-3">
+                <label class="control-label" for="saldo">Saldo</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">R$</span>
+                  </div>
+                  <input type="text" id="saldo" mask="dot_separator.2" name="saldo" placeholder="000,00"
+                    class="form-control" readonly [(ngModel)]="contaReceber.saldo" #saldo="ngModel">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="table table-responsive smart-table">
+                <ng2-smart-table [(settings)]="settingsPagamentos" [(source)]="sourcePagamentos">
+                </ng2-smart-table>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+  <div class="modal-footer">
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Voltar</button>
+  </div>
+</form>

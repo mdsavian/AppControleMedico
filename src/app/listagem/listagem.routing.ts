@@ -17,6 +17,8 @@ import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.
 import { ListagemContaReceberComponent } from './conta-receber/listagem-conta-receber.component';
 import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
 import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.component';
+import { ListagemTimelineComponent } from './timeline/listagem-timeline.component';
+import { TimelineComponent } from './timeline/timeline.component';
 
 
 export const ListagemRoutes: Routes = [
@@ -50,6 +52,26 @@ export const ListagemRoutes: Routes = [
           title: 'Prontuário',
           urls: [
             { title: 'Prontuários' }
+          ] 
+        }
+      }, 
+      {
+        path: 'listagemtimeline',
+        component: ListagemTimelineComponent,
+        data: {
+          title: 'Pacientes Timeline',
+          urls: [
+            { title: 'Pacientes Timeline' }
+          ] 
+        }
+      },
+      {
+        path: 'timeline',
+        component: TimelineComponent,
+        data: {
+          title: 'Timeline',
+          urls: [
+            { title: 'Timeline' }
           ] 
         }
       },

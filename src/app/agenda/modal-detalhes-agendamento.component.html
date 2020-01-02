@@ -1,9 +1,14 @@
 <form #detalhesAgendamento="ngForm">
 
-    <div class="modal-header">
+    <div class="spinner" *ngIf=isSpinnerVisible>
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+
+    <div class="modal-header" [hidden]=isSpinnerVisible>
         <h4 class="modal-title">Detalhes Agendamento</h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" [hidden]=isSpinnerVisible>
         <ngb-tabset type="pills" [destroyOnHide]="false">
             <ngb-tab title="Informações">
                 <ng-template ngbTabContent>

@@ -87,6 +87,7 @@ export class SidebarComponent implements OnInit {
           itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Financeiro/Forma de Pagamento");
           itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Funcionário/Ofício");
           itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Pessoas/Paciente/Prontuário");
+          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Pessoas/Paciente/Timeline");
         }
 
         if (!this.funcionarioService.PermitirVisualizarAgenda(funcionario)) {
@@ -195,6 +196,16 @@ export class SidebarComponent implements OnInit {
                 {
                   path: '/listagem/listagemprontuario',
                   title: 'Prontuário',
+                  icon: '',
+                  class: '',
+                  label: '',
+                  labelClass: '',
+                  extralink: false,
+                  submenu: []
+                },
+                {
+                  path: '/listagem/listagemtimeline',
+                  title: 'Timeline',
                   icon: '',
                   class: '',
                   label: '',

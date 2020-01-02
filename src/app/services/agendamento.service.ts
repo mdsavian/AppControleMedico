@@ -12,7 +12,6 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
-import { CalendarEvent } from 'calendar-utils';
 
 @Injectable({
   providedIn: 'root'

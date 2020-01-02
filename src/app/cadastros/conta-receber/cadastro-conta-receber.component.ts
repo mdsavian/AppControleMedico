@@ -56,7 +56,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   paises = Paises;
   pacienteSelecionado: string;
   nomePacientes: Array<string>;
-  pacientees: Array<Paciente> = [];
+  pacientes: Array<Paciente> = [];
   paciente: Paciente;
   falhaNaBusca: boolean;
   tiposConta = ETipoContaReceber;
@@ -81,14 +81,14 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
         this.medicoModel.nativeElement.setAttribute('readonly', true);
     });
 
-    this.pacienteService.Todos().subscribe(fornec => {
-      this.pacientees = fornec;
+    this.pacienteService.Todos().subscribe(pacientes => {
+      this.pacientes = pacientes;
 
       if (!this.util.isNullOrWhitespace(this.contaReceber.pacienteId))
-        this.pacienteSelecionado = this.pacientees.find(c => c.id == this.contaReceber.pacienteId).nomeCompleto;
+        this.pacienteSelecionado = this.pacientes.find(c => c.id == this.contaReceber.pacienteId).nomeCompleto;
 
       this.nomePacientes = new Array<string>();
-      this.pacientees.forEach(d => {
+      this.pacientes.forEach(d => {
         this.nomePacientes.push(d.nomeCompleto);
       });
     });
@@ -227,7 +227,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   }
 
   selecionaPaciente(item) {
-    var paciente = this.pacientees.find(c => c.nomeCompleto === item.item);
+    var paciente = this.pacientes.find(c => c.nomeCompleto === item.item);
     if (paciente != null) {
       this.paciente = paciente;
       this.contaReceber.pacienteId = paciente.id;
@@ -299,14 +299,14 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
 
     modalNovoPaciente.result.then((paciente: Paciente) => {
       if (paciente != null && paciente.nomeCompleto != '') {
-        var pacienteExistente = this.pacientees.find(c => c.nomeCompleto == paciente.nomeCompleto || c.cpfCnpj == paciente.cpfCnpj);
+        var pacienteExistente = this.pacientes.find(c => c.nomeCompleto == paciente.nomeCompleto || c.cpfCnpj == paciente.cpfCnpj);
         if (pacienteExistente != null) {
           this.pacienteSelecionado = pacienteExistente.nomeCompleto;
           this.contaReceber.pacienteId = pacienteExistente.id;
           this.falhaNaBusca = false;
         }
         else {
-          this.pacientees.push(paciente);
+          this.pacientes.push(paciente);
           this.nomePacientes.push(paciente.nomeCompleto);
           this.pacienteSelecionado = paciente.nomeCompleto;
           this.falhaNaBusca = false;

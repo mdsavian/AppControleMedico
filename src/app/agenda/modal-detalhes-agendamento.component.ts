@@ -1,7 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, TemplateRef } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../uteis/Util';
-import { ValidadorAgendamento } from './validadorAgendamento';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/map';
 import { Agendamento } from '../modelos/agendamento';
@@ -13,6 +12,7 @@ import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
 import { LocalDataSource } from 'ng2-smart-table';
+import { Observable, forkJoin } from 'rxjs';
 
 
 @Component({
@@ -32,56 +32,83 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
   util = new Util();
   tipoAgenda: string;
   formaDePagamentos = new Array<FormaDePagamento>();
-  sourcePagamentos:LocalDataSource;
-  totalPagamentos:string;
+  sourcePagamentos: LocalDataSource;
+  totalPagamentos: string;
+  isSpinnerVisible: boolean;
 
-  constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService,private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private convenioService: ConvenioService, private localService: LocalService) {
+  constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService, private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private convenioService: ConvenioService, private localService: LocalService) {
   }
-  ngOnInit() {
 
-    if (this.agendamento != null) {
+  carregarModelos() {
 
-      if (this.util.hasItems(this.agendamento.pagamentos)){
+    var requisicoes = [];
 
-      this.formaPagamentoService.Todos().subscribe(formas => {
+    if (this.util.hasItems(this.agendamento.pagamentos)) {
+
+      var reqFormas = this.formaPagamentoService.Todos().map(formas => {
         this.formaDePagamentos = formas;
         if (this.util.hasItems(this.agendamento.pagamentos)) {
           this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
-        }        
+        }
+
+        let soma = 0;
+        this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+        this.totalPagamentos = this.util.formatarDecimalBlur(soma);
+
       });
 
-      let soma = 0;
-      this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
-      this.totalPagamentos = this.util.formatarDecimalBlur(soma);
+      requisicoes.push(reqFormas);
     }
 
-      if (!this.util.isNullOrWhitespace(this.agendamento.localId))
-        this.localService.buscarPorId(this.agendamento.localId).subscribe(c => this.localCirurgiaDescricao = c.descricao);
+    if (!this.util.isNullOrWhitespace(this.agendamento.localId)) {
+      var reqLocal = this.localService.buscarPorId(this.agendamento.localId).map(c => this.localCirurgiaDescricao = c.descricao);
+      requisicoes.push(reqLocal);
+    }
 
-      if (this.agendamento.paciente == null) {
-        this.pacienteService.buscarPorId(this.agendamento.pacienteId).subscribe(c => {
-          this.nomePaciente = c.nomeCompleto
-          this.numeroCartao = c.numeroCartao.toString();
-        });
-      }
-      else {
-        this.nomePaciente = this.agendamento.paciente.nomeCompleto
-        this.numeroCartao = this.agendamento.paciente.numeroCartao.toString();
-      }
-      if (this.agendamento.medico == null) {
-        this.medicoService.buscarPorId(this.agendamento.medicoId).subscribe(c => this.nomeMedico = c.nomeCompleto);
-      }
-      else
-        this.nomeMedico = this.agendamento.medico.nomeCompleto;
-      if (this.agendamento.convenio == null) {
-        this.convenioService.buscarPorId(this.agendamento.convenioId).subscribe(c => this.convenioDescricao = c.descricao);
-      }
-      else {
-        this.convenioDescricao = this.agendamento.convenio.descricao;
-      }
+    if (this.agendamento.paciente == null) {
+      var reqPaciente = this.pacienteService.buscarPorId(this.agendamento.pacienteId).map(c => {
+        this.nomePaciente = c.nomeCompleto
+        this.numeroCartao = c.numeroCartao.toString();
+      });
 
-      this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
-      this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
+      requisicoes.push(reqPaciente);
+    }
+    else {
+      this.nomePaciente = this.agendamento.paciente.nomeCompleto
+      this.numeroCartao = this.agendamento.paciente.numeroCartao.toString();
+    }
+    if (this.agendamento.medico == null) {
+
+      var reqMedico = this.medicoService.buscarPorId(this.agendamento.medicoId).map(c => this.nomeMedico = c.nomeCompleto);
+
+      requisicoes.push(reqMedico);
+
+    }
+    else
+      this.nomeMedico = this.agendamento.medico.nomeCompleto;
+    if (this.agendamento.convenio == null) {
+      var reqConvenio = this.convenioService.buscarPorId(this.agendamento.convenioId).map(c => this.convenioDescricao = c.descricao);
+      requisicoes.push(reqConvenio);
+    }
+    else {
+      this.convenioDescricao = this.agendamento.convenio.descricao;
+    }
+
+    this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
+    this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
+
+    return forkJoin(requisicoes);
+  }
+
+
+  ngOnInit() {
+
+    this.isSpinnerVisible = true;
+    if (this.agendamento != null) {
+
+      this.carregarModelos().subscribe(c => {
+        this.isSpinnerVisible = false;
+      });
     }
   }
   fechar() {
@@ -114,8 +141,8 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
     actions:
     {
       edit: false,
-      add:false,
-      delete:false,
+      add: false,
+      delete: false,
       columnTitle: '  '
     },
   };

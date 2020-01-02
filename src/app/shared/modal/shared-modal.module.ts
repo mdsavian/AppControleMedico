@@ -8,15 +8,18 @@ import { ModalAlteraSenhaComponent } from './modal-altera-senha.component';
 import { ModalSucessoComponent } from './modal-sucesso.component';
 import { ModalWebcamComponent } from './modal-webcam.component';
 import { ModalPagamentoComponent } from './modal-pagamento.component';
-import { ModalExcluirRegistroComponent} from './modal-excluir-registro.component';
+import { ModalExcluirRegistroComponent } from './modal-excluir-registro.component';
+import { ModalDetalhesAgendamentoComponent } from '../../agenda/modal-detalhes-agendamento.component';
+import { ModalDetalheContaReceberComponent } from '../../cadastros/conta-receber/modal-detalhe-conta-receber.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { WebcamModule } from 'ngx-webcam';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 
 
 @NgModule({
-  imports: [CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
-  declarations: [ModalWebcamComponent,ModalExcluirRegistroComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
-  entryComponents: [ModalWebcamComponent,ModalExcluirRegistroComponent,ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
+  imports: [Ng2SmartTableModule, CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
+  declarations: [ModalDetalheContaReceberComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+  entryComponents: [ModalDetalheContaReceberComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
 })
 export class SharedModalModule { }

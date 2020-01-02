@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -20,7 +21,9 @@ import { ListagemContaPagarComponent } from './conta-pagar/listagem-conta-pagar.
 import { ListagemContaReceberComponent } from './conta-receber/listagem-conta-receber.component';
 import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem-forma-de-pagamento.component';
 import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.component';
+import { ListagemTimelineComponent } from './timeline/listagem-timeline.component';
 import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
+import { TimelineComponent } from './timeline/timeline.component';
 import { CorComponent } from './shared/cor-component';
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
@@ -28,14 +31,15 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
 @NgModule({
   imports: [
     SharedModalModule,
+    NgbModule,
     CommonModule,
     RouterModule.forChild(ListagemRoutes),
     NgxDatatableModule,
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent,ListagemCaixaComponent, ListagemContaPagarComponent,ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
-    ListagemConvenioComponent, ListagemProntuarioComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
+    ListagemMedicoComponent, ListagemPacienteComponent, TimelineComponent, ListagemTimelineComponent, ListagemCaixaComponent, ListagemContaPagarComponent, ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemConvenioComponent, ListagemProntuarioComponent, TimelineComponent, ListagemTimelineComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent, CorComponent
   ],
   entryComponents: [

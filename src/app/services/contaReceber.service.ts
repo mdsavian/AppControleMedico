@@ -41,4 +41,9 @@ export class ContaReceberService {
     return this.http.get<ContaReceber[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 
+  buscarPorAgendamento(agendamentoId:string)
+  {
+    return this.http.get<ContaReceber>(this.accessPointUrl + "buscarPorAgendamento/" + agendamentoId);
+  }
+
 }
