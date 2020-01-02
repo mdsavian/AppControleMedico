@@ -12,6 +12,7 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
+import { Usuario } from '../modelos/usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,14 @@ export class AgendamentoService {
   }
 
   buscarAgendamentoMedicoExcluir(medicoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentoMedicoExcluir/" + medicoId); }
-  buscarAgendamentosPaciente(pacienteId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente/" + pacienteId); }
+
+  buscarAgendamentosPaciente(pacienteId: string, usuarioId:string, clinicaId:string) 
+  { 
+    let parametros = new HttpParams().set("pacienteId", pacienteId).set("usuarioId", usuarioId).set("clinicaId", clinicaId);
+
+    console.log(parametros);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente?" + parametros); 
+  }
   buscarAgendamentosLocal(localId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosLocal/" + localId); }
   buscarPagamentoAgendamentoForma(formaPagamentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId); }
   buscarAgendamentosConvenio(convenioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosConvenio/" + convenioId); }

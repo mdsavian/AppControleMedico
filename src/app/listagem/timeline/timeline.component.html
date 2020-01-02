@@ -15,11 +15,11 @@
                                 <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{time.dataHora}}</small>
                                 </p>
                             </div>
-                            <div class="timeline-body">
-                                <p>{{time.descricao}}</p>
+                            <div class="timeline-body" >
+                                <p style="white-space: pre-line">{{time.descricao}}</p>
 
-                                <hr>
-                                <div class="btn-group" *ngIf="time.agendamentoId || time.contaReceberId">
+                                <hr *ngIf="time.agendamentoId || time.contaReceber != null">
+                                <div class="btn-group" *ngIf="time.agendamentoId || time.contaReceber != null">
                                     <ng-template #tipAgendamento>Detalhes Agendamento</ng-template>
                                     <ng-template #tipContaReceber>Detalhes Conta a Receber</ng-template>
 
@@ -28,8 +28,8 @@
                                         class="btn btn-primary btn-sm btn-info" style="margin-right: 2px;">
                                         <i class="fa fa-calendar"></i> 
                                     </button>
-                                    <button *ngIf="time.contaReceberId" [ngbTooltip]="tipContaReceber"
-                                        (click)="chamaContaReceber(time.contaReceberId)" type="button"
+                                    <button *ngIf="time.contaReceber != null" [ngbTooltip]="tipContaReceber"
+                                        (click)="chamaContaReceber(time)" type="button"
                                         class="btn btn-sm btn-dark" style="margin-right: 2px;"> <i
                                             class="fa fa-money"></i>
                                     </button>

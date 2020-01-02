@@ -10,6 +10,7 @@ import { AgendamentoService } from '../../services/agendamento.service';
 import { Convenio } from '../../modelos/convenio';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
+import { AppService } from '../../services/app.service';
 
 @Component({
   templateUrl: './listagem-paciente.component.html'
@@ -22,7 +23,7 @@ export class ListagemPacienteComponent {
   closeResult: string;
   convenios = new Array<Convenio>();
 
-  constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService, private convenioService: ConvenioService, private router: Router, private modalService: NgbModal) {
+  constructor(private pacienteService: PacienteService, private appService:AppService,private agendamentoService: AgendamentoService, private convenioService: ConvenioService, private router: Router, private modalService: NgbModal) {
     this.isSpinnerVisible = true;
     this.buscaPacientes();
     this.buscaModelos();
@@ -41,7 +42,7 @@ export class ListagemPacienteComponent {
   }
 
   deletarRegistro(event) {
-    this.agendamentoService.buscarAgendamentosPaciente(event.data.id).subscribe(agendamentos => {      
+    this.agendamentoService.buscarAgendamentosPaciente(event.data.id, this.appService.retornarUsuarioCorrente().id,this.appService.retornarClinicaCorrente().id ).subscribe(agendamentos => {      
       if (this.util.hasItems(agendamentos)) {
         var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
         modal.componentInstance.mensagemErro = "Não é possível excluir paciente vínculado a agendamento(s).";

@@ -31,7 +31,6 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
 
   sourcePagamentos: LocalDataSource;
   mensagemErro: string;
-  contaDeAgendamento: boolean;
   util = new Util();
   dataEmi = this.util.dataParaString(new Date());
   dataVenc: string;
@@ -42,9 +41,9 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
   tipoConta = ETipoContaReceber[1].toString();
   estados = Estados;
   paises = Paises;
-  pacienteSelecionado: string;  
+  pacienteSelecionado: string;
   paciente: Paciente;
-  tiposConta = ETipoContaReceber;  
+  tiposConta = ETipoContaReceber;
   medicoSelecionado: string;
 
   @ViewChild('valor', { read: ElementRef, static: false }) private valor: ElementRef;
@@ -54,7 +53,7 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
   @ViewChild('desconto', { read: ElementRef, static: false }) private desconto: ElementRef;
 
   constructor(private pacienteService: PacienteService, public activeModal: NgbActiveModal,
-    private medicoService: MedicoService, private formaPagamentoService: FormaDePagamentoService,  private contaReceberService: ContaReceberService) {
+    private medicoService: MedicoService, private formaPagamentoService: FormaDePagamentoService, private contaReceberService: ContaReceberService) {
   }
 
   alimentarModelos() {
@@ -73,7 +72,7 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
     requisicoes.push(reqPaciente);
 
     var reqFormaPagamento = this.formaPagamentoService.Todos().map(formas => {
-      if (this.contaReceberService.contaReceber != null && this.util.hasItems(this.contaReceber.pagamentos)) {
+      if (this.util.hasItems(this.contaReceber.pagamentos)) {
         this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
       }
       this.formaDePagamentos = formas;
@@ -83,7 +82,6 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
 
     this.dataEmi = this.util.dataParaString(this.contaReceber.dataEmissao);
     this.dataVenc = this.util.dataParaString(this.contaReceber.dataVencimento);
-    this.contaDeAgendamento = !this.util.isNullOrWhitespace(this.contaReceber.agendamentoId);
 
     return forkJoin(requisicoes);
 
@@ -99,10 +97,10 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
       });
     }
   }
+
   fechar() {
     this.activeModal.close();
   }
-
 
   ngAfterViewChecked(): void {
 
@@ -112,20 +110,14 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
     if (this.saldo != null)
       this.saldo.nativeElement.value = this.util.formatarDecimalBlur(this.saldo.nativeElement.value);
 
-    if (this.valor != null) {
-      if (this.util.hasItems(this.contaReceber.pagamentos))
-        this.valor.nativeElement.setAttribute('readonly', true);
-    }
+    if (this.valor != null)
+      this.valor.nativeElement.value = this.util.formatarDecimalBlur(this.valor.nativeElement.value);
 
-    if (this.desconto != null) {
-      if (this.util.hasItems(this.contaReceber.pagamentos))
-        this.desconto.nativeElement.setAttribute('readonly', true);
-    }
+    if (this.jurosMulta != null)
+      this.jurosMulta.nativeElement.value = this.util.formatarDecimalBlur(this.jurosMulta.nativeElement.value);
 
-    if (this.jurosMulta != null) {
-      if (this.util.hasItems(this.contaReceber.pagamentos))
-        this.jurosMulta.nativeElement.setAttribute('readonly', true);
-    }
+    if (this.desconto != null)
+      this.desconto.nativeElement.value = this.util.formatarDecimalBlur(this.desconto.nativeElement.value);
 
   }
 
@@ -179,10 +171,10 @@ export class ModalDetalheContaReceberComponent implements OnInit, AfterViewCheck
     actions:
     {
       edit: false,
-      delete:false,
-      add:false,
+      delete: false,
+      add: false,
       columnTitle: '  '
-    }    
+    }
   };
 }
 
