@@ -17,6 +17,7 @@ import { CadastroContaPagarComponent } from './conta-pagar/cadastro-conta-pagar.
 import { CadastroContaReceberComponent } from './conta-receber/cadastro-conta-receber.component';
 import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component';
 import { CadastroProntuarioComponent } from './prontuario/cadastro-prontuario.component';
+import { CadastroModeloPrescricaoComponent } from "./modelo-prescricao/cadastro-modelo-prescricao.component";
 
 export const CadastrosRoutes: Routes = [
   {
@@ -29,6 +30,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Paciente',
           urls: [
             { title: 'Cadastro Paciente', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'cadastromodeloprescricao',
+        component: CadastroModeloPrescricaoComponent,
+        data: {
+          title: 'Cadastro Modelo de Prescrição',
+          urls: [
+            { title: 'Cadastro Modelo de Prescrição', url: '/cadastros/cadastrar' }
           ]
         }
       },

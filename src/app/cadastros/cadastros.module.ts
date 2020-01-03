@@ -26,6 +26,7 @@ import { ValidaDataDirective } from '../validadores/valida-data.directive';
 import { CadastroPacienteComponent } from "./paciente/cadastro-paciente.component";
 import { CadastroMedicoComponent } from "./medico/cadastro-medico.component";
 import { CadastroConvenioComponent } from "./convenio/cadastro-convenio.component";
+import { CadastroModeloPrescricaoComponent } from "./modelo-prescricao/cadastro-modelo-prescricao.component";
 import { ModalAdicionaConvenioComponent } from "./convenio/modal-adiciona-convenio.component";
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { ModalCadastroFornecedorComponent } from "./fornecedor/modal-cadastro-fornecedor.component";
@@ -52,10 +53,9 @@ import{BotaoDownloadComponent} from './prontuario/botao-download-component';
   imports: [NgbModule, FileUploadModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule,
     QuillModule.forRoot(), DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
-  declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
+  declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroModeloPrescricaoComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
     CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
-    CadastroFuncionarioComponent, CadastroProcedimentoComponent,
-    CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
+    CadastroFuncionarioComponent, CadastroProcedimentoComponent, CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective, BotaoDownloadComponent],

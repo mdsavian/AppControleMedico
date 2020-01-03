@@ -19,6 +19,7 @@ import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
 import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.component';
 import { ListagemTimelineComponent } from './timeline/listagem-timeline.component';
 import { TimelineComponent } from './timeline/timeline.component';
+import { ListagemModeloPrescricaoComponent } from './modelo-prescricao/listagem-modelo-prescricao.component';
 
 
 export const ListagemRoutes: Routes = [
@@ -32,6 +33,16 @@ export const ListagemRoutes: Routes = [
           title: 'Médicos',
           urls: [
             { title: 'Médicos' }
+          ] 
+        }
+      },
+      {
+        path: 'listagemmodeloprescricao',
+        component: ListagemModeloPrescricaoComponent,
+        data: {
+          title: 'Modelo de Prescrição',
+          urls: [
+            { title: 'Modelo de Prescrição' }
           ] 
         }
       },

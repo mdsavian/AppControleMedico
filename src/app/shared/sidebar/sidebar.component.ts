@@ -362,6 +362,16 @@ export class SidebarComponent implements OnInit {
           ]
         },
         {
+          path: '/listagem/listagemmodeloprescricao',
+          title: 'Modelo de Prescrição',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
           path: '/listagem/listagemlocal',
           title: 'Local',
           icon: '',
@@ -381,6 +391,7 @@ export class SidebarComponent implements OnInit {
           extralink: false,
           submenu: []
         },
+        
       ]
     },
     {

@@ -23,6 +23,7 @@ import { ListagemFormaDePagamentoComponent } from './forma-de-pagamento/listagem
 import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.component';
 import { ListagemTimelineComponent } from './timeline/listagem-timeline.component';
 import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
+import { ListagemModeloPrescricaoComponent } from './modelo-prescricao/listagem-modelo-prescricao.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { CorComponent } from './shared/cor-component';
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
@@ -38,7 +39,7 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent, TimelineComponent, ListagemTimelineComponent, ListagemCaixaComponent, ListagemContaPagarComponent, ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemMedicoComponent, ListagemPacienteComponent, ListagemModeloPrescricaoComponent,TimelineComponent, ListagemTimelineComponent, ListagemCaixaComponent, ListagemContaPagarComponent, ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
     ListagemConvenioComponent, ListagemProntuarioComponent, TimelineComponent, ListagemTimelineComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent, CorComponent
   ],

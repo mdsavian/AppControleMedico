@@ -1,0 +1,46 @@
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+
+<div class="row" *ngIf=!isSpinnerVisible>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+
+        <form #modeloPrescricaoForm="ngForm">
+
+          <div class="row col-xs-12 col-md-12 form-group">
+
+            <label class="control-label" for="titulo">Título(*)</label>
+            <input type="text" id="titulo" placeholder="Título" name="titulo" class="form-control" required
+              minlength="3" [(ngModel)]="modeloPrescricao.titulo" #titulo="ngModel">
+            <div *ngIf="titulo.invalid" class="alert alert-danger">
+              <div *ngIf="titulo.errors.required"> Título Obrigatório. </div>
+              <div *ngIf="titulo.errors.minlength"> Título deve ter ao menos 3 caracteres. </div>
+            </div>
+
+          </div>
+
+          <div class="row col-xs-12 col-md-12 col-lg-12 form-group">
+            <div class="col-12">
+              <quill-editor [(ngModel)]="editorModel" [modules]="customToolbar" id="editorModel" name="editorModel"
+                (onEditorCreated)="getEditorInstance($event)" [sanitize]="true"
+                [placeholder]="'Monte o modelo de prescrição aqui...'" [styles]="{height: '550px'}"></quill-editor>
+            </div>
+          </div>
+
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <button style="width:40%" class="btn btn-rounded btn-success"
+                  [disabled]="!modeloPrescricaoForm.form.valid" (click)="salvar()">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
