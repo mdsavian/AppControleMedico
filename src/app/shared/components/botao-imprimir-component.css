@@ -1,0 +1,10 @@
+ 
+ .btn-imprimir {
+    background-color: DodgerBlue;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .btn-download:hover {
+    background-color: RoyalBlue;
+  } 

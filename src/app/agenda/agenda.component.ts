@@ -433,12 +433,10 @@ export class AgendaComponent implements OnInit {
       this.acoesPermitidas.push("EXCLUIR");
     }
 
-    console.log(this.acoesPermitidas);
   }
 
   actionAgendamento(evento: CalendarEvent, acao: string) {
-    var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
-    console.log(agendamento);
+    var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());    
     if (agendamento != null) {
 
       this.tratarAcoesPermitidas(agendamento);

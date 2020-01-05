@@ -1,5 +1,3 @@
-import { CorComponent } from "../shared/cor-component";
-
 export const settings = {
   mode: 'external',
   noDataMessage: "Não foi encontrado nenhum registro",

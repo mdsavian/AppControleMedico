@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ModeloPrescricao } from '../modelos/modeloPrescricao'
 import { environment } from '../../environments/environment';
+import { AppService } from './app.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,14 +14,14 @@ export class ModeloPrescricaoService {
   public modeloPrescricao:ModeloPrescricao;
   public listaModeloPrescricao :Array<ModeloPrescricao>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appService:AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
   public Todos() {
     return this.http.get<Array<ModeloPrescricao>>(this.accessPointUrl);
   }
-  
+    
   public salvar(modeloPrescricao: ModeloPrescricao) {
     return this.http.post<ModeloPrescricao>(this.accessPointUrl, modeloPrescricao);
   }

@@ -34,11 +34,6 @@ export class PacienteService {
 
   public Excluir(pacienteId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + pacienteId);
-  }
-
-  buscarPacientesModeloPrescricao(prescricaoId:string) {
-    return this.http.get<Paciente>(this.accessPointUrl + "buscarPacientesModeloPrescricao/" + prescricaoId);
-    
-  }
+  }    
 
 }

@@ -31,7 +31,7 @@ export class Paciente extends Pessoa {
   semanaGestacao: string;
   diaGestacao: string;
   convenioId: string;
-  convenio: Convenio;''
+  convenio: Convenio;
   fotoId: string;
 
   prontuario:any;

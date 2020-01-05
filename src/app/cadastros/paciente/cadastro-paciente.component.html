@@ -1,4 +1,8 @@
-<div class="row">
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+<div class="row" *ngIf=!isSpinnerVisible>
   <div class="col-lg-3 col-xlg-3 col-md-4">
     <div class="card">
       <div class="card-body">
@@ -11,7 +15,7 @@
           <div class="row text-center justify-content-md-center">
             <button class="btn btn-rounded" type="button" style="background-color: rgba(117, 117, 212, 0.835)"
               (click)="importarArquivo()">Importar Arquivo</button>
-            <input id="fileInput" #fileInput type="file" (change)="changefile($event)" accept=".jpeg, .png, .jpg;"
+            <input id="fileInput" #fileInput type="file" (ngModelChange)="ngModelChangefile($event)" accept=".jpeg, .png, .jpg;"
               name="fileInput" style="display: none;" />
           </div>
         </div>
@@ -19,8 +23,6 @@
       </div>
     </div>
   </div>
-
-
   <div class="col-lg-9 col-xlg-9 col-md-8">
     <div class="card">
       <div class="card-body">
@@ -80,9 +82,9 @@
                         <label class="control-label" for="estadoCivil">Estado Civil</label>
                         <select class="form-control" [(ngModel)]="paciente.estadoCivil" #estadoCivil="ngModel"
                           id="estadoCivil" name="estadoCivil">
-                          <option>Solteiro(a)</option>
-                          <option>Casado(a)</option>
-                          <option>Divorciado(a)</option>
+                          <option *ngFor="let codigo of estadosCivil | enumToArray">
+                            {{codigo}}
+                          </option>                          
                         </select>
                       </div>
 
@@ -97,7 +99,7 @@
                         <input type="text" placeholder="Nome Pai" id="nomePai" name="nomePai" class="form-control"
                           [(ngModel)]="paciente.nomePai" #nomePai="ngModel">
                       </div>
-                      
+
                       <div class="form-group">
                         <label class="form-check-inline" for="ativo">Ativo</label>
                         <input class="form-check-inline" [(ngModel)]="paciente.ativo" checked name="ativo" id="ativo"
@@ -133,7 +135,7 @@
                           [(ngModel)]="paciente.nomeMae" #nomeMae="ngModel">
                       </div>
                     </div>
-                  </div>                  
+                  </div>
                 </div>
               </ng-template>
             </ngb-tab>
@@ -348,9 +350,24 @@
                 </div>
               </ng-template>
             </ngb-tab>
+            
+            <ngb-tab title="Prescrições" *ngIf="usuarioAdm && paciente.id">
+              <ng-template ngbTabContent>
+                <div id="tab_5" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                  <div class="row">                    
+                    <div class="table table-responsive smart-table">
+                      <ng2-smart-table (edit)="editarPrescricao($event.data.id)" (create)="criarPrescricao()"
+                       [(settings)]="settingsPrescricoes" [(source)]="sourcePrescricao">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+
+                </div>
+              </ng-template>
+            </ngb-tab>
             <ngb-tab title="Obstetrícia" *ngIf="exibeAbaEspecialidade">
               <ng-template ngbTabContent>
-                <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                   <div class="row"></div>
                   <div class="row rowcadastro">
                     <div class="col-xs-6 col-md-3">

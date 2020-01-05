@@ -12,8 +12,6 @@ import { Util } from '../../uteis/Util'
 })
 
 export class CadastroModeloPrescricaoComponent implements OnInit {
-  @ViewChild('modalImportarArquivo', { read: TemplateRef, static: false }) modalImportarArquivo: TemplateRef<any>;
-
   editorModel;
   util = new Util();
   modeloPrescricao: ModeloPrescricao = new ModeloPrescricao();

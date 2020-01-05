@@ -1,0 +1,67 @@
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+
+
+
+<form #prescricaoPacienteForm="ngForm">
+
+  <div class="modal-header" *ngIf=!isSpinnerVisible>
+    <h4 class="modal-title">Adicionar Prescrição</h4>
+    <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body" *ngIf=!isSpinnerVisible> 
+
+    <div class="row col-xs-12 col-md-12 rowcadastro">
+      <label class="control-label" for="medico">Médico</label>
+      <select class="form-control" required [disabled]="editando" [(ngModel)]="prescricaoPaciente.medicoId"
+        #medico="ngModel" id="medico" name="medico">
+        <option *ngFor="let med of medicos" [ngValue]="med.id">
+          {{med.nomeCompleto}}
+        </option>
+      </select>
+      <div *ngIf="medico.invalid" class="alert alert-danger">
+        <div *ngIf="medico.errors.required"> Médico Obrigatório. </div>
+      </div>
+    </div>
+    <br />
+
+    <div class="row col-xs-12 col-md-12 form-group rowcadastro">
+      <label class="control-label" for="modeloPrescricao">Modelo Prescrição</label>
+      <select class="form-control" [(ngModel)]="modeloPrescricao.id" #modeloPrescricao="ngModel" (change)="selecionaModelo(modeloPrescricao.id)" id="modeloPrescricao"
+        name="modeloPrescricao">
+        <option *ngFor="let mod of modelos" [ngValue]="mod.id">
+          {{mod.titulo}}
+        </option>
+      </select>
+    </div>
+    <br />
+
+    <div class="row col-xs-12 col-md-12 col-lg-12 form-group rowcadastro">
+      <div class="col-12">
+        <quill-editor [(ngModel)]="editorModel" [modules]="customToolbar" id="editorModel" name="editorModel"
+          (onEditorCreated)="getEditorInstance($event)" [sanitize]="true"
+          [placeholder]="'Monte o modelo de prescrição aqui...'" [styles]="{height: '550px'}"></quill-editor>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <div class="col-xs-8 col-md-6">
+      <button class="btn btn-rounded btn-primary" style="width:50%" [disabled]="!prescricaoPacienteForm.form.valid"
+        (click)="imprimir()">Imprimir</button>      
+    </div>
+
+    <div class="col-xs-8 col-md-6">      
+      <button style="width:50%" class="btn btn-rounded btn-success" [disabled]="!prescricaoPacienteForm.form.valid"
+        (click)="salvar()">Salvar</button>
+      <button (click)="fechar()" style="width:50%" class="btn btn-rounded btn-danger">Cancelar</button>
+    </div>
+
+  </div>
+</form>

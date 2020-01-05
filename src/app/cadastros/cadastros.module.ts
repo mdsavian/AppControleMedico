@@ -30,6 +30,7 @@ import { CadastroModeloPrescricaoComponent } from "./modelo-prescricao/cadastro-
 import { ModalAdicionaConvenioComponent } from "./convenio/modal-adiciona-convenio.component";
 import { CadastroFuncionarioComponent } from './funcionario/cadastro-funcionario.component';
 import { ModalCadastroFornecedorComponent } from "./fornecedor/modal-cadastro-fornecedor.component";
+import { ModalCadastroPrescricaoPacienteComponent } from "./modelo-prescricao/modal-cadastro-prescricao-paciente.component";
 import { CadastroOficioComponent } from './oficio/cadastro-oficio.component';
 import { CadastroEspecialidadeComponent } from './especialidade/cadastro-especialidade.component';
 import { CadastroProcedimentoComponent } from './procedimento/cadastro-procedimento.component';
@@ -46,7 +47,6 @@ import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-
 import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component'
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
-import{BotaoDownloadComponent} from './prontuario/botao-download-component';
 
 
 @NgModule({
@@ -54,12 +54,12 @@ import{BotaoDownloadComponent} from './prontuario/botao-download-component';
     QuillModule.forRoot(), DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroModeloPrescricaoComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
-    CadastroFornecedorComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
+    CadastroFornecedorComponent, ModalCadastroPrescricaoPacienteComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent, CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
-    ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective, BotaoDownloadComponent],
+    ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
 
-  entryComponents: [BotaoDownloadComponent,ModalAdicionaConvenioComponent, ModalCadastroFornecedorComponent]
+  entryComponents: [ModalAdicionaConvenioComponent, ModalCadastroPrescricaoPacienteComponent, ModalCadastroFornecedorComponent,]
 })
 export class CadastrosModule { }

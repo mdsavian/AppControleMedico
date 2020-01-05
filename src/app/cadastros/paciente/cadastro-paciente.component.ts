@@ -1,9 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { Paciente } from "../../modelos/paciente";
 import { Convenio } from '../../modelos/convenio'
 import { Medico } from '../../modelos/medico';
 import { ESemanasGestacao } from '../../enums/ESemanasGestacao';
-import { EDiasGestacao } from '../../enums/EDiasGestacao';;
+import { EDiasGestacao } from '../../enums/EDiasGestacao';
+import { EEstadoCivil } from '../../enums/EEstadoCivil';
 import { Estados } from "../../enums/estados";
 import { Util } from '../../uteis/Util';
 import { PacienteService } from "../../services/paciente.service"
@@ -14,28 +15,34 @@ import { MedicoService } from '../../services/medico.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ModalAdicionaConvenioComponent } from '../convenio/modal-adiciona-convenio.component';
 import { ModalWebcamComponent } from '../../shared/modal/modal-webcam.component';
 import { UploadService } from '../../services/upload.service';
+import { PrescricaoPaciente } from '../../modelos/prescricaoPaciente';
+import { PrescricaoPacienteService } from '../../services/prescricaoPaciente.service';
+import { LocalDataSource } from 'ng2-smart-table';
+import { ModalCadastroPrescricaoPacienteComponent } from '../modelo-prescricao/modal-cadastro-prescricao-paciente.component';
+import { BotaoImprimirComponent } from '../../shared/components/botao-imprimir-component';
 
 @Component({
   templateUrl: './cadastro-paciente.component.html',
   styleUrls: ['../../cadastros/cadastros.scss'],
 })
-export class CadastroPacienteComponent implements OnInit, AfterViewInit {
+export class CadastroPacienteComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('nomeCompleto', { read: ElementRef, static: false }) private nomeCompleto: ElementRef;
   @ViewChild('numero', { read: ElementRef, static: true }) private numero: ElementRef;
   @ViewChild('fileInput', { read: ElementRef, static: false }) private fileInput: ElementRef;
 
-  paciente = new Paciente();  
+  paciente = new Paciente();
   semanasGestacao = ESemanasGestacao;
   diasGestacao = EDiasGestacao;
   convenios: Array<Convenio> = [];
   util = new Util();
   estados = Estados;
+  estadosCivil = EEstadoCivil;
   dataNasci: string = "01/01/1901"
   dataValidade: string = "01/01/1901"
   dataUltimaMenstru: string = "01/01/1901"
@@ -45,18 +52,25 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   exibeAbaEspecialidade: boolean;
   imagemPaciente: any;
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
+  usuarioAdm: boolean;
+  isSpinnerVisible: boolean;
+  sourcePrescricao: LocalDataSource;
+  prescricoes = new Array<PrescricaoPaciente>();
 
- 
+
   constructor(public router: Router, private uploadService: UploadService, private pacienteService: PacienteService, private enderecoService: EnderecoService,
     private convenioService: ConvenioService, private modalService: NgbModal,
-    private appService: AppService, private medicoService: MedicoService) {
+    private appService: AppService, private prescricaoPacienteService: PrescricaoPacienteService, private medicoService: MedicoService) {
   }
 
-  public ngAfterViewInit(): void {
-    this.nomeCompleto.nativeElement.focus();
-  }  
+  public ngAfterViewChecked(): void {
+    // if (this.nomeCompleto != null)
+    //   this.nomeCompleto.nativeElement.focus();
+  }
 
-  public ngOnInit(): void {
+  alimentarModelos() {
+
+    let requisicoes = [];
 
     if (this.pacienteService.paciente != null) {
 
@@ -65,19 +79,45 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       this.dataValidade = this.util.dataParaString(this.paciente.dataValidadeCartao);
       this.dataUltimaMenstru = this.util.dataParaString(this.paciente.dataUltimaMenstruacao);
 
+      let reqPrescricaoPaciente = this.prescricaoPacienteService.buscarPorPaciente(this.paciente.id).map(c => {
+        if (this.util.hasItems(c)) {
+          this.prescricoes = c;
+          this.prescricaoPacienteService.listaPrescricaoPaciente = c;
+          this.sourcePrescricao = new LocalDataSource(c);
+        }
+      });
+
+      requisicoes.push(reqPrescricaoPaciente);
+
       if (!this.util.isNullOrWhitespace(this.paciente.fotoId))
-        this.downloadFoto();
+        var reqImagem = this.uploadService.downloadImagem(this.pacienteService.paciente.id, "paciente").subscribe(byte => {
+          this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+          requisicoes.push(reqImagem);
+        });
     }
 
-    this.medicoService.buscarMedicosPorUsuario(true)
-      .subscribe(medicoRetorno => {
+    var reqMedico = this.medicoService.buscarMedicosPorUsuario(true)
+      .map(medicoRetorno => {
         this.medicos = medicoRetorno;
         this.ExibeAbaEspecialidade("obstetrícia");
       });
 
-    this.convenioService.Todos().subscribe(dados => {
+    requisicoes.push(reqMedico);
+
+    var reqConvenio = this.convenioService.Todos().map(dados => {
       this.convenios = dados;
     });
+
+    requisicoes.push(reqConvenio);
+
+    return forkJoin(requisicoes);
+  }
+
+  public ngOnInit(): void {
+    this.usuarioAdm = this.util.retornaUsuarioAdmOuMedico(this.appService.retornarUsuarioCorrente());
+    this.isSpinnerVisible = true;
+
+    this.alimentarModelos().subscribe(c => this.isSpinnerVisible = false);
   }
 
   public adicionaConvenio(): void {
@@ -105,8 +145,6 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
 
   ExibeAbaEspecialidade(especialidade: string) {
     if (this.util.hasItems(this.medicos)) {
-
-      let achei = false;
       this.medicos.forEach(medico => {
         if (!this.exibeAbaEspecialidade) {
           this.exibeAbaEspecialidade = medico.especialidade.descricao.toUpperCase().includes(especialidade.toUpperCase());
@@ -175,9 +213,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
   }
 
   public downloadFoto() {
-    this.uploadService.downloadImagem(this.pacienteService.paciente.id, "paciente").subscribe(byte => {
-      this.imageUrl = "data:image/jpeg;base64," + byte['value'];
-    });
+
   }
 
   public salvar(): void {
@@ -200,4 +236,80 @@ export class CadastroPacienteComponent implements OnInit, AfterViewInit {
       }
     )
   }
+
+  criarPrescricao() {
+
+    var modalPrescricao = this.modalService.open(ModalCadastroPrescricaoPacienteComponent, { size: "lg" });
+    modalPrescricao.componentInstance.paciente = this.paciente;
+    modalPrescricao.result.then(novaPrescricao => {
+
+      if (novaPrescricao != null) {
+
+        this.prescricoes.push(novaPrescricao);
+        this.sourcePrescricao = new LocalDataSource(this.prescricoes);
+      }
+
+    }, error => { })
+  }
+
+  editarPrescricao(prescricaoPacienteId) {
+    var prescricao = this.prescricoes.find(c => c.id == prescricaoPacienteId);
+
+    if (prescricao != null) {
+      var modalPrescricao = this.modalService.open(ModalCadastroPrescricaoPacienteComponent, { size: "lg" });
+      modalPrescricao.componentInstance.prescricaoPaciente = prescricao;
+      modalPrescricao.componentInstance.editando = true;
+      modalPrescricao.componentInstance.paciente = this.paciente;
+
+      modalPrescricao.result.then(novaPrescricao => {
+
+        if (novaPrescricao != null) {
+          this.prescricoes.splice(this.prescricoes.indexOf(prescricao), 1);
+          this.prescricoes.push(novaPrescricao);
+          this.sourcePrescricao = new LocalDataSource(this.prescricoes);
+        }
+
+      }, error => { })
+
+    }
+  }
+
+  settingsPrescricoes = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum registro",
+    columns: {
+      data: {
+        title: 'Data',
+        filter: true,
+        valuePrepareFunction: (data) => {return this.util.dataParaString(data) }
+      },
+      medicoId: {
+        title: 'Médico',
+        filter: true,
+        valuePrepareFunction: (medicoId) => {
+          return this.util.hasItems(this.medicos) && !this.util.isNullOrWhitespace(medicoId) ? this.medicos.find(c => c.id == medicoId).nomeCompleto : ""
+        }
+      },
+      id: {
+        title: "Download",
+        type: "custom",
+        filter: false,
+        renderComponent: BotaoImprimirComponent,
+      }
+    },
+    actions:
+    {
+      columnTitle: '',
+      delete: false
+    },
+    edit: {
+      editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>',
+    },
+    add:
+    {
+      addButtonContent: 'Nova Prescrição'
+    }
+  };
 }

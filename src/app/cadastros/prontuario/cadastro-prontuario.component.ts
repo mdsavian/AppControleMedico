@@ -4,10 +4,10 @@ import { ProntuarioService } from '../../services/prontuario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FileUploader, FileItem, ParsedResponseHeaders } from 'ng2-file-upload/ng2-file-upload';
+import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { environment } from '../../../environments/environment';
 import { Util } from '../../uteis/Util'
-import { BotaoDownloadComponent } from './botao-download-component';
+import { BotaoDownloadComponent } from '../../shared/components/botao-download-component';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ModalExcluirRegistroComponent } from '../../shared/modal/modal-excluir-registro.component';
 

@@ -21,7 +21,7 @@ export class ListagemModeloPrescricaoComponent {
   settings = tableData.settings;
   util = new Util();
 
-  constructor(private modeloPrescricaoService: ModeloPrescricaoService, private pacienteService: PacienteService, 
+  constructor(private modeloPrescricaoService: ModeloPrescricaoService, private pacienteService: PacienteService,
     private router: Router, private modalService: NgbModal) {
 
     this.isSpinnerVisible = true;
@@ -38,25 +38,17 @@ export class ListagemModeloPrescricaoComponent {
   }
 
   deletarRegistro(event) {
-    this.pacienteService.buscarPacientesModeloPrescricao(event.data.id).subscribe(pacientes => {
-      if (this.util.hasItems(pacientes)) {
-        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modal.componentInstance.mensagemErro = "Não é possível excluir Modelo de Prescrição vínculado a paciente(s).";
-      }
-      else {
-        this.modalService.open(ModalExcluirRegistroComponent).result.then(
-          result => {
-            if (result == 'Sim') {
-              this.modeloPrescricaoService.Excluir(event.data.id).subscribe(retorno => {
-                if (retorno) {
-                  this.buscaModeloPrescricao();
-                }
-              });
+    this.modalService.open(ModalExcluirRegistroComponent).result.then(
+      result => {
+        if (result == 'Sim') {
+          this.modeloPrescricaoService.Excluir(event.data.id).subscribe(retorno => {
+            if (retorno) {
+              this.buscaModeloPrescricao();
             }
-          }
-        );
+          });
+        }
       }
-    });
+    );
   }
 
   editarRegistro(event) {
