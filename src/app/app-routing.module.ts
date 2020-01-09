@@ -12,7 +12,8 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     children: [
-      { path: 'relatorio', loadChildren: () => import('./relatorio/relatorio.module').then(m => m.RelatorioModule)},
+      { path: 'relatorio', loadChildren: () => import('./relatorio/relatorio.module').then(m => m.RelatorioModule), canActivate: [AuthGuard]},
+      { path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomeModule), canActivate: [AuthGuard]},
       { path: 'icons', loadChildren: () => import('./icons/icons.module').then(m => m.IconsModule) },
       { path: 'listagem', loadChildren: () => import('./listagem/listagem.module').then(m =>  m.ListagemModule), canActivate: [AuthGuard] },
       { path: 'cadastros', loadChildren: () => import('./cadastros/cadastros.module').then(m =>  m.CadastrosModule), canActivate: [AuthGuard] },

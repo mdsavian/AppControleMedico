@@ -217,6 +217,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewChecked {
   }
 
   public salvar(): void {
+    
     this.pacienteService.paciente = null;
     this.pacienteService.salvar(this.paciente).subscribe(
       data => {

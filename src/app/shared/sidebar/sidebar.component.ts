@@ -148,7 +148,7 @@ export class SidebarComponent implements OnInit {
   ROUTES: RouteInfo[] = [
     {
       path: '',
-      title: 'Cadastro',
+      title: 'Cadastros',
       icon: 'icon-Double-Circle',
       class: 'has-arrow',
       label: '',
@@ -196,7 +196,7 @@ export class SidebarComponent implements OnInit {
                 {
                   path: '/listagem/listagemprontuario',
                   title: 'Prontuário',
-                  icon: '',
+                  icon: 'fa fa-file-medical',
                   class: '',
                   label: '',
                   labelClass: '',
@@ -261,7 +261,7 @@ export class SidebarComponent implements OnInit {
         {
           path: '',
           title: 'Médico',
-          icon: '',
+          icon: 'fa fa-user-md',
           class: 'has-arrow',
           label: '',
           labelClass: '',
@@ -364,7 +364,7 @@ export class SidebarComponent implements OnInit {
         {
           path: '/listagem/listagemmodeloprescricao',
           title: 'Modelo de Prescrição',
-          icon: '',
+          icon: 'fa fa-prescription-bottle',
           class: '',
           label: '',
           labelClass: '',

@@ -86,6 +86,11 @@ export class LoginService {
 
     if (!login) 
       location.reload();
+
+      rota = '/home/home';
+      console.log(rota);
+      ;
+
           
     this.router.navigate([rota]);
 

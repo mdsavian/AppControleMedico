@@ -1,0 +1,10 @@
+/* body { padding-top:20px; };
+
+.panel-body .btn:not(.btn-block) { width:120px;margin-bottom:10px; } */
+
+.btn-home
+{
+    margin-right:10px;
+    width: 250px;
+    margin-bottom:10px;
+}

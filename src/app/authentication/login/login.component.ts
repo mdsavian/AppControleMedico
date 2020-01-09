@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
   onLoggedin() {    
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       usuarioRetorno => {
-        console.log("opaa111");
 
         
         if (usuarioRetorno == null) {
@@ -42,14 +41,12 @@ export class LoginComponent implements OnInit {
         else {
           if (usuarioRetorno.login != "admin")
             this.appService.buscarClinicasUsuario(usuarioRetorno).subscribe(clinicas => {
-              console.log("opaa");
               this.appService.armazenarClinica(clinicas.find(c => true));
               
               if (usuarioRetorno.senhaPadrao) {
                 this.validaSenhaPadrao(usuarioRetorno);
               }
               else {
-                console.log("eae");
                 this.loginService.redirecionarRota(usuarioRetorno, true);
               }
 
