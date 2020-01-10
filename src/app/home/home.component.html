@@ -3,26 +3,45 @@
         <div class="card">
             <div class="card-body">
                 <div>
-                    <h2 class="card-title"><span class="fa fa-bookmark"></span> Atalhos</h2></div>
+                    <h2 class="card-title"><span class=""></span> Atalhos</h2>
+                </div>
                 <br />
                 <div class="row col-xs-12 col-md-12" style="justify-content: center">
-                    <a href="#" class="btn btn-danger btn-lg btn-home" role="button"><span
-                            class="fa fa-2x fa-calendar"></span>
-                        <br />Agenda</a>
+                    <button (click)="redirecionar('Agenda')" class="btn btn-danger btn-lg btn-home" role="button"><span
+                            class="fa fa-3x fa-calendar"></span>
+                        <br />Agenda</button>
 
-                    <a href="#" class="btn-home btn btn-warning btn-lg btn-home" role="button"><span
-                            class="fa fa-2x fa-area-chart"></span>
-                        <br />Dashboard</a>
+                    <button (click)="redirecionar('Dashboard')" class="btn-home btn btn-warning btn-lg btn-home"
+                        role="button"><span class="fa fa-3x fa-area-chart"></span>
+                        <br />Dashboard</button>
 
-                    <a href="#" class="btn-home btn btn-primary btn-lg btn-home" role="button"><span
-                            class="fa fa-2x fa-users"></span>
-                        <br />Pacientes</a>
+                    <button (click)="redirecionar('Pacientes')" class="btn-home btn btn-primary btn-lg btn-home"
+                        role="button"><span class="fa fa-3x fa-users"></span>
+                        <br />Pacientes</button> 
 
-                    <a href="#" class="btn-home btn btn-success btn-lg btn-home" role="button"><span
-                            class="fa fa-2x fa-user-circle-o"></span> <br />Meu Perfil</a>
+                    <button (click)="redirecionar('Medicos')" class="btn-home btn btn-info btn-lg btn-home"
+                        role="button"><span class="fa fa-3x fa-user-md"></span> <br />Médicos</button>
 
-                    <a href="#" class="btn-home btn btn-info btn-lg btn-home" role="button"><span
-                            class="fa fa-2x fa-cog fa-spin"></span> <br />Configurar Atalhos</a>
+                    <button (click)="redirecionar('Meu Perfil')" class="btn-home btn btn-success btn-lg btn-home"
+                        role="button"><span class="fa fa-3x fa-user-circle-o"></span> <br />Meu Perfil</button>
+
+                </div>
+
+                <div class="row col-xs-12 col-md-12" style="justify-content: center">
+                    <button (click)="redirecionar('Conta a Pagar')" class="btn btn-danger btn-lg btn-home"
+                        role="button"><span ><img src="../../../assets/images/icon/contaPagar.png"></span>
+                        <br />Conta a Pagar</button>
+
+                    <button (click)="redirecionar('Conta a Receber')" class="btn-home btn btn-warning btn-lg btn-home"
+                        role="button"><span><img src="../../../assets/images/icon/contaReceber.png"></span>
+                        <br />Conta a Receber</button>
+
+                    <button (click)="redirecionar('Caixas')" class="btn-home btn btn-primary btn-lg btn-home"
+                        role="button"><span><img src="../../../assets/images/icon/caixa.png"></span>
+                        <br />Caixas</button>
+
+                    <button (click)="redirecionar('Configurar Atalhos')" class="btn-home btn btn-info btn-lg btn-home"
+                        role="button"><span class="fa fa-3x fa-cog fa-spin"></span> <br />Configurar Atalhos</button>
                 </div>
             </div>
         </div>

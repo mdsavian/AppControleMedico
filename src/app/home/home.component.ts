@@ -17,6 +17,60 @@ export class HomeComponent {
   }
 
 
+  redirecionar(nomeMenu: string) {
+    console.log(nomeMenu);
+    var rota = "";
+
+    switch (nomeMenu) {
+      case "Agenda":
+        {
+          rota = "/agenda/agenda"
+          break;
+        }
+      case "Dashboard":
+        {
+          rota = "/dashboard/dashboardanalitico"
+
+          break;
+        }
+      case "Pacientes":
+        {
+          rota = "/listagem/listagempaciente"
+          break;
+        }
+      case "Medicos":
+        {
+          rota = "/listagem/listagemmedico"
+          break;
+        }
+      case "Meu Perfil":
+        {
+          break;
+        }
+      case "Conta a Pagar":
+        {
+          rota = "/listagem/listagemcontapagar"
+          break;
+        }
+      case "Conta a Receber":
+        {
+          rota = "/listagem/listagemcontareceber"
+          break;
+        }
+      case "Caixas":
+        {
+          rota = "/listagem/listagemcaixa"
+          break;
+        }
+      case "Configurar Atalhos":
+        {
+          break;
+        }
+    }
+
+    this.router.navigate([rota]);
+  }
+
 
 
 

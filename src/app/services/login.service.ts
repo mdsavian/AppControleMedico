@@ -77,21 +77,17 @@ export class LoginService {
 
   public redirecionarRota(usuarioRetorno: Usuario, login = false) {
     var rota;
-    if (this.util.retornaUsuarioAdmOuMedico(usuarioRetorno))
-      rota = '/dashboard/dashboardanalitico';
-    else if (usuarioRetorno.funcionario != null && this.funcionarioService.PermitirVisualizarAgenda(usuarioRetorno.funcionario))
-      rota = '/agenda/agenda';
-    else //se o usuário for um funcionário sem permissão dash e agenda, redireciona para o cadastro do funcinario
-      rota = '/listagem/listagemfuncionario';
+    // if (this.util.retornaUsuarioAdmOuMedico(usuarioRetorno))
+    //   rota = '/dashboard/dashboardanalitico';
+    // else if (usuarioRetorno.funcionario != null && this.funcionarioService.PermitirVisualizarAgenda(usuarioRetorno.funcionario))
+    //   rota = '/agenda/agenda';
+    // else //se o usuário for um funcionário sem permissão dash e agenda, redireciona para o cadastro do funcinario
+    //   rota = '/listagem/listagemfuncionario';
 
-    if (!login) 
+    if (!login)
       location.reload();
 
-      rota = '/home/home';
-      console.log(rota);
-      ;
-
-          
+    rota = '/home/home';
     this.router.navigate([rota]);
 
   }
