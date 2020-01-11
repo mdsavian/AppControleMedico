@@ -2,6 +2,7 @@ import { Entidade } from "./entidade";
 import { Medico } from "./medico";
 import { Funcionario } from "./funcionario";
 import { ETipoUsuario } from "../enums/EtipoUsuario";
+import { ConfiguracaoAtalho } from "./configuracaoAtalho";
 
 export class Usuario extends Entidade {
 
@@ -10,7 +11,7 @@ export class Usuario extends Entidade {
     super();
 
     this.tipoUsuario = ETipoUsuario.Comum, this.login = "", this.senha = "", this.ultimoLogin = "", this.ativo = false, this.medicoId = "", this.funcionarioId = ""
-    this.funcionario = new Funcionario(), this.medico =null, this.sessaoAtiva = true, this.senhaPadrao = false;
+    this.funcionario = new Funcionario(), this.medico =null, this.sessaoAtiva = true, this.senhaPadrao = false, this.configuracaoAtalhos = new Array<ConfiguracaoAtalho>();
   }
 
 
@@ -25,4 +26,5 @@ export class Usuario extends Entidade {
   senhaPadrao:boolean;
   funcionario: Funcionario;
   medico: Medico;
+  configuracaoAtalhos:Array<ConfiguracaoAtalho>
 }

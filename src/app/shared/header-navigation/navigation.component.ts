@@ -7,8 +7,6 @@ import { AppService } from '../../services/app.service';
 import { Util } from '../../uteis/Util';
 import { Usuario } from '../../modelos/usuario';
 import { UploadService } from '../../services/upload.service';
-import { FuncionarioService } from '../../services/funcionario.service';
-import { MedicoService } from '../../services/medico.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { ModalTrocaClinicaComponent } from '../modal/modal-troca-clinica.component';
 @Component({
@@ -24,7 +22,7 @@ export class NavigationComponent implements AfterViewInit, OnInit {
   util = new Util();
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal, private uploadService: UploadService, private medicoService: MedicoService, private funcionarioService: FuncionarioService,
+  constructor(private modalService: NgbModal, private uploadService: UploadService,
     private router: Router, private loginService: LoginService, private appService: AppService, private usuarioService: UsuarioService) { }
 
 
@@ -74,17 +72,7 @@ export class NavigationComponent implements AfterViewInit, OnInit {
   }
 
   perfilUsuario() {
-
-    this.usuarioService.usuarioParaValidacao = this.usuario;
-
-    if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId)) {
-      this.funcionarioService.funcionario = this.usuario.funcionario;
-      this.router.navigate(['/cadastros/cadastrofuncionario']);
-    }
-    else if (!this.util.isNullOrWhitespace(this.usuario.medicoId)) {
-      this.medicoService.medico = this.usuario.medico;
-      this.router.navigate(['/cadastros/cadastromedico']);
-    }
+    this.usuarioService.redirecionarParaPerfil(this.usuario);
   }
 
   ngAfterViewInit() {

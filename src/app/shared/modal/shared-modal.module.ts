@@ -16,13 +16,13 @@ import { WebcamModule } from 'ngx-webcam';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { BotaoDownloadComponent } from '../components/botao-download-component';
 import { BotaoImprimirComponent } from '../components/botao-imprimir-component';
-import {CorComponent } from '../components/cor-component';
+import { CorComponent } from '../components/cor-component';
 
 
 
 @NgModule({
   imports: [Ng2SmartTableModule, CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
-  declarations: [BotaoImprimirComponent,CorComponent, BotaoDownloadComponent,ModalDetalheContaReceberComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
-  entryComponents: [BotaoImprimirComponent,CorComponent,BotaoDownloadComponent,ModalDetalheContaReceberComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
+  declarations: [BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+  entryComponents: [BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
 })
 export class SharedModalModule { }

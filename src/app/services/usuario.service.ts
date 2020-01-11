@@ -4,6 +4,10 @@ import { environment } from '../../environments/environment';
 import { AlteraSenha } from '../modelos/naoPersistidos/alteraSenha';
 import { Observable } from 'rxjs';
 import { Usuario } from '../modelos/usuario';
+import { Util } from '../uteis/Util';
+import { FuncionarioService } from './funcionario.service';
+import { MedicoService } from './medico.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +17,13 @@ export class UsuarioService {
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'usuario/';
 
+  private util = new Util();
+
   public usuarioCorrente: Usuario;
   public listaUsuario: Array<Usuario>;
   public usuarioParaValidacao: Usuario;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private medicoService: MedicoService, private funcionarioService: FuncionarioService, private router: Router) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -34,7 +40,7 @@ export class UsuarioService {
   }
 
   public update(usuario) {
-    return this.http.put(this.accessPointUrl +  usuario.id, usuario, { headers: this.headers });
+    return this.http.put(this.accessPointUrl + usuario.id, usuario, { headers: this.headers });
   }
 
   public alterarSenha(alterarSenha: AlteraSenha) {
@@ -45,5 +51,17 @@ export class UsuarioService {
     return Observable.throw(error.message);
   }
 
+  redirecionarParaPerfil(usuario: Usuario) {
+    this.usuarioParaValidacao = usuario;
+
+    if (!this.util.isNullOrWhitespace(usuario.funcionarioId)) {
+      this.funcionarioService.funcionario = usuario.funcionario;
+        this.router.navigate(['/cadastros/cadastrofuncionario']);
+    }
+    else if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
+      this.medicoService.medico = usuario.medico;
+      this.router.navigate(['/cadastros/cadastromedico']);
+    }
+  }
 
 }
