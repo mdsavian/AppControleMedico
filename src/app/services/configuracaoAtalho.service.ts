@@ -39,4 +39,9 @@ export class ConfiguracaoAtalhoService {
     return this.http.get<Array<ConfiguracaoAtalho>>(this.accessPointUrl + "buscarPorUsuario/" + usuarioId);
   }
 
+  public buscarParaConfiguracao(usuarioId:string)
+  {
+    return this.http.get<Array<ConfiguracaoAtalho>>(this.accessPointUrl + "buscarParaConfiguracao/" + usuarioId);
+  }
+
 }

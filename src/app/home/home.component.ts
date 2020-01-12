@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit {
       this.configuracaoAtalhos = configuracoes;
       this.isSpinnerVisible = false;
     });
-
   }
 
 
@@ -80,7 +79,9 @@ export class HomeComponent implements OnInit {
           break;
         }
       case "Configurar Atalhos":
-        {
+        {          
+          this.configuracaoAtalhoService.listaConfiguracaoAtalho = this.configuracaoAtalhos;          
+          rota = "/cadastros/configuracaoatalho"
           break;
         }
     }

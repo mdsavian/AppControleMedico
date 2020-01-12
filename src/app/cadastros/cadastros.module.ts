@@ -47,14 +47,14 @@ import { ConfiguracaoAgendaComponent } from './configuracao-agenda/configuracao-
 import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component'
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
-
+import { ConfiguracaoAtalhoComponent } from './configuracao-atalho/configuracao-atalho.component';
 
 @NgModule({
   imports: [NgbModule, FileUploadModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule,
     QuillModule.forRoot(), DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroModeloPrescricaoComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
-    CadastroFornecedorComponent, ModalCadastroPrescricaoPacienteComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
+    ConfiguracaoAtalhoComponent, CadastroFornecedorComponent, ModalCadastroPrescricaoPacienteComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent, CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,

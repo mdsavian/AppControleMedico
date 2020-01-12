@@ -18,6 +18,7 @@ import { CadastroContaReceberComponent } from './conta-receber/cadastro-conta-re
 import { DetalhesCaixaComponent } from './caixa/detalhes-caixa.component';
 import { CadastroProntuarioComponent } from './prontuario/cadastro-prontuario.component';
 import { CadastroModeloPrescricaoComponent } from "./modelo-prescricao/cadastro-modelo-prescricao.component";
+import { ConfiguracaoAtalhoComponent } from './configuracao-atalho/configuracao-atalho.component';
 
 export const CadastrosRoutes: Routes = [
   {
@@ -30,6 +31,16 @@ export const CadastrosRoutes: Routes = [
           title: 'Cadastro Paciente',
           urls: [
             { title: 'Cadastro Paciente', url: '/cadastros/cadastrar' }
+          ]
+        }
+      },
+      {
+        path: 'configuracaoatalho',
+        component: ConfiguracaoAtalhoComponent,
+        data: {
+          title: 'Configuração de Atalhos',
+          urls: [
+            { title: 'Configuração de Atalhos', url: '/cadastros/cadastrar' }
           ]
         }
       },

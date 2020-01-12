@@ -1,0 +1,35 @@
+<div class="spinner" *ngIf=isSpinnerVisible>
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+<div class="row" *ngIf=!isSpinnerVisible>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form #configuracaoAtalhoForm="ngForm">
+
+          <div class="row col-xs-12 col-md-12" style="justify-content: center">
+
+            <div *ngFor="let config of configuracaoAtalhos">
+
+              <label class="form-check-inline" [for]="config.descricao">Ativo</label>
+              <input  [(ngModel)]="config.ativo" class="form-check-inline" [id]="config.descricao" [name]="config.descricao" type="checkbox">
+
+              <button (click)="redirecionar(config.descricao)" [class]="config.btnClass"><span
+                  [class]="config.spanClass"> <img *ngIf=config.imagem [src]="config.imagem"> </span>
+                <br />{{config.descricao}}</button>
+            </div>
+          </div>
+          <div class="panel-footer rowcadastro">
+            <div class="form-group">
+              <div class="col-xs-8 col-md-6">
+                <button style="width:40%" class="btn btn-rounded btn-success" (click)="salvar()">Salvar</button>
+                <a href="javascript:history.back()" style="width:40%" class="btn btn-rounded btn-danger">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

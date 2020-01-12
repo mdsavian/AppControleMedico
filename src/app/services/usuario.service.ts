@@ -47,6 +47,10 @@ export class UsuarioService {
     return this.http.post(this.accessPointUrl + 'alterarSenha', alterarSenha);
   }
 
+  public salvar(usuario: Usuario) {
+    return this.http.post<Usuario>(this.accessPointUrl, usuario);
+  }
+
   errorHandler(error: HttpErrorResponse) {
     return Observable.throw(error.message);
   }
