@@ -8,19 +8,26 @@
               <div class="row"></div>
               <div class="row rowcadastro">
                 <div class="col-xs-12 col-md-6">
+
                   <div class="form-group">
                     <label class="control-label" for="descricao">Descrição(*)</label>
                     <input type="text" id="descricao" placeholder="Descrição" name="descricao" class="form-control"
-                      appValidaDescricaoProcedimento required [(ngModel)]="procedimento.descricao"
-                      #descricao="ngModel">
-                    <div
-                      *ngIf="descricao.invalid || descricao.errors?.validaDescricaoProcedimento"
+                      appValidaDescricaoProcedimento required [(ngModel)]="procedimento.descricao" #descricao="ngModel">
+                    <div *ngIf="descricao.invalid || descricao.errors?.validaDescricaoProcedimento"
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoProcedimento"> Já existe um procedimento com esta
                         descrição
                         cadastrada. </div>
                     </div>
+                  </div>
+                </div>
+                <div class="col-xs-6 col-md-3">
+                  <div class="form-group">
+                    <label class="form-check-inline" for="obrigaPaciente">Obriga Paciente</label>
+                    <input type="checkbox" class="form-check-inline" value="checked"
+                      [(ngModel)]="procedimento.obrigaPaciente" #obrigaPaciente="ngModel" id="obrigaPaciente"
+                      name="obrigaPaciente">
                   </div>
                 </div>
                 <div class="col-xs-6 col-md-3">

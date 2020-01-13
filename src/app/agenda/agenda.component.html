@@ -77,7 +77,7 @@
           <div [ngSwitch]="view">
             <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate"
               [dayStartHour]="horaInicialCalendario" [dayEndHour]="horaFinalCalendario" [events]="eventos"
-              [refresh]="refresh" (eventClicked)="actionAgendamento($event.event,'Editar')"
+              [refresh]="refresh" (eventClicked)="actionAgendamento($event.event)"
               (eventTimesChanged)="eventTimesChanged($event)" [hourSegmentTemplate]="weekViewHourSegmentTemplate"
               [excludeDays]="diasExcluidos" [hourSegments]="configuracaoMinutos">
             </mwl-calendar-week-view>
@@ -96,7 +96,7 @@
 
             <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [dayStartHour]="horaInicialCalendario"
               [dayEndHour]="horaFinalCalendario" [viewDate]="viewDate" [events]="eventos" [refresh]="refresh"
-              (eventClicked)="actionAgendamento($event.event,'Editar')" (eventTimesChanged)="eventTimesChanged($event)"
+              (eventClicked)="actionAgendamento($event.event)" (eventTimesChanged)="eventTimesChanged($event)"
               [hourSegments]="configuracaoMinutos" [hourSegmentTemplate]="dayViewHourSegmentTemplate">
             </mwl-calendar-day-view>
 
@@ -133,13 +133,14 @@
   </div>
 </ng-template>
 
-<ng-template #modalAcoes id="modalAcoes" let-c="close" let-d="dismiss">
+<!-- <ng-template #modalAcoes id="modalAcoes" let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Ações</h4>
     <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="c('Fechar')">
       <span aria-hidden="true" title="Fechar">&times;</span>
     </button>
   </div>
+
   <div class="modal-body">
     <div style="margin-top: 10px">
       <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-primary"
@@ -177,7 +178,7 @@
           title="Excluir"></span> Excluir</button>
     </div>
   </div>
-</ng-template>
+</ng-template> -->
 
 <ng-template #modalAcaoAgendamento id="modalAcaoAgendamento" let-c="close" let-d="dismiss">
   <div class="modal-header">

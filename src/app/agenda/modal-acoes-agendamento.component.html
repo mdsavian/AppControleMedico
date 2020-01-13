@@ -1,0 +1,46 @@
+<form #acoesAgendamento="ngForm">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Ações</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="fechar('Fechar')">
+          <span aria-hidden="true" title="Fechar">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div style="margin-top: 10px">
+          <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-primary"
+            *ngIf="validarBotoesAcoes('Confirmar')" (click)="fechar('Confirmar')"><span class="fa fa-calendar-check-o"
+              title="Confirmar"></span> Confirmar</button>
+        </div>
+    
+        <div style="margin-top: 10px">
+          <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-success"
+            *ngIf="validarBotoesAcoes('Pagar/Finalizar')" (click)="fechar('PagarFinalizar')"><span class="fa fa-money"
+              title="Pagar e finalizar"></span> Pagar e finalizar</button>
+        </div>
+    
+        <div style="margin-top: 10px">
+          <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-secondary"
+            *ngIf="validarBotoesAcoes('Editar')" (click)="fechar('Editar')"><span class="fa fa-pencil"
+              title="Editar"></span> Editar </button>
+        </div>
+    
+        <div style="margin-top: 10px">
+          <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn-info btn"
+            *ngIf="validarBotoesAcoes('Detalhes')" (click)="fechar('Detalhes')"><span class="fa fa-info-circle"
+              title="Detalhes"></span> Detalhes </button>
+        </div>
+    
+        <div style="margin-top: 10px">
+          <button type="button" class="btn btn-warning btn-lg btn-block" style="margin:0 auto;"
+            *ngIf="validarBotoesAcoes('Cancelar')" (click)="fechar('Cancelar')"><span class="fa fa-times"
+              title="Cancelar"></span> Cancelar</button>
+        </div>
+    
+        <div style="margin-top: 10px">
+          <button type="button" class="btn btn-danger btn-lg btn-block" style="margin:0 auto; display:block;"
+            *ngIf="validarBotoesAcoes('Excluir')" (click)="fechar('Excluir')"><span class="fa fa-trash"
+              title="Excluir"></span> Excluir</button>
+        </div>
+      </div>
+</form>

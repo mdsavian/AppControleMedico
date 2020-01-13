@@ -36,6 +36,7 @@ export class Agendamento extends Entidade {
     medicoId: string;
     funcionarioId:string;
     contemPagamentos:boolean;
+    encaixado:boolean;
 
     tipoAgendamento: ETipoAgendamento;
     situacaoAgendamento: ESituacaoAgendamento;

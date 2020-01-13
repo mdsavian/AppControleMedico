@@ -64,6 +64,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   cirurgias: Array<Cirurgia> = [];
   falhaNaBusca = true;
   tituloTela: string = "";
+  obrigaPaciente = true;
 
   @ViewChild('tipoAgendamento', { read: ElementRef, static: false }) private tipoAgendamento: ElementRef;
   @ViewChild('pacienteModel', { read: ElementRef, static: false }) private pacienteModel: ElementRef;
@@ -106,8 +107,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.falhaNaBusca = false;
       this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
 
-
-
       if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
         if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId) && this.util.hasItems(this.pacientes)) {
           this.paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
@@ -127,9 +126,14 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         if (!this.util.isNullOrWhitespace(this.agendamento.localId) && this.util.hasItems(this.locais))
           this.agendamento.local = this.locais.find(c => c.id == this.agendamento.localId);
 
-        if (!this.util.isNullOrWhitespace(this.agendamento.procedimentoId) && this.util.hasItems(this.procedimentos))
+        if (!this.util.isNullOrWhitespace(this.agendamento.procedimentoId) && this.util.hasItems(this.procedimentos)) {
+
           this.agendamento.procedimento = this.procedimentos.find(c => c.id == this.agendamento.procedimentoId);
+
+          this.obrigaPaciente = this.agendamento.procedimento.obrigaPaciente;
+        }
       }
+      else this.obrigaPaciente = false;
 
       this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
 
@@ -143,25 +147,22 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     }
 
     this.tituloTela += this.medico.nomeCompleto;
-
   }
 
   salvar() {
 
     var retorno = false;
 
-    if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
-      if (this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
-        var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modalErro.componentInstance.mensagemErro = "Paciente inválido.";
-        retorno = true;
-      }
+    if (this.obrigaPaciente && this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
+      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modalErro.componentInstance.mensagemErro = "Paciente inválido.";
+      retorno = true;
+    }
 
-      if (!this.util.validaData(this.util.dataParaString(this.agendamento.dataAgendamento))) {
-        var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
-        retorno = true;
-      }
+    if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio && !this.util.validaData(this.util.dataParaString(this.agendamento.dataAgendamento))) {
+      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modalErro.componentInstance.mensagemErro = "Data/Hora inválida.";
+      retorno = true;
     }
 
     if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado)
@@ -213,11 +214,18 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     }
   }
 
+  selecionaProcedimento(e: any) {
+    var procedimento = this.procedimentos.find(c => c.id == this.agendamento.procedimentoId);
+    if (procedimento != null)
+      this.falhaNaBusca = this.obrigaPaciente = procedimento.obrigaPaciente;
+  }
+
   selecionaTipoAgendamento(value: string) {
     this.agendamento.tipoAgendamento = ETipoAgendamento[value];
 
-    if (ETipoAgendamento[value] == ETipoAgendamento.Bloqueio)
-      this.falhaNaBusca = false;
+    if (ETipoAgendamento[value] == ETipoAgendamento.Bloqueio) {
+      this.falhaNaBusca = this.obrigaPaciente = false;
+    }
     else if (this.pacienteSelecionado == "")
       this.falhaNaBusca = true;
 

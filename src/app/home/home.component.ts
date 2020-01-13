@@ -6,6 +6,10 @@ import { AppService } from '../services/app.service';
 import { ConfiguracaoAtalhoService } from '../services/configuracaoAtalho.service';
 import { Usuario } from '../modelos/usuario';
 import { ConfiguracaoAtalho } from '../modelos/configuracaoAtalho';
+import { ModalAberturaCaixaComponent } from '../cadastros/caixa/modal-abertura-caixa.component';
+import { ModalSucessoComponent } from '../shared/modal/modal-sucesso.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalFechamentoCaixaComponent } from '../cadastros/caixa/modal-fechamento-caixa.component';
 
 @Component({
   templateUrl: './home.component.html',
@@ -18,8 +22,8 @@ export class HomeComponent implements OnInit {
   usuario = new Usuario();
   configuracaoAtalhos = new Array<ConfiguracaoAtalho>();
 
-  constructor(private router: Router, private appService: AppService, private usuarioService: UsuarioService, private configuracaoAtalhoService: ConfiguracaoAtalhoService) {
-  }
+  constructor(private router: Router, private appService: AppService, private usuarioService: UsuarioService, private configuracaoAtalhoService: ConfiguracaoAtalhoService,
+    private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.usuario = this.appService.retornarUsuarioCorrente();
@@ -78,9 +82,36 @@ export class HomeComponent implements OnInit {
           rota = "/listagem/listagemcaixa"
           break;
         }
+      case "Abrir Caixa":
+        {
+
+          this.modalService.open(ModalAberturaCaixaComponent, { size: "lg" }).result.then(
+            caixa => {
+              if (caixa != null && !this.util.isNullOrWhitespace(caixa.dataAbertura)) {
+                var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+                modal.componentInstance.mensagem = "Caixa aberto com sucesso.";
+              }
+
+            }, (erro) => {
+            });
+          break;
+        }
+      case "Fechar Caixa":
+        {
+          this.modalService.open(ModalFechamentoCaixaComponent, { size: "lg" }).result.then(
+            caixa => {
+              if (caixa != null && !this.util.isNullOrWhitespace(caixa.dataFechamento)) {
+                var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+                modal.componentInstance.mensagem = "Caixa fechado com sucesso.";
+              }
+            }
+            , (erro) => {
+            });
+          break;
+        }
       case "Configurar Atalhos":
-        {          
-          this.configuracaoAtalhoService.listaConfiguracaoAtalho = this.configuracaoAtalhos;          
+        {
+          this.configuracaoAtalhoService.listaConfiguracaoAtalho = this.configuracaoAtalhos;
           rota = "/cadastros/configuracaoatalho"
           break;
         }

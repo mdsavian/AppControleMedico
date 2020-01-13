@@ -10,7 +10,8 @@ declare var $: any;
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html'
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss']
 })
 
 export class SidebarComponent implements OnInit {
@@ -29,14 +30,14 @@ export class SidebarComponent implements OnInit {
       this.showMenu = element;
     }
   }
-  addActiveClass(element: any) {    
+  addActiveClass(element: any) {
     if (element === this.showSubMenu) {
       this.showSubMenu = '0';
     } else {
       this.showSubMenu = element;
     }
   }
-  addActiveThirdClass(element: any) {    
+  addActiveThirdClass(element: any) {
     if (element === this.showSubThirdMenu) {
       this.showSubThirdMenu = '0';
     } else {
@@ -83,11 +84,11 @@ export class SidebarComponent implements OnInit {
         if (!funcionario.permissaoAdministrador) {
           itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Dashboard Analítico");
           itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Caixas");
-          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Médico");
-          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Financeiro/Forma de Pagamento");
-          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Funcionário/Ofício");
-          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Pessoas/Paciente/Prontuário");
-          itensSideBar = this.removeMenu(itensSideBar, "Cadastro/Pessoas/Paciente/Timeline");
+          itensSideBar = this.removeMenu(itensSideBar, "Médico");
+          itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Forma de Pagamento");
+          itensSideBar = this.removeMenu(itensSideBar, "Cadastros/Pessoas/Funcionário/Ofício");
+          itensSideBar = this.removeMenu(itensSideBar, "Paciente/Prontuário");
+          itensSideBar = this.removeMenu(itensSideBar, "Paciente/Timeline");
         }
 
         if (!this.funcionarioService.PermitirVisualizarAgenda(funcionario)) {
@@ -108,7 +109,7 @@ export class SidebarComponent implements OnInit {
     var menuRemover: RouteInfo;
     var subMenus: RouteInfo[];
     var menuAnterior: RouteInfo;
-    
+
     for (var i = 0; i < menusSplit.length; i++) {
 
       var titulo = menusSplit[i];
@@ -149,7 +150,7 @@ export class SidebarComponent implements OnInit {
     {
       path: '',
       title: 'Cadastros',
-      icon: 'icon-Double-Circle',
+      icon: 'fa fa-pencil-square-o',
       class: 'has-arrow',
       label: '',
       labelClass: '',
@@ -176,7 +177,7 @@ export class SidebarComponent implements OnInit {
           submenu: [
             {
               path: '',
-              title: 'Paciente',
+              title: 'Funcionário',
               icon: '',
               class: 'has-arrow',
               label: '',
@@ -184,8 +185,8 @@ export class SidebarComponent implements OnInit {
               extralink: false,
               submenu: [
                 {
-                  path: '/listagem/listagempaciente',
-                  title: 'Paciente',
+                  path: '/listagem/listagemfuncionario',
+                  title: 'Funcionário',
                   icon: '',
                   class: '',
                   label: '',
@@ -194,25 +195,15 @@ export class SidebarComponent implements OnInit {
                   submenu: []
                 },
                 {
-                  path: '/listagem/listagemprontuario',
-                  title: 'Prontuário',
-                  icon: 'fa fa-file-medical',
-                  class: '',
-                  label: '',
-                  labelClass: '',
-                  extralink: false,
-                  submenu: []
-                },
-                {
-                  path: '/listagem/listagemtimeline',
-                  title: 'Timeline',
+                  path: '/listagem/listagemoficio',
+                  title: 'Ofício',
                   icon: '',
                   class: '',
                   label: '',
                   labelClass: '',
                   extralink: false,
                   submenu: []
-                }
+                },
               ]
             },
             {
@@ -227,144 +218,41 @@ export class SidebarComponent implements OnInit {
             }
           ]
         },
-        {
-          path: '',
-          title: 'Funcionário',
-          icon: '',
-          class: 'has-arrow',
-          label: '',
-          labelClass: '',
-          extralink: false,
-          submenu: [
-            {
-              path: '/listagem/listagemfuncionario',
-              title: 'Funcionário',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-            {
-              path: '/listagem/listagemoficio',
-              title: 'Ofício',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-          ]
-        },
-        {
-          path: '',
-          title: 'Médico',
-          icon: 'fa fa-user-md',
-          class: 'has-arrow',
-          label: '',
-          labelClass: '',
-          extralink: false,
-          submenu: [
-            {
-              path: '/listagem/listagemmedico',
-              title: 'Médico',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-            {
-              path: '/listagem/listagemespecialidade',
-              title: 'Especialidade',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-            {
-              path: '/cadastros/configuracaoagenda',
-              title: 'Configuração Agenda',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-          ]
-        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Procedimentos',            
+      icon: 'fa fa-medkit',
+      class: 'has-arrow',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
         {
           path: '/listagem/listagemprocedimento',
-          title: 'Procedimentos',
+          title: 'Procedimento',
           icon: '',
-          class: 'has-arrow',
+          class: '',
           label: '',
           labelClass: '',
           extralink: false,
-          submenu: [
-            {
-              path: '/listagem/listagemprocedimento',
-              title: 'Procedimento',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-            {
-              path: '/listagem/listagemexame',
-              title: 'Exame',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-            {
-              path: '/listagem/listagemcirurgia',
-              title: 'Cirurgia',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-          ]
+          submenu: []
         },
         {
-          path: '',
-          title: 'Financeiro',
+          path: '/listagem/listagemexame',
+          title: 'Exame',
           icon: '',
-          class: 'has-arrow',
+          class: '',
           label: '',
           labelClass: '',
           extralink: false,
-          submenu: [
-            {
-              path: '/listagem/listagemformadepagamento',
-              title: 'Forma de Pagamento',
-              icon: '',
-              class: '',
-              label: '',
-              labelClass: '',
-              extralink: false,
-              submenu: []
-            },
-          ]
+          submenu: []
         },
         {
-          path: '/listagem/listagemmodeloprescricao',
-          title: 'Modelo de Prescrição',
-          icon: 'fa fa-prescription-bottle',
+          path: '/listagem/listagemcirurgia',
+          title: 'Cirurgia',
+          icon: '',
           class: '',
           label: '',
           labelClass: '',
@@ -381,6 +269,57 @@ export class SidebarComponent implements OnInit {
           extralink: false,
           submenu: []
         },
+      ]
+    },
+    {
+      path: '',
+      title: 'Paciente',
+      icon: 'fa fa-users',
+      class: 'has-arrow',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
+        {
+          path: '/listagem/listagempaciente',
+          title: 'Paciente',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemprontuario',
+          title: 'Prontuário',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemtimeline',
+          title: 'Timeline',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemmodeloprescricao',
+          title: 'Modelo de Prescrição',
+          icon: 'fa fa-prescription-bottle',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
         {
           path: '/listagem/listagemconvenio',
           title: 'Convênio',
@@ -391,7 +330,47 @@ export class SidebarComponent implements OnInit {
           extralink: false,
           submenu: []
         },
-        
+      ]
+    },
+    {
+      path: '',
+      title: 'Médico',
+      icon: 'fa fa-user-md',
+      class: 'has-arrow',
+      label: '',
+      labelClass: '',
+      extralink: false,
+      submenu: [
+        {
+          path: '/listagem/listagemmedico',
+          title: 'Médico',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/listagem/listagemespecialidade',
+          title: 'Especialidade',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
+        {
+          path: '/cadastros/configuracaoagenda',
+          title: 'Configuração Agenda',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
       ]
     },
     {
@@ -407,7 +386,7 @@ export class SidebarComponent implements OnInit {
     {
       path: '',
       title: 'Financeiro',
-      icon: 'icon-Calendar-4',
+      icon: 'fa fa-money',
       class: '',
       label: '',
       labelClass: '',
@@ -453,21 +432,10 @@ export class SidebarComponent implements OnInit {
           labelClass: '',
           extralink: false,
           submenu: []
-        }
-      ]
-    },
-    {
-      path: '',
-      title: 'Importador',
-      icon: 'icon-Double-Circle',
-      class: '',
-      label: '',
-      labelClass: '',
-      extralink: false,
-      submenu: [
+        },
         {
-          path: '/importador/importarconferencia',
-          title: 'Arquivo Conferência',
+          path: '/listagem/listagemformadepagamento',
+          title: 'Forma de Pagamento',
           icon: '',
           class: '',
           label: '',
@@ -477,5 +445,26 @@ export class SidebarComponent implements OnInit {
         }
       ]
     },
+    // {
+    //   path: '',
+    //   title: 'Importador',
+    //   icon: 'icon-Double-Circle',
+    //   class: '',
+    //   label: '',
+    //   labelClass: '',
+    //   extralink: false,
+    //   submenu: [
+    //     {
+    //       path: '/importador/importarconferencia',
+    //       title: 'Arquivo Conferência',
+    //       icon: '',
+    //       class: '',
+    //       label: '',
+    //       labelClass: '',
+    //       extralink: false,
+    //       submenu: []
+    //     }
+    //   ]
+    // },
   ];
 }

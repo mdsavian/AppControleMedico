@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Procedimento } from '../../modelos/procedimento';
 import { ProcedimentoService } from '../../services/procedimento.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -16,11 +16,9 @@ export class CadastroProcedimentoComponent implements OnInit, AfterViewInit {
 
   mensagemErro: string;
   id: string;
-  procedimento: Procedimento = {
-    id: "", descricao: "", corFundo: "#000000", corLetra: "#ffffff"
-  };
+  procedimento: Procedimento = new Procedimento();
 
-  constructor(private procedimentoService: ProcedimentoService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
+  constructor(private procedimentoService: ProcedimentoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngAfterViewInit(): void {
