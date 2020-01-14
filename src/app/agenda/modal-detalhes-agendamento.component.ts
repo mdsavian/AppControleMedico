@@ -40,13 +40,14 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
   totalPagamentos: string;
   isSpinnerVisible: boolean;
 
-  constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService, private timelineService:TimelineService,private router: Router,
+  constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService, private timelineService: TimelineService, private router: Router,
     private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private convenioService: ConvenioService, private localService: LocalService) {
   }
 
   carregarModelos() {
 
     var requisicoes = [];
+
 
     if (this.util.hasItems(this.agendamento.pagamentos)) {
 
@@ -110,21 +111,19 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
 
   ngOnInit() {
 
-    this.isSpinnerVisible = true;
-    if (this.agendamento != null) {
-
+    if (this.agendamento != null && this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
+      this.isSpinnerVisible = true;
       this.carregarModelos().subscribe(c => {
         this.isSpinnerVisible = false;
       });
     }
   }
 
-  historicoPaciente()
-  {
+  historicoPaciente() {
     this.timelineService.pacienteId = this.paciente.id;
     this.timelineService.paciente = this.paciente;
     this.activeModal.close();
-    this.router.navigate(['/listagem/timeline']);    
+    this.router.navigate(['/listagem/timeline']);
   }
 
   fechar() {

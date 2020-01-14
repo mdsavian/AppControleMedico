@@ -133,53 +133,6 @@
   </div>
 </ng-template>
 
-<!-- <ng-template #modalAcoes id="modalAcoes" let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Ações</h4>
-    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="c('Fechar')">
-      <span aria-hidden="true" title="Fechar">&times;</span>
-    </button>
-  </div>
-
-  <div class="modal-body">
-    <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-primary"
-        [disabled]="!validarBotoesAcoes('Confirmar')" (click)="c('Confirmar')"><span class="fa fa-calendar-check-o"
-          title="Confirmar"></span> Confirmar</button>
-    </div>
-
-    <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-success"
-        [disabled]="!validarBotoesAcoes('Pagar/Finalizar')" (click)="c('PagarFinalizar')"><span class="fa fa-money"
-          title="Pagar e finalizar"></span> Pagar e finalizar</button>
-    </div>
-
-    <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn btn-secondary"
-        [disabled]="!validarBotoesAcoes('Editar')" (click)="c('Editar')"><span class="fa fa-pencil"
-          title="Editar"></span> Editar </button>
-    </div>
-
-    <div style="margin-top: 10px">
-      <button type="button" style="margin:0 auto;" class="btn-lg btn-block btn-info btn"
-        [disabled]="!validarBotoesAcoes('Detalhes')" (click)="c('Detalhes')"><span class="fa fa-info-circle"
-          title="Detalhes"></span> Detalhes </button>
-    </div>
-
-    <div style="margin-top: 10px">
-      <button type="button" class="btn btn-warning btn-lg btn-block" style="margin:0 auto;"
-        [disabled]="!validarBotoesAcoes('Cancelar')" (click)="c('Cancelar')"><span class="fa fa-times"
-          title="Cancelar"></span> Cancelar</button>
-    </div>
-
-    <div style="margin-top: 10px">
-      <button type="button" class="btn btn-danger btn-lg btn-block" style="margin:0 auto; display:block;"
-        [disabled]="!validarBotoesAcoes('Excluir')" (click)="c('Excluir')"><span class="fa fa-trash"
-          title="Excluir"></span> Excluir</button>
-    </div>
-  </div>
-</ng-template> -->
-
 <ng-template #modalAcaoAgendamento id="modalAcaoAgendamento" let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">{{acaoAgendamento}} Agendamento</h4>

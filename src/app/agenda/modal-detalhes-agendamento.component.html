@@ -8,6 +8,9 @@
     <div class="modal-header" [hidden]=isSpinnerVisible>
         <h4 class="modal-title">Detalhes Agendamento</h4>
     </div>
+    <div class="alert alert-warning" *ngIf="agendamento.encaixado">
+        Agendamento encaixado.
+    </div>
     <div class="modal-body" [hidden]=isSpinnerVisible>
         <ngb-tabset type="pills" [destroyOnHide]="false">
             <ngb-tab title="Informações">

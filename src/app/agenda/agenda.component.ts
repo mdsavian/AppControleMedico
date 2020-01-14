@@ -389,7 +389,7 @@ export class AgendaComponent implements OnInit {
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
     if (agendamento != null) {
-      var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent);
+      var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { size: 'lg' });
       modalAcoes.componentInstance.agendamento = agendamento;
 
       modalAcoes.result.then(result => {
@@ -402,6 +402,22 @@ export class AgendaComponent implements OnInit {
           case ("Editar"):
             this.chamarModalAdicionaAgendamento(agendamento, "editar");
             break;
+
+          case ("Encaixar"): {
+
+            var novoAgendamento = new Agendamento();
+            novoAgendamento.dataAgendamento = agendamento.dataAgendamento;
+            novoAgendamento.horaInicial = agendamento.horaInicial;
+            novoAgendamento.horaFinal = agendamento.horaFinal;
+            novoAgendamento.encaixado = true;
+            novoAgendamento.medico = agendamento.medico;
+            novoAgendamento.medicoId = agendamento.medicoId;
+            novoAgendamento.clinicaId = agendamento.clinicaId;
+
+
+            this.chamarModalAdicionaAgendamento(novoAgendamento);
+            break;
+          }
 
           case ("Confirmar"):
             this.acaoAgendamento = "Confirmar";
@@ -421,7 +437,7 @@ export class AgendaComponent implements OnInit {
             );
             break;
 
-          case ("PagarFinalizar"):
+          case ("Pagar"):
             this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
               if (!this.util.hasItems(caixas)) {
                 var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
@@ -444,7 +460,7 @@ export class AgendaComponent implements OnInit {
                   if (retorno != null && retorno != "") {
                     this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
                     var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
-                    modal.componentInstance.mensagem = "Agendamento finalizado com sucesso!";
+                    modal.componentInstance.mensagem = "Pagamento adicionado com sucesso!";
                   }
                 }, (error) => { })
 

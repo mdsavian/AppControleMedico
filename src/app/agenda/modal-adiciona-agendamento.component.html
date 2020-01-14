@@ -7,6 +7,11 @@
     <div class="modal-header" [hidden]=isSpinnerVisible>
         <h4 class="modal-title">{{tituloTela}}</h4>
     </div>
+
+    <div class="alert alert-warning" *ngIf="agendamento.encaixado">
+        Agendamento encaixado.
+    </div>
+
     <div class="modal-body" [hidden]=isSpinnerVisible>
         <div class="row rowcadastro">
             <div class="col-xs-12 col-md-12">
@@ -28,9 +33,8 @@
                     <div class="input-group">
                         <input id="pacienteSelecionado" name="pacienteSelecionado" type="text"
                             (selectItem)="selecionaPaciente($event)" placeholder="Digite o nome do paciente"
-                            [required]="obrigaPaciente" [ngbTypeahead]="buscaPaciente"
-                            class="form-control" minlength="3" #pacienteModel="ngModel" id="pacienteModel"
-                            [(ngModel)]="pacienteSelecionado">
+                            [required]="obrigaPaciente" [ngbTypeahead]="buscaPaciente" class="form-control"
+                            minlength="3" #pacienteModel="ngModel" id="pacienteModel" [(ngModel)]="pacienteSelecionado">
                         <div class="input-group-prepend">
                             <ng-template #tipPaciente>Adiciona Paciente</ng-template>
                             <span (click)="adicionaPaciente()" *ngIf=!editando [ngbTooltip]="tipPaciente"
@@ -42,8 +46,7 @@
                                 <i class="fa fa-info-circle"></i></span>
                         </div>
                     </div>
-                    <div *ngIf="(falhaNaBusca || pacienteModel.invalid) && obrigaPaciente"
-                        class="alert alert-danger">
+                    <div *ngIf="(falhaNaBusca || pacienteModel.invalid) && obrigaPaciente" class="alert alert-danger">
                         <div *ngIf="pacienteModel.errors?.required">Paciente Obrigatório. </div>
                         <div *ngIf="falhaNaBusca">Não foi possível encontrar um paciente com este nome.</div>
                         <div *ngIf="pacienteModel.errors?.minlength"> Nome precisa ter no mínimo 3 caracteres</div>

@@ -242,7 +242,7 @@ export class ModalPagamentoAgendamentoComponent {
     if (!retornar) {
       this.agendamento.contemPagamentos = true;
       this.agendamento.pagamentos = this.listaPagamentos;
-      this.agendamento.situacaoAgendamento = ESituacaoAgendamento["Pago/Finalizado"];
+      this.agendamento.situacaoAgendamento = ESituacaoAgendamento["Pago"];
       this.agendamento.corFundo = "#656565";
       this.agendamento.corLetra = "#656565";
 

@@ -120,7 +120,7 @@ export class AgendamentoService {
   public tratarCorAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>) {
 
-    if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Pago/Finalizado"]) {
+    if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Pago"]) {
       agendamento.corFundo = "#656565";
       agendamento.corLetra = "#656565";
     }

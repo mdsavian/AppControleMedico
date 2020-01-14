@@ -16,8 +16,7 @@
 
                     <div *ngFor="let config of configuracaoAtalhos">
                         <button (click)="redirecionar(config.descricao)" [class]="config.btnClass"><span
-                                [class]="config.spanClass"> <img *ngIf=config.imagem
-                                [src]="config.imagem"> </span>
+                                [class]="config.spanClass"> <img *ngIf=config.imagem [src]="config.imagem"> </span>
                             <br />{{config.descricao}}</button>
                     </div>
                 </div>

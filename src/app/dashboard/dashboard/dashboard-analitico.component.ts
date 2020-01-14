@@ -53,7 +53,7 @@ export class DashboardAnaliticoComponent implements OnInit {
 
   totalAgendados = 0;
   totalConfirmados = 0;
-  totalPagosFinalizados = 0;
+  totalPagos = 0;
   totalCancelados = 0;
   usuario = this.appService.retornarUsuarioCorrente();
 
@@ -153,7 +153,7 @@ export class DashboardAnaliticoComponent implements OnInit {
 
       if (agendamentosMedicos.length > 0) {
 
-        agendamentosMedicos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago/Finalizado"]).forEach(agendamento => {
+        agendamentosMedicos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago"]).forEach(agendamento => {
           agendamento.pagamentos.forEach(pagamento => {
             totalRecebidoAgendamentos = totalRecebidoAgendamentos + pagamento.parcela * pagamento.valor
           });
@@ -176,7 +176,7 @@ export class DashboardAnaliticoComponent implements OnInit {
 
   montarGrafico() {
     let confirmados = new Array<number>();
-    let pagosFinalizados = new Array<number>();
+    let pagos = new Array<number>();
     let agendados = new Array<number>();
     let cancelados = new Array<number>();
 
@@ -184,14 +184,14 @@ export class DashboardAnaliticoComponent implements OnInit {
 
     //inicializa os arrays para começarem em 0, se nã o gráfico começa encima
     confirmados[0] = 0;
-    pagosFinalizados[0] = 0;
+    pagos[0] = 0;
     agendados[0] = 0;
     cancelados[0] = 0;
 
     let maiorValorAxesY = 0;
     for (var i = 1; i <= this.dataHoje.getDate(); i++) {
       confirmados[i] = 0;
-      pagosFinalizados[i] = 0;
+      pagos[i] = 0;
       agendados[i] = 0;
       cancelados[i] = 0;
 
@@ -200,7 +200,7 @@ export class DashboardAnaliticoComponent implements OnInit {
         var agendamentosNaData = this.agendamentos.filter((agenda) => new Date(agenda.dataAgendamento).getDate() == i && agenda.medicoId == medico.id);
 
         confirmados[i] = confirmados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Confirmado).length;
-        pagosFinalizados[i] = pagosFinalizados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago/Finalizado"]).length;
+        pagos[i] = pagos[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago"]).length;
         agendados[i] = agendados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Agendado).length;
         cancelados[i] = cancelados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Cancelado).length;
       });
@@ -208,8 +208,8 @@ export class DashboardAnaliticoComponent implements OnInit {
       if (confirmados[i] > maiorValorAxesY)
         maiorValorAxesY = confirmados[i];
 
-      if (pagosFinalizados[i] > maiorValorAxesY)
-        maiorValorAxesY = pagosFinalizados[i];
+      if (pagos[i] > maiorValorAxesY)
+        maiorValorAxesY = pagos[i];
 
       if (agendados[i] > maiorValorAxesY)
         maiorValorAxesY = agendados[i];
@@ -220,7 +220,7 @@ export class DashboardAnaliticoComponent implements OnInit {
 
     this.totalConfirmados = confirmados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalAgendados = agendados.reduce(function (total, valor) { return total + valor; }, 0);
-    this.totalPagosFinalizados = pagosFinalizados.reduce(function (total, valor) { return total + valor; }, 0);
+    this.totalPagos = pagos.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalCancelados = cancelados.reduce(function (total, valor) { return total + valor; }, 0);
     
     maiorValorAxesY = Math.round(maiorValorAxesY * 1.25) == 0 ? 1 : Math.round(maiorValorAxesY * 1.25);
@@ -241,7 +241,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.dadosGraficoLinhas = [
       { data: agendados, label: 'Agendados(s)' },
       { data: confirmados, label: 'Confirmado(s)' },
-      { data: pagosFinalizados, label: 'Finalizado(s)' },
+      { data: pagos, label: 'Pago(s)' },
       { data: cancelados, label: 'Cancelado(s)' },
     ];
 
@@ -254,7 +254,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     let totalContasPagar = 0;
 
     this.medicos.forEach(medico => {
-      var agendamentosPagos = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago/Finalizado"] && c.medicoId == medico.id);
+      var agendamentosPagos = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago"] && c.medicoId == medico.id);
 
       agendamentosPagos.forEach(agendamento => {
         agendamento.pagamentos.forEach(pagamento => {
@@ -360,7 +360,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       pointHoverBorderColor: 'rgba(0,153,0,0.5)'
     },
     {
-      // azul Finalizados
+      // azul Pagos
       backgroundColor: 'rgba(0,0,255,0)',
       borderColor: 'rgba(0,0,255,1)',
       pointBackgroundColor: 'rgba(0,0,255,1)',
