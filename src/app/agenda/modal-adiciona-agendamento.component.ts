@@ -3,7 +3,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
 import { Paciente } from '../modelos/paciente';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Local } from '../modelos/local';
 import { Exame } from '../modelos/exame';
@@ -32,9 +32,10 @@ import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { UploadService } from '../services/upload.service';
 import { TimelineService } from '../services/timeline.service';
 import { Router } from '@angular/router';
-import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
+import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
+import { CaixaService } from '../services/caixa.service';
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
@@ -83,10 +84,10 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('dataAgendamento', { read: ElementRef, static: false }) private dataAgendamentoModel: ElementRef;
   @ViewChild('numeroCartao', { read: ElementRef, static: false }) private numeroCartaoModel: ElementRef;
   @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
-  
 
-  constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router,
-    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,private formaPagamentoService:FormaDePagamentoService,
+
+  constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router, private caixaService: CaixaService,
+    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
     private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
@@ -102,9 +103,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.procedimentoModel.nativeElement.setAttribute('disabled', true);
     }
 
-    if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"])
-    {
-      this.agendamentoEmAtendimento = true;
+    if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"]) {
       this.horaInicialModel.nativeElement.setAttribute('disabled', true);
       this.horaFinalModel.nativeElement.setAttribute('disabled', true);
       this.dataAgendamentoModel.nativeElement.setAttribute('disabled', true);
@@ -124,6 +123,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento = this.agendamentoJson;
 
     if (this.editando) {
+        
+      this.agendamentoEmAtendimento = this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"];
 
       this.tituloTela = "Editar Agendamento - ";
       this.falhaNaBusca = false;
@@ -155,28 +156,17 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
           this.obrigaPaciente = this.agendamento.procedimento.obrigaPaciente;
         }
 
+        if (this.util.hasItems(this.agendamento.pagamentos) && this.util.hasItems(this.formaDePagamentos)) {
 
-        if (this.util.hasItems(this.agendamento.pagamentos)) {
-
-          var reqFormas = this.formaPagamentoService.Todos().subscribe(formas => {
-            this.formaDePagamentos = formas;
-            if (this.util.hasItems(this.agendamento.pagamentos)) {
-              this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
-            }
-    
-            let soma = 0;
-            this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
-            this.totalPagamentos = this.util.formatarDecimalBlur(soma);
-    
-          });
+          if (this.util.hasItems(this.agendamento.pagamentos)) {
+            this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
+          }
+          let soma = 0;
+          this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+          this.totalPagamentos = this.util.formatarDecimalBlur(soma);
         }
-
-        
-
       }
       else this.obrigaPaciente = false;
-
-      
 
       this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
 
@@ -192,10 +182,12 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     this.tituloTela += this.medico.nomeCompleto;
   }
 
-  finalizarAtendimento()
-  {
+  finalizarAtendimento() {
+
     this.agendamento.horaFinalAtendimento = this.util.horaAgoraString();
     this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Finalizado;
+
+    console.log(this.agendamento.horaFinalAtendimento);
     this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => {
       this.activeModal.close(novoAgendamento)
     });
@@ -268,9 +260,9 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   selecionaProcedimento(e: any) {
     var procedimento = this.procedimentos.find(c => c.id == this.agendamento.procedimentoId);
-    if (procedimento != null){
+    if (procedimento != null) {
       this.falhaNaBusca = this.obrigaPaciente = procedimento.obrigaPaciente;
-      if (!procedimento.obrigaPaciente){
+      if (!procedimento.obrigaPaciente) {
         this.paciente = null;
         this.pacienteSelecionado = "";
       }
@@ -533,6 +525,39 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   }
 
+  adicionarPagamento() {
+
+    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+      if (!this.util.hasItems(caixas)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
+      }
+      else {
+
+        var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+
+        modalPagamento.componentInstance.agendamento = this.agendamento;
+        modalPagamento.componentInstance.medico = this.medico;
+        modalPagamento.componentInstance.formasPagamento = this.formaDePagamentos;
+        modalPagamento.componentInstance.caixas = caixas;
+
+        modalPagamento.result.then(retorno => {
+
+          if (retorno != null && retorno != "") {
+            this.agendamento = retorno;
+          }
+
+          this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
+
+          let soma = 0;
+          this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+          this.totalPagamentos = this.util.formatarDecimalBlur(soma);
+
+        }, (error) => { })
+      }
+    });
+  }
+
   settingsPagamentos = {
     mode: 'external',
     noDataMessage: "Não foi encontrado nenhum pagamento",
@@ -565,11 +590,16 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
       cancelButtonContent: '<i class="ti-close text-danger"></i>',
     },
+    delete: {
+      deleteButtonContent: '<i class="ti-trash text-danger m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>'
+    },
     actions:
     {
       edit: true,
       add: true,
-      delete: false,
+      delete: true,
       columnTitle: '  '
     },
   };

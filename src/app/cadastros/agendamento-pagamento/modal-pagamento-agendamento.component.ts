@@ -1,5 +1,5 @@
 
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util';
 import { Caixa } from '../../modelos/caixa';
@@ -12,17 +12,11 @@ import { AppService } from '../../services/app.service';
 import { AgendamentoPagamento } from '../../modelos/agendamentoPagamento';
 import { FormaDePagamento } from '../../modelos/formaDePagamento';
 import { EVistaPrazo } from '../../enums/EVistaPrazo';
-import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Usuario } from '../../modelos/usuario';
 import { Agendamento } from '../../modelos/agendamento';
 import { AgendamentoService } from '../../services/agendamento.service';
-import { ESituacaoAgendamento } from '../../enums/ESituacaoAgendamento';
-import { Paciente } from '../../modelos/paciente';
-import { Convenio } from '../../modelos/convenio';
-import { Procedimento } from '../../modelos/procedimento';
-import { Exame } from '../../modelos/exame';
-import { Cirurgia } from '../../modelos/cirurgia';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -57,64 +51,74 @@ export class ModalPagamentoAgendamentoComponent {
   listaPagamentos = new Array<AgendamentoPagamento>();
   valorTotal: string;
   agendamento: Agendamento;
-  tituloTela = "";
-  pacientes = new Array<Paciente>();
-  convenios = new Array<Convenio>();
-  exames = new Array<Exame>();
-  procedimentos = new Array<Procedimento>();
-  cirurgias = new Array<Cirurgia>();
 
-  constructor(public activeModal: NgbActiveModal, private appService: AppService, private formaPagamentoService: FormaDePagamentoService,
-    private loginService: LoginService, private agendamentoService: AgendamentoService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
+  constructor(public activeModal: NgbActiveModal, private appService: AppService, private loginService: LoginService, private agendamentoService: AgendamentoService,
+    private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
 
-  ngOnInit() {
-
-    if (this.agendamento != null) {
-
-      this.tituloTela = this.agendamentoService.retornarOperacaoAgendamento(this.agendamento,this.exames, this.cirurgias, this.procedimentos).toUpperCase();
-
-
-      if (!this.util.hasItems(this.pacientes) && !this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
-        var paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
-        this.tituloTela = this.tituloTela + " - " + paciente.nomeCompleto.split(' ')[0];
-      }
-
-      if (!this.util.hasItems(this.convenios) && !this.util.isNullOrWhitespace(this.agendamento.convenioId)) {
-        var convenio = this.convenios.find(c => c.id == this.agendamento.convenioId);
-        this.tituloTela = this.tituloTela + " - " + convenio.descricao.toUpperCase();
-      }
-      this.tituloTela = this.tituloTela + " - " +
-        this.agendamento.horaInicial.substring(0, 2) + ":" + this.agendamento.horaInicial.substring(2, 4) + " até " +
-        this.agendamento.horaFinal.substring(0, 2) + ":" + this.agendamento.horaFinal.substring(2, 4);
-    }
-
-    this.funcionarioService.Todos().subscribe(func=> {this.funcionarios = func;});
-
-    this.formaPagamentoModel.nativeElement.focus();
+  alimentarModelos() {
     this.usuarioCorrente = this.appService.retornarUsuarioCorrente();
 
-    this.formaPagamentoService.Todos().subscribe(formas => {
-      this.agendamentoPagamento.formaPagamentoId = formas.find(c => true).id;
-      this.formasPagamento = formas;
-    });
+    var reqFuncionarios = this.funcionarioService.Todos().map(func => { this.funcionarios = func; });
 
-    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
-      caixas.forEach(caixa => {
-        this.funcionarioService.buscarPorId(caixa.funcionarioId).subscribe(func => {
-          caixa.descricao = func.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
-        });
-      });
+    return forkJoin(reqFuncionarios)
+  }
+  ngOnInit() {
 
-      this.caixas = caixas;
-      var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);
+    this.alimentarModelos().subscribe(c => {
 
-      if (caixaAbertoUsuario != null) {
-        this.caixaUsuario = caixaAbertoUsuario != null;
-        this.caixa = caixaAbertoUsuario;
+      if (this.agendamento != null) {
+
+        this.formaPagamentoModel.nativeElement.focus();
+
+        if (this.util.hasItems(this.agendamento.pagamentos)) {
+
+          this.listaPagamentos = this.agendamento.pagamentos;
+          this.sourcePagamentos = new LocalDataSource(this.listaPagamentos);
+
+          var caixaId = this.agendamento.pagamentos.find(c => true).caixaId;
+
+          this.caixas = new Array<Caixa>();
+
+          this.caixaService.buscarPorId(caixaId).subscribe(caixa => {
+
+            let func = this.funcionarios.find(c => c.id == caixa.funcionarioId);
+            caixa.descricao = func.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+
+            this.caixas.push(caixa);
+            this.caixa = this.caixas.find(c => true);
+          })
+        }
+
+        else {
+
+          if (!this.util.hasItems(this.caixas)) {
+            this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+              this.caixas = caixas;
+            });
+          }
+
+          if (this.util.hasItems(this.funcionarios) && this.util.hasItems(this.caixas)) {
+            this.caixas.forEach(caixa => {
+              let func = this.funcionarios.find(c => c.id == caixa.funcionarioId);
+              if (func != null)
+                caixa.descricao = func.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+            });
+
+            if (!this.util.isNullOrWhitespace(this.usuarioCorrente.funcionarioId)) {
+              var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);
+
+              if (caixaAbertoUsuario != null) {
+                this.caixaUsuario = caixaAbertoUsuario != null;
+                this.caixa = caixaAbertoUsuario;
+              }
+            }
+            else this.caixa = this.caixas.find(c => true);
+          }
+        }
       }
     });
-
   }
+
   selecionaTipoPagamento(value: string) {
     if (value == "À Prazo") {
       if (this.agendamentoPagamento.formaPagamentoId == this.formasPagamento.find(c => c.descricao == "DINHEIRO").id) {
@@ -125,7 +129,7 @@ export class ModalPagamentoAgendamentoComponent {
         this.visualizaParcela = true;
     }
     else
-    this.visualizaParcela = false;
+      this.visualizaParcela = false;
   }
 
   alteraFormaPagamento() {
@@ -150,8 +154,8 @@ export class ModalPagamentoAgendamentoComponent {
     this.selecionaTipoPagamento(EVistaPrazo[this.agendamentoPagamento.vistaPrazo]);
   }
 
-  selecionaCaixa(e: Caixa) { 
-    var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);   
+  selecionaCaixa(e: Caixa) {
+    var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);
     this.caixaUsuario = caixaAbertoUsuario != null && this.caixa.id == caixaAbertoUsuario.id;
   }
 
@@ -162,7 +166,7 @@ export class ModalPagamentoAgendamentoComponent {
   }
 
   validaSenha() {
-    if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId) && this.util.hasItems(this.funcionarios)) {      
+    if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId) && this.util.hasItems(this.funcionarios)) {
       var funcionario = this.funcionarios.find(c => c.id == this.caixa.funcionarioId);
       this.loginService.validaSenha(funcionario.email, this.senha.nativeElement.value).subscribe(senhaValidada => {
         this.senhaValida = !senhaValidada;
@@ -170,13 +174,12 @@ export class ModalPagamentoAgendamentoComponent {
     }
   }
 
-  deletarPagamento(pagamento: AgendamentoPagamento) {
-    var index = this.listaPagamentos.findIndex(c => c.formaPagamentoId == pagamento.formaPagamentoId);
+  deletarPagamento(pagamento: any) {
 
+    var index = this.listaPagamentos.indexOf(this.listaPagamentos.find(c => c.formaPagamentoId == pagamento.data.formaPagamentoId));
     this.listaPagamentos.splice(index, 1);
 
-    if (this.util.hasItems(this.listaPagamentos))
-      this.valorTotal = this.util.formatarDecimal(this.somaPagamentos());
+    this.valorTotal = this.util.formatarDecimal(this.somaPagamentos());
 
     this.sourcePagamentos = new LocalDataSource(this.listaPagamentos);
   }
@@ -195,6 +198,7 @@ export class ModalPagamentoAgendamentoComponent {
       modal.componentInstance.mensagemErro = "Forma de pagamento já informada.";
       retornar = true;
     }
+
     if (!retornar) {
       this.agendamentoPagamento.caixaId = this.caixa.id;
       this.agendamentoPagamento.usuarioId = this.appService.retornarUsuarioCorrente().id;
@@ -212,9 +216,11 @@ export class ModalPagamentoAgendamentoComponent {
 
   somaPagamentos() {
     var total = 0;
-    this.listaPagamentos.forEach(c => {
-      total = total + (parseFloat(c.valor.toString()) * c.parcela);
-    });
+    if (this.util.hasItems(this.listaPagamentos)) {
+      this.listaPagamentos.forEach(c => {
+        total = total + (parseFloat(c.valor.toString()) * c.parcela);
+      });
+    }
     return total;
   }
 
@@ -225,31 +231,10 @@ export class ModalPagamentoAgendamentoComponent {
 
   salvar() {
 
-    var retornar = false;
+    this.agendamento.contemPagamentos = this.util.hasItems(this.listaPagamentos);
+    this.agendamento.pagamentos = this.listaPagamentos;
+    this.activeModal.close(this.agendamento);
 
-    if (!this.util.hasItems(this.listaPagamentos)) {
-      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "É necessário adicionar um pagamento.";
-      retornar = true;
-    }
-
-    if (this.somaPagamentos() <= 0) {
-      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Somatório dos pagamentos inválido.";
-      retornar = true;
-    }
-
-    if (!retornar) {
-      this.agendamento.contemPagamentos = true;
-      this.agendamento.pagamentos = this.listaPagamentos;
-      this.agendamento.situacaoAgendamento = ESituacaoAgendamento["Pago"];
-      this.agendamento.corFundo = "#656565";
-      this.agendamento.corLetra = "#656565";
-
-      this.agendamentoService.salvar(this.agendamento).subscribe(agendamentoRetorno => {
-        this.activeModal.close(agendamentoRetorno);
-      });
-    }
   }
 
   fechar() {

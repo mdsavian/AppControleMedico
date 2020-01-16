@@ -1,9 +1,6 @@
 <form #pagamentoAgendamento="ngForm">
     <div class="modal-header">
-        <h4 class="modal-title">Adicionar Pagamento - {{tituloTela}}</h4>
-        <!-- <button type="button" class="close" aria-label="Fechar" (click)="fechar()">
-            <span aria-hidden="true">&times;</span>
-        </button> -->
+        <h4 class="modal-title">Adicionar Pagamento</h4>
     </div>
     <div class="modal-body">
         <div class="row">
@@ -104,7 +101,7 @@
     </div>
 </form>
 <div class="modal-footer">
-    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
+    <!-- <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button> -->
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-        [disabled]="listaPagamentos.length == 0 ||(senha != null && (senha.value == '' ||senhaValida))">Salvar</button>
+        [disabled]="(senha != null && (senha.value == '' ||senhaValida))">Salvar</button>
 </div>

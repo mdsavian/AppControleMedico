@@ -41,6 +41,8 @@ import { Procedimento } from '../modelos/procedimento';
 import { Local } from '../modelos/local';
 import { ConfiguracaoAgendaService } from '../services/configuracaoAgenda.service';
 import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
+import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
+import { FormaDePagamento } from '../modelos/formaDePagamento';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush, //com esta propriedade ativa a cada mudança deve ser chamado o refresh page manualmente
@@ -76,11 +78,12 @@ export class AgendaComponent implements OnInit {
   pacientes: Array<Paciente> = [];
   locais: Array<Local> = [];
   procedimentos: Array<Procedimento> = [];
-
+  formaDePagamentos = new Array<FormaDePagamento>();
+  
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
     private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
-    private pacienteService: PacienteService, private convenioService: ConvenioService) {
+    private pacienteService: PacienteService, private convenioService: ConvenioService,private formaPagamentoService:FormaDePagamentoService) {
   }
 
   ngOnInit() {
@@ -103,7 +106,11 @@ export class AgendaComponent implements OnInit {
     let reqExames = this.exameService.Todos().map(dados => { this.exames = dados; });
     let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
-    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
+    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; }); 
+
+    let reqFormas = this.formaPagamentoService.Todos().map(formas => {
+      this.formaDePagamentos = formas;
+    });
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
 
@@ -130,7 +137,7 @@ export class AgendaComponent implements OnInit {
 
     });
 
-    return forkJoin([reqPaciente, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
+    return forkJoin([reqPaciente,reqFormas, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
   }
 
   tratarMedicosParaBuscaAgendamento() {
@@ -528,7 +535,7 @@ export class AgendaComponent implements OnInit {
                         if (eventoVelho != null) {
                           var index = this.eventos.indexOf(eventoVelho);
                           this.eventos.splice(index, 1);
-
+                          this.refreshPage();
                         }
                       }
                     });
@@ -727,6 +734,7 @@ export class AgendaComponent implements OnInit {
       modalAdicionaAgendamento.componentInstance.exames = this.exames;
       modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
       modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
+      modalAdicionaAgendamento.componentInstance.formaDePagamentos = this.formaDePagamentos;
 
       if (agendamento != null) {
         modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
