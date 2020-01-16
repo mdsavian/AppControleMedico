@@ -32,7 +32,9 @@ import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { UploadService } from '../services/upload.service';
 import { TimelineService } from '../services/timeline.service';
 import { Router } from '@angular/router';
-
+import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
+import { LocalDataSource } from 'ng2-smart-table';
+import { FormaDePagamento } from '../modelos/formaDePagamento';
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
@@ -65,6 +67,10 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   falhaNaBusca = true;
   tituloTela: string = "";
   obrigaPaciente = true;
+  agendamentoEmAtendimento = false;
+  formaDePagamentos = new Array<FormaDePagamento>();
+  sourcePagamentos: LocalDataSource;
+  totalPagamentos: string;
 
   @ViewChild('tipoAgendamento', { read: ElementRef, static: false }) private tipoAgendamento: ElementRef;
   @ViewChild('pacienteModel', { read: ElementRef, static: false }) private pacienteModel: ElementRef;
@@ -72,9 +78,15 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('tipoCirurgia', { read: ElementRef, static: false }) private cirurgiaModel: ElementRef;
   @ViewChild('tipoLocal', { read: ElementRef, static: false }) private localCirurgiaModel: ElementRef;
   @ViewChild('tipoProcedimento', { read: ElementRef, static: false }) private procedimentoModel: ElementRef;
+  @ViewChild('horaInicialModel', { read: ElementRef, static: false }) private horaInicialModel: ElementRef;
+  @ViewChild('horaFinalModel', { read: ElementRef, static: false }) private horaFinalModel: ElementRef;
+  @ViewChild('dataAgendamento', { read: ElementRef, static: false }) private dataAgendamentoModel: ElementRef;
+  @ViewChild('numeroCartao', { read: ElementRef, static: false }) private numeroCartaoModel: ElementRef;
+  @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
+  
 
   constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router,
-    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
+    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,private formaPagamentoService:FormaDePagamentoService,
     private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
@@ -88,6 +100,16 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.localCirurgiaModel.nativeElement.setAttribute('disabled', true);
       this.pacienteModel.nativeElement.setAttribute('readonly', true);
       this.procedimentoModel.nativeElement.setAttribute('disabled', true);
+    }
+
+    if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"])
+    {
+      this.agendamentoEmAtendimento = true;
+      this.horaInicialModel.nativeElement.setAttribute('disabled', true);
+      this.horaFinalModel.nativeElement.setAttribute('disabled', true);
+      this.dataAgendamentoModel.nativeElement.setAttribute('disabled', true);
+      this.numeroCartaoModel.nativeElement.setAttribute('disabled', true);
+      this.convenioModel.nativeElement.setAttribute('disabled', true);
     }
   }
 
@@ -132,8 +154,29 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
           this.obrigaPaciente = this.agendamento.procedimento.obrigaPaciente;
         }
+
+
+        if (this.util.hasItems(this.agendamento.pagamentos)) {
+
+          var reqFormas = this.formaPagamentoService.Todos().subscribe(formas => {
+            this.formaDePagamentos = formas;
+            if (this.util.hasItems(this.agendamento.pagamentos)) {
+              this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
+            }
+    
+            let soma = 0;
+            this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+            this.totalPagamentos = this.util.formatarDecimalBlur(soma);
+    
+          });
+        }
+
+        
+
       }
       else this.obrigaPaciente = false;
+
+      
 
       this.dataAgenda = this.util.dataParaString(this.agendamento.dataAgendamento);
 
@@ -147,6 +190,15 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     }
 
     this.tituloTela += this.medico.nomeCompleto;
+  }
+
+  finalizarAtendimento()
+  {
+    this.agendamento.horaFinalAtendimento = this.util.horaAgoraString();
+    this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Finalizado;
+    this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => {
+      this.activeModal.close(novoAgendamento)
+    });
   }
 
   salvar() {
@@ -216,8 +268,13 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   selecionaProcedimento(e: any) {
     var procedimento = this.procedimentos.find(c => c.id == this.agendamento.procedimentoId);
-    if (procedimento != null)
+    if (procedimento != null){
       this.falhaNaBusca = this.obrigaPaciente = procedimento.obrigaPaciente;
+      if (!procedimento.obrigaPaciente){
+        this.paciente = null;
+        this.pacienteSelecionado = "";
+      }
+    }
   }
 
   selecionaTipoAgendamento(value: string) {
@@ -475,5 +532,46 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     }
 
   }
+
+  settingsPagamentos = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum pagamento",
+    columns: {
+      formaPagamentoId: {
+        title: 'Forma Pagamento',
+        filter: true,
+        valuePrepareFunction: (formaPagamentoId) => {
+          return formaPagamentoId == null || !this.util.hasItems(this.formaDePagamentos) ? "" : this.formaDePagamentos.find(c => c.id == formaPagamentoId).descricao;
+        }
+      },
+      parcela: {
+        title: 'Parcela',
+        filter: false
+      },
+      valor: {
+        title: 'Valor',
+        filter: false,
+        valuePrepareFunction: (valor) => {
+          return this.util.formatarDecimal(valor);
+        }
+      }
+    },
+    add:
+    {
+      addButtonContent: 'Adicionar Pagamento'
+    },
+    edit: {
+      editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>',
+    },
+    actions:
+    {
+      edit: true,
+      add: true,
+      delete: false,
+      columnTitle: '  '
+    },
+  };
 
 }

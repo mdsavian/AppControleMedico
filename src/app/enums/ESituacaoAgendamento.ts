@@ -3,6 +3,6 @@ export enum ESituacaoAgendamento {
     "Confirmado" = 1,
     "Cancelado" = 2,
     "Pago" = 3,
-    "EmAtendimento" = 4,
+    "Em Atendimento" = 4,
     "Finalizado" = 5
 }

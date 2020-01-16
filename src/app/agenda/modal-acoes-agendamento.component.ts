@@ -1,8 +1,10 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit } from '@angular/core';
+import { NgbActiveModal, } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
+import { AppService } from '../services/app.service'
+import { Util } from '../uteis/Util';
 
 
 @Component({
@@ -15,7 +17,8 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
 
   acoesPermitidas: Array<string> = [];
   agendamento: Agendamento;
-  constructor(public activeModal: NgbActiveModal) {
+  util = new Util();
+  constructor(public activeModal: NgbActiveModal, private appService: AppService) {
   }
 
   ngOnInit(): void {
@@ -24,7 +27,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
   }
 
   validarBotoesAcoes(acao: string) {
-    return this.acoesPermitidas.find(c => c == acao.toUpperCase()) != null;
+    return this.acoesPermitidas.find(c => c.toUpperCase() == acao.toUpperCase()) != null;
   }
 
   fechar(acao: string) {
@@ -36,44 +39,57 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
 
     if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
 
-      this.acoesPermitidas.push("ENCAIXAR");
-      this.acoesPermitidas.push("DETALHES");
+      var usuario = this.appService.retornarUsuarioCorrente();
+
+      this.acoesPermitidas.push("Encaixar");
+      this.acoesPermitidas.push("Detalhes");
 
       switch (this.agendamento.situacaoAgendamento) {
         case (ESituacaoAgendamento.Agendado.valueOf()):
           {
-            this.acoesPermitidas.push("CONFIRMAR");
-            this.acoesPermitidas.push("PAGAR");
-            this.acoesPermitidas.push("EDITAR");
-            this.acoesPermitidas.push("CANCELAR");
-            this.acoesPermitidas.push("EXCLUIR");
+            if (!this.util.isNullOrWhitespace(usuario.medicoId))
+              this.acoesPermitidas.push("IniciarAtendimento");
+
+            this.acoesPermitidas.push("Confirmar");
+            this.acoesPermitidas.push("Pagar");
+            this.acoesPermitidas.push("Editar");
+            this.acoesPermitidas.push("Cancelar");
+            this.acoesPermitidas.push("Excluir");           
+
             break;
           }
         case (ESituacaoAgendamento.Cancelado.valueOf()):
           {
-            this.acoesPermitidas.push("EXCLUIR");
+            this.acoesPermitidas.push("Excluir");
             break;
           }
         case (ESituacaoAgendamento.Confirmado.valueOf()):
           {
-            this.acoesPermitidas.push("PAGAR");
-            this.acoesPermitidas.push("EDITAR");
-            this.acoesPermitidas.push("CANCELAR");
-            this.acoesPermitidas.push("EXCLUIR");
+
+            if (!this.util.isNullOrWhitespace(usuario.medicoId))
+              this.acoesPermitidas.push("IniciarAtendimento");
+
+            this.acoesPermitidas.push("Pagar");
+            this.acoesPermitidas.push("Editar");
+            this.acoesPermitidas.push("Cancelar");
+            this.acoesPermitidas.push("Excluir");
             break;
           }
         case (ESituacaoAgendamento["Pago"].valueOf()):
           {
-            this.acoesPermitidas.push("EDITAR");
-            this.acoesPermitidas.push("PAGAR");
+            if (!this.util.isNullOrWhitespace(usuario.medicoId))
+              this.acoesPermitidas.push("IniciarAtendimento");
+              
+            this.acoesPermitidas.push("Editar");
+            this.acoesPermitidas.push("Pagar");
             break;
           }
       }
     }
     else {
 
-      this.acoesPermitidas.push("EDITAR");
-      this.acoesPermitidas.push("EXCLUIR");
+      this.acoesPermitidas.push("Editar");
+      this.acoesPermitidas.push("Excluir");
     }
 
   }

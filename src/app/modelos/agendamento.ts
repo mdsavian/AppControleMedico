@@ -24,8 +24,7 @@ export class Agendamento extends Entidade {
     horaFinal: string;
     observacao: string;
     corFundo: string;
-    corLetra: string;    
-
+    corLetra: string;
     clinicaId:string;
     exameId: string;
     localId: string;
@@ -37,7 +36,6 @@ export class Agendamento extends Entidade {
     funcionarioId:string;
     contemPagamentos:boolean;
     encaixado:boolean;
-
     tipoAgendamento: ETipoAgendamento;
     situacaoAgendamento: ESituacaoAgendamento;
     pagamentos:Array<AgendamentoPagamento>;
@@ -48,7 +46,8 @@ export class Agendamento extends Entidade {
     cirurgia: Cirurgia;
     convenio: Convenio;
     procedimento: Procedimento;
-
     tipoAgendamentoDescricao:string;
 
+    horaInicialAtendimento: string;
+    horaFinalAtendimento: string;
 }

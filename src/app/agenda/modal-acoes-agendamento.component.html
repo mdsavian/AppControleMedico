@@ -10,6 +10,9 @@
   <div class="modal-body">
 
     <div class="row col-xs-12 col-md-12" style="justify-content: center">
+      <button type="button" class="btn-lg btn-acoes btn btn-success" *ngIf="validarBotoesAcoes('IniciarAtendimento')"
+        (click)="fechar('IniciarAtendimento')"><span><img src="../../assets/images/icon/iniciar-atendimento.png"></span> Iniciar Atendimento</button>
+
       <button type="button" class="btn-lg btn-acoes btn btn-primary" *ngIf="validarBotoesAcoes('Confirmar')"
         (click)="fechar('Confirmar')"><span class="fa fa-calendar-check-o" title="Confirmar"></span> Confirmar</button>
 
@@ -35,6 +38,7 @@
         *ngIf="validarBotoesAcoes('Excluir')" (click)="fechar('Excluir')"><span class="fa fa-trash"
           title="Excluir"></span> Excluir</button>
     </div>
+
 
   </div>
 

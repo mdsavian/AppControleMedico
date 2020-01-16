@@ -40,6 +40,7 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
   totalPagamentos: string;
   isSpinnerVisible: boolean;
 
+
   constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService, private timelineService: TimelineService, private router: Router,
     private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private convenioService: ConvenioService, private localService: LocalService) {
   }
@@ -48,14 +49,10 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
 
     var requisicoes = [];
 
-
     if (this.util.hasItems(this.agendamento.pagamentos)) {
-
       var reqFormas = this.formaPagamentoService.Todos().map(formas => {
         this.formaDePagamentos = formas;
-        if (this.util.hasItems(this.agendamento.pagamentos)) {
-          this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
-        }
+        this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
 
         let soma = 0;
         this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
@@ -71,19 +68,23 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
       requisicoes.push(reqLocal);
     }
 
-    if (this.agendamento.paciente == null) {
-      var reqPaciente = this.pacienteService.buscarPorId(this.agendamento.pacienteId).map(c => {
-        this.paciente = c;
-        this.nomePaciente = c.nomeCompleto
-        this.numeroCartao = c.numeroCartao.toString();
-      });
+    if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
+      if (this.agendamento.paciente == null) {
+        var reqPaciente = this.pacienteService.buscarPorId(this.agendamento.pacienteId).map(paciente => {
+          if (paciente != null) {
+            this.paciente = paciente;
+            this.nomePaciente = paciente.nomeCompleto
+            this.numeroCartao = paciente.numeroCartao.toString();
+          }
+        });
 
-      requisicoes.push(reqPaciente);
-    }
-    else {
-      this.paciente = this.agendamento.paciente;
-      this.nomePaciente = this.agendamento.paciente.nomeCompleto
-      this.numeroCartao = this.agendamento.paciente.numeroCartao.toString();
+        requisicoes.push(reqPaciente);
+      }
+      else {
+        this.paciente = this.agendamento.paciente;
+        this.nomePaciente = this.agendamento.paciente.nomeCompleto
+        this.numeroCartao = this.agendamento.paciente.numeroCartao.toString();
+      }
     }
     if (this.agendamento.medico == null) {
 

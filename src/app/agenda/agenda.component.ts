@@ -389,126 +389,158 @@ export class AgendaComponent implements OnInit {
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
     if (agendamento != null) {
-      var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { size: 'lg' });
-      modalAcoes.componentInstance.agendamento = agendamento;
 
-      modalAcoes.result.then(result => {
-        switch (result) {
-          case ("Detalhes"):
-            var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
-            modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
-            break;
+      if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"] 
+      && !this.util.isNullOrWhitespace(this.appService.retornarUsuarioCorrente().medicoId))  {
 
-          case ("Editar"):
-            this.chamarModalAdicionaAgendamento(agendamento, "editar");
-            break;
+        this.chamarModalAdicionaAgendamento(agendamento, "editar");
+      }
+      else {
 
-          case ("Encaixar"): {
+        var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { size: 'lg' });
+        modalAcoes.componentInstance.agendamento = agendamento;
 
-            var novoAgendamento = new Agendamento();
-            novoAgendamento.dataAgendamento = agendamento.dataAgendamento;
-            novoAgendamento.horaInicial = agendamento.horaInicial;
-            novoAgendamento.horaFinal = agendamento.horaFinal;
-            novoAgendamento.encaixado = true;
-            novoAgendamento.medico = agendamento.medico;
-            novoAgendamento.medicoId = agendamento.medicoId;
-            novoAgendamento.clinicaId = agendamento.clinicaId;
+        modalAcoes.result.then(result => {
+          switch (result) {
+            case ("Detalhes"):
+              var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
+              modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
+              break;
+
+            case ("Editar"):
+              this.chamarModalAdicionaAgendamento(agendamento, "editar");
+              break;
+
+            case ("Encaixar"): {
+
+              var novoAgendamento = new Agendamento();
+              novoAgendamento.dataAgendamento = agendamento.dataAgendamento;
+              novoAgendamento.horaInicial = agendamento.horaInicial;
+              novoAgendamento.horaFinal = agendamento.horaFinal;
+              novoAgendamento.encaixado = true;
+              novoAgendamento.medico = agendamento.medico;
+              novoAgendamento.medicoId = agendamento.medicoId;
+              novoAgendamento.clinicaId = agendamento.clinicaId;
 
 
-            this.chamarModalAdicionaAgendamento(novoAgendamento);
-            break;
-          }
+              this.chamarModalAdicionaAgendamento(novoAgendamento);
+              break;
+            }
 
-          case ("Confirmar"):
-            this.acaoAgendamento = "Confirmar";
-            this.modalService.open(this.modalAcaoAgendamento).result.then(
-              result => {
-                if (result == 'Sim') {
-                  agendamento = this.agendamentoService.tratarCorAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos);
-                  agendamento.situacaoAgendamento = ESituacaoAgendamento.Confirmado;
-                  this.agendamentoService.salvar(agendamento).subscribe(retorno => {
-                    if (retorno) {
-                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                    }
-                  });
-                }
-              },
-              (() => { })
-            );
-            break;
+            case ("IniciarAtendimento"):
+              this.acaoAgendamento = "Iniciar";
+              this.modalService.open(this.modalAcaoAgendamento).result.then(
+                result => {
+                  if (result == 'Sim') {
+                    agendamento.horaInicialAtendimento = this.util.horaAgoraString();
+                    agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];                  
 
-          case ("Pagar"):
-            this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
-              if (!this.util.hasItems(caixas)) {
-                var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-                modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
-              }
-              else {
-
-                var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
-
-                modalPagamento.componentInstance.agendamento = agendamento;
-                modalPagamento.componentInstance.medico = this.medico;
-                modalPagamento.componentInstance.cirurgias = this.cirurgias;
-                modalPagamento.componentInstance.locais = this.locais;
-                modalPagamento.componentInstance.exames = this.exames;
-                modalPagamento.componentInstance.procedimentos = this.procedimentos;
-                modalPagamento.componentInstance.convenios = this.convenios;
-                modalPagamento.componentInstance.pacientes = this.pacientes;
-
-                modalPagamento.result.then(retorno => {
-                  if (retorno != null && retorno != "") {
-                    this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                    var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
-                    modal.componentInstance.mensagem = "Pagamento adicionado com sucesso!";
-                  }
-                }, (error) => { })
-
-              }
-            });
-            break;
-
-          case ("Cancelar"):
-            this.acaoAgendamento = "Cancelar";
-            this.modalService.open(this.modalAcaoAgendamento).result.then(
-              result => {
-                if (result == 'Sim') {
-                  agendamento.situacaoAgendamento = ESituacaoAgendamento.Cancelado;
-                  agendamento.corFundo = "#000000";
-                  this.agendamentoService.salvar(agendamento).subscribe(retorno => {
-                    if (retorno) {
-                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                    }
-                  });
-                }
-              },
-              (() => { })
-            );
-            break;
-
-          case ("Excluir"):
-            this.acaoAgendamento = "Excluir";
-            this.modalService.open(this.modalAcaoAgendamento).result.then(
-              result => {
-                if (result == 'Sim') {
-                  this.agendamentoService.Excluir(agendamento.id).subscribe(retorno => {
-                    if (retorno) {
-                      var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
-                      if (eventoVelho != null) {
-                        var index = this.eventos.indexOf(eventoVelho);
-                        this.eventos.splice(index, 1);
-
+                    //agendamento.corFundo = "#000000";
+                    this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                      if (retorno) {
+                        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
                       }
-                    }
-                  });
+                      this.chamarModalAdicionaAgendamento(agendamento, "editar");
+
+                    });
+                  }
+                },
+                (() => { })
+              );
+
+              break;
+
+            case ("Confirmar"):
+              this.acaoAgendamento = "Confirmar";
+              this.modalService.open(this.modalAcaoAgendamento).result.then(
+                result => {
+                  if (result == 'Sim') {
+                    agendamento = this.agendamentoService.tratarCorAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos);
+                    agendamento.situacaoAgendamento = ESituacaoAgendamento.Confirmado;
+                    this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                      if (retorno) {
+                        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                      }
+                    });
+                  }
+                },
+                (() => { })
+              );
+              break;
+
+            case ("Pagar"):
+              this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+                if (!this.util.hasItems(caixas)) {
+                  var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+                  modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
                 }
-              },
-              (() => { })
-            );
-            break;
-        }
-      },
-        (error => { }));
+                else {
+
+                  var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+
+                  modalPagamento.componentInstance.agendamento = agendamento;
+                  modalPagamento.componentInstance.medico = this.medico;
+                  modalPagamento.componentInstance.cirurgias = this.cirurgias;
+                  modalPagamento.componentInstance.locais = this.locais;
+                  modalPagamento.componentInstance.exames = this.exames;
+                  modalPagamento.componentInstance.procedimentos = this.procedimentos;
+                  modalPagamento.componentInstance.convenios = this.convenios;
+                  modalPagamento.componentInstance.pacientes = this.pacientes;
+
+                  modalPagamento.result.then(retorno => {
+                    if (retorno != null && retorno != "") {
+                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                      var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+                      modal.componentInstance.mensagem = "Pagamento adicionado com sucesso!";
+                    }
+                  }, (error) => { })
+
+                }
+              });
+              break;
+
+            case ("Cancelar"):
+              this.acaoAgendamento = "Cancelar";
+              this.modalService.open(this.modalAcaoAgendamento).result.then(
+                result => {
+                  if (result == 'Sim') {
+                    agendamento.situacaoAgendamento = ESituacaoAgendamento.Cancelado;
+                    agendamento.corFundo = "#000000";
+                    this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                      if (retorno) {
+                        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                      }
+                    });
+                  }
+                },
+                (() => { })
+              );
+              break;
+
+            case ("Excluir"):
+              this.acaoAgendamento = "Excluir";
+              this.modalService.open(this.modalAcaoAgendamento).result.then(
+                result => {
+                  if (result == 'Sim') {
+                    this.agendamentoService.Excluir(agendamento.id).subscribe(retorno => {
+                      if (retorno) {
+                        var eventoVelho = this.eventos.find(c => c.id == agendamento.id);
+                        if (eventoVelho != null) {
+                          var index = this.eventos.indexOf(eventoVelho);
+                          this.eventos.splice(index, 1);
+
+                        }
+                      }
+                    });
+                  }
+                },
+                (() => { })
+              );
+              break;
+          }
+        },
+          (error => { }));
+      }
     }
   }
 
