@@ -1,0 +1,7 @@
+var WebcamMirrorProperties = /** @class */ (function () {
+    function WebcamMirrorProperties() {
+    }
+    return WebcamMirrorProperties;
+}());
+export { WebcamMirrorProperties };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid2ViY2FtLW1pcnJvci1wcm9wZXJ0aWVzLmpzIiwic291cmNlUm9vdCI6Im5nOi8vbmd4LXdlYmNhbS8iLCJzb3VyY2VzIjpbInNyYy9hcHAvbW9kdWxlcy93ZWJjYW0vZG9tYWluL3dlYmNhbS1taXJyb3ItcHJvcGVydGllcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUFBO0lBRUEsQ0FBQztJQUFELDZCQUFDO0FBQUQsQ0FBQyxBQUZELElBRUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgY2xhc3MgV2ViY2FtTWlycm9yUHJvcGVydGllcyB7XHJcbiAgcHVibGljIHg6IHN0cmluZzsgIC8vIFtcImF1dG9cIiwgXCJhbHdheXNcIiwgXCJuZXZlclwiXVxyXG59XHJcbiJdfQ==

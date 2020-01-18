@@ -14,7 +14,7 @@ export class Medico extends Pessoa {
     this.id = ""; this.nomeCompleto = ""; this.cpfCnpj = ""; this.dataNascimento = new Date('01/01/0001'); this.rg = ""; this.ativo = true;
     this.genero = 1; this.celular = ""; this.email = ""; this.usuario = new Usuario(); this.administrador = false; this.cep = ""; this.endereco = "";
     this.numero = ""; this.complemento = ""; this.bairro = ""; this.cidade = ""; this.uf = ""; this.crm = "";
-    this.convenios = new Array<Convenio>(); this.tempoRenovarSessao = 4, this.especialidade = new Especialidade(); this.especialidadeId = "";
+    this.convenios = new Array<Convenio>(); this.foto = '../../assets/images/fotoCadastro.jpg', this.tempoRenovarSessao = 4, this.especialidade = new Especialidade(); this.especialidadeId = "";
     this.configuracaoAgenda = new ConfiguracaoAgenda();
 
   }
@@ -32,5 +32,8 @@ export class Medico extends Pessoa {
   configuracaoAgenda: ConfiguracaoAgenda;
   tempoRenovarSessao:number;
   fotoId:string;
+
+  foto :any;
+
 
 }

@@ -1,0 +1,9 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function IKeyboardLayouts() { }
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia2V5Ym9hcmQtbGF5b3V0cy5pbnRlcmZhY2UuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9uZ3g3LW1hdGVyaWFsLWtleWJvYXJkLyIsInNvdXJjZXMiOlsiaW50ZXJmYWNlcy9rZXlib2FyZC1sYXlvdXRzLmludGVyZmFjZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7O0FBRUEsc0NBRUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJS2V5Ym9hcmRMYXlvdXQgfSBmcm9tICcuL2tleWJvYXJkLWxheW91dC5pbnRlcmZhY2UnO1xyXG5cclxuZXhwb3J0IGludGVyZmFjZSBJS2V5Ym9hcmRMYXlvdXRzIHtcclxuICBbbGF5b3V0OiBzdHJpbmddOiBJS2V5Ym9hcmRMYXlvdXQ7XHJcbn1cclxuIl19

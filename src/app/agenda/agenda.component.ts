@@ -43,6 +43,7 @@ import { ConfiguracaoAgendaService } from '../services/configuracaoAgenda.servic
 import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
+import { UploadService } from '../services/upload.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush, //com esta propriedade ativa a cada mudança deve ser chamado o refresh page manualmente
@@ -79,24 +80,36 @@ export class AgendaComponent implements OnInit {
   locais: Array<Local> = [];
   procedimentos: Array<Procedimento> = [];
   formaDePagamentos = new Array<FormaDePagamento>();
-  
+imageurl = "";
   constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
     private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
-    private pacienteService: PacienteService, private convenioService: ConvenioService,private formaPagamentoService:FormaDePagamentoService) {
+    private pacienteService: PacienteService, private convenioService: ConvenioService, private formaPagamentoService: FormaDePagamentoService, private uploadService: UploadService) {
   }
 
   ngOnInit() {
     this.isSpinnerVisible = true;
+
     this.buscarModelosNovoAgendamento().subscribe(c => {
-      this.buscarInformacoesMedico().subscribe(c => {
-        this.isSpinnerVisible = false;
-        this.refreshPage();
-      });
+      this.isSpinnerVisible = false;
+      console.log(this.imageurl,"depois");
+
+      this.refreshPage();
     });
+
+
+    // this.buscarInformacoesMedico().subscribe(c => {
+    //   this.isSpinnerVisible = false;
+
+    //   this.refreshPage();
+    // });
+
+
   }
 
   buscarModelosNovoAgendamento() {
+    let requisicoes = [];
+
     var usuario = this.appService.retornarUsuarioCorrente();
 
     let reqPaciente = this.pacienteService.Todos().map(dados => {
@@ -106,11 +119,14 @@ export class AgendaComponent implements OnInit {
     let reqExames = this.exameService.Todos().map(dados => { this.exames = dados; });
     let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
     let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
-    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; }); 
+    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
 
     let reqFormas = this.formaPagamentoService.Todos().map(formas => {
       this.formaDePagamentos = formas;
     });
+
+    requisicoes = [reqPaciente, reqFormas, reqExames, reqLocais, reqCirurgias, reqProcedimento];
+
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
 
@@ -119,12 +135,14 @@ export class AgendaComponent implements OnInit {
         let medicoTodos = new Medico();
         medicoTodos.nomeCompleto = "Todos";
         medicoTodos.id = "";
+        medicoTodos.foto = '../../assets/images/fotoCadastro.jpg';
         this.medicos.push(medicoTodos);
 
         //adiciona depois para o Todos ficar encima
         this.medicos = this.medicos.concat(dados);
 
         this.medico = this.medicos.find(c => c == medicoTodos);
+
       }
       else {
         this.medicos = dados;
@@ -135,9 +153,28 @@ export class AgendaComponent implements OnInit {
       if (!this.util.isNullOrWhitespace(usuario.medicoId))
         this.medico = this.medicos.find(c => c.id == usuario.medicoId);
 
+        this.medicos.forEach(medico => {
+
+        if (!this.util.isNullOrWhitespace(medico.fotoId)) {
+          let reqFoto = this.uploadService.downloadImagem(medico.id, "medico").subscribe(byte => {            
+            medico.foto = "data:image/jpeg;base64," + byte['value'];
+            console.log(medico.foto);
+            this.imageurl = medico.foto;
+          });
+
+          requisicoes.push(reqFoto);
+        }
+        else
+          medico.foto = '../../assets/images/fotoCadastro.jpg';
+
+          console.log(this.imageurl);
+      });
     });
 
-    return forkJoin([reqPaciente,reqFormas, reqExames, reqLocais, reqCirurgias, reqProcedimento, reqMedicos]);
+    requisicoes.push(reqMedicos);
+
+    return forkJoin(requisicoes);
+
   }
 
   tratarMedicosParaBuscaAgendamento() {
@@ -154,9 +191,9 @@ export class AgendaComponent implements OnInit {
     return medicosABuscar;
   }
 
-
   buscarInformacoesMedico() {
 
+    console.log("11111", this.medico);
     if (this.medico != null) {
 
       let observableBatch = [];
@@ -210,9 +247,14 @@ export class AgendaComponent implements OnInit {
     return this.medico.nomeCompleto == "Todos";
   }
 
-  trocaMedico() {
+  trocaMedico(id: string) {
+    console.log(id);
+
+    this.medico = this.medicos.find(c => c.id == id);
+
     this.isSpinnerVisible = true;
     this.buscarInformacoesMedico().subscribe(c => {
+      console.log("opa eae tiu");
       this.isSpinnerVisible = false;
       this.refreshPage();
     });
@@ -397,8 +439,8 @@ export class AgendaComponent implements OnInit {
 
     if (agendamento != null) {
 
-      if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"] 
-      && !this.util.isNullOrWhitespace(this.appService.retornarUsuarioCorrente().medicoId))  {
+      if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"]
+        && !this.util.isNullOrWhitespace(this.appService.retornarUsuarioCorrente().medicoId)) {
 
         this.chamarModalAdicionaAgendamento(agendamento, "editar");
       }
@@ -440,7 +482,7 @@ export class AgendaComponent implements OnInit {
                 result => {
                   if (result == 'Sim') {
                     agendamento.horaInicialAtendimento = this.util.horaAgoraString();
-                    agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];                  
+                    agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];
 
                     //agendamento.corFundo = "#000000";
                     this.agendamentoService.salvar(agendamento).subscribe(retorno => {
@@ -844,6 +886,7 @@ export class AgendaComponent implements OnInit {
     }
     return novoAgendamento;
   }
+
 }
 
 export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {

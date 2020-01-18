@@ -1,8 +1,6 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouteInfo } from './sidebar.metadata';
-import { Router, ActivatedRoute } from '@angular/router';
 import { AppService } from '../../services/app.service';
-import { UsuarioService } from '../../services/usuario.service';
 import { Util } from '../../uteis/Util';
 import { FuncionarioService } from '../../services/funcionario.service';
 
@@ -46,10 +44,7 @@ export class SidebarComponent implements OnInit {
   }
 
   constructor(
-    private usuarioService: UsuarioService,
     private funcionarioService: FuncionarioService,
-    private router: Router,
-    private route: ActivatedRoute,
     private appService: AppService,
   ) { }
   // End open close
@@ -57,7 +52,6 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
 
     this.montarSideBar();
-
 
     $(function () {
       $('.sidebartoggler').on('click', function () {

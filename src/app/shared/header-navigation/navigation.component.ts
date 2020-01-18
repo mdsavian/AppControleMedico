@@ -9,6 +9,8 @@ import { Usuario } from '../../modelos/usuario';
 import { UploadService } from '../../services/upload.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { ModalTrocaClinicaComponent } from '../modal/modal-troca-clinica.component';
+import { AgendamentoService } from '../../services/agendamento.service';
+
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html'
@@ -22,7 +24,7 @@ export class NavigationComponent implements AfterViewInit, OnInit {
   util = new Util();
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal, private uploadService: UploadService,
+  constructor(private modalService: NgbModal, private uploadService: UploadService,private agendamentoService:AgendamentoService,
     private router: Router, private loginService: LoginService, private appService: AppService, private usuarioService: UsuarioService) { }
 
 

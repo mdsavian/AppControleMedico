@@ -19,3 +19,11 @@ pre {
   .rowcadastro {
     line-height: 0.3;
   }
+
+  .rowAgenda{
+    padding: 1px; 
+  }
+
+  .btn-selecionado{
+    background: #20aee3;
+  }

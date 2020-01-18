@@ -1,0 +1,32 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { MatKeyboardConfig } from '../configs/keyboard.config';
+/**
+ * Applies default options to the keyboard configs.
+ * @param {?} config The configuration to which the defaults will be applied.
+ * @return {?} The new configuration object with defaults applied.
+ */
+export function _applyConfigDefaults(config) {
+    return Object.assign(new MatKeyboardConfig(), config);
+}
+/**
+ * Applies available layouts.
+ * @param {?} layouts
+ * @return {?}
+ */
+export function _applyAvailableLayouts(layouts) {
+    /** @type {?} */
+    const _availableLocales = {};
+    Object
+        .keys(layouts)
+        .filter((layout) => 'lang' in layouts[layout])
+        .forEach((layout) => {
+        layouts[layout].lang.forEach((lang) => {
+            _availableLocales[lang] = layout;
+        });
+    });
+    return _availableLocales;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia2V5Ym9hcmQudXRpbHMuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9uZ3g3LW1hdGVyaWFsLWtleWJvYXJkLyIsInNvdXJjZXMiOlsidXRpbHMva2V5Ym9hcmQudXRpbHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxpQkFBaUIsRUFBRSxNQUFNLDRCQUE0QixDQUFDOzs7Ozs7QUFTL0QsTUFBTSxVQUFVLG9CQUFvQixDQUFDLE1BQXlCO0lBQzVELE9BQU8sTUFBTSxDQUFDLE1BQU0sQ0FBQyxJQUFJLGlCQUFpQixFQUFFLEVBQUUsTUFBTSxDQUFDLENBQUM7QUFDeEQsQ0FBQzs7Ozs7O0FBTUQsTUFBTSxVQUFVLHNCQUFzQixDQUFDLE9BQXlCOztVQUN4RCxpQkFBaUIsR0FBZSxFQUFFO0lBRXhDLE1BQU07U0FDSCxJQUFJLENBQUMsT0FBTyxDQUFDO1NBQ2IsTUFBTSxDQUFDLENBQUMsTUFBYyxFQUFFLEVBQUUsQ0FBQyxNQUFNLElBQUksT0FBTyxDQUFDLE1BQU0sQ0FBQyxDQUFDO1NBQ3JELE9BQU8sQ0FBQyxDQUFDLE1BQWMsRUFBRSxFQUFFO1FBQzFCLE9BQU8sQ0FBQyxNQUFNLENBQUMsQ0FBQyxJQUFJLENBQUMsT0FBTyxDQUFDLENBQUMsSUFBWSxFQUFFLEVBQUU7WUFDNUMsaUJBQWlCLENBQUMsSUFBSSxDQUFDLEdBQUcsTUFBTSxDQUFDO1FBQ25DLENBQUMsQ0FBQyxDQUFDO0lBQ0wsQ0FBQyxDQUFDLENBQUM7SUFFTCxPQUFPLGlCQUFpQixDQUFDO0FBQzNCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBNYXRLZXlib2FyZENvbmZpZyB9IGZyb20gJy4uL2NvbmZpZ3Mva2V5Ym9hcmQuY29uZmlnJztcclxuaW1wb3J0IHsgSUtleWJvYXJkTGF5b3V0cyB9IGZyb20gJy4uL2ludGVyZmFjZXMva2V5Ym9hcmQtbGF5b3V0cy5pbnRlcmZhY2UnO1xyXG5pbXBvcnQgeyBJTG9jYWxlTWFwIH0gZnJvbSAnLi4vaW50ZXJmYWNlcy9sb2NhbGUtbWFwLmludGVyZmFjZSc7XHJcblxyXG4vKipcclxuICogQXBwbGllcyBkZWZhdWx0IG9wdGlvbnMgdG8gdGhlIGtleWJvYXJkIGNvbmZpZ3MuXHJcbiAqIEBwYXJhbSBjb25maWcgVGhlIGNvbmZpZ3VyYXRpb24gdG8gd2hpY2ggdGhlIGRlZmF1bHRzIHdpbGwgYmUgYXBwbGllZC5cclxuICogQHJldHVybnMgVGhlIG5ldyBjb25maWd1cmF0aW9uIG9iamVjdCB3aXRoIGRlZmF1bHRzIGFwcGxpZWQuXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gX2FwcGx5Q29uZmlnRGVmYXVsdHMoY29uZmlnOiBNYXRLZXlib2FyZENvbmZpZyk6IE1hdEtleWJvYXJkQ29uZmlnIHtcclxuICByZXR1cm4gT2JqZWN0LmFzc2lnbihuZXcgTWF0S2V5Ym9hcmRDb25maWcoKSwgY29uZmlnKTtcclxufVxyXG5cclxuLyoqXHJcbiAqIEFwcGxpZXMgYXZhaWxhYmxlIGxheW91dHMuXHJcbiAqIEBwYXJhbSBsYXlvdXRzXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gX2FwcGx5QXZhaWxhYmxlTGF5b3V0cyhsYXlvdXRzOiBJS2V5Ym9hcmRMYXlvdXRzKTogSUxvY2FsZU1hcCB7XHJcbiAgY29uc3QgX2F2YWlsYWJsZUxvY2FsZXM6IElMb2NhbGVNYXAgPSB7fTtcclxuXHJcbiAgT2JqZWN0XHJcbiAgICAua2V5cyhsYXlvdXRzKVxyXG4gICAgLmZpbHRlcigobGF5b3V0OiBzdHJpbmcpID0+ICdsYW5nJyBpbiBsYXlvdXRzW2xheW91dF0pXHJcbiAgICAuZm9yRWFjaCgobGF5b3V0OiBzdHJpbmcpID0+IHtcclxuICAgICAgbGF5b3V0c1tsYXlvdXRdLmxhbmcuZm9yRWFjaCgobGFuZzogc3RyaW5nKSA9PiB7XHJcbiAgICAgICAgX2F2YWlsYWJsZUxvY2FsZXNbbGFuZ10gPSBsYXlvdXQ7XHJcbiAgICAgIH0pO1xyXG4gICAgfSk7XHJcblxyXG4gIHJldHVybiBfYXZhaWxhYmxlTG9jYWxlcztcclxufVxyXG4iXX0=

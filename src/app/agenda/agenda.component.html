@@ -7,144 +7,181 @@
     <h4 *ngIf="mensagemCaixaAberto != ''">{{mensagemCaixaAberto}}</h4>
   </div>
 </div>
-<div class="row" *ngIf="!isSpinnerVisible">
-  <div class="col-12">    
-      <div class="row col-12">
-        <div class="col-xs-2 col-md-2 form-group">
-          <div class="row col-xs-12 col-md-12">
-            <div class="form-group">
-              <label class="control-label" for="medicoSelect">Médico</label>
-              <select class="form-control" [(ngModel)]="medico" id="medicoSelect" name="medicoSelect"
-                #medicoSelect="ngModel" (change)="trocaMedico()">
-                <option *ngFor="let med of medicos" [ngValue]="med">
-                  {{med.nomeCompleto}}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="row col-xs-12 col-md-12">
+
+
+<div class="row" *ngIf=!isSpinnerVisible>
+  <div class="col-lg-3 col-xlg-3 col-md-4" style="padding: 0px; padding-right: 5px;">
+    <div class="card">
+      <div class="container" style="margin-top: 10px;">
+        <div class="row">
+          <div class="col text-center">
             <button class="btn-success" (click)="abrirFecharCaixa('abrir')">
               Abrir Caixa
             </button>
-          </div>
-          <div class="row col-xs-12 col-md-12">
-            <button class="btn-warning" (click)="abrirFecharCaixa('fechar')">
+            <button class="btn-warning" style="margin-left: 10%;" (click)="abrirFecharCaixa('fechar')">
               Fechar Caixa
             </button>
           </div>
         </div>
+      </div>
 
-        <div class="col-xs-10 col-md-10">
-          <div class="row">
-            <div class="col-md-2">
-              <div class="btn-group">
-                <div class="btn" (click)="trocarData()" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
-                  (viewDateChange)="closeOpenMonthViewDay()" [excludeDays]="diasExcluidos">
-                  <span class="fa fa-backward" title="Anterior"></span>
-                </div>
-                <div class="btn btn-outline-secondary" (click)="trocarData()" mwlCalendarToday [(viewDate)]="viewDate">
+      <br />
+      <div class="card-body" style="padding: 0px; padding-right: 2px;">
+        <div class="col-lg-12 col-xlg-12 col-md-12" style="padding: 5px;">
+
+          <h5><span class="fa fa-user-md"></span> Médicos</h5>
+          <br />
+
+          <div class="media btn-outline-info btn-selecionado" (click)="trocaMedico(med.id)" *ngFor="let med of medicos">
+            <div class="media-left">
+              <img [src]="imageurl" class="align-self-center media-object img-circle" style="width:50px; height:50px;">
+            </div>
+            <div class="media-body text-center"><h5 class="mt-0">{{med.nomeCompleto}} </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-9 col-xlg-9 col-md-8" style="padding: 0px;">
+
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+
+
+          <div class="container" style="margin-top: 10px;">
+            <div class="row">
+
+              <div class="col col-md-12">
+
+                <div class="btn btn-outline-secondary btn-rounded col-md-1" (click)="trocarData()" mwlCalendarToday
+                  [(viewDate)]="viewDate">
                   Hoje
                 </div>
+                <div class="btn" (click)="trocarData()" style="margin-left: 1%;" mwlCalendarPreviousView [view]="view"
+                  [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()" [excludeDays]="diasExcluidos">
+                  <span class="fa fa-backward" title="Anterior"></span>
+                </div>
+
                 <div class="btn" (click)="trocarData()" [excludeDays]="diasExcluidos" mwlCalendarNextView [view]="view"
                   [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
                   <span class="fa fa-forward" title="Próximo"></span>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-3 text-center">
-              <h5>{{ viewDate | calendarDate:(view + 'ViewTitle'):'pt-br'}}</h5>
-            </div>
-            <div class="col-md-2">
-              <div class="btn-group">
-                <div class="btn btn-primary" (click)="setView(CalendarView.Week)"
-                  [class.active]="view === CalendarView.Week">
-                  Semana
-                </div>
-                <div class="btn btn-primary" (click)="setView(CalendarView.Day)"
-                  [class.active]="view === CalendarView.Day">
-                  Dia
-                </div>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="btn-group">
-                <div class="btn btn-warning" (click)=configurarAgendaMedico()> Configurar Agenda </div>
-                <div class="btn btn-success" (click)="chamarModalAdicionaAgendamento(null, 'novo')">Novo Agendamento
-                </div>
-              </div>
-            </div>
-          </div>
-          <div [ngSwitch]="view">
-            <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate"
-              [dayStartHour]="horaInicialCalendario" [dayEndHour]="horaFinalCalendario" [events]="eventos"
-              [refresh]="refresh" (eventClicked)="actionAgendamento($event.event)"
-              (eventTimesChanged)="eventTimesChanged($event)" [hourSegmentTemplate]="weekViewHourSegmentTemplate"
-              [excludeDays]="diasExcluidos" [hourSegments]="configuracaoMinutos">
-            </mwl-calendar-week-view>
 
-            <ng-template #weekViewHourSegmentTemplate let-segment="segment" let-locale="locale"
-              let-segmentHeight="segmentHeight" let-isTimeLabel="isTimeLabel">
-              <div #segmentElement class="cal-hour-segment hora-desabilitada"
-                [class.hora-desabilitada]="validaHoraIntervaloComponente(segment.date)"
-                [style.height.px]="segmentHeight" [class.cal-hour-start]="true" [class.cal-after-hour-start]="false"
-                [ngClass]="segment.cssClass" (mousedown)="startDragToCreate(segment, $event, segmentElement)">
-                <div class="cal-time" *ngIf="isTimeLabel">
-                  {{ segment.date | calendarDate:'weekViewHour':locale }}
+                <div class="btn-group">
+                  <div class="btn btn-primary btn-rounded" style="margin-left: 1%;" (click)="setView(CalendarView.Week)"
+                    [class.active]="view === CalendarView.Week">
+                    Semana
+                  </div>
+                  <div class="btn btn-primary btn-rounded" style="margin-left: 1%;" (click)="setView(CalendarView.Day)"
+                    [class.active]="view === CalendarView.Day">
+                    Dia
+                  </div>
                 </div>
-              </div>
-            </ng-template>
 
-            <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [dayStartHour]="horaInicialCalendario"
-              [dayEndHour]="horaFinalCalendario" [viewDate]="viewDate" [events]="eventos" [refresh]="refresh"
-              (eventClicked)="actionAgendamento($event.event)" (eventTimesChanged)="eventTimesChanged($event)"
-              [hourSegments]="configuracaoMinutos" [hourSegmentTemplate]="dayViewHourSegmentTemplate">
-            </mwl-calendar-day-view>
 
-            <ng-template #dayViewHourSegmentTemplate let-segment="segment" let-locale="locale"
-              let-segmentHeight="segmentHeight">
-              <div #segmentElement class="cal-hour-segment hora-desabilitada" [style.height.px]="segmentHeight"
-                [class.cal-hour-start]="true" [class.cal-after-hour-start]="false"
-                [class.hora-desabilitada]="validaHoraIntervaloComponente(segment.date)" [ngClass]="segment.cssClass"
-                (mousedown)="startDragToCreate(segment, $event, segmentElement)">
-                <div class="cal-time">
-                  {{ segment.date | calendarDate:'dayViewHour':locale }}
+                <div class="btn btn-warning btn-rounded col-md-3" style="margin-left: 1%;"
+                  (click)=configurarAgendaMedico()>
+                  <span class="fa fa-2x fa-cog fa-spin"></span>
+                  Configurar Agenda
+
                 </div>
+                <div class="btn btn-success btn-rounded col-md-3" style="margin-left: 1%;"
+                  (click)="chamarModalAdicionaAgendamento(null, 'novo')">
+                  <span class="fa fa-2x fa-new"></span>Novo Agendamento
+                </div>
+
+
               </div>
-            </ng-template>
+
+            </div>
           </div>
         </div>
-      </div>    
-  </div>
-</div>
 
-<ng-template #modalAgendamentoEmHorarioIntervalo id="modalAgendamentoEmHorarioIntervalo" let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Horário Intervalo</h4>
-    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="c('Fechar')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p><strong>Agendamento em horário intervalo, deseja prosseguir?</strong></p>
-  </div>
-  <div class="modal-footer">    
-    <button type="button" class="btn btn-warning" (click)="c('Ok')">Ok</button>
-    <button type="button" class="btn btn-outline-secondary" (click)="c('Cancelar')">Cancelar</button>
-  </div>
-</ng-template>
+        <div class="row col-md-12" style="text-align: center;">
+          <h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):'pt-br'}} - {{medico.nomeCompleto}}</h2>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div [ngSwitch]="view">
+              <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate"
+                [dayStartHour]="horaInicialCalendario" [dayEndHour]="horaFinalCalendario" [events]="eventos"
+                [refresh]="refresh" (eventClicked)="actionAgendamento($event.event)"
+                (eventTimesChanged)="eventTimesChanged($event)" [hourSegmentTemplate]="weekViewHourSegmentTemplate"
+                [excludeDays]="diasExcluidos" [hourSegments]="configuracaoMinutos">
+              </mwl-calendar-week-view>
 
-<ng-template #modalAcaoAgendamento id="modalAcaoAgendamento" let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4 class="modal-title">{{acaoAgendamento}} Agendamento</h4>
-    <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+              <ng-template #weekViewHourSegmentTemplate let-segment="segment" let-locale="locale"
+                let-segmentHeight="segmentHeight" let-isTimeLabel="isTimeLabel">
+                <div #segmentElement class="cal-hour-segment hora-desabilitada"
+                  [class.hora-desabilitada]="validaHoraIntervaloComponente(segment.date)"
+                  [style.height.px]="segmentHeight" [class.cal-hour-start]="true" [class.cal-after-hour-start]="false"
+                  [ngClass]="segment.cssClass" (mousedown)="startDragToCreate(segment, $event, segmentElement)">
+                  <div class="cal-time" *ngIf="isTimeLabel">
+                    {{ segment.date | calendarDate:'weekViewHour':locale }}
+                  </div>
+                </div>
+              </ng-template>
+
+              <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [dayStartHour]="horaInicialCalendario"
+                [dayEndHour]="horaFinalCalendario" [viewDate]="viewDate" [events]="eventos" [refresh]="refresh"
+                (eventClicked)="actionAgendamento($event.event)" (eventTimesChanged)="eventTimesChanged($event)"
+                [hourSegments]="configuracaoMinutos" [hourSegmentTemplate]="dayViewHourSegmentTemplate">
+              </mwl-calendar-day-view>
+
+              <ng-template #dayViewHourSegmentTemplate let-segment="segment" let-locale="locale"
+                let-segmentHeight="segmentHeight">
+                <div #segmentElement class="cal-hour-segment hora-desabilitada" [style.height.px]="segmentHeight"
+                  [class.cal-hour-start]="true" [class.cal-after-hour-start]="false"
+                  [class.hora-desabilitada]="validaHoraIntervaloComponente(segment.date)" [ngClass]="segment.cssClass"
+                  (mousedown)="startDragToCreate(segment, $event, segmentElement)">
+                  <div class="cal-time">
+                    {{ segment.date | calendarDate:'dayViewHour':locale }}
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
-  <div class="modal-body">
-    <p>Deseja {{acaoAgendamento}} o agendamento?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="c('Sim')">Sim</button>
-    <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
-  </div>
-</ng-template>
+
+
+  <ng-template #modalAgendamentoEmHorarioIntervalo id="modalAgendamentoEmHorarioIntervalo" let-c="close"
+    let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">Horário Intervalo</h4>
+      <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
+        (click)="c('Fechar')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Agendamento em horário intervalo, deseja prosseguir?</strong></p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-warning" (click)="c('Ok')">Ok</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="c('Cancelar')">Cancelar</button>
+    </div>
+  </ng-template>
+
+  <ng-template #modalAcaoAgendamento id="modalAcaoAgendamento" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">{{acaoAgendamento}} Agendamento</h4>
+      <button type="button" class="close" aria-label="Fechar" (click)="d('Cancelar')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Deseja {{acaoAgendamento}} o agendamento?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="c('Sim')">Sim</button>
+      <button type="button" class="btn btn-secondary" (click)="c('Nao')">Não</button>
+    </div>
+  </ng-template>
