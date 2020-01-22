@@ -9,22 +9,10 @@
 </div>
 
 <div class="row" *ngIf=!isSpinnerVisible>
-  <div class="col-lg-3 col-xlg-3 col-md-4" style="padding: 0px; padding-right: 5px;">
-    <div class="card">
-      <!-- <div class="container" style="margin-top: 10px;">
-        <div class="row">
-          <div class="col text-center">
-            <button class="btn-success" (click)="abrirFecharCaixa('abrir')">
-              Abrir Caixa
-            </button>
-            <button class="btn-warning" style="margin-left: 10%;" (click)="abrirFecharCaixa('fechar')">
-              Fechar Caixa
-            </button>
-          </div>
-        </div>
-      </div> -->
 
-      <!-- <br /> -->
+  <div class="col-lg-3 col-xlg-3 col-md-4" style="padding: 0px; padding-right: 5px;">
+
+    <div class="card" style="margin-bottom: 10px;">
       <div class="card-body" style="padding: 0px; padding-right: 2px;">
         <div class="col-lg-12 col-xlg-12 col-md-12" style="padding: 5px;">
 
@@ -33,9 +21,9 @@
           </div>
 
           <div [ngClass]="{'btn-selecionado' : med.id === medico.id, 'media' : true, 'btn-outline-info' : true}"
-            (click)="trocaMedico(med.id)" *ngFor="let med of medicos">
+            (click)="trocaMedico(med.id)" *ngFor="let med of medicos" style="height: 60px;">
             <div class="media-left">
-              <img [src]="med.foto" class="align-self-center media-object img-circle" style="width:50px; height:50px;">
+              <img [src]="med.foto" class="media-object img-circle" style="width:35px; height:35px;">
             </div>
             <div class="media-body text-center">
               <h5 class="mt-0">{{med.nomeCompleto}} </h5>
@@ -44,13 +32,60 @@
         </div>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-body" style="padding: 0px; padding-right: 2px;">
+
+        <div class="col-lg-12 col-xlg-12 col-md-12" style="padding: 5px;">
+
+          <div style="margin:10px;">
+            <h5><span class="fa fa-check-circle"></span> Ações</h5>
+          </div>
+
+          <div class="row">
+            <div class="btn-group col-md-12" style="margin:10px;">
+              <div class="col-md-6">
+                <button class="btn btn-primary" style="width: 130px;" (click)="abrirFecharCaixa('abrir')">
+                  <div class="media-left">
+                    <img src="../../assets/images/icon/extra-debito.png" class="media-object img-circle">
+                  </div>
+                  Extra Débito
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button class="btn btn-danger" style="width: 130px;" (click)="abrirFecharCaixa('fechar')">
+                  <div class="media-left">
+                    <img src="../../assets/images/icon/extra-credito.png" class="media-object img-circle">
+                  </div>
+                  Extra Crédito
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="btn-group col-md-12" style="margin:10px;">
+              <div class="col-md-6">
+                <button class="btn btn-outline-success" style="width: 130px;" (click)="abrirFecharCaixa('abrir')">
+                  Abrir Caixa
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button class="btn btn-outline-warning" style="width: 130px;" (click)="abrirFecharCaixa('fechar')">
+                  Fechar Caixa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
   <div class="col-lg-9 col-xlg-9 col-md-8" style="padding: 0px;">
 
     <div class="card">
       <div class="card-body">
-
-
         <div class="col-lg-12 col-xlg-12 col-md-12" style="padding: 0px;">
           <div class="row">
 
@@ -72,7 +107,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6" style="text-align: center;">
 
               <div class="btn-group">
                 <button class="btn btn-light" style="background-color: transparent;" (click)="trocarData()"
@@ -96,11 +131,8 @@
                   <span class="fa fa-calendar fa-2x"></span>
                 </button>
                 &nbsp;&nbsp;
-                
-                <div style="text-align: center;">
-                  <h2><strong>{{ (viewDate | calendarDate:(view + 'ViewTitle'):'pt-br').toUpperCase()}}</strong>
-                  </h2>
-                </div>
+                <h2><strong>{{(viewDate | calendarDate:(view + 'ViewTitle'):'pt-br').toUpperCase()}}</strong>
+                </h2>
               </div>
 
             </div>
