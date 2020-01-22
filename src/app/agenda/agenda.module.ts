@@ -18,6 +18,7 @@ import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pag
 import { ModalAcoesAgendamentoComponent } from './modal-acoes-agendamento.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
+
 export class CustomDateFormatter extends CalendarDateFormatter {
 
   public dayViewHour({ date, locale }: DateFormatterParams): string {

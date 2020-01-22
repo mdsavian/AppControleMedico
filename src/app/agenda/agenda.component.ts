@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbDateStruct, NgbCalendar, NgbDate, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
@@ -54,6 +54,7 @@ export class AgendaComponent implements OnInit {
 
   @ViewChild('modalAgendamentoEmHorarioIntervalo', { read: TemplateRef, static: false }) modalAgendamentoEmHorarioIntervalo: TemplateRef<any>;
   @ViewChild('modalAcaoAgendamento', { read: TemplateRef, static: false }) modalAcaoAgendamento: TemplateRef<any>;
+  @ViewChild('datePickerNgb', { read: NgbInputDatepicker, static: false }) datePickerNgb: NgbInputDatepicker;
 
   acaoAgendamento = "";
   eventosBanco: Array<Agendamento>;
@@ -73,15 +74,16 @@ export class AgendaComponent implements OnInit {
   horaInicialCalendario = "07";
   horaFinalCalendario = "18";
   isSpinnerVisible = false;
+  isSpinnerVisibleAgenda = false;
   exames: Array<Exame> = [];
   convenios: Array<Convenio> = [];
   cirurgias: Array<Cirurgia> = [];
   pacientes: Array<Paciente> = [];
   locais: Array<Local> = [];
+  dataPicker: NgbDateStruct;
   procedimentos: Array<Procedimento> = [];
   formaDePagamentos = new Array<FormaDePagamento>();
-imageurl = "";
-  constructor(private agendamentoService: AgendamentoService, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
+  constructor(private agendamentoService: AgendamentoService, private calendar: NgbCalendar, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
     private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
     private pacienteService: PacienteService, private convenioService: ConvenioService, private formaPagamentoService: FormaDePagamentoService, private uploadService: UploadService) {
@@ -91,20 +93,12 @@ imageurl = "";
     this.isSpinnerVisible = true;
 
     this.buscarModelosNovoAgendamento().subscribe(c => {
-      this.isSpinnerVisible = false;
-      console.log(this.imageurl,"depois");
+      this.buscarFotoMedicos().subscribe(c => {
+        this.isSpinnerVisible = false;
+        this.refreshPage();
 
-      this.refreshPage();
+      });
     });
-
-
-    // this.buscarInformacoesMedico().subscribe(c => {
-    //   this.isSpinnerVisible = false;
-
-    //   this.refreshPage();
-    // });
-
-
   }
 
   buscarModelosNovoAgendamento() {
@@ -126,6 +120,7 @@ imageurl = "";
     });
 
     requisicoes = [reqPaciente, reqFormas, reqExames, reqLocais, reqCirurgias, reqProcedimento];
+
 
 
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
@@ -150,31 +145,33 @@ imageurl = "";
       }
 
       //quando usuário for um médico traz ele selecionado primeiro
-      if (!this.util.isNullOrWhitespace(usuario.medicoId))
+      if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
         this.medico = this.medicos.find(c => c.id == usuario.medicoId);
-
-        this.medicos.forEach(medico => {
-
-        if (!this.util.isNullOrWhitespace(medico.fotoId)) {
-          let reqFoto = this.uploadService.downloadImagem(medico.id, "medico").subscribe(byte => {            
-            medico.foto = "data:image/jpeg;base64," + byte['value'];
-            console.log(medico.foto);
-            this.imageurl = medico.foto;
-          });
-
-          requisicoes.push(reqFoto);
-        }
-        else
-          medico.foto = '../../assets/images/fotoCadastro.jpg';
-
-          console.log(this.imageurl);
-      });
+      }
     });
 
     requisicoes.push(reqMedicos);
 
     return forkJoin(requisicoes);
 
+  }
+
+  buscarFotoMedicos() {
+    let reqFotos = [];
+
+    this.medicos.forEach(medico => {
+
+      if (!this.util.isNullOrWhitespace(medico.fotoId)) {
+        let reqFoto = this.uploadService.downloadImagem(medico.id, "medico").map(byte => {
+          medico.foto = "data:image/jpeg;base64," + byte['value'];
+        });
+        reqFotos.push(reqFoto);
+      }
+      else
+        medico.foto = '../../assets/images/fotoCadastro.jpg';
+    });
+
+    return forkJoin(reqFotos);
   }
 
   tratarMedicosParaBuscaAgendamento() {
@@ -193,7 +190,6 @@ imageurl = "";
 
   buscarInformacoesMedico() {
 
-    console.log("11111", this.medico);
     if (this.medico != null) {
 
       let observableBatch = [];
@@ -248,14 +244,11 @@ imageurl = "";
   }
 
   trocaMedico(id: string) {
-    console.log(id);
-
     this.medico = this.medicos.find(c => c.id == id);
 
-    this.isSpinnerVisible = true;
+    this.isSpinnerVisibleAgenda = true;
     this.buscarInformacoesMedico().subscribe(c => {
-      console.log("opa eae tiu");
-      this.isSpinnerVisible = false;
+      this.isSpinnerVisibleAgenda = false;
       this.refreshPage();
     });
   }
@@ -683,7 +676,7 @@ imageurl = "";
   }
 
   trocarData() {
-    this.isSpinnerVisible = true;
+    this.isSpinnerVisibleAgenda = true;
     if (this.view == CalendarView.Day) //quando for dia tem de ajustar os horários permitido do dia
       this.ajustarParametrosCalendario();
 
@@ -695,7 +688,7 @@ imageurl = "";
         this.eventosBanco = new Array<Agendamento>();
         this.converteEAdicionaAgendamentoEvento(dados);
 
-        this.isSpinnerVisible = false;
+        this.isSpinnerVisibleAgenda = false;
         this.refreshPage();
       });
   }
@@ -887,7 +880,42 @@ imageurl = "";
     return novoAgendamento;
   }
 
+  selecionaDataPicker(e: any) {
+    var novaData = new Date(e.year, e.month - 1, e.day);
+    this.viewDate = novaData;
+    this.trocarData();
+  }
+
+  irParaDatePicker(valor) {
+
+    if (this.util.validaData(valor)) {
+
+      var dataPartes = valor.split("/");
+      var dataNova = { year: dataPartes[2], month: dataPartes[1], day: dataPartes[0] };
+      this.datePickerNgb.close();
+      this.trocaDataPeloDatePicker(dataNova);
+    }
+    else {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Data inválida";
+    }
+
+  }
+
+  hojeDatePicker() {
+    this.dataPicker = this.calendar.getToday();
+    this.datePickerNgb.navigateTo(this.dataPicker);
+    this.datePickerNgb.close();
+    this.trocaDataPeloDatePicker(this.dataPicker);
+  }
+
+  trocaDataPeloDatePicker(data: NgbDateStruct) {
+    var novaData = new Date(data.year, data.month - 1, data.day);
+    this.viewDate = novaData;
+    this.trocarData();
+  }
 }
+
 
 export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
   weekTooltip(event: CalendarEvent, title: string) {
