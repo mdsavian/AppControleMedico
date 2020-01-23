@@ -1,13 +1,8 @@
-import { Entidade } from "./entidade";
+import { Procedimento } from "./procedimento";
 
-export class Cirurgia extends Entidade {
+export class Cirurgia extends Procedimento {
 
   constructor() {
     super();
-  }
-
-  descricao:string;  
-  corFundo:string;
-  corLetra:string;
-  
+  }  
 }

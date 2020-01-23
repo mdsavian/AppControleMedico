@@ -17,19 +17,26 @@
                       class="alert alert-danger">
                       <div *ngIf="descricao.errors.required"> Descrição Obrigatório. </div>
                       <div *ngIf="descricao.errors?.validaDescricaoProcedimento"> Já existe um procedimento com esta
-                        descrição
-                        cadastrada. </div>
+                        descrição cadastrada. </div>
                     </div>
                   </div>
                 </div>
+
                 <div class="col-xs-6 col-md-3">
                   <div class="form-group">
-                    <label class="form-check-inline" for="obrigaPaciente">Obriga Paciente</label>
-                    <input type="checkbox" class="form-check-inline" value="checked"
-                      [(ngModel)]="procedimento.obrigaPaciente" #obrigaPaciente="ngModel" id="obrigaPaciente"
-                      name="obrigaPaciente">
+                    <label class="control-label" for="valor">Valor</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">R$</span>
+                      </div>
+                      <input type="text" id="valor" mask="dot_separator.2" (blur)="formatarDecimal($event)" name="valor"
+                        placeholder="000,00" class="form-control" required [(ngModel)]="procedimento.valor"
+                        #valor="ngModel">
+                    </div>
                   </div>
                 </div>
+              </div>
+              <div class="row rowcadastro">
                 <div class="col-xs-6 col-md-3">
                   <div class="form-group">
                     <label class="control-label" for="corFundo">Cor</label>
@@ -40,16 +47,15 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="col-xs-6 col-md-3">
+                
+                <div class="col-xs-6 col-md-3">
                   <div class="form-group">
-                    <label class="control-label" for="corLetra">Cor Letra</label>
-                    <input type="color" required class="form-control" [(ngModel)]="procedimento.corLetra"
-                      #corLetra="ngModel" id="corLetra" name="corLetra">
-                    <div *ngIf="corLetra.invalid" class="alert alert-danger">
-                      <div *ngIf="corLetra.errors.required"> Cor Letra Obrigatória. </div>
-                    </div>
+                    <label class="form-check-inline" for="obrigaPaciente">Obriga Paciente</label>
+                    <input type="checkbox" class="form-check-inline" value="checked"
+                      [(ngModel)]="procedimento.obrigaPaciente" #obrigaPaciente="ngModel" id="obrigaPaciente"
+                      name="obrigaPaciente">
                   </div>
-                </div> -->
+                </div>
               </div>
             </div>
           </div>

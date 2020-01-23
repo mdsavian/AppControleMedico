@@ -4,6 +4,7 @@ import { CirurgiaService } from '../../services/cirurgia.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Util } from '../../uteis/Util';
 
 @Component({
   templateUrl: './cadastro-cirurgia.component.html',
@@ -12,12 +13,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class CadastroCirurgiaComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('descricao', { read: ElementRef, static:false }) private descricao: ElementRef;
+  @ViewChild('descricao', { read: ElementRef, static:true }) private descricao: ElementRef;
+  @ViewChild('valor', { read: ElementRef, static: false }) private valorModel: ElementRef;
 
   mensagemErro: string;
-  cirurgia: Cirurgia = {
-    id: "", descricao: "", corFundo: "#000000", corLetra: "#ffffff"
-  };
+  cirurgia = new Cirurgia();
+  util = new Util();
+
 
   constructor(private cirurgiaService: CirurgiaService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal) {
   }
@@ -25,14 +27,23 @@ export class CadastroCirurgiaComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.descricao != null)
       this.descricao.nativeElement.focus();
+
+      if (this.valorModel != null)
+        this.valorModel.nativeElement.value = this.util.formatarDecimalBlur(this.valorModel.nativeElement.value);
   }
 
   public ngOnInit(): void {
+
     if (this.cirurgiaService.cirurgia) {
       this.cirurgia = this.cirurgiaService.cirurgia;
       this.descricao.nativeElement.setAttribute('readonly', true);
     }
 
+  }
+
+  formatarDecimal(e: any) {
+    if (e.target.id == "valor")
+      this.valorModel.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
   }
 
   public onSubmit(): void {
