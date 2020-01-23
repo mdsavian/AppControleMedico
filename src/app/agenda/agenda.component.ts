@@ -44,6 +44,7 @@ import { ConfiguracaoAgenda } from '../modelos/configuracaoAgenda';
 import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
 import { UploadService } from '../services/upload.service';
+import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-caixa.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush, //com esta propriedade ativa a cada mudança deve ser chamado o refresh page manualmente
@@ -914,6 +915,12 @@ export class AgendaComponent implements OnInit {
     this.viewDate = novaData;
     this.trocarData();
   }
+
+  abrirExtraCaixa(acao: string) {
+    var modalExtra = this.modalService.open(ModalExtraCaixaComponent, { size: 'lg' });
+    modalExtra.componentInstance.operacao = acao;
+  }
+
 }
 
 
@@ -928,8 +935,10 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
     if (!event.meta.tmpEvent) {
       return super.dayTooltip(event, title);
     }
-  }
+  }  
 }
+
+
 
 function floorToNearest(amount: number, precision: number) {
   return Math.floor(amount / precision) * precision;

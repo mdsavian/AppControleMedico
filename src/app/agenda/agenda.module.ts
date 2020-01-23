@@ -14,6 +14,7 @@ import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.
 import { UteisModule } from '../uteis/uteis.module'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
+import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-caixa.component';
 import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { ModalAcoesAgendamentoComponent } from './modal-acoes-agendamento.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
@@ -50,9 +51,9 @@ export class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalPagamentoAgendamentoComponent, ModalAcoesAgendamentoComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
+  declarations: [AgendaComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, ModalAcoesAgendamentoComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalPagamentoAgendamentoComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
+  entryComponents: [ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
 })
 
 export class AgendaModule { }

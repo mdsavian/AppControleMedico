@@ -1,0 +1,91 @@
+<form #extraCaixaForm="ngForm">
+    <div class="modal-header">
+        <h4 class="modal-title">Adicionar Extra Caixa - {{operacao}}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="Caixa">Caixa(*)</label>
+                    <select class="form-control" (change)="selecionaCaixa($event.target.value)" [(ngModel)]="caixa"
+                        #caixaModel="ngModel" id="caixa" name="caixa" required>
+                        <option *ngFor="let cax of caixas" [ngValue]="cax">
+                            {{cax.descricao}}
+                        </option>
+                    </select>
+                    <div *ngIf="caixaModel.invalid" class="alert alert-danger">
+                        <div *ngIf="caixaModel.invalid && caixaModel.errors.required"> Caixa Obrigatório. </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12" *ngIf="!caixaUsuario">
+                <div class="form-group">
+                    <label class="control-label" for="senha">Senha(*)</label>
+                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha"
+                        placeholder="senha" required #senha>
+                    <div *ngIf="senha.value == '' || senhaValida" class="alert alert-danger">
+                        <div *ngIf="senha.value == ''"> Senha Obrigatória. </div>
+                        <div *ngIf="senhaValida"> Senha Inválida. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="formaPagamento">Forma de Pagamento(*)</label>
+                    <select class="form-control" (change)="alteraFormaPagamento()"
+                        [(ngModel)]="extraCaixa.formaPagamentoId" #formaPagamentoModel="ngModel"
+                        id="formaPagamento" name="formaPagamento" required>
+                        <option *ngFor="let forma of formasPagamento" [ngValue]="forma.id">
+                            {{forma.descricao}}
+                        </option>
+                    </select>
+                    <div *ngIf="formaPagamentoModel.invalid" class="alert alert-danger">
+                        <div *ngIf="formaPagamentoModel.errors.required"> Forma de Pagamento Obrigatória. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-2 col-md-3">
+                <label class="control-label" for="tipoPagamento">Tipo Pagamento(*)</label>
+                <select class="form-control" (change)="selecionaTipoPagamento($event.target.value)"
+                    [(ngModel)]="vistaPrazo" #tipoPagamento="ngModel" disabled id="tipoPagamento" name="tipoPagamento">
+                    <option *ngFor="let codigo of vistaPrazoEnum | enumToArray">
+                        {{codigo}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-xs-2 col-md-2" *ngIf="visualizaParcela">
+                <label class="control-label" for="parcela">Parcela</label>
+                <div class="input-group">
+                    <input type="number" min="1" id="parcela" name="parcela" class="form-control" required
+                        [(ngModel)]="extraCaixa.parcela" #parcela="ngModel">
+                </div>
+            </div>
+
+            <div class="col-xs-3 col-md-7">
+                <label class="control-label" for="valor">Valor(*)</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$</span>
+                    </div>
+                    <input type="text" id="valor" mask="dot_separator.2" (blur)="formatarDecimal($event)" name="valor" placeholder="000,00"
+                        class="form-control" required [(ngModel)]="extraCaixa.valor" #valor="ngModel">
+                </div>
+                <div *ngIf="valor.invalid" class="alert alert-danger">
+                    <div *ngIf="valor.errors.required"> Valor Obrigatório. </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal-footer">
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
+        [disabled]="(senha != null && (senha.value == '' ||senhaValida))">Salvar</button>
+</div>
