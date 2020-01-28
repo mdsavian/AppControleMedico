@@ -72,6 +72,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   sourcePagamentos: LocalDataSource;
   totalPagamentos: string;
   selecionarAbaPagamento: boolean;
+  mensagemUltimoAgendamento: string;
+  ultimoAgendamentoCancelado = false;
 
   @ViewChild('tipoAgendamento', { read: ElementRef, static: false }) private tipoAgendamento: ElementRef;
   @ViewChild('pacienteModel', { read: ElementRef, static: false }) private pacienteModel: ElementRef;
@@ -130,10 +132,13 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
 
       if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
+
         if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId) && this.util.hasItems(this.pacientes)) {
           this.paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
           this.pacienteSelecionado = this.nomePacientes.find(c => c == this.paciente.nomeCompleto);
           this.agendamento.paciente = this.paciente;
+
+          this.buscarUltimoAgendamentoPaciente();
         }
 
         if (!this.util.isNullOrWhitespace(this.agendamento.convenioId) && this.util.hasItems(this.convenios))
@@ -516,12 +521,41 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento.paciente = paciente;
       this.agendamento.pacienteId = paciente.id;
 
+      this.buscarUltimoAgendamentoPaciente();
+
+
       if (!this.util.isNullOrWhitespace(paciente.convenioId)) {
         this.agendamento.convenioId = paciente.convenioId;
         this.agendamento.convenio = this.convenios.find(c => c.id == paciente.convenioId);
       }
     }
 
+  }
+
+  buscarUltimoAgendamentoPaciente() {
+    if (this.paciente != null) {
+      console.log(this.editando);
+      var agendamentoId = this.editando ? this.agendamento.id : "";
+
+      console.log(agendamentoId);
+
+      this.agendamentoService.buscarUltimoAgendamentoPaciente(this.paciente.id, agendamentoId).subscribe(ultimoAgendamento => {
+        console.log("ultimo", ultimoAgendamento, ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento]);
+        if (ultimoAgendamento != null) {
+          this.ultimoAgendamentoCancelado = ultimoAgendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado;
+
+          this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
+            " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
+
+          if (ultimoAgendamento.contemPagamentos) {
+            var soma = 0;
+            ultimoAgendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+
+            this.mensagemUltimoAgendamento = this.mensagemUltimoAgendamento + " | Valor: " + this.util.formatarDecimalBlur(soma);
+          }
+        }
+      });
+    }
   }
 
   adicionarPagamento() {

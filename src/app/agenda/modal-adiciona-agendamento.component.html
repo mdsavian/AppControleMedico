@@ -12,6 +12,11 @@
         Agendamento encaixado.
     </div>
 
+    <div [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}" *ngIf="mensagemUltimoAgendamento">
+        {{mensagemUltimoAgendamento}}
+    </div>
+              
+
     <div class="modal-body" [hidden]=isSpinnerVisible>
         <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
             <ngb-tab title="Informações" id="tabInfo">

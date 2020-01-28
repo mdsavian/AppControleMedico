@@ -19,6 +19,7 @@ import { Usuario } from '../modelos/usuario';
 })
 
 export class AgendamentoService {
+  
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
@@ -71,6 +72,12 @@ export class AgendamentoService {
 
   public Excluir(agendamentoId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + agendamentoId);
+  }
+
+  buscarUltimoAgendamentoPaciente(pacienteId: string, agendamentoId:string) {
+    let parametros = new HttpParams().set("pacienteId", pacienteId).set("agendamentoId", agendamentoId);
+    
+     return this.http.get<Agendamento>(this.accessPointUrl + "buscarUltimoAgendamentoPaciente?" + parametros); 
   }
 
   public retornarOperacaoAgendamento(agendamento: Agendamento, exames: Array<Exame>,

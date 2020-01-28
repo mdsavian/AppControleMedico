@@ -519,27 +519,7 @@ export class AgendaComponent implements OnInit {
                   modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
                 }
                 else {
-
                   this.chamarModalAdicionaAgendamento(agendamento, "pagar");
-
-
-                  // var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
-
-                  // modalPagamento.componentInstance.selecionarAbaPagamento = true;                
-                  // modalPagamento.componentInstance.agendamento = agendamento;
-                  // modalPagamento.componentInstance.medico = this.medico;
-                  // modalPagamento.componentInstance.formasPagamento = this.formaDePagamentos;
-                  // modalPagamento.componentInstance.caixas = caixas;
-
-
-                  // modalPagamento.result.then(retorno => {
-                  //   if (retorno != null && retorno != "") {
-                  //     this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                  //     var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
-                  //     modal.componentInstance.mensagem = "Pagamento adicionado com sucesso!";
-                  //   }
-                  // }, (error) => { })
-
                 }
               });
               break;
@@ -923,9 +903,7 @@ export class AgendaComponent implements OnInit {
     var modalExtra = this.modalService.open(ModalExtraCaixaComponent, { size: 'lg' });
     modalExtra.componentInstance.operacao = acao;
   }
-
 }
-
 
 export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
   weekTooltip(event: CalendarEvent, title: string) {
@@ -940,8 +918,6 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
     }
   }
 }
-
-
 
 function floorToNearest(amount: number, precision: number) {
   return Math.floor(amount / precision) * precision;
