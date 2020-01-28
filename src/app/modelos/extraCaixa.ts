@@ -15,6 +15,7 @@ export class ExtraCaixa extends Entidade {
   valor:number;
   formaPagamentoId:string;
   data:Date;
+  descricao:string;
   vistaPrazo:EVistaPrazo;
   parcela:number;
   tipoExtraCaixa: ETipoExtraCaixa;

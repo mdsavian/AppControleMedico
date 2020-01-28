@@ -30,7 +30,7 @@ import { ModalDetalhesAgendamentoComponent } from './modal-detalhes-agendamento.
 import { CirurgiaService } from '../services/cirurgia.service';
 import { PacienteService } from '../services/paciente.service';
 import { ProcedimentoService } from '../services/procedimento.service';
-import { ConvenioService } from '../services/convenio.service';
+import { ConvenioService } from '../services/convenio.service'; ''
 import { LocalService } from '../services/local.service';
 import { ExameService } from '../services/exame.service';
 import { Paciente } from '../modelos/paciente';
@@ -148,6 +148,7 @@ export class AgendaComponent implements OnInit {
       //quando usuário for um médico traz ele selecionado primeiro
       if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
         this.medico = this.medicos.find(c => c.id == usuario.medicoId);
+        this.trocaMedico(this.medico.id);
       }
     });
 
@@ -519,24 +520,25 @@ export class AgendaComponent implements OnInit {
                 }
                 else {
 
-                  var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+                  this.chamarModalAdicionaAgendamento(agendamento, "pagar");
 
-                  modalPagamento.componentInstance.agendamento = agendamento;
-                  modalPagamento.componentInstance.medico = this.medico;
-                  modalPagamento.componentInstance.cirurgias = this.cirurgias;
-                  modalPagamento.componentInstance.locais = this.locais;
-                  modalPagamento.componentInstance.exames = this.exames;
-                  modalPagamento.componentInstance.procedimentos = this.procedimentos;
-                  modalPagamento.componentInstance.convenios = this.convenios;
-                  modalPagamento.componentInstance.pacientes = this.pacientes;
 
-                  modalPagamento.result.then(retorno => {
-                    if (retorno != null && retorno != "") {
-                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                      var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
-                      modal.componentInstance.mensagem = "Pagamento adicionado com sucesso!";
-                    }
-                  }, (error) => { })
+                  // var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
+
+                  // modalPagamento.componentInstance.selecionarAbaPagamento = true;                
+                  // modalPagamento.componentInstance.agendamento = agendamento;
+                  // modalPagamento.componentInstance.medico = this.medico;
+                  // modalPagamento.componentInstance.formasPagamento = this.formaDePagamentos;
+                  // modalPagamento.componentInstance.caixas = caixas;
+
+
+                  // modalPagamento.result.then(retorno => {
+                  //   if (retorno != null && retorno != "") {
+                  //     this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                  //     var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+                  //     modal.componentInstance.mensagem = "Pagamento adicionado com sucesso!";
+                  //   }
+                  // }, (error) => { })
 
                 }
               });
@@ -771,12 +773,13 @@ export class AgendaComponent implements OnInit {
       modalAdicionaAgendamento.componentInstance.procedimentos = this.procedimentos;
       modalAdicionaAgendamento.componentInstance.convenios = this.convenios;
       modalAdicionaAgendamento.componentInstance.formaDePagamentos = this.formaDePagamentos;
+      modalAdicionaAgendamento.componentInstance.selecionarAbaPagamento = acao == "pagar";
 
       if (agendamento != null) {
         modalAdicionaAgendamento.componentInstance.agendamentoJson = JSON.parse(JSON.stringify(agendamento));
       }
 
-      if (acao == "editar") {
+      if (acao == "editar" || acao == "pagar") {
         modalAdicionaAgendamento.componentInstance.editando = true;
       }
 
@@ -935,7 +938,7 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
     if (!event.meta.tmpEvent) {
       return super.dayTooltip(event, title);
     }
-  }  
+  }
 }
 
 

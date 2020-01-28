@@ -13,8 +13,8 @@
     </div>
 
     <div class="modal-body" [hidden]=isSpinnerVisible>
-        <ngb-tabset type="pills" [destroyOnHide]="false">
-            <ngb-tab title="Informações">
+        <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
+            <ngb-tab title="Informações" id="tabInfo">
                 <ng-template ngbTabContent>
                     <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                         <div class="row rowcadastro">
@@ -269,7 +269,7 @@
 
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Pagamentos">
+            <ngb-tab title="Pagamentos" id="tabPagamentos">
                 <ng-template ngbTabContent>
                     <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
                         <br />

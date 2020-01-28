@@ -44,13 +44,14 @@ export class ModalPagamentoAgendamentoComponent {
   testPrice: any;
   existeCaixaAbertoParaFuncionario: boolean;
   senhaValida: boolean;
-  vistaPrazoEnum = EVistaPrazo;
+  vistaPrazoEnum = EVistaPrazo;    
   vistaPrazo: string = EVistaPrazo[1].toString();
   sourcePagamentos: LocalDataSource;
   usuarioCorrente: Usuario;
   listaPagamentos = new Array<AgendamentoPagamento>();
   valorTotal: string;
   agendamento: Agendamento;
+  valorProcedimento = 0;
 
   constructor(public activeModal: NgbActiveModal, private appService: AppService, private loginService: LoginService, private agendamentoService: AgendamentoService,
     private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
@@ -70,6 +71,22 @@ export class ModalPagamentoAgendamentoComponent {
 
         this.formaPagamentoModel.nativeElement.focus();
 
+        if (this.agendamento.exame!= null && this.agendamento.exame.valor > 0)
+        {
+          this.agendamentoPagamento.valor = this.agendamento.exame.valor;
+          this.valorModel.nativeElement.value = this.util.formatarDecimalBlur(this.agendamento.exame.valor);
+        }
+        else if (this.agendamento.cirurgia != null && this.agendamento.cirurgia.valor > 0)
+        {
+          this.agendamentoPagamento.valor = this.agendamento.cirurgia.valor;
+          this.valorModel.nativeElement.value = this.util.formatarDecimalBlur(this.agendamento.cirurgia.valor);          
+        }
+        else if (this.agendamento.procedimento != null && this.agendamento.procedimento.valor > 0)
+        {
+          this.agendamentoPagamento.valor = this.agendamento.procedimento.valor;
+          this.valorModel.nativeElement.value = this.util.formatarDecimalBlur(this.agendamento.procedimento.valor);
+        }
+
         if (this.util.hasItems(this.agendamento.pagamentos)) {
 
           this.listaPagamentos = this.agendamento.pagamentos;
@@ -88,7 +105,6 @@ export class ModalPagamentoAgendamentoComponent {
             this.caixa = this.caixas.find(c => true);
           })
         }
-
         else {
 
           if (!this.util.hasItems(this.caixas)) {

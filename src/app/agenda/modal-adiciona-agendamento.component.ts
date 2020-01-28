@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, ViewContainerRef, AfterViewChecked } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
@@ -43,8 +43,7 @@ import { CaixaService } from '../services/caixa.service';
   styleUrls: ["./styles.css"]
 })
 
-export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit {
-
+export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   isSpinnerVisible = false;
   editando = false;
@@ -72,6 +71,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   formaDePagamentos = new Array<FormaDePagamento>();
   sourcePagamentos: LocalDataSource;
   totalPagamentos: string;
+  selecionarAbaPagamento: boolean;
 
   @ViewChild('tipoAgendamento', { read: ElementRef, static: false }) private tipoAgendamento: ElementRef;
   @ViewChild('pacienteModel', { read: ElementRef, static: false }) private pacienteModel: ElementRef;
@@ -84,15 +84,21 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('dataAgendamento', { read: ElementRef, static: false }) private dataAgendamentoModel: ElementRef;
   @ViewChild('numeroCartao', { read: ElementRef, static: false }) private numeroCartaoModel: ElementRef;
   @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
-
+  @ViewChild('tabSet', { static: false }) tabset;
 
   constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router, private caixaService: CaixaService,
     private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
     private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
+  ngAfterViewChecked(): void {
+    if (this.selecionarAbaPagamento && this.tabset != null)
+      this.tabset.select("tabPagamentos");
+  }
+
   ngAfterViewInit(): void {
     this.tipoAgendamento.nativeElement.focus();
+    console.log(this.tabset);
 
     if (this.editando) {
       this.tipoAgendamento.nativeElement.setAttribute('disabled', true);
@@ -123,7 +129,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento = this.agendamentoJson;
 
     if (this.editando) {
-        
+
       this.agendamentoEmAtendimento = this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"];
 
       this.tituloTela = "Editar Agendamento - ";
@@ -534,7 +540,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       }
       else {
 
-        var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+        var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
 
         modalPagamento.componentInstance.agendamento = this.agendamento;
         modalPagamento.componentInstance.medico = this.medico;
