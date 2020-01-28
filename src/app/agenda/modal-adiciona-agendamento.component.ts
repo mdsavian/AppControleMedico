@@ -1,5 +1,5 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, ViewContainerRef, AfterViewChecked } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import { NgbActiveModal, NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
 import { Paciente } from '../modelos/paciente';
@@ -43,7 +43,7 @@ import { CaixaService } from '../services/caixa.service';
   styleUrls: ["./styles.css"]
 })
 
-export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit {
 
   isSpinnerVisible = false;
   editando = false;
@@ -84,21 +84,14 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit,
   @ViewChild('dataAgendamento', { read: ElementRef, static: false }) private dataAgendamentoModel: ElementRef;
   @ViewChild('numeroCartao', { read: ElementRef, static: false }) private numeroCartaoModel: ElementRef;
   @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
-  @ViewChild('tabSet', { static: false }) tabset;
 
   constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router, private caixaService: CaixaService,
     private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
     private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
-  ngAfterViewChecked(): void {
-    if (this.selecionarAbaPagamento && this.tabset != null)
-      this.tabset.select("tabPagamentos");
-  }
-
   ngAfterViewInit(): void {
     this.tipoAgendamento.nativeElement.focus();
-    console.log(this.tabset);
 
     if (this.editando) {
       this.tipoAgendamento.nativeElement.setAttribute('disabled', true);

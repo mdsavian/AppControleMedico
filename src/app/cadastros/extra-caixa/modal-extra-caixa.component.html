@@ -31,13 +31,24 @@
             </div>
         </div>
 
+        <div class="row rowcadastro">
+            <div class="col-xs-12 col-md-12">
+                <label class="control-label" for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" placeholder="descrição" required class="form-control"
+                    [(ngModel)]="extraCaixa.descricao" #descricao="ngModel"></textarea>
+                <div *ngIf="descricao.invalid" class="alert alert-danger">
+                    <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
                     <label class="control-label" for="formaPagamento">Forma de Pagamento(*)</label>
                     <select class="form-control" (change)="alteraFormaPagamento()"
-                        [(ngModel)]="extraCaixa.formaPagamentoId" #formaPagamentoModel="ngModel"
-                        id="formaPagamento" name="formaPagamento" required>
+                        [(ngModel)]="extraCaixa.formaPagamentoId" #formaPagamentoModel="ngModel" id="formaPagamento"
+                        name="formaPagamento" required>
                         <option *ngFor="let forma of formasPagamento" [ngValue]="forma.id">
                             {{forma.descricao}}
                         </option>
@@ -74,8 +85,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">R$</span>
                     </div>
-                    <input type="text" id="valor" mask="dot_separator.2" (blur)="formatarDecimal($event)" name="valor" placeholder="000,00"
-                        class="form-control" required [(ngModel)]="extraCaixa.valor" #valor="ngModel">
+                    <input type="text" id="valor" mask="dot_separator.2" (blur)="formatarDecimal($event)" name="valor"
+                        placeholder="000,00" class="form-control" required [(ngModel)]="extraCaixa.valor"
+                        #valor="ngModel">
                 </div>
                 <div *ngIf="valor.invalid" class="alert alert-danger">
                     <div *ngIf="valor.errors.required"> Valor Obrigatório. </div>
