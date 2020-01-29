@@ -12,7 +12,6 @@ export class BreadcrumbComponent implements OnInit {
   @Input()
   layout;
   pageInfo;
-  escondeTitulo: boolean;
   constructor(
     private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title, private agendamentoService: AgendamentoService, ) {
     this.router.events
@@ -29,13 +28,19 @@ export class BreadcrumbComponent implements OnInit {
         mergeMap(route => route.data)
       )
       .subscribe(event => {
-        this.titleService.setTitle(event['title']);
-        this.pageInfo = event;
+
+        if (this.router.url.indexOf("agenda/agenda") > 0 || this.router.url.indexOf("home/home") > 0
+          || this.router.url.indexOf("/dashboard/dashboardanalitico") > 0) {
+          this.titleService.setTitle("");
+          this.pageInfo = null;
+        }
+        else {
+          this.titleService.setTitle(event['title']);
+          this.pageInfo = event;
+        }
       });
   }
 
   ngOnInit() {
-    if (this.router.url.search("agenda/agenda") || this.router.url.search("home/home"))
-      this.escondeTitulo = true;
   }
 }

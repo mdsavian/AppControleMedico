@@ -395,8 +395,17 @@ export class SidebarComponent implements OnInit {
           labelClass: '',
           extralink: false,
           submenu: []
-        }
-        ,
+        },
+        {
+          path: '/listagem/procedimentosrealizados',
+          title: 'Procedimentos Realizados',
+          icon: '',
+          class: '',
+          label: '',
+          labelClass: '',
+          extralink: false,
+          submenu: []
+        },
         {
           path: '/listagem/listagemcontapagar',
           title: 'Conta a Pagar',

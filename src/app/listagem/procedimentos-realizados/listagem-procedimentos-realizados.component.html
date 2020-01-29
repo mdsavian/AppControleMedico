@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="spinner" *ngIf=isSpinnerVisible>
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
+
+                <br>
+
+                <div class="row" *ngIf=!isSpinnerVisible>
+                    <div class="col-2"></div>
+
+                    <div class="col-10">
+
+                        <div class="d-flex flex-row">
+
+                            <label style="display: block;" for="dataInicio">Período</label>
+                            <div class="input-group col-md-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <input type="text" mask="00/00/0000" required id="dataInicio" name="dataInicio"
+                                    placeholder="01/01/1901" class="form-control" [(ngModel)]="dataInicial"
+                                    #dataInicio="ngModel" (blur)="formataData($event)">
+                            </div>
+
+                            <label style="display: block;">Até</label>
+                            <div class="input-group col-md-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <input type="text" mask="00/00/0000" required id="dataFim" name="dataFim"
+                                    placeholder="01/01/1901" class="form-control" [(ngModel)]="dataFinal"
+                                    #dataFim="ngModel" (blur)="formataData($event)">
+                            </div>
+
+                            <label style="display:block;" for="medicoModel">Médico</label>
+                            <div class="col-md-3">
+                                <select class="form-control" [(ngModel)]="medico" #medicoModel="ngModel"
+                                    id="medicoModel" name="medicoModel">
+                                    <option *ngFor="let med of medicos" [ngValue]="med">
+                                        {{med.nomeCompleto}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <br>
+                <div class="table table-responsive smart-table" *ngIf=!isSpinnerVisible>
+                    <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
+                        (edit)="editarRegistro($event)" (create)="criarRegistro()" (delete)="deletarRegistro($event)">
+                    </ng2-smart-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

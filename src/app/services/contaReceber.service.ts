@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContaReceber } from '../modelos/contaReceber'
 import { environment } from '../../environments/environment';
-import { AgendamentoService } from '../services/agendamento.service';
-import { Agendamento } from "../modelos/agendamento";
 import { AppService } from './app.service';
 
 @Injectable({

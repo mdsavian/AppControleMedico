@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgxMaskModule } from 'ngx-mask';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ListagemRoutes } from './listagem.routing';
@@ -24,6 +26,7 @@ import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.co
 import { ListagemTimelineComponent } from './timeline/listagem-timeline.component';
 import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
 import { ListagemModeloPrescricaoComponent } from './modelo-prescricao/listagem-modelo-prescricao.component';
+import { ListagemProcedimentosRealizadosComponent } from './procedimentos-realizados/listagem-procedimentos-realizados.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
@@ -32,13 +35,15 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
   imports: [
     SharedModalModule,
     NgbModule,
+    FormsModule,
+    NgxMaskModule.forRoot(),
     CommonModule,
     RouterModule.forChild(ListagemRoutes),
     NgxDatatableModule,
     Ng2SmartTableModule
   ],
   declarations: [
-    ListagemMedicoComponent, ListagemPacienteComponent, ListagemModeloPrescricaoComponent, TimelineComponent, ListagemTimelineComponent, ListagemCaixaComponent, ListagemContaPagarComponent, ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
+    ListagemMedicoComponent, ListagemPacienteComponent, ListagemModeloPrescricaoComponent,ListagemProcedimentosRealizadosComponent, TimelineComponent, ListagemTimelineComponent, ListagemCaixaComponent, ListagemContaPagarComponent, ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
     ListagemConvenioComponent, ListagemProntuarioComponent, TimelineComponent, ListagemTimelineComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
     ListagemProcedimentoComponent
   ]

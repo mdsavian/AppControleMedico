@@ -20,6 +20,7 @@ import { ListagemProntuarioComponent } from './prontuario/listagem-prontuario.co
 import { ListagemTimelineComponent } from './timeline/listagem-timeline.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ListagemModeloPrescricaoComponent } from './modelo-prescricao/listagem-modelo-prescricao.component';
+import { ListagemProcedimentosRealizadosComponent } from './procedimentos-realizados/listagem-procedimentos-realizados.component';
 
 
 export const ListagemRoutes: Routes = [
@@ -33,6 +34,16 @@ export const ListagemRoutes: Routes = [
           title: 'Médicos',
           urls: [
             { title: 'Médicos' }
+          ] 
+        }
+      },
+      {
+        path: 'procedimentosrealizados',
+        component: ListagemProcedimentosRealizadosComponent,
+        data: {
+          title: 'Procedimentos Realizados',
+          urls: [
+            { title: 'Procedimentos Realizados' }
           ] 
         }
       },
