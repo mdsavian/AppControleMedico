@@ -19,11 +19,14 @@ import { BotaoImprimirComponent } from '../components/botao-imprimir-component';
 import { CorComponent } from '../components/cor-component';
 import { ModalAberturaCaixaComponent } from '../../cadastros/caixa/modal-abertura-caixa.component';
 import { ModalFechamentoCaixaComponent } from '../../cadastros/caixa/modal-fechamento-caixa.component';
+import { ModalPagamentoAgendamentoComponent } from '../../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
+import { EnumToArrayPipe } from '../../uteis/enumToArray.pipe'
 
 
 @NgModule({
   imports: [Ng2SmartTableModule, CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
-  declarations: [BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
-  entryComponents: [BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent]
+  declarations: [BotaoImprimirComponent, EnumToArrayPipe, CorComponent,ModalPagamentoAgendamentoComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+  entryComponents: [ModalPagamentoAgendamentoComponent,BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+  exports:[EnumToArrayPipe]
 })
 export class SharedModalModule { }

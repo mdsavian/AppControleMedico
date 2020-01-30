@@ -11,7 +11,6 @@ import { AgendaComponent } from './agenda.component';
 import { AgendaRoutes } from './agenda.routing';
 import { RouterModule } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component'
-import { UteisModule } from '../uteis/uteis.module'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
 import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-caixa.component';
@@ -39,7 +38,7 @@ export class CustomDateFormatter extends CalendarDateFormatter {
 }
 
 @NgModule({
-  imports: [SharedModalModule, NgbModule, UteisModule, NgxMaskModule.forRoot(), Ng2SmartTableModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
+  imports: [SharedModalModule, NgbModule, NgxMaskModule.forRoot(), Ng2SmartTableModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
     CalendarModule.forRoot(
       {
         provide: DateAdapter,
@@ -51,9 +50,9 @@ export class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, ModalAcoesAgendamentoComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
+  declarations: [AgendaComponent,  ModalExtraCaixaComponent, ModalAcoesAgendamentoComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
+  entryComponents: [ ModalExtraCaixaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
 })
 
 export class AgendaModule { }

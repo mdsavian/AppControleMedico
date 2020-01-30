@@ -11,14 +11,20 @@ import { MedicoService } from '../../services/medico.service';
 import { forkJoin } from 'rxjs';
 import { Agendamento } from '../../modelos/agendamento';
 import { PacienteService } from '../../services/paciente.service';
-import { CorComponent } from '../../shared/components/cor-component';
+import { ModalDetalhesAgendamentoComponent } from '../../agenda/modal-detalhes-agendamento.component';
+import { BotaoAdicionarPagamentoComponent } from './botao-adicionar-pagamento-component';
+import { ModalPagamentoAgendamentoComponent } from '../../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
+import { CaixaService } from '../../services/caixa.service';
+import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
+import { FormaDePagamento } from '../../modelos/formaDePagamento';
 
 @Component({
-  templateUrl: './listagem-procedimentos-realizados.component.html'
+  templateUrl: './listagem-procedimentos-realizados.component.html',
+  styleUrls: ['./botao-adicionar-pagamento-component.css'],
+
 })
 export class ListagemProcedimentosRealizadosComponent implements OnInit {
   source: LocalDataSource;
-  listaProcedimentos: Array<Procedimento>;
   public isSpinnerVisible = false;
   closeResult: string;
   util = new Util();
@@ -28,9 +34,10 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
   medicos: Array<Medico> = new Array<Medico>();
   medico: Medico = new Medico();
   procedimentos: Array<Agendamento>;
+  formaDePagamentos = new Array<FormaDePagamento>();
 
   constructor(private pacienteService: PacienteService,
-    private medicoService: MedicoService, private agendamentoService: AgendamentoService, private router: Router, private modalService: NgbModal) {
+    private medicoService: MedicoService, private agendamentoService: AgendamentoService,private caixaService:CaixaService, private formaPagamentoService:FormaDePagamentoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -47,6 +54,10 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
 
     this.isSpinnerVisible = true;
 
+    let reqFormas = this.formaPagamentoService.Todos().map(formas => {
+      this.formaDePagamentos = formas;
+    });
+    
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
       if (dados.length > 1) {
         let medicoTodos = new Medico();
@@ -61,8 +72,10 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
         else
           this.medico = this.medicos.find(c => c.id == this.medico.id);
       }
-      else
+      else {
+        this.medicos = dados;
         this.medico = this.medicos.find(c => true);
+      }
 
     });
     let reqProcedimentos = this.agendamentoService.procedimentosRealizados(this.dataInicial, this.dataFinal, this.medico.id).map(procedimentos => {
@@ -70,7 +83,7 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
       this.source = new LocalDataSource(this.procedimentos);
     });
 
-    return forkJoin(reqMedicos, reqProcedimentos);
+    return forkJoin(reqMedicos, reqProcedimentos,reqFormas);
   }
 
   buscar() {
@@ -111,8 +124,9 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
   }
 
   editarRegistro(event) {
-
-    this.router.navigate(['/cadastros/cadastroprocedimento']);
+    var agendamento = this.procedimentos.find(c => c.id == event.data.id);
+    var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
+    modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
   }
 
   settings = {
@@ -153,10 +167,19 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
         },
 
       },
-
       tipoAgendamentoDescricao: {
         title: 'Procedimento',
         filter: true
+      },
+      id: {
+        title: "Adicionar Pagamento",
+        type: "custom",
+        filter: false,
+        renderComponent: BotaoAdicionarPagamentoComponent, onComponentInitFunction: (instance) => {          
+          instance.save.subscribe(id => {
+            this.adicionarPagamento(id);
+          });
+        }
       }
     },
     actions:
@@ -171,6 +194,36 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
       cancelButtonContent: '<i class="ti-close text-danger"></i>',
     },
   };
+
+  adicionarPagamento(id) {
+
+    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+      if (!this.util.hasItems(caixas)) {
+        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+        modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
+      }
+      else {
+
+        var agendamento = this.procedimentos.find(c=> c.id == id);
+
+        var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
+
+        modalPagamento.componentInstance.agendamento = agendamento;
+        modalPagamento.componentInstance.medico = agendamento.medico;
+        modalPagamento.componentInstance.formasPagamento = this.formaDePagamentos;
+        modalPagamento.componentInstance.caixas = caixas;
+
+        modalPagamento.result.then(retorno => {
+
+          if (retorno != null && retorno != "") {
+            this.agendamentoService.salvar(retorno).subscribe(c=> this.buscar());           
+          }
+
+        }, (error) => { })
+      }
+    });
+
+  }
 
 }
 

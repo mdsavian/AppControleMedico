@@ -12,19 +12,23 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
-import { Usuario } from '../modelos/usuario';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CaixaService } from './caixa.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AgendamentoService {
+    
 
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
 
-  constructor(private http: HttpClient, private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
+  constructor(private http: HttpClient,
+    private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 

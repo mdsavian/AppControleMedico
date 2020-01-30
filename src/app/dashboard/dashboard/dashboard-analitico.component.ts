@@ -315,8 +315,10 @@ export class DashboardAnaliticoComponent implements OnInit {
         else
           this.medico = this.medicos.find(c => c.id == this.medico.id);
       }
-      else
+      else{
+        this.medicos = dados;
         this.medico = this.medicos.find(c => true);
+      }
 
       //quando usuário for um médico traz ele selecionado primeiro
       if (!this.util.isNullOrWhitespace(this.usuario.medicoId))

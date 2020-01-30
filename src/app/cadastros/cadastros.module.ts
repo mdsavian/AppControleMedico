@@ -7,7 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMaskModule } from 'ngx-mask';
 import { DragulaModule } from 'ng2-dragula';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { UteisModule } from '../uteis/uteis.module'
+import { SharedModalModule } from '../shared/modal/shared-modal.module'
 import { CadastrosRoutes } from './cadastros.routing';
 
 import { ValidaDescricaoConvenioDirective } from '../validadores/valida-descricao-convenio.directive';
@@ -50,7 +50,7 @@ import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
 import { ConfiguracaoAtalhoComponent } from './configuracao-atalho/configuracao-atalho.component';
 
 @NgModule({
-  imports: [NgbModule, FileUploadModule, UteisModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule,
+  imports: [NgbModule, FileUploadModule, SharedModalModule, CommonModule, Ng2SmartTableModule, RouterModule.forChild(CadastrosRoutes), FormsModule,
     QuillModule.forRoot(), DragulaModule.forRoot(), NgxMaskModule.forRoot()],
 
   declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroModeloPrescricaoComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,

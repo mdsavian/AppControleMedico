@@ -191,7 +191,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     this.agendamento.horaFinalAtendimento = this.util.horaAgoraString();
     this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Finalizado;
 
-    console.log(this.agendamento.horaFinalAtendimento);
     this.agendamentoService.salvar(this.agendamento).subscribe((novoAgendamento: Agendamento) => {
       this.activeModal.close(novoAgendamento)
     });

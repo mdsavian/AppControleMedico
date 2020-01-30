@@ -1,0 +1,10 @@
+ 
+ .btn-adicionarPagamento {
+    background-color: #24d2b5;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .btn-download:hover { 
+    background-color: #24d2b5;
+  } 
