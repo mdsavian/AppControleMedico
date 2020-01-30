@@ -57,6 +57,11 @@ export class HomeComponent implements OnInit {
           rota = "/listagem/listagempaciente"
           break;
         }
+        case "Proced. Realizados":
+        {
+          rota = "/listagem/procedimentosrealizados"
+          break;
+        }
       case "Médicos":
         {
           rota = "/listagem/listagemmedico"
