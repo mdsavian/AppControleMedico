@@ -5,7 +5,9 @@
     "baseUrl": "./",
     "module": "esnext",
     "types": [],
-    "allowJs": true
+    "allowJs": true,
+	"experimentalDecorators": true,
+
   },
   "exclude": [
     "test.ts",

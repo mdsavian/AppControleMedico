@@ -79,7 +79,6 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
     //transforma 01112019 para 01/11/2019
     var dataInicioBusca = this.util.formatarData(this.dataInicial);
     var dataFimBusca = this.util.formatarData(this.dataFinal);
-
     if (!this.util.validaData(dataInicioBusca) || !this.util.validaData(dataFimBusca) || this.util.stringParaData(dataInicioBusca) > this.util.stringParaData(dataFimBusca)) {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modalErro.componentInstance.mensagemErro = "Data inválida.";
@@ -138,14 +137,22 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (paciente) => { return paciente != null ? paciente.nomeCompleto : "" },
         filterFunction: (cell?: any, search?: string) => {
-          console.log(cell.nomeCompleto, search, cell.nomeCompleto.indexOf(search.toUpperCase()));
           return cell.nomeCompleto.toUpperCase().indexOf(search.toUpperCase()) >= 0;
         }
       },
-      valor:{
+      pagamentos: {
         title: "Valor Total",
+        filter: false,
+        valuePrepareFunction: (pagamentos) => {
+          let soma = 0;
+          if (pagamentos != null) {
+            pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+            return this.util.formatarDecimalBlur(soma);
+          }
+          else return this.util.formatarDecimalBlur(0);
+        },
 
-      }
+      },
 
       tipoAgendamentoDescricao: {
         title: 'Procedimento',

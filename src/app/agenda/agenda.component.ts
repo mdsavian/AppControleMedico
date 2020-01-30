@@ -94,11 +94,19 @@ export class AgendaComponent implements OnInit {
     this.isSpinnerVisible = true;
 
     this.buscarModelosNovoAgendamento().subscribe(c => {
-      this.buscarFotoMedicos().subscribe(c => {
+      if (this.medicos.find(c => !this.util.isNullOrWhitespace(c.fotoId)) != null) {
+
+        this.buscarFotoMedicos().subscribe(c => {
+
+          this.isSpinnerVisible = false;
+          this.refreshPage();
+
+        });
+      }
+      else {
         this.isSpinnerVisible = false;
         this.refreshPage();
-
-      });
+      }
     });
   }
 
@@ -570,7 +578,6 @@ export class AgendaComponent implements OnInit {
   }
 
   private refreshPage() {
-
     this.eventos = [...this.eventos];
     this.cdr.detectChanges();
   }

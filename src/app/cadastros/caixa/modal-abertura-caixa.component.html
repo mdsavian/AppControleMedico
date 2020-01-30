@@ -47,9 +47,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">R$</span>
                     </div>
-                    <input type="text" id="trocoAbertura" (blur)="formatarDecimal($event)" mask="dot_separator.2" name="trocoAbertura"
-                        placeholder="000,00" class="form-control" required [(ngModel)]="caixa.trocoAbertura"
-                        #trocoAbertura="ngModel">
+                    <input type="text" id="trocoAbertura" (blur)="formatarDecimal($event)" mask="dot_separator.2"
+                        name="trocoAbertura" placeholder="000,00" class="form-control" required
+                        [(ngModel)]="caixa.trocoAbertura" #trocoAbertura="ngModel">
                 </div>
                 <div *ngIf="trocoAbertura.invalid" class="alert alert-danger">
                     <div *ngIf="trocoAbertura.errors.required"> Troco Abertura Obrigatório. </div>
@@ -63,8 +63,8 @@
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
                     <input type="text" mask="00/00/0000" appValidaDataModal id="dataAbertura" name="dataAbertura"
-                        placeholder="01/01/1901" class="form-control" [(ngModel)]="dataAber"
-                        #dataAbertura="ngModel" readonly>
+                        placeholder="01/01/1901" class="form-control" [(ngModel)]="dataAber" #dataAbertura="ngModel"
+                        readonly>
                 </div>
                 <div *ngIf="dataAbertura.invalid && dataAbertura.errors?.validaDataModal" class="alert alert-danger">
                     <div *ngIf="dataAbertura.errors?.validaDataModal"> Data Inválida.</div>
@@ -85,7 +85,7 @@
     </div>
 </form>
 <div class="modal-footer">
-    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
         [disabled]="!aberturaCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
 </div>

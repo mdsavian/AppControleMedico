@@ -16,26 +16,26 @@
                             {{cax.descricao}}
                         </option>
                     </select>
-                    <div *ngIf="caixaModel.invalid"
-                        class="alert alert-danger">
+                    <div *ngIf="caixaModel.invalid" class="alert alert-danger">
                         <div *ngIf="caixaModel.invalid && caixaModel.errors.required"> Caixa Obrigatório. </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-                <div class="col-xs-12 col-md-12">
-                    <div class="form-group">
-                        <label class="control-label" for="login">Login(*)</label>
-                        <input type="text" class="form-control" readonly id="login" name="login" #login placeholder="login">
-                    </div>
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="login">Login(*)</label>
+                    <input type="text" class="form-control" readonly id="login" name="login" #login placeholder="login">
                 </div>
             </div>
+        </div>
         <div class="row">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
                     <label class="control-label" for="senha">Senha(*)</label>
-                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha" placeholder="senha" required #senha>
+                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha"
+                        placeholder="senha" required #senha>
                     <div *ngIf="senha.value == '' || senhaValida" class="alert alert-danger">
                         <div *ngIf="senha.value == ''"> Senha Obrigatória. </div>
                         <div *ngIf="senhaValida"> Senha Inválida. </div>
@@ -51,9 +51,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">R$</span>
                     </div>
-                    <input type="text" id="trocoFechamento" (blur)="formatarDecimal($event)" mask="dot_separator.2" name="trocoFechamento"
-                        placeholder="000,00" class="form-control" required [(ngModel)]="caixa.trocoFechamento"
-                        #trocoFechamento="ngModel">
+                    <input type="text" id="trocoFechamento" (blur)="formatarDecimal($event)" mask="dot_separator.2"
+                        name="trocoFechamento" placeholder="000,00" class="form-control" required
+                        [(ngModel)]="caixa.trocoFechamento" #trocoFechamento="ngModel">
                 </div>
                 <div *ngIf="trocoFechamento.invalid" class="alert alert-danger">
                     <div *ngIf="trocoFechamento.errors.required"> Troco Fechamento Obrigatório. </div>
@@ -66,10 +66,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <input type="text" mask="00/00/0000" id="dataFechamento" appValidaDataModal name="dataFechamento" placeholder="01/01/1901"
-                        class="form-control" [(ngModel)]="dataFecha" #dataFechamento="ngModel" readonly>                        
+                    <input type="text" mask="00/00/0000" id="dataFechamento" appValidaDataModal name="dataFechamento"
+                        placeholder="01/01/1901" class="form-control" [(ngModel)]="dataFecha" #dataFechamento="ngModel"
+                        readonly>
                 </div>
-                <div *ngIf="dataFechamento.invalid && dataFechamento.errors?.validaDataModal" class="alert alert-danger">
+                <div *ngIf="dataFechamento.invalid && dataFechamento.errors?.validaDataModal"
+                    class="alert alert-danger">
                     <div *ngIf="dataFechamento.errors?.validaDataModal"> Data Inválida.</div>
                 </div>
             </div>
@@ -88,7 +90,7 @@
     </div>
 </form>
 <div class="modal-footer">
-    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning"  type="submit">Cancelar</button>
-    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" 
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
         [disabled]="!fechamentoCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
+    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
 </div>

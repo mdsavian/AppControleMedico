@@ -534,13 +534,9 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   buscarUltimoAgendamentoPaciente() {
     if (this.paciente != null) {
-      console.log(this.editando);
       var agendamentoId = this.editando ? this.agendamento.id : "";
 
-      console.log(agendamentoId);
-
       this.agendamentoService.buscarUltimoAgendamentoPaciente(this.paciente.id, agendamentoId).subscribe(ultimoAgendamento => {
-        console.log("ultimo", ultimoAgendamento, ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento]);
         if (ultimoAgendamento != null) {
           this.ultimoAgendamentoCancelado = ultimoAgendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado;
 

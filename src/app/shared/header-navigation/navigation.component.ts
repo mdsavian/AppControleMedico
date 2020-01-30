@@ -16,15 +16,13 @@ import { AgendamentoService } from '../../services/agendamento.service';
   templateUrl: './navigation.component.html'
 })
 export class NavigationComponent implements AfterViewInit, OnInit {
-
-  tituloDescricao = "Controle Médico";
   nomeUsuario = "";
   usuario = new Usuario();
   emailUsuario = "";
   util = new Util();
   imageUrl: any = '../../../assets/images/fotoCadastro.jpg';
   public config: PerfectScrollbarConfigInterface = {};
-  constructor(private modalService: NgbModal, private uploadService: UploadService,private agendamentoService:AgendamentoService,
+  constructor(private modalService: NgbModal, private uploadService: UploadService, private agendamentoService: AgendamentoService,
     private router: Router, private loginService: LoginService, private appService: AppService, private usuarioService: UsuarioService) { }
 
 
@@ -32,36 +30,35 @@ export class NavigationComponent implements AfterViewInit, OnInit {
     var clinica = this.appService.retornarClinicaCorrente();
     this.usuario = this.appService.retornarUsuarioCorrente();
 
-    if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId)) {
-      var funcionario = this.usuario.funcionario;
-      this.nomeUsuario = funcionario.nomeCompleto.toUpperCase();
-      this.emailUsuario = funcionario.email;
+    if (this.usuario != null) {
+      if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId)) {
+        var funcionario = this.usuario.funcionario;
+        this.nomeUsuario = funcionario.nomeCompleto.toUpperCase();
+        this.emailUsuario = funcionario.email;
 
-      if (!this.util.isNullOrWhitespace(funcionario.fotoId)) {
-        this.uploadService.downloadImagem(funcionario.id, "funcionario").subscribe(byte => {
-          this.imageUrl = "data:image/jpeg;base64," + byte['value'];
-        });
+        if (!this.util.isNullOrWhitespace(funcionario.fotoId)) {
+          this.uploadService.downloadImagem(funcionario.id, "funcionario").subscribe(byte => {
+            this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+          });
+        }
+
       }
+      else if (!this.util.isNullOrWhitespace(this.usuario.medicoId)) {
+        var medico = this.usuario.medico;
 
-    }
-    else if (!this.util.isNullOrWhitespace(this.usuario.medicoId)) {
-      var medico = this.usuario.medico;
+        this.nomeUsuario = medico.nomeCompleto.toUpperCase();
+        this.emailUsuario = medico.email;
 
-      this.nomeUsuario = medico.nomeCompleto.toUpperCase();
-      this.emailUsuario = medico.email;
-
-      if (!this.util.isNullOrWhitespace(medico.fotoId)) {
-        this.uploadService.downloadImagem(medico.id, "medico").subscribe(byte => {
-          this.imageUrl = "data:image/jpeg;base64," + byte['value'];
-        });
+        if (!this.util.isNullOrWhitespace(medico.fotoId)) {
+          this.uploadService.downloadImagem(medico.id, "medico").subscribe(byte => {
+            this.imageUrl = "data:image/jpeg;base64," + byte['value'];
+          });
+        }
       }
     }
     else {
       this.emailUsuario = this.nomeUsuario = "ADMIN";
     }
-
-    this.tituloDescricao = this.tituloDescricao + " - Bem vindo " + this.nomeUsuario + " - Clínica " + clinica.razaoSocial.toUpperCase();
-
   }
 
   public logout() {
@@ -70,7 +67,7 @@ export class NavigationComponent implements AfterViewInit, OnInit {
   }
 
   trocarClinica() {
-    this.modalService.open(ModalTrocaClinicaComponent, {size:'lg'});
+    this.modalService.open(ModalTrocaClinicaComponent, { size: 'lg' });
   }
 
   perfilUsuario() {
