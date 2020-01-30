@@ -11,7 +11,7 @@ import { MedicoService } from '../../services/medico.service';
 import { forkJoin } from 'rxjs';
 import { Agendamento } from '../../modelos/agendamento';
 import { PacienteService } from '../../services/paciente.service';
-import { Paciente } from '../../modelos/paciente';
+import { CorComponent } from '../../shared/components/cor-component';
 
 @Component({
   templateUrl: './listagem-procedimentos-realizados.component.html'
@@ -125,19 +125,31 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (dataAgendamento) => { return this.util.dataParaString(dataAgendamento) }
       },
-      medicoId: {
+      medico: {
         title: 'Médico',
-        valuePrepareFunction: (medicoId) => { return this.medicos.find(c => c.id == medicoId).nomeCompleto }
-
+        filter: true,
+        valuePrepareFunction: (medico) => { return medico != null ? medico.nomeCompleto : "" },
+        filterFunction: (cell?: any, search?: string) => {
+          return cell.nomeCompleto.toUpperCase().indexOf(search.toUpperCase()) >= 0;
+        }
       },
       paciente: {
         title: 'Paciente',
         filter: true,
-        valuePrepareFunction: (paciente) =>{ return paciente != null ? paciente.nomeCompleto : ""}
+        valuePrepareFunction: (paciente) => { return paciente != null ? paciente.nomeCompleto : "" },
+        filterFunction: (cell?: any, search?: string) => {
+          console.log(cell.nomeCompleto, search, cell.nomeCompleto.indexOf(search.toUpperCase()));
+          return cell.nomeCompleto.toUpperCase().indexOf(search.toUpperCase()) >= 0;
+        }
       },
+      valor:{
+        title: "Valor Total",
+
+      }
+
       tipoAgendamentoDescricao: {
         title: 'Procedimento',
-        filter: true        
+        filter: true
       }
     },
     actions:

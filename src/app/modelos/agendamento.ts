@@ -47,7 +47,8 @@ export class Agendamento extends Entidade {
     convenio: Convenio;
     procedimento: Procedimento;
     tipoAgendamentoDescricao:string;
-
     horaInicialAtendimento: string;
     horaFinalAtendimento: string;
+
+    valor = 0;
 }
