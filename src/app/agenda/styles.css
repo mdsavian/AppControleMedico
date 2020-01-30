@@ -11,6 +11,14 @@ pre {
   display: block;
   }
 
+  
+  ::ng-deep .modal-xl .modal-dialog {
+      width: 90%;
+     max-width:1200px;
+     min-width: 768px;
+    }
+  
+
   .hora-desabilitada, .hora-desabilitada:hover {
     background-color: grey !important;
     cursor: not-allowed;

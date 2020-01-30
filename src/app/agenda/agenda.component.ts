@@ -449,7 +449,7 @@ export class AgendaComponent implements OnInit {
       }
       else {
 
-        var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { size: 'lg' });
+        var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { windowClass:'modal-xl' });
         modalAcoes.componentInstance.agendamento = agendamento;
 
         modalAcoes.result.then(result => {
@@ -744,7 +744,7 @@ export class AgendaComponent implements OnInit {
     }
     else {
 
-      var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { size: "lg", backdrop: 'static', keyboard: false });
+      var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, {  windowClass:'modal-xl' , backdrop: 'static', keyboard: false });
 
       var medico;
 
