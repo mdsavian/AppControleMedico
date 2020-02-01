@@ -15,7 +15,7 @@
           <div class="row text-center justify-content-md-center">
             <button class="btn btn-rounded" type="button" style="background-color: rgba(117, 117, 212, 0.835)"
               (click)="importarArquivo()">Importar Arquivo</button>
-            <input id="fileInput" #fileInput type="file" (ngModelChange)="ngModelChangefile($event)" accept=".jpeg, .png, .jpg;"
+            <input id="fileInput" #fileInput type="file" (change)="changefile($event)" accept=".jpeg, .png, .jpg;"
               name="fileInput" style="display: none;" />
           </div>
         </div>

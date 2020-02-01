@@ -1,4 +1,8 @@
-<form #acoesAgendamento="ngForm">
+<div class="spinner" *ngIf="isSpinnerVisible">
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
+<form #acoesAgendamento="ngForm" *ngIf="!isSpinnerVisible">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Ações</h4>
     <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
@@ -12,20 +16,43 @@
 
       <div class="col-xs-4 col-md-4">
 
-        <div class="card" style="margin-bottom: 10px;">
-          <div class="card-body" style="padding: 0px; padding-right: 2px;">
+        <div class="card">
+          <div class="card-body">
             <h5 class="card-title"><span class="fa fa-info-circle"></span> Informações Agendamento</h5>
-            <div class="col-lg-12 col-xlg-12 col-md-12" style="padding: 5px;">
+            <div class="col-lg-12 col-xlg-12 col-md-12">
 
               <div class="row">
-                <div class="media-left">
-                  <img class="media-object img-circle" style="width:50px; height:50px;">
-                </div>
-                <div class="media-body text-left" style="padding: 5px;">
-                  <h5 class="mt-2">Paciente</h5>
+                <img alt="nomePaciente" [src]="fotoPaciente" class="mr-3 mt-3 rounded-circle" style="width:60px;">
+                <div class="media-body">
+                  <h6 style="margin:0px; margin-top:5px;"><b>{{paciente.nomeCompleto}}</b></h6>
+                  <p style="margin:0px; margin-top:5px;">
+                    <small><span class="fa fa-phone"> {{telefone}}</span></small>
+                  </p>
+                  <p style="margin:0px;">
+
+                    <small><span class="fa fa-calendar"> {{descricaoData}}</span></small>
+                  </p>
+                  <p style="margin:0px;">
+                    <small><span class="fa fa-clock-o"> {{horario}}</span></small>
+                  </p>
+
+                  <p style="margin:0px;">
+                    <small><span class="fa fa-stethoscope">  <b>&nbsp;&nbsp;{{agendamento.tipoAgendamentoDescricao.toUpperCase()}}</b></span></small>
+                  </p>
+
                 </div>
               </div>
 
+
+              <div class="row">
+                <div class="media-body">
+                  <div
+                    [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}"
+                    *ngIf="mensagemUltimoAgendamento">
+                    {{mensagemUltimoAgendamento}}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

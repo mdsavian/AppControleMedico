@@ -24,7 +24,6 @@ import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { Funcionario } from '../modelos/funcionario';
 import { CaixaService } from '../services/caixa.service';
 import { ModalErrorComponent } from '../shared/modal/modal-error.component';
-import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { ModalAcoesAgendamentoComponent } from './modal-acoes-agendamento.component';
 import { ModalDetalhesAgendamentoComponent } from './modal-detalhes-agendamento.component';
 import { CirurgiaService } from '../services/cirurgia.service';
@@ -156,8 +155,11 @@ export class AgendaComponent implements OnInit {
       //quando usuário for um médico traz ele selecionado primeiro
       if (!this.util.isNullOrWhitespace(usuario.medicoId)) {
         this.medico = this.medicos.find(c => c.id == usuario.medicoId);
-        this.trocaMedico(this.medico.id);
       }
+
+      this.trocaMedico(this.medico.id);
+
+      
     });
 
     requisicoes.push(reqMedicos);

@@ -4,6 +4,7 @@ import { Usuario } from "../modelos/usuario";
 
 export class Util {
 
+
     formatarDecimal(valor: number, ) {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(valor);
     }
@@ -211,6 +212,41 @@ export class Util {
         return datepipe.transform(data, "dd/MM/yyyy");
     }
 
+    retornaDiaSemana(data: Date) {
+
+        var diaSemana = new Array(7);
+        diaSemana[0] = "Domingo";
+        diaSemana[1] = "Segunda";
+        diaSemana[2] = "Terça-Feira";
+        diaSemana[3] = "Quarta-Feira";
+        diaSemana[4] = "Quinta-Feira";
+        diaSemana[5] = "Sexta-Feira";
+        diaSemana[6] = "Sábado";
+
+        console.log(data, new Date(data).getDay());
+        var dia =  new Date(data).getDay();
+
+
+        return diaSemana[dia];
+    }
+
+    retornarMes(data: Date) {
+        var meses = new Array(7);
+        meses[0] = "Janeiro";
+        meses[1] = "Fevereiro";
+        meses[2] = "Março";
+        meses[3] = "Abril";
+        meses[4] = "Maio";
+        meses[5] = "Junho";
+        meses[6] = "Julho";
+        meses[7] = "Agosto";
+        meses[8] = "Setembro";
+        meses[9] = "Outubro";
+        meses[10] = "Novembro";
+        meses[11] = "Dezembro";
+
+        return meses[new Date(data).getMonth()];
+    }
     horaAgoraString(): string {
         var d = new Date();
         return ("0" + d.getHours()).slice(-2) + " " + ("0" + d.getMinutes()).slice(-2);
