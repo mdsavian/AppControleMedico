@@ -9,19 +9,19 @@
         <div class="row">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
-                    <label class="control-label" for="funcionario">Funcionário(*)</label>
-                    <select class="form-control" (change)="validaCaixaFuncionario()" [(ngModel)]="caixa.funcionarioId"
-                        #funcionarioModel="ngModel" id="funcionario" name="funcionario" required>
-                        <option *ngFor="let func of funcionarios" [ngValue]="func.id">
-                            {{func.nomeCompleto}}
+                    <label class="control-label" for="pessoa">Pessoa(*)</label>
+                    <select class="form-control" (change)="trocaPessoa()" 
+                        #pessoaModel="ngModel" [(ngModel)]="caixa.pessoaId" id="pessoa" name="pessoa" required>
+                        <option *ngFor="let pes of pessoas" [ngValue]="pes.id">
+                            {{pes.nomeCompleto}}
                         </option>
                     </select>
-                    <div *ngIf="funcionarioModel.invalid || existeCaixaAbertoParaFuncionario"
+                    <div *ngIf="pessoaModel.invalid || existeCaixaAbertoParaFuncionario"
                         class="alert alert-danger">
-                        <div *ngIf="funcionarioModel.invalid && funcionarioModel.errors.required"> Funcionário
-                            Obrigatório. </div>
-                        <div *ngIf="existeCaixaAbertoParaFuncionario"> Já existe um caixa aberto para o funcionário
-                            selecionado. </div>
+                        <div *ngIf="pessoaModel.invalid && pessoaModel.errors.required"> Pessoa
+                            Obrigatória. </div>
+                        <!-- <div *ngIf="existeCaixaAbertoParaFuncionario"> Já existe um caixa aberto para o funcionário
+                            selecionado. </div> -->
                     </div>
                 </div>
             </div>
