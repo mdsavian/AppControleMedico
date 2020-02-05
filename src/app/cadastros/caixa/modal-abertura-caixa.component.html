@@ -16,25 +16,11 @@
                             {{pes.nomeCompleto}}
                         </option>
                     </select>
-                    <div *ngIf="pessoaModel.invalid || existeCaixaAbertoParaFuncionario"
+                    <div *ngIf="pessoaModel.invalid || existeCaixaAbertoParaPessoa"
                         class="alert alert-danger">
                         <div *ngIf="pessoaModel.invalid && pessoaModel.errors.required"> Pessoa
                             Obrigatória. </div>
-                        <!-- <div *ngIf="existeCaixaAbertoParaFuncionario"> Já existe um caixa aberto para o funcionário
-                            selecionado. </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-12">
-                <div class="form-group">
-                    <label class="control-label" for="senha">Senha(*)</label>
-                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha"
-                        placeholder="senha" required #senha>
-                    <div *ngIf="senha.value == '' || senhaValida" class="alert alert-danger">
-                        <div *ngIf="senha.value == ''"> Senha Obrigatória. </div>
-                        <div *ngIf="senhaValida"> Senha Inválida. </div>
+                         <div *ngIf="existeCaixaAbertoParaPessoa"> Já existe um caixa aberto para a pessoa selecionada. </div> 
                     </div>
                 </div>
             </div>

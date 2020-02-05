@@ -3,6 +3,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util';
 import { Caixa } from '../../modelos/caixa';
+import { Usuario } from '../../modelos/usuario';
 import { FuncionarioService } from '../../services/funcionario.service';
 import { MedicoService } from '../../services/medico.service';
 import { CaixaService } from '../../services/caixa.service';
@@ -31,25 +32,31 @@ export class ModalAberturaCaixaComponent {
   pessoas: Array<Pessoa> = new Array<Pessoa>();
   medicos: Array<Pessoa> = new Array<Medico>();
   funcionarios: Array<Pessoa> = new Array<Funcionario>();
-  testPrice: any;
-  existeCaixaAbertoParaFuncionario: boolean;
-  senhaValida: boolean;
-  constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService,
-    private loginService: LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
+  existeCaixaAbertoParaPessoa: boolean;
+  usuario:Usuario;
+  constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService,  LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
 
   ngOnInit() {
     // this.funcionarioModel.nativeElement.focus();
+    this.usuario = this.appService.retornarUsuarioCorrente();
     this.caixa.clinicaId = this.appService.retornarClinicaCorrente().id;
     this.caixa.horaAbertura = this.util.horaAgoraString();
     this.caixa.dataAbertura = new Date();
     this.dataAber = this.util.dataParaString(new Date());
-    this.caixa.usuarioAberturaId = this.appService.retornarUsuarioCorrente().id;
+    this.caixa.usuarioAberturaId = this.usuario.id;
 
     this.buscarModelos().subscribe(c => {
 
       this.pessoas = this.pessoas.concat(this.funcionarios);
       this.pessoas = this.pessoas.concat(this.medicos);
-      this.caixa.pessoaId = this.pessoas.find(c => true).id;
+
+      if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId))
+        this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.funcionarioId).id;
+
+        if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
+          this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.medicoId).id;
+
+          this.validaCaixaFuncionario();
     });
   }
 
@@ -70,8 +77,9 @@ export class ModalAberturaCaixaComponent {
   }
 
   validaCaixaFuncionario() {
-    this.caixaService.retornarCaixaAbertoFuncionario(this.caixa.funcionarioId).subscribe(caixa => {
-      this.existeCaixaAbertoParaFuncionario = caixa != null;
+    this.caixaService.retornarCaixaAbertoPessoa(this.caixa.pessoaId).subscribe(caixa => { 
+      console.log(caixa);
+      this.existeCaixaAbertoParaPessoa = caixa != null;
     });
   }
 
@@ -85,6 +93,8 @@ export class ModalAberturaCaixaComponent {
     if (funcionario != null)
       this.caixa.funcionarioId = funcionario.id;
 
+      this.validaCaixaFuncionario();
+
   }
 
   formatarDecimal(e: any) {
@@ -92,21 +102,13 @@ export class ModalAberturaCaixaComponent {
       this.trocoAbertura.nativeElement.value = this.util.formatarDecimalBlur(e.target.value);
   }
 
-  validaSenha() {
-    if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
-      this.loginService.validaSenha(this.funcionarios.find(c => c.id == this.caixa.funcionarioId).email, this.senha.nativeElement.value).subscribe(senhaValidada => {
-        this.senhaValida = !senhaValidada;
-      });
-    }
-  }
-
   salvar() {
 
     var retornar = false;
 
-    if (this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
+    if (this.util.isNullOrWhitespace(this.caixa.pessoaId)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Funcionário inválido.";
+      modal.componentInstance.mensagemErro = "Pessoa inválida.";
       retornar = true;
     }
 

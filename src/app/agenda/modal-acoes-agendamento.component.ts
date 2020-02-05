@@ -27,7 +27,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
   util = new Util();
   horario: string;
   fotoPaciente: any = '../../../assets/images/fotoCadastro.jpg';
-  telefone: string;
+  telefone: string = "";
   descricaoData: string;
   mensagemUltimoAgendamento: string;
   ultimoAgendamentoCancelado: boolean;
@@ -119,7 +119,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
       switch (this.agendamento.situacaoAgendamento) {
         case (ESituacaoAgendamento.Agendado.valueOf()):
           {
-            if (!this.util.isNullOrWhitespace(usuario.medicoId))
+            if (!this.util.isNullOrWhitespace(usuario.medicoId) && this.agendamento.medicoId == usuario.medicoId)
               this.acoesPermitidas.push("IniciarAtendimento");
 
             this.acoesPermitidas.push("Confirmar");
@@ -138,7 +138,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
         case (ESituacaoAgendamento.Confirmado.valueOf()):
           {
 
-            if (!this.util.isNullOrWhitespace(usuario.medicoId))
+            if (!this.util.isNullOrWhitespace(usuario.medicoId) && this.agendamento.medicoId == usuario.medicoId)
               this.acoesPermitidas.push("IniciarAtendimento");
 
             this.acoesPermitidas.push("Pagar");
@@ -149,7 +149,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
           }
         case (ESituacaoAgendamento["Pago"].valueOf()):
           {
-            if (!this.util.isNullOrWhitespace(usuario.medicoId))
+            if (!this.util.isNullOrWhitespace(usuario.medicoId) && this.agendamento.medicoId == usuario.medicoId)
               this.acoesPermitidas.push("IniciarAtendimento");
 
             this.acoesPermitidas.push("Editar");

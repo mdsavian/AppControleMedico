@@ -27,6 +27,8 @@ export class AgendamentoService {
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
 
+  public agendamento:Agendamento;
+  
   constructor(private http: HttpClient,
     private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });

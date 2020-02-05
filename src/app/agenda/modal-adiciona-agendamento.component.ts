@@ -66,6 +66,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   cirurgias: Array<Cirurgia> = [];
   falhaNaBusca = true;
   tituloTela: string = "";
+  telefone:string;
   obrigaPaciente = true;
   agendamentoEmAtendimento = false;
   formaDePagamentos = new Array<FormaDePagamento>();
@@ -84,7 +85,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('horaInicialModel', { read: ElementRef, static: false }) private horaInicialModel: ElementRef;
   @ViewChild('horaFinalModel', { read: ElementRef, static: false }) private horaFinalModel: ElementRef;
   @ViewChild('dataAgendamento', { read: ElementRef, static: false }) private dataAgendamentoModel: ElementRef;
-  @ViewChild('numeroCartao', { read: ElementRef, static: false }) private numeroCartaoModel: ElementRef;
   @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router, private caixaService: CaixaService,
@@ -108,7 +108,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.horaInicialModel.nativeElement.setAttribute('disabled', true);
       this.horaFinalModel.nativeElement.setAttribute('disabled', true);
       this.dataAgendamentoModel.nativeElement.setAttribute('disabled', true);
-      this.numeroCartaoModel.nativeElement.setAttribute('disabled', true);
       this.convenioModel.nativeElement.setAttribute('disabled', true);
     }
   }
@@ -126,7 +125,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     if (this.editando) {
 
       this.agendamentoEmAtendimento = this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"];
-
+    
       this.tituloTela = "Editar Agendamento - ";
       this.falhaNaBusca = false;
       this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
@@ -137,6 +136,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
           this.paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
           this.pacienteSelecionado = this.nomePacientes.find(c => c == this.paciente.nomeCompleto);
           this.agendamento.paciente = this.paciente;
+
+          this.telefone = this.paciente.telefone || this.paciente.celular ? this.util.formataTelefone(this.paciente.telefone) + " / " + this.util.formataTelefone(this.paciente.celular) : "-";
 
           this.buscarUltimoAgendamentoPaciente();
         }
@@ -519,6 +520,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.paciente = paciente;
       this.agendamento.paciente = paciente;
       this.agendamento.pacienteId = paciente.id;
+
+      this.telefone = this.paciente.telefone || this.paciente.celular ? this.util.formataTelefone(this.paciente.telefone) + " / " + this.util.formataTelefone(this.paciente.celular) : "-";
 
       this.buscarUltimoAgendamentoPaciente();
 

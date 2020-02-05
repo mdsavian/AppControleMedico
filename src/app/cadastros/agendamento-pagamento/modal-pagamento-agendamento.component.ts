@@ -176,7 +176,7 @@ export class ModalPagamentoAgendamentoComponent {
   }
 
   validaCaixaFuncionario() {
-    this.caixaService.retornarCaixaAbertoFuncionario(this.caixa.funcionarioId).subscribe(caixa => {
+    this.caixaService.retornarCaixaAbertoPessoa(this.caixa.pessoaId).subscribe(caixa => {
       this.existeCaixaAbertoParaFuncionario = caixa != null;
     });
   }

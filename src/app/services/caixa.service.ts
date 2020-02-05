@@ -32,8 +32,8 @@ export class CaixaService {
   {
     return this.http.get<Array<Caixa>>(this.accessPointUrl + "retornarTodosCaixasAbertos/");
   }
-  retornarCaixaAbertoFuncionario(funcionarioId: string) {
-    return this.http.get<Caixa>(this.accessPointUrl + "retornarCaixaAbertoFuncionario/" + funcionarioId);
+  retornarCaixaAbertoPessoa(funcionarioId: string) {
+    return this.http.get<Caixa>(this.accessPointUrl + "retornarCaixaAbertoPessoa/" + funcionarioId);
   }
 
   public buscarPorId(caixaId: string) {

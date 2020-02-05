@@ -57,6 +57,7 @@ export class AgendaComponent implements OnInit {
   @ViewChild('datePickerNgb', { read: NgbInputDatepicker, static: false }) datePickerNgb: NgbInputDatepicker;
 
   acaoAgendamento = "";
+  agendamento:Agendamento;
   eventosBanco: Array<Agendamento>;
   validadorAgendamento = new ValidadorAgendamento();
   CalendarView = CalendarView;
@@ -486,17 +487,24 @@ export class AgendaComponent implements OnInit {
               this.modalService.open(this.modalAcaoAgendamento).result.then(
                 result => {
                   if (result == 'Sim') {
+
                     agendamento.horaInicialAtendimento = this.util.horaAgoraString();
                     agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];
 
-                    //agendamento.corFundo = "#000000";
-                    this.agendamentoService.salvar(agendamento).subscribe(retorno => {
-                      if (retorno) {
-                        this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                      }
-                      this.chamarModalAdicionaAgendamento(agendamento, "editar");
+                    this.agendamentoService.agendamento = agendamento;
 
-                    });
+                    this.router.navigate(['/agenda/atendimento']);
+
+                    
+
+                    //agendamento.corFundo = "#000000";
+                    // this.agendamentoService.salvar(agendamento).subscribe(retorno => {
+                    //   if (retorno) {
+                    //     this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
+                    //   }
+                    //   this.chamarModalAdicionaAgendamento(agendamento, "editar");
+
+                    // });
                   }
                 },
                 (() => { })
