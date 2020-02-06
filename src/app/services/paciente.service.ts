@@ -34,6 +34,16 @@ export class PacienteService {
 
   public Excluir(pacienteId) {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + pacienteId);
-  }    
+  }   
+  
+  public RetornarIdadePaciente(paciente:Paciente)
+  {
+    var dataHoje = new Date();
+    var dataNasci = new Date(paciente.dataNascimento);
+    var idade = dataHoje.getFullYear() - dataNasci.getFullYear();
+
+    return idade;
+
+  }
 
 }

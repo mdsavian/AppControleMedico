@@ -24,6 +24,7 @@ import { FormaDePagamento } from '../modelos/formaDePagamento';
 import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 import { ESemanasGestacao } from '../enums/ESemanasGestacao';
 import { EDiasGestacao } from '../enums/EDiasGestacao';
+import { ConvenioService } from '../services/convenio.service';
 
 
 @Component({
@@ -54,10 +55,13 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   sourcePagamentos: LocalDataSource;
   exibeAbaEspecialidade: boolean;
   dataUltimaMenstru: string = "01/01/1901"
-
+  nomePaciente = "";
+  anosConvenio = "";
+  iniciadoAgendamento="";
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
-    private appService: AppService, private uploadService: UploadService, private modalService: NgbModal, private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService,
+    private appService: AppService, private uploadService: UploadService, private modalService: NgbModal, private convenioService:ConvenioService,
+    private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService,
     private medicoService: MedicoService, private prescricaoPacienteService: PrescricaoPacienteService, ) {
   }
 
@@ -70,6 +74,20 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
       this.buscarModelos().subscribe(c => {
 
+
+        this.nomePaciente = this.paciente.nomeCompleto.toUpperCase();
+        this.anosConvenio = this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos, ";
+      this.iniciadoAgendamento = "ATENDIMENTO INICIADO EM " + this.util.dataParaString(this.agendamento.dataInicioAtendimento) + " " + this.util.formatarHora(this.agendamento.horaInicialAtendimento);
+
+      console.log(this.nomePaciente, this.anosConvenio, this.iniciadoAgendamento);
+        
+        if (this.util.isNullOrWhitespace(this.paciente.convenioId))
+        {
+          this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio=>
+            {
+              this.anosConvenio = this.anosConvenio + convenio.descricao.toUpperCase
+            })
+        }
 
         if (this.util.hasItems(this.agendamento.pagamentos) && this.util.hasItems(this.formaDePagamentos)) {
 

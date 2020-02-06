@@ -3,10 +3,14 @@
     <div class="double-bounce2"></div>
 </div>
 
-<div class="row" style="margin-top: 10px;" *ngIf=!isSpinnerVisible>
+<div class="row" *ngIf=!isSpinnerVisible>
     <div class="col-lg-12 col-xlg-12 col-md-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="card text-center" style="margin-bottom: 10px;">
+            <div class="card-body" style="padding: 10px;">
+
+                <b><h2 style="display: inline">{{nomePaciente}} MARLON DANY SAVIAN, </h2>
+                <h3 style="display: inline"> {{anosConvenio}} 23 ANOS, UNIMED NORDESTE</h3>
+                <h3> {{iniciadoAgendamento}} ATENDIMENTO INICIADO EM 23/12/2019 15:17 </h3></b>
 
             </div>
         </div>
@@ -20,14 +24,14 @@
                 <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
                     <ngb-tab title="Informações" id="tabInfo">
                         <ng-template ngbTabContent>
-                            <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                            <div id="tab_1" class="container col-sm-12 col-md-12">
                             </div>
 
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab title="Obstetrícia" *ngIf="exibeAbaEspecialidade">
                         <ng-template ngbTabContent>
-                            <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                            <div id="tab_2" class="container col-sm-12 col-md-12">
                                 <div class="row"></div>
                                 <div class="row rowcadastro">
                                     <div class="col-xs-6 col-md-3">
@@ -80,7 +84,7 @@
                     </ngb-tab>
                     <ngb-tab title="Prescrição" id="tabPrescricao">
                         <ng-template ngbTabContent>
-                            <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                            <div id="tab_2" class="container col-sm-12 col-md-12">
                                 <div class="row">
                                     <div class="table table-responsive smart-table">
                                         <ng2-smart-table (edit)="editarPrescricao($event.data.id)"
@@ -96,7 +100,7 @@
 
                     <ngb-tab title="Histórico" id="tabHistorico">
                         <ng-template ngbTabContent>
-                            <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                            <div id="tab_4" class="container col-sm-12 col-md-12">
                             </div>
 
                         </ng-template>
@@ -104,8 +108,8 @@
 
                     <ngb-tab title="Pagamentos" id="tabPagamentos">
                         <ng-template ngbTabContent>
-                            <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-
+                            <div id="tab_3" class="container col-sm-12 col-md-12">
+                                <br>
                                 <div class="row">
                                     <div class="col-xs-2 col-md-3">
                                         <label class="control-label" for="saldo">Total Pagamentos</label>
@@ -139,314 +143,3 @@
         </div>
     </div>
 </div>
-
-
-<!-- <form #adicionaAgendamento="ngForm">
-
-    <div class="modal-header" [hidden]=isSpinnerVisible>
-        <h4 class="modal-title">{{tituloTela}}</h4>
-    </div>
-
-    <div [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}"
-        *ngIf="mensagemUltimoAgendamento">
-        {{mensagemUltimoAgendamento}}
-    </div>
-
-
-    <div class="modal-body" [hidden]=isSpinnerVisible>
-        <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
-            <ngb-tab title="Informações" id="tabInfo">
-                <ng-template ngbTabContent>
-                    <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                        <div class="row rowcadastro">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="form-group">
-                                    <label class="control-label" for="tipoAgendamento">Tipo Agendamento</label>
-                                    <select class="form-control"
-                                        (change)="selecionaTipoAgendamento($event.target.value)"
-                                        [(ngModel)]="tipoAgenda" #tipoAgendamento="ngModel" id="tipoAgendamento"
-                                        name="tipoAgendamento">
-                                        <option *ngFor="let codigo of tipoAgendamentoEnum | enumToArray">
-                                            {{codigo}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" [hidden]="!obrigaPaciente" style="list-style: heigth 0.4;">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="form-group">
-                                    <label class="control-label" for="paciente">Paciente(*)</label>
-                                    <div class="input-group">
-                                        <input id="pacienteSelecionado" name="pacienteSelecionado" type="text"
-                                            (selectItem)="selecionaPaciente($event)"
-                                            placeholder="Digite o nome do paciente" [required]="obrigaPaciente"
-                                            [ngbTypeahead]="buscaPaciente" class="form-control" minlength="3"
-                                            #pacienteModel="ngModel" id="pacienteModel"
-                                            [(ngModel)]="pacienteSelecionado">
-                                        <div class="input-group-prepend">
-                                            <ng-template #tipPaciente>Adiciona Paciente</ng-template>
-                                            <span (click)="adicionaPaciente()" *ngIf=!editando
-                                                [ngbTooltip]="tipPaciente" class="input-group-text"
-                                                id="img-adiciona-oficio">
-                                                <i class="fa fa-pencil"></i></span>
-                                            <ng-template #tipHistoricoPaciente>Histórico Paciente</ng-template>
-                                            <span (click)="historicoPaciente()" [ngbTooltip]="tipHistoricoPaciente"
-                                                class="input-group-text" id="img-historico-paciente">
-                                                <i class="fa fa-info-circle"></i></span>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="(falhaNaBusca || pacienteModel.invalid) && obrigaPaciente"
-                                        class="alert alert-danger">
-                                        <div *ngIf="pacienteModel.errors?.required">Paciente Obrigatório. </div>
-                                        <div *ngIf="falhaNaBusca">Não foi possível encontrar um paciente com este nome.
-                                        </div>
-                                        <div *ngIf="pacienteModel.errors?.minlength"> Nome precisa ter no mínimo 3
-                                            caracteres</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row rowcadastro" [hidden]="tipoAgendamento.value!='Procedimento'">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="form-group">
-                                    <label class="control-label" for="tipoProcedimento">Procedimento</label>
-                                    <div class="input-group">
-                                        <select class="form-control" [(ngModel)]="agendamento.procedimentoId"
-                                            #tipoProcedimento="ngModel" id="tipoProcedimento" name="tipoProcedimento"
-                                            [required]="tipoAgendamento.value=='Procedimento'"
-                                            (change)="selecionaProcedimento($event)">
-                                            <option *ngFor="let procedimento of procedimentos"
-                                                [ngValue]="procedimento.id">
-                                                {{procedimento.descricao}}
-                                            </option>
-                                        </select>
-                                        <div class="input-group-prepend" *ngIf=!editando>
-                                            <ng-template #tipProcedimento>Adiciona Procedimento</ng-template>
-                                            <span (click)="chamaModalAdiciona('Procedimento')"
-                                                [ngbTooltip]="tipProcedimento" class="input-group-text"
-                                                id="img-adiciona-oficio">
-                                                <i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="tipoProcedimento.invalid && tipoAgendamento.value=='Procedimento'"
-                                        class="alert alert-danger">
-                                        <div *ngIf="tipoProcedimento.errors?.required">Procedimento Obrigatório. </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row rowcadastro" [hidden]="tipoAgendamento.value!='Exame'">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="form-group">
-                                    <label class="control-label" for="tipoExame">Exame</label>
-                                    <div class="input-group">
-                                        <select class="form-control" [(ngModel)]="agendamento.exameId"
-                                            #tipoExame="ngModel" id="tipoExame" name="tipoExame"
-                                            [required]="tipoAgendamento.value=='Exame'">
-                                            <option *ngFor="let exame of exames" [ngValue]="exame.id">
-                                                {{exame.descricao}}
-                                            </option>
-                                        </select>
-                                        <div class="input-group-prepend" *ngIf=!editando>
-                                            <ng-template #tipExame>Adiciona Exame</ng-template>
-                                            <span (click)="chamaModalAdiciona('Exame')" class="input-group-text"
-                                                [ngbTooltip]="tipExame" id="img-adiciona-exame">
-                                                <i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="tipoExame.invalid && tipoAgendamento.value=='Exame'"
-                                        class="alert alert-danger">
-                                        <div *ngIf="tipoExame.errors?.required">Exame Obrigatório. </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row rowcadastro" [hidden]="tipoAgendamento.value!='Cirurgia'">
-                            <div class="col-xs-6 col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="tipoCirurgia">Cirurgia</label>
-                                    <div class="input-group">
-                                        <select class="form-control" [(ngModel)]="agendamento.cirurgiaId"
-                                            #tipoCirurgia="ngModel" id="tipoCirurgia" name="tipoCirurgia"
-                                            [required]="tipoAgendamento.value=='Cirurgia'">
-                                            <option *ngFor="let cirurgia of cirurgias" [ngValue]="cirurgia.id">
-                                                {{cirurgia.descricao}}
-                                            </option>
-                                        </select>
-                                        <div class="input-group-prepend" *ngIf=!editando>
-                                            <ng-template #tipCirurgia>Adiciona Cirurgia</ng-template>
-                                            <span (click)="chamaModalAdiciona('Cirurgia')" class="input-group-text"
-                                                [ngbTooltip]="tipCirurgia" id="img-adiciona-oficio">
-                                                <i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="tipoCirurgia.invalid && tipoAgendamento.value=='Cirurgia'"
-                                        class="alert alert-danger">
-                                        <div *ngIf="tipoCirurgia.errors?.required">Cirurgia Obrigatória. </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="tipoLocal">Local Cirurgia</label>
-                                    <div class="input-group">
-                                        <select class="form-control" [(ngModel)]="agendamento.localId"
-                                            #tipoLocal="ngModel" id="tipoLocal" name="tipoLocal"
-                                            [required]="tipoAgendamento.value=='Cirurgia'">
-                                            <option *ngFor="let local of locais" [ngValue]="local.id">
-                                                {{local.descricao}}
-                                            </option>
-                                        </select>
-                                        <div class="input-group-prepend">
-                                            <ng-template #tipLocal>Adiciona Local</ng-template>
-                                            <span (click)="chamaModalAdiciona('Local')" [ngbTooltip]="tipLocal"
-                                                class="input-group-text" id="img-adiciona-oficio">
-                                                <i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="tipoLocal.invalid && tipoAgendamento.value=='Cirurgia'"
-                                        class="alert alert-danger">
-                                        <div *ngIf="tipoLocal.errors?.required">Local Obrigatório. </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row rowcadastro" [hidden]="tipoAgendamento.value=='Bloqueio'">
-                            <div class="col-xs-6 col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="convenioModel">Convênio(*)</label>
-                                    <div class="input-group">
-                                        <select class="form-control" [(ngModel)]="agendamento.convenioId"
-                                            #convenioModel="ngModel" id="convenioModel" name="convenioModel"
-                                            [required]="tipoAgendamento.value!='Bloqueio'">
-                                            <option *ngFor="let convenio of convenios" [ngValue]="convenio.id">
-                                                {{convenio.descricao}}
-                                            </option>
-                                        </select>
-                                        <div class="input-group-prepend">
-                                            <ng-template #tipConvenio>Adiciona Convênio</ng-template>
-                                            <span (click)="chamaModalAdiciona('Convenio')" [ngbTooltip]="tipConvenio"
-                                                class="input-group-text" id="img-adiciona-convenio">
-                                                <i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="convenioModel.invalid && tipoAgendamento.value!='Bloqueio'"
-                                        class="alert alert-danger">
-                                        <div *ngIf="convenioModel.errors?.required">Convênio Obrigatório. </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="telefoneModel">Telefone</label>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1"><i
-                                                    class="fa fa-phone"></i></span>
-                                        </div>
-                                        <input type="text" id="telefoneModel" disabled name="telefoneModel"
-                                            placeholder="Número Telefone" class="form-control" readonly
-                                            [(ngModel)]="telefone" #telefoneModel>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row rowcadastro">
-                            <div class="col-xs-6 col-md-4">
-                                <label class="control-label" for="dataAgendamento">Data Agendamento(*)</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                    <input type="text" mask="00/00/0000" required id="dataAgendamento"
-                                        name="dataAgendamento" placeholder="01/01/1901" class="form-control"
-                                        [(ngModel)]="dataAgenda" #dataAgendamento="ngModel"
-                                        (blur)="formataData($event)">
-                                </div>
-                                <div *ngIf="dataAgendamento.invalid || dataAgendamento.errors?.validaData"
-                                    class="alert alert-danger">
-                                    <div *ngIf="dataAgendamento.errors?.required"> Data Obrigatória.</div>
-                                    <div *ngIf="dataAgendamento.errors?.validaData"> Data Inválida.</div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="horaInicial">Hora Inicial(*)</label>
-                                    <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]"
-                                        id="horaInicial" name="horaInicial" placeholder="HH:mm" class="form-control"
-                                        required [(ngModel)]="agendamento.horaInicial" #horaInicialModel="ngModel">
-                                    <div *ngIf="horaInicialModel.invalid" class="alert alert-danger">
-                                        <div *ngIf="horaInicialModel.errors.required"> Horário Obrigatório.</div>
-                                        <div *ngIf="horaInicialModel.errors.pattern"> Horário Inválido.</div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="horaFinal">Hora Final(*)</label>
-                                    <input type="text" mask="Hh:m0" pattern="([01][0-9]|2[0-3])[0-5][0-9]"
-                                        id="horaFinal" name="horaFinal" placeholder="HH:mm" class="form-control"
-                                        required [(ngModel)]="agendamento.horaFinal" #horaFinalModel="ngModel">
-                                    <div *ngIf="horaFinalModel.invalid" class="alert alert-danger">
-                                        <div *ngIf="horaFinalModel.errors.required"> Horário Obrigatório.</div>
-                                        <div *ngIf="horaFinalModel.errors.pattern"> Horário Inválido.</div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row rowcadastro">
-                            <div class="col-xs-12 col-md-12">
-                                <label class="control-label" for="observacao">Observação</label>
-                                <textarea id="observacao" name="observacao" placeholder="observação"
-                                    class="form-control" [(ngModel)]="agendamento.observacao"
-                                    #observacao="ngModel"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                </ng-template>
-            </ngb-tab>
-            <ngb-tab title="Pagamentos" id="tabPagamentos">
-                <ng-template ngbTabContent>
-                    <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                        <br />
-                        <div class="row">
-                            <div class="col-xs-2 col-md-3">
-                                <label class="control-label" for="saldo">Total Pagamentos</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">R$</span>
-                                    </div>
-                                    <input type="text" id="totalPagamentos" mask="dot_separator.2"
-                                        name="totalPagamentos" placeholder="000,00" class="form-control" readonly
-                                        [(ngModel)]="totalPagamentos" #totalPagamentosModel="ngModel">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="table table-responsive smart-table">
-                                <ng2-smart-table [(settings)]="settingsPagamentos" [(source)]="sourcePagamentos"
-                                    (edit)="adicionarPagamento()" (create)="adicionarPagamento()"
-                                    (delete)="adicionarPagamento()">
-                                </ng2-smart-table>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
-            </ngb-tab>
-        </ngb-tabset>
-    </div>
-
-    <div class="modal-footer" [hidden]=isSpinnerVisible>
-        <button style="width:30%" *ngIf="agendamentoEmAtendimento" (click)="finalizarAtendimento()"
-            class="btn btn-rounded btn-success" type="submit">Finalizar Atendimento</button>
-        <button style="width:30%" (click)="salvar()" class="btn btn-rounded btn-success"
-            [disabled]="(!adicionaAgendamento.form.valid || falhaNaBusca)" type="submit">Salvar</button>
-        <button style="width:30%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
-    </div>
-
-</form> -->

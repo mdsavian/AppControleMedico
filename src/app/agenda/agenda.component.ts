@@ -491,6 +491,7 @@ export class AgendaComponent implements OnInit {
                 result => {
                   if (result == 'Sim') {
 
+                    agendamento.dataInicioAtendimento = new Date();
                     agendamento.horaInicialAtendimento = this.util.horaAgoraString();
                     agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];
 
