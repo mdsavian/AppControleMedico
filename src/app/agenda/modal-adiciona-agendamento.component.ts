@@ -36,6 +36,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
 import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { CaixaService } from '../services/caixa.service';
+import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 
 @Component({
   selector: 'app-modal-adiciona-agendamento.component',
@@ -88,7 +89,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router, private caixaService: CaixaService,
-    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,
+    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,private formaPagamentoService: FormaDePagamentoService, 
     private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 

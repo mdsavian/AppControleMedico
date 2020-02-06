@@ -56,8 +56,6 @@ export class AgendamentoService {
 
   buscarAgendamentosPaciente(pacienteId: string, usuarioId: string, clinicaId: string) {
     let parametros = new HttpParams().set("pacienteId", pacienteId).set("usuarioId", usuarioId).set("clinicaId", clinicaId);
-
-    console.log(parametros);
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosPaciente?" + parametros);
   }
   buscarAgendamentosLocal(localId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosLocal/" + localId); }

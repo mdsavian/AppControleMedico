@@ -57,7 +57,7 @@ export class AgendaComponent implements OnInit {
   @ViewChild('datePickerNgb', { read: NgbInputDatepicker, static: false }) datePickerNgb: NgbInputDatepicker;
 
   acaoAgendamento = "";
-  agendamento:Agendamento;
+  agendamento: Agendamento;
   eventosBanco: Array<Agendamento>;
   validadorAgendamento = new ValidadorAgendamento();
   CalendarView = CalendarView;
@@ -160,7 +160,7 @@ export class AgendaComponent implements OnInit {
 
       this.trocaMedico(this.medico.id);
 
-      
+
     });
 
     requisicoes.push(reqMedicos);
@@ -448,11 +448,14 @@ export class AgendaComponent implements OnInit {
       if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"]
         && !this.util.isNullOrWhitespace(this.appService.retornarUsuarioCorrente().medicoId)) {
 
-        this.chamarModalAdicionaAgendamento(agendamento, "editar");
+        this.agendamentoService.agendamento = agendamento;
+        this.router.navigate(['/agenda/atendimento']);
+
+        // this.chamarModalAdicionaAgendamento(agendamento, "editar");
       }
       else {
 
-        var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { windowClass:'modal-xl' });
+        var modalAcoes = this.modalService.open(ModalAcoesAgendamentoComponent, { windowClass: 'modal-xl' });
         modalAcoes.componentInstance.agendamento = agendamento;
 
         modalAcoes.result.then(result => {
@@ -495,7 +498,7 @@ export class AgendaComponent implements OnInit {
 
                     this.router.navigate(['/agenda/atendimento']);
 
-                    
+
 
                     //agendamento.corFundo = "#000000";
                     // this.agendamentoService.salvar(agendamento).subscribe(retorno => {
@@ -754,7 +757,7 @@ export class AgendaComponent implements OnInit {
     }
     else {
 
-      var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, {  windowClass:'modal-xl' , backdrop: 'static', keyboard: false });
+      var modalAdicionaAgendamento = this.modalService.open(ModalAdicionaAgendamentoComponent, { windowClass: 'modal-xl', backdrop: 'static', keyboard: false });
 
       var medico;
 

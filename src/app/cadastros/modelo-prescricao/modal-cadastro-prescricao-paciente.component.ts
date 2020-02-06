@@ -32,6 +32,7 @@ export class ModalCadastroPrescricaoPacienteComponent implements OnInit, AfterVi
   modelos = new Array<ModeloPrescricao>();
   editando = false;
   modeloPrescricao = new ModeloPrescricao();
+  medico = new Medico();
   constructor(private route: ActivatedRoute, private modeloPrescricaoService: ModeloPrescricaoService, private appService: AppService,
     private medicoService: MedicoService, private pacienteService: PacienteService, public router: Router,
     private modalService: NgbModal, private activeModal: NgbActiveModal, private prescricaoPacienteService: PrescricaoPacienteService) {
@@ -59,8 +60,15 @@ export class ModalCadastroPrescricaoPacienteComponent implements OnInit, AfterVi
 
   ngAfterViewChecked(): void {
 
-    if (this.editando && this.medicoModel != null) {
-      this.medicoModel.nativeElement.setAttribute('readonly', true);
+    if (this.medicoModel != null) {
+      if (this.editando) {
+        this.medicoModel.nativeElement.setAttribute('readonly', true);
+      }
+      
+      if (this.medico != null) {
+        this.prescricaoPaciente.medicoId = this.medico.id;
+        this.medicoModel.nativeElement.setAttribute('readonly', true);
+      }
     }
   }
 

@@ -223,10 +223,7 @@ export class Util {
         diaSemana[5] = "Sexta-Feira";
         diaSemana[6] = "Sábado";
 
-        console.log(data, new Date(data).getDay());
         var dia =  new Date(data).getDay();
-
-
         return diaSemana[dia];
     }
 

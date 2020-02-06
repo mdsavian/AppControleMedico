@@ -37,7 +37,6 @@ export class ConfiguracaoAtalhoComponent implements OnInit {
       lista.splice(index, 1);
 
       this.configuracaoAtalhos = lista;
-      console.log(lista);
       this.isSpinnerVisible = false;
     });
 

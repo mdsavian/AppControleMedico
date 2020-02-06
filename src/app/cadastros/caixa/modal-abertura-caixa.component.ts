@@ -34,7 +34,7 @@ export class ModalAberturaCaixaComponent {
   funcionarios: Array<Pessoa> = new Array<Funcionario>();
   existeCaixaAbertoParaPessoa: boolean;
   usuario:Usuario;
-  constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService,  LoginService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
+  constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
 
   ngOnInit() {
     // this.funcionarioModel.nativeElement.focus();
@@ -78,7 +78,6 @@ export class ModalAberturaCaixaComponent {
 
   validaCaixaFuncionario() {
     this.caixaService.retornarCaixaAbertoPessoa(this.caixa.pessoaId).subscribe(caixa => { 
-      console.log(caixa);
       this.existeCaixaAbertoParaPessoa = caixa != null;
     });
   }

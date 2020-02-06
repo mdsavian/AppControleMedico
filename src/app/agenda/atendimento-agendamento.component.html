@@ -3,18 +3,137 @@
     <div class="double-bounce2"></div>
 </div>
 
+<div class="row" style="margin-top: 10px;" *ngIf=!isSpinnerVisible>
+    <div class="col-lg-12 col-xlg-12 col-md-12">
+        <div class="card">
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row" *ngIf=!isSpinnerVisible>
     <div class="col-lg-12 col-xlg-12 col-md-12">
         <div class="card">
             <div class="card-body">
-                <!-- <div class="m-t-30 text-center"> <img [src]="imageUrl" class="img-circle" width="200" height="200" />
-                    <br />
-                    <div class="row text-center justify-content-md-center">
-                        <button class="btn btn-rounded btn-warning" type="button" (click)="tirarFoto()">Tirar
-                            Foto</button>
-                    </div>
-                    <br />
-                </div> -->
+                <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
+                    <ngb-tab title="Informações" id="tabInfo">
+                        <ng-template ngbTabContent>
+                            <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                            </div>
+
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Obstetrícia" *ngIf="exibeAbaEspecialidade">
+                        <ng-template ngbTabContent>
+                            <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                                <div class="row"></div>
+                                <div class="row rowcadastro">
+                                    <div class="col-xs-6 col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="dataUltimaMenstruacao">DUM</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input type="text" mask="00/00/0000" id="dataUltimaMenstruacao"
+                                                    name="dataUltimaMenstruacao" placeholder="01/01/1901" appValidaData
+                                                    class="form-control" [(ngModel)]="dataUltimaMenstru"
+                                                    #dataUltimaMenstruacao="ngModel" (blur)="formataData($event)">
+                                            </div>
+                                            <div *ngIf="dataUltimaMenstruacao.errors?.validaData"
+                                                class="alert alert-danger">
+                                                <div *ngIf="dataUltimaMenstruacao.errors?.validaData"> Data Inválida.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="semanaIdaDeGestacao">Semana(s) IG
+                                                ECO</label>
+                                            <select class="form-control" [(ngModel)]="paciente.semanaGestacao"
+                                                #semanaIdaDeGestacao="ngModel" id="semanaIdaDeGestacao"
+                                                name="semanaIdaDeGestacao">
+                                                <option *ngFor="let semana of semanasGestacao | enumToArray">
+                                                    {{semana}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="diaIdadeGestacao">Dia(s) IG ECO</label>
+                                            <select class="form-control" [(ngModel)]="paciente.diaGestacao"
+                                                #diaIdadeGestacao="ngModel" id="diaIdadeGestacao"
+                                                name="diaIdadeGestacao">
+                                                <option *ngFor="let dia of diasGestacao | enumToArray">
+                                                    {{dia}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Prescrição" id="tabPrescricao">
+                        <ng-template ngbTabContent>
+                            <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                                <div class="row">
+                                    <div class="table table-responsive smart-table">
+                                        <ng2-smart-table (edit)="editarPrescricao($event.data.id)"
+                                            (create)="criarPrescricao()" [(settings)]="settingsPrescricoes"
+                                            [(source)]="sourcePrescricao">
+                                        </ng2-smart-table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                    </ngb-tab>
+
+                    <ngb-tab title="Histórico" id="tabHistorico">
+                        <ng-template ngbTabContent>
+                            <div id="tab_4" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                            </div>
+
+                        </ng-template>
+                    </ngb-tab>
+
+                    <ngb-tab title="Pagamentos" id="tabPagamentos">
+                        <ng-template ngbTabContent>
+                            <div id="tab_3" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+
+                                <div class="row">
+                                    <div class="col-xs-2 col-md-3">
+                                        <label class="control-label" for="saldo">Total Pagamentos</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">R$</span>
+                                            </div>
+                                            <input type="text" id="totalPagamentos" mask="dot_separator.2"
+                                                name="totalPagamentos" placeholder="000,00" class="form-control"
+                                                readonly [(ngModel)]="totalPagamentos" #totalPagamentosModel="ngModel">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table table-responsive smart-table">
+                                        <ng2-smart-table [(settings)]="settingsPagamentos" [(source)]="sourcePagamentos"
+                                            (edit)="adicionarPagamento()" (create)="adicionarPagamento()"
+                                            (delete)="adicionarPagamento()">
+                                        </ng2-smart-table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </ng-template>
+                    </ngb-tab>
+
+                </ngb-tabset>
 
             </div>
         </div>

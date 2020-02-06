@@ -17,7 +17,7 @@ import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-c
 import { ModalAcoesAgendamentoComponent } from './modal-acoes-agendamento.component';
 import { AtendimentoAgendamentoComponent } from './atendimento-agendamento.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-
+import {CadastrosModule} from '../cadastros/cadastros.module';
 
 export class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -38,7 +38,7 @@ export class CustomDateFormatter extends CalendarDateFormatter {
 }
 
 @NgModule({
-  imports: [SharedModalModule, NgbModule, NgxMaskModule.forRoot(), Ng2SmartTableModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
+  imports: [SharedModalModule, CadastrosModule, NgbModule, NgxMaskModule.forRoot(), Ng2SmartTableModule, CommonModule, FormsModule, NgbModalModule, FlatpickrModule.forRoot(), RouterModule.forChild(AgendaRoutes),
     CalendarModule.forRoot(
       {
         provide: DateAdapter,
