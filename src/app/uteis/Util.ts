@@ -148,8 +148,11 @@ export class Util {
     public formatarHora(hora: string) {
         if (hora == null)
             return "";
-        hora = hora.trim();
-        return (hora.substr(0, 2) + ":" + hora.substr(2, 2));
+        if(hora.length == 4)
+            return (hora.substr(0, 2) + ":" + hora.substr(2, 2));
+        else if(hora.length == 5)
+        return (hora.substr(0, 2) + ":" + hora.substr(3, 2));
+
     }
 
     public formataCnpj(cnpj: string) {

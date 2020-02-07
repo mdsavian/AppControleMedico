@@ -494,21 +494,11 @@ export class AgendaComponent implements OnInit {
                     agendamento.dataInicioAtendimento = new Date();
                     agendamento.horaInicialAtendimento = this.util.horaAgoraString();
                     agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];
-
-                    this.agendamentoService.agendamento = agendamento;
-
-                    this.router.navigate(['/agenda/atendimento']);
-
-
-
-                    //agendamento.corFundo = "#000000";
-                    // this.agendamentoService.salvar(agendamento).subscribe(retorno => {
-                    //   if (retorno) {
-                    //     this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(retorno));
-                    //   }
-                    //   this.chamarModalAdicionaAgendamento(agendamento, "editar");
-
-                    // });
+                    this.agendamentoService.salvar(agendamento).subscribe(agendamentoRetorno=> {
+                      this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoRetorno))
+                      this.agendamentoService.agendamento = agendamentoRetorno;  
+                      this.router.navigate(['/agenda/atendimento']);
+                    });
                   }
                 },
                 (() => { })

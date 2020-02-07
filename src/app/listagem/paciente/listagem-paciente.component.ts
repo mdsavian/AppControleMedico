@@ -90,7 +90,7 @@ export class ListagemPacienteComponent {
             title: 'Convênio',
             filter: true,
             valuePrepareFunction: (convenioId) => {
-              return convenioId == null || this.convenios.length == 0 ? "" : this.convenios.find(c => c.id == convenioId).descricao;
+              return convenioId == null || convenioId == "" || !this.util.hasItems(this.convenios) ? "" : this.convenios.find(c => c.id == convenioId).descricao;
             }
           },
           tipoPlano:

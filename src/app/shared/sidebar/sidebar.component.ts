@@ -82,7 +82,7 @@ export class SidebarComponent implements OnInit {
           itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Forma de Pagamento");
           itensSideBar = this.removeMenu(itensSideBar, "Cadastros/Pessoas/Funcionário/Ofício");
           itensSideBar = this.removeMenu(itensSideBar, "Paciente/Prontuário");
-          itensSideBar = this.removeMenu(itensSideBar, "Paciente/Timeline");
+          itensSideBar = this.removeMenu(itensSideBar, "Paciente/Histórico");
         }
 
         if (!this.funcionarioService.PermitirVisualizarAgenda(funcionario)) {
@@ -296,7 +296,7 @@ export class SidebarComponent implements OnInit {
         },
         {
           path: '/listagem/listagemtimeline',
-          title: 'Timeline',
+          title: 'Histórico',
           icon: '',
           class: '',
           label: '',

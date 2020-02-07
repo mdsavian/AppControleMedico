@@ -9,10 +9,15 @@
             <div class="card-body" style="padding: 10px;">
 
                 <b>
-                    <h2 style="display: inline">{{nomePaciente}} </h2>
-                    <h3 style="display: inline"> {{anosConvenio}} </h3>
+
+                    <h2 style="display: inline">{{nomePaciente}}</h2>
+                    <h3 style="display: inline"> {{anosConvenio}}</h3>
                     <h3> {{iniciadoAgendamento}} </h3>
                 </b>
+
+                <div [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}" *ngIf="mensagemUltimoAgendamento">
+                    {{mensagemUltimoAgendamento}}
+                </div>
 
             </div>
         </div>
@@ -23,7 +28,7 @@
     <div class="col-lg-12 col-xlg-12 col-md-12">
         <div class="card">
             <div class="card-body">
-                <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
+                <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet justify="justified">
                     <ngb-tab title="Informações" id="tabInfo">
                         <ng-template ngbTabContent>
                             <div id="tab_1" class="container col-sm-12 col-md-12">
@@ -34,65 +39,83 @@
 
                     <ngb-tab title="Obstetrícia" *ngIf="exibeAbaEspecialidade">
                         <ng-template ngbTabContent>
-                            <div id="tab_2" class="container col-sm-12 col-md-12" style="padding-top:10px">
-                                <div class="row"></div>
-                                <div class="row rowcadastro">
-                                    <div class="col-xs-6 col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label" for="dataUltimaMenstruacao">DUM</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            <form #obstetriciaForm="ngForm">
+
+                                <div id="tab_2" class="container col-sm-12 col-md-12" style="padding-top:10px">
+                                    <div class="row"></div>
+                                    <div class="row rowcadastro">
+                                        <div class="col-xs-6 col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label" for="dataUltimaMenstruacao">DUM</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i
+                                                                class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                    <input type="text" mask="00/00/0000" id="dataUltimaMenstruacao"
+                                                        name="dataUltimaMenstruacao" placeholder="01/01/1901"
+                                                        appValidaData class="form-control"
+                                                        [(ngModel)]="dataUltimaMenstru" #dataUltimaMenstruacao="ngModel"
+                                                        (blur)="formataData($event)">
                                                 </div>
-                                                <input type="text" mask="00/00/0000" id="dataUltimaMenstruacao"
-                                                    name="dataUltimaMenstruacao" placeholder="01/01/1901" appValidaData
-                                                    class="form-control" [(ngModel)]="dataUltimaMenstru"
-                                                    #dataUltimaMenstruacao="ngModel" (blur)="formataData($event)">
-                                            </div>
-                                            <div *ngIf="dataUltimaMenstruacao.errors?.validaData"
-                                                class="alert alert-danger">
-                                                <div *ngIf="dataUltimaMenstruacao.errors?.validaData"> Data Inválida.
+                                                <div *ngIf="dataUltimaMenstruacao.errors?.validaData"
+                                                    class="alert alert-danger">
+                                                    <div *ngIf="dataUltimaMenstruacao.errors?.validaData"> Data
+                                                        Inválida.
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-xs-6 col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label" for="semanaIdaDeGestacao">Semana(s) IG
-                                                ECO</label>
-                                            <select class="form-control" [(ngModel)]="paciente.semanaGestacao"
-                                                #semanaIdaDeGestacao="ngModel" id="semanaIdaDeGestacao"
-                                                name="semanaIdaDeGestacao">
-                                                <option *ngFor="let semana of semanasGestacao | enumToArray">
-                                                    {{semana}}
-                                                </option>
-                                            </select>
+                                        <div class="col-xs-6 col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label" for="semanaIdaDeGestacao">Semana(s) IG
+                                                    ECO</label>
+                                                <select class="form-control" [(ngModel)]="paciente.semanaGestacao"
+                                                    #semanaIdaDeGestacao="ngModel" id="semanaIdaDeGestacao"
+                                                    name="semanaIdaDeGestacao">
+                                                    <option *ngFor="let semana of semanasGestacao | enumToArray">
+                                                        {{semana}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label" for="diaIdadeGestacao">Dia(s) IG
+                                                    ECO</label>
+                                                <select class="form-control" [(ngModel)]="paciente.diaGestacao"
+                                                    #diaIdadeGestacao="ngModel" id="diaIdadeGestacao"
+                                                    name="diaIdadeGestacao">
+                                                    <option *ngFor="let dia of diasGestacao | enumToArray">
+                                                        {{dia}}
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-6 col-md-3">
+                                    <div class="panel-footer row">
                                         <div class="form-group">
-                                            <label class="control-label" for="diaIdadeGestacao">Dia(s) IG ECO</label>
-                                            <select class="form-control" [(ngModel)]="paciente.diaGestacao"
-                                                #diaIdadeGestacao="ngModel" id="diaIdadeGestacao"
-                                                name="diaIdadeGestacao">
-                                                <option *ngFor="let dia of diasGestacao | enumToArray">
-                                                    {{dia}}
-                                                </option>
-                                            </select>
+                                            <div class="col-xs-8 col-md-6">
+                                                <button class="btn btn-rounded btn-success"
+                                                    [disabled]="!obstetriciaForm.form.valid"
+                                                    (click)="salvarObstetricia()">Salvar Alterações</button>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
-                            </div>
+                            </form>
+
                         </ng-template>
                     </ngb-tab>
-                    <div class="spinner" *ngIf=spinnerPrescricao>
-                        <div class="double-bounce1"></div>
-                        <div class="double-bounce2"></div>
-                    </div>
-                    
-                    <ngb-tab title="Prescrição" id="tabPrescricao" *ngIf="!spinnerPrescricao">
+                    <ngb-tab title="Prescrição" id="tabPrescricao" >
                         <ng-template ngbTabContent>
-                            <div id="tab_2" class="container col-sm-12 col-md-12">
+                            <div class="spinner" *ngIf=spinnerPrescricao>
+                                <div class="double-bounce1"></div>
+                                <div class="double-bounce2"></div>
+                            </div>
+
+                            <div id="tab_2" class="container col-sm-12 col-md-12" *ngIf="!spinnerPrescricao">
                                 <div class="row">
                                     <div class="table table-responsive smart-table">
                                         <ng2-smart-table (edit)="editarPrescricao($event.data.id)"
@@ -102,18 +125,17 @@
                                     </div>
                                 </div>
                             </div>
-
                         </ng-template>
                     </ngb-tab>
 
-                    <div class="spinner" *ngIf=spinnerHistorico>
-                        <div class="double-bounce1"></div>
-                        <div class="double-bounce2"></div>
-                    </div>
-
-                    <ngb-tab title="Histórico" id="tabHistorico" *ngIf="spinnerHistorico">
+                    <ngb-tab title="Histórico" id="tabHistorico" >
                         <ng-template ngbTabContent>
-                            <div id="tab_4" class="container col-sm-12 col-md-12">
+                            <div class="spinner" *ngIf=spinnerHistorico>
+                                <div class="double-bounce1"></div>
+                                <div class="double-bounce2"></div>
+                            </div>
+
+                            <div id="tab_4" class="container col-sm-12 col-md-12" *ngIf="!spinnerHistorico">
                             </div>
 
                         </ng-template>

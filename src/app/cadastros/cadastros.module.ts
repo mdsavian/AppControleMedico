@@ -59,6 +59,7 @@ import { ConfiguracaoAtalhoComponent } from './configuracao-atalho/configuracao-
     ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
+    exports:[ValidaDataDirective],
 
   entryComponents: [ModalAdicionaConvenioComponent, ModalCadastroPrescricaoPacienteComponent, ModalCadastroFornecedorComponent,]
 })

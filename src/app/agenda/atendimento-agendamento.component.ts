@@ -25,6 +25,8 @@ import { FormaDePagamentoService } from '../services/forma-de-pagamento.service'
 import { ESemanasGestacao } from '../enums/ESemanasGestacao';
 import { EDiasGestacao } from '../enums/EDiasGestacao';
 import { ConvenioService } from '../services/convenio.service';
+import { ModalSucessoComponent } from '../shared/modal/modal-sucesso.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -34,8 +36,8 @@ import { ConvenioService } from '../services/convenio.service';
 export class AtendimentoAgendamentoComponent implements OnInit {
 
 
-  spinnerPrescricao:boolean;
-  spinnerHistorico:boolean;
+  spinnerPrescricao: boolean;
+  spinnerHistorico: boolean;
   isSpinnerVisible: boolean;
   semanasGestacao = ESemanasGestacao;
   diasGestacao = EDiasGestacao;
@@ -62,8 +64,8 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   iniciadoAgendamento = "";
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
-     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
-    private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService,
+    private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
+    private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService,private router: Router,
     private medicoService: MedicoService, private prescricaoPacienteService: PrescricaoPacienteService, ) {
   }
 
@@ -76,29 +78,49 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
       this.buscarModelos().subscribe(c => {
 
-
-        this.nomePaciente = this.paciente.nomeCompleto.toUpperCase();
-        this.anosConvenio = ", " + this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos. Convênio:";
         this.iniciadoAgendamento = "ATENDIMENTO INICIADO EM " + this.util.dataParaString(this.agendamento.dataInicioAtendimento)
           + " " + this.util.formatarHora(this.agendamento.horaInicialAtendimento);
 
-        if (!this.util.isNullOrWhitespace(this.paciente.convenioId)) {
-          this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio => {
-            if (convenio != null)
-              this.anosConvenio = this.anosConvenio  + convenio.descricao.toUpperCase;
-          })
+        if (this.paciente != null) {
+          this.nomePaciente = this.paciente.nomeCompleto.toUpperCase() + ",";
+          this.anosConvenio = this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos. Convênio: ";
+
+          if (!this.util.isNullOrWhitespace(this.paciente.convenioId)) {
+            this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio => {
+              if (convenio != null)
+                this.anosConvenio = this.anosConvenio + convenio.descricao.toUpperCase();
+            })
+          }
+
+          this.agendamentoService.buscarUltimoAgendamentoPaciente(this.paciente.id, this.agendamento.id).subscribe(ultimoAgendamento=> {
+
+            if (ultimoAgendamento != null) {
+              this.ultimoAgendamentoCancelado = ultimoAgendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado;
+    
+              this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
+                " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
+    
+              if (ultimoAgendamento.contemPagamentos) {
+                var soma = 0;
+                ultimoAgendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+    
+                this.mensagemUltimoAgendamento = this.mensagemUltimoAgendamento + " | Valor: " + this.util.formatarDecimalBlur(soma);
+              }
+            }
+
+          });
+
+          this.spinnerPrescricao = true;
+          this.prescricaoPacienteService.buscarPorPaciente(this.paciente.id).subscribe(c => {
+            if (this.util.hasItems(c)) {
+              this.prescricoes = c;
+              this.prescricaoPacienteService.listaPrescricaoPaciente = c;
+              this.sourcePrescricao = new LocalDataSource(c);
+              this.spinnerPrescricao = false;
+            }
+          });
         }
 
-        this.spinnerPrescricao = true;
-        this.prescricaoPacienteService.buscarPorPaciente(this.paciente.id).subscribe(c => {
-          if (this.util.hasItems(c)) {
-            this.prescricoes = c;
-            this.prescricaoPacienteService.listaPrescricaoPaciente = c;
-            this.sourcePrescricao = new LocalDataSource(c);
-            this.spinnerPrescricao = false;
-          }
-        });
-        
 
         if (this.util.hasItems(this.agendamento.pagamentos) && this.util.hasItems(this.formaDePagamentos)) {
 
@@ -119,6 +141,10 @@ export class AtendimentoAgendamentoComponent implements OnInit {
         else { this.isSpinnerVisible = false; }
       })
     }
+    else
+    {
+      this.router.navigate(['/agenda/agenda']);
+    }
   }
 
   ExibeAbaEspecialidade(especialidade: string) {
@@ -131,9 +157,9 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   criarPrescricao() {
 
     var modalPrescricao = this.modalService.open(ModalCadastroPrescricaoPacienteComponent, { size: "lg" });
-    modalPrescricao.componentInstance.paciente = this.paciente;    
+    modalPrescricao.componentInstance.paciente = this.paciente;
     modalPrescricao.componentInstance.medico = this.medico;
-    
+
     modalPrescricao.result.then(novaPrescricao => {
 
       if (novaPrescricao != null) {
@@ -208,11 +234,11 @@ export class AtendimentoAgendamentoComponent implements OnInit {
     if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
       let reqPaciente = this.pacienteService.buscarPorId(this.agendamento.pacienteId).map(paciente => {
         this.paciente = paciente;
+        this.dataUltimaMenstru = this.util.dataParaString(paciente.dataUltimaMenstruacao);
         this.agendamento.paciente = paciente;
         this.telefone = paciente.telefone || paciente.celular ? this.util.formataTelefone(paciente.telefone) + " / " + this.util.formataTelefone(paciente.celular) : "-";
       });
       requisicoes.push(reqPaciente);
-
 
       let reqUltimoAgendamento = this.agendamentoService.buscarUltimoAgendamentoPaciente(this.agendamento.pacienteId, this.agendamento.id).map(ultimoAgendamento => {
         if (ultimoAgendamento != null) {
@@ -242,12 +268,20 @@ export class AtendimentoAgendamentoComponent implements OnInit {
       this.medico = medicos.find(c => c.id == this.agendamento.medicoId);
       this.ExibeAbaEspecialidade("obstetrícia");
     });
-    requisicoes.push(reqMedicos);   
+    requisicoes.push(reqMedicos);
 
 
     return forkJoin(requisicoes);
   }
+  salvarObstetricia() {
+    this.pacienteService.salvar(this.paciente).subscribe(c => {
+      this.paciente = c;
 
+      var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder" });
+      modal.componentInstance.mensagem = "Dados salvos com sucesso";
+      modal.componentInstance.titulo = "Salvo com sucesso";
+    });
+  }
   public formataData(e): void {
 
     var dataFormatada = "";
@@ -255,7 +289,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
     if (!this.util.isNullOrWhitespace(e.target.value))
       dataFormatada = this.util.formatarDataBlur(e.target.value);
 
-    else if (e.target.id == "dataUltimaMenstruacao") {
+    if (e.target.id == "dataUltimaMenstruacao") {
       this.paciente.dataUltimaMenstruacao = this.util.stringParaData(dataFormatada);
       this.dataUltimaMenstru = dataFormatada;
     }

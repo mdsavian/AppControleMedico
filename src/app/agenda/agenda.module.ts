@@ -17,7 +17,7 @@ import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-c
 import { ModalAcoesAgendamentoComponent } from './modal-acoes-agendamento.component';
 import { AtendimentoAgendamentoComponent } from './atendimento-agendamento.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import {CadastrosModule} from '../cadastros/cadastros.module';
+import { CadastrosModule } from '../cadastros/cadastros.module';
 
 export class CustomDateFormatter extends CalendarDateFormatter {
 
@@ -50,10 +50,10 @@ export class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent,  ModalExtraCaixaComponent, AtendimentoAgendamentoComponent, ModalAcoesAgendamentoComponent, 
+  declarations: [AgendaComponent, ModalExtraCaixaComponent, AtendimentoAgendamentoComponent, ModalAcoesAgendamentoComponent,
     ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
   exports: [AgendaComponent],
-  entryComponents: [ ModalExtraCaixaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
+  entryComponents: [ModalExtraCaixaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
 })
 
 export class AgendaModule { }
