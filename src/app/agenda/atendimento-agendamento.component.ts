@@ -65,7 +65,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
-    private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService,private router: Router,
+    private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService, private router: Router,
     private medicoService: MedicoService, private prescricaoPacienteService: PrescricaoPacienteService, ) {
   }
 
@@ -92,18 +92,18 @@ export class AtendimentoAgendamentoComponent implements OnInit {
             })
           }
 
-          this.agendamentoService.buscarUltimoAgendamentoPaciente(this.paciente.id, this.agendamento.id).subscribe(ultimoAgendamento=> {
+          this.agendamentoService.buscarUltimoAgendamentoPaciente(this.paciente.id, this.agendamento.id).subscribe(ultimoAgendamento => {
 
             if (ultimoAgendamento != null) {
               this.ultimoAgendamentoCancelado = ultimoAgendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado;
-    
+
               this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
                 " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
-    
+
               if (ultimoAgendamento.contemPagamentos) {
                 var soma = 0;
                 ultimoAgendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
-    
+
                 this.mensagemUltimoAgendamento = this.mensagemUltimoAgendamento + " | Valor: " + this.util.formatarDecimalBlur(soma);
               }
             }
@@ -116,8 +116,8 @@ export class AtendimentoAgendamentoComponent implements OnInit {
               this.prescricoes = c;
               this.prescricaoPacienteService.listaPrescricaoPaciente = c;
               this.sourcePrescricao = new LocalDataSource(c);
-              this.spinnerPrescricao = false;
             }
+            this.spinnerPrescricao = false;
           });
         }
 
@@ -141,8 +141,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
         else { this.isSpinnerVisible = false; }
       })
     }
-    else
-    {
+    else {
       this.router.navigate(['/agenda/agenda']);
     }
   }
@@ -214,14 +213,13 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
           if (retorno != null && retorno != "") {
             this.agendamento = retorno;
+            this.agendamentoService.salvar(this.agendamento).subscribe(c => {
+
+              this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos); let soma = 0;
+              this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
+              this.totalPagamentos = this.util.formatarDecimalBlur(soma);
+            })
           }
-
-          this.sourcePagamentos = new LocalDataSource(this.agendamento.pagamentos);
-
-          let soma = 0;
-          this.agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
-          this.totalPagamentos = this.util.formatarDecimalBlur(soma);
-
         }, (error) => { })
       }
     });

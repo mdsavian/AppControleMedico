@@ -15,7 +15,8 @@
                     <h3> {{iniciadoAgendamento}} </h3>
                 </b>
 
-                <div [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}" *ngIf="mensagemUltimoAgendamento">
+                <div [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}"
+                    *ngIf="mensagemUltimoAgendamento">
                     {{mensagemUltimoAgendamento}}
                 </div>
 
@@ -31,7 +32,20 @@
                 <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet justify="justified">
                     <ngb-tab title="Informações" id="tabInfo">
                         <ng-template ngbTabContent>
-                            <div id="tab_1" class="container col-sm-12 col-md-12">
+                            <div id="tab_1" class="container col-sm-12 col-md-12" style="padding-top:15px">
+                                <div class="row"></div>
+                                <div class="row rowcadastro">
+                                    <div class="col-xs-6 col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="tipoAgendamento">Tipo Agendamento</label>
+                                            <input type="text" mask="00/00/0000" id="tipoAgendamento"
+                                                name="tipoAgendamento" disabled class="form-control"
+                                                [(ngModel)]="agendamento.tipoAgendamentoDescricao"
+                                                #tipoAgendamento="ngModel">
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </ng-template>
@@ -41,7 +55,7 @@
                         <ng-template ngbTabContent>
                             <form #obstetriciaForm="ngForm">
 
-                                <div id="tab_2" class="container col-sm-12 col-md-12" style="padding-top:10px">
+                                <div id="tab_2" class="container col-sm-12 col-md-12" style="padding-top:15px">
                                     <div class="row"></div>
                                     <div class="row rowcadastro">
                                         <div class="col-xs-6 col-md-3">
@@ -108,7 +122,7 @@
 
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Prescrição" id="tabPrescricao" >
+                    <ngb-tab title="Prescrição" id="tabPrescricao">
                         <ng-template ngbTabContent>
                             <div class="spinner" *ngIf=spinnerPrescricao>
                                 <div class="double-bounce1"></div>
@@ -128,7 +142,7 @@
                         </ng-template>
                     </ngb-tab>
 
-                    <ngb-tab title="Histórico" id="tabHistorico" >
+                    <ngb-tab title="Histórico" id="tabHistorico">
                         <ng-template ngbTabContent>
                             <div class="spinner" *ngIf=spinnerHistorico>
                                 <div class="double-bounce1"></div>
