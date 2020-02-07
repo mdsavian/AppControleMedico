@@ -34,6 +34,8 @@ import { ConvenioService } from '../services/convenio.service';
 export class AtendimentoAgendamentoComponent implements OnInit {
 
 
+  spinnerPrescricao:boolean;
+  spinnerHistorico:boolean;
   isSpinnerVisible: boolean;
   semanasGestacao = ESemanasGestacao;
   diasGestacao = EDiasGestacao;
@@ -60,7 +62,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   iniciadoAgendamento = "";
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
-    private appService: AppService, private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
+     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
     private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService,
     private medicoService: MedicoService, private prescricaoPacienteService: PrescricaoPacienteService, ) {
   }
@@ -76,15 +78,27 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
 
         this.nomePaciente = this.paciente.nomeCompleto.toUpperCase();
-        this.anosConvenio = this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos ";
+        this.anosConvenio = ", " + this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos. Convênio:";
         this.iniciadoAgendamento = "ATENDIMENTO INICIADO EM " + this.util.dataParaString(this.agendamento.dataInicioAtendimento)
-          + " " + this.agendamento.horaInicialAtendimento;
+          + " " + this.util.formatarHora(this.agendamento.horaInicialAtendimento);
 
-        if (this.util.isNullOrWhitespace(this.paciente.convenioId)) {
+        if (!this.util.isNullOrWhitespace(this.paciente.convenioId)) {
           this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio => {
-            this.anosConvenio = this.anosConvenio + "," + convenio.descricao.toUpperCase;
+            if (convenio != null)
+              this.anosConvenio = this.anosConvenio  + convenio.descricao.toUpperCase;
           })
         }
+
+        this.spinnerPrescricao = true;
+        this.prescricaoPacienteService.buscarPorPaciente(this.paciente.id).subscribe(c => {
+          if (this.util.hasItems(c)) {
+            this.prescricoes = c;
+            this.prescricaoPacienteService.listaPrescricaoPaciente = c;
+            this.sourcePrescricao = new LocalDataSource(c);
+            this.spinnerPrescricao = false;
+          }
+        });
+        
 
         if (this.util.hasItems(this.agendamento.pagamentos) && this.util.hasItems(this.formaDePagamentos)) {
 
@@ -117,9 +131,9 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   criarPrescricao() {
 
     var modalPrescricao = this.modalService.open(ModalCadastroPrescricaoPacienteComponent, { size: "lg" });
-    modalPrescricao.componentInstance.paciente = this.paciente;
-
+    modalPrescricao.componentInstance.paciente = this.paciente;    
     modalPrescricao.componentInstance.medico = this.medico;
+    
     modalPrescricao.result.then(novaPrescricao => {
 
       if (novaPrescricao != null) {
@@ -228,16 +242,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
       this.medico = medicos.find(c => c.id == this.agendamento.medicoId);
       this.ExibeAbaEspecialidade("obstetrícia");
     });
-    requisicoes.push(reqMedicos);
-
-    let reqPrescricaoPaciente = this.prescricaoPacienteService.buscarPorPaciente(this.paciente.id).map(c => {
-      if (this.util.hasItems(c)) {
-        this.prescricoes = c;
-        this.prescricaoPacienteService.listaPrescricaoPaciente = c;
-        this.sourcePrescricao = new LocalDataSource(c);
-      }
-    });
-    requisicoes.push(reqPrescricaoPaciente);
+    requisicoes.push(reqMedicos);   
 
 
     return forkJoin(requisicoes);

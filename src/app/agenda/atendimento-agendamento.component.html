@@ -31,9 +31,10 @@
 
                         </ng-template>
                     </ngb-tab>
+
                     <ngb-tab title="Obstetrícia" *ngIf="exibeAbaEspecialidade">
                         <ng-template ngbTabContent>
-                            <div id="tab_2" class="container col-sm-12 col-md-12">
+                            <div id="tab_2" class="container col-sm-12 col-md-12" style="padding-top:10px">
                                 <div class="row"></div>
                                 <div class="row rowcadastro">
                                     <div class="col-xs-6 col-md-3">
@@ -84,7 +85,12 @@
                             </div>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Prescrição" id="tabPrescricao">
+                    <div class="spinner" *ngIf=spinnerPrescricao>
+                        <div class="double-bounce1"></div>
+                        <div class="double-bounce2"></div>
+                    </div>
+                    
+                    <ngb-tab title="Prescrição" id="tabPrescricao" *ngIf="!spinnerPrescricao">
                         <ng-template ngbTabContent>
                             <div id="tab_2" class="container col-sm-12 col-md-12">
                                 <div class="row">
@@ -100,7 +106,12 @@
                         </ng-template>
                     </ngb-tab>
 
-                    <ngb-tab title="Histórico" id="tabHistorico">
+                    <div class="spinner" *ngIf=spinnerHistorico>
+                        <div class="double-bounce1"></div>
+                        <div class="double-bounce2"></div>
+                    </div>
+
+                    <ngb-tab title="Histórico" id="tabHistorico" *ngIf="spinnerHistorico">
                         <ng-template ngbTabContent>
                             <div id="tab_4" class="container col-sm-12 col-md-12">
                             </div>

@@ -148,6 +148,7 @@ export class Util {
     public formatarHora(hora: string) {
         if (hora == null)
             return "";
+        hora = hora.trim();
         return (hora.substr(0, 2) + ":" + hora.substr(2, 2));
     }
 
@@ -223,7 +224,7 @@ export class Util {
         diaSemana[5] = "Sexta-Feira";
         diaSemana[6] = "Sábado";
 
-        var dia =  new Date(data).getDay();
+        var dia = new Date(data).getDay();
         return diaSemana[dia];
     }
 

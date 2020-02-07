@@ -33,9 +33,9 @@ export class ModalCadastroPrescricaoPacienteComponent implements OnInit, AfterVi
   editando = false;
   modeloPrescricao = new ModeloPrescricao();
   medico = new Medico();
-  constructor(private route: ActivatedRoute, private modeloPrescricaoService: ModeloPrescricaoService, private appService: AppService,
-    private medicoService: MedicoService, private pacienteService: PacienteService, public router: Router,
-    private modalService: NgbModal, private activeModal: NgbActiveModal, private prescricaoPacienteService: PrescricaoPacienteService) {
+  constructor(private modeloPrescricaoService: ModeloPrescricaoService, private appService: AppService,
+    private medicoService: MedicoService, public router: Router, private modalService: NgbModal, private activeModal: NgbActiveModal, 
+    private prescricaoPacienteService: PrescricaoPacienteService) {
   }
 
   customToolbar = {
@@ -64,8 +64,8 @@ export class ModalCadastroPrescricaoPacienteComponent implements OnInit, AfterVi
       if (this.editando) {
         this.medicoModel.nativeElement.setAttribute('readonly', true);
       }
-      
-      if (this.medico != null) {
+
+      if (!this.util.isNullOrWhitespace(this.medico.id)) {
         this.prescricaoPaciente.medicoId = this.medico.id;
         this.medicoModel.nativeElement.setAttribute('readonly', true);
       }
