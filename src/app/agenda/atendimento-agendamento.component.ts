@@ -64,6 +64,8 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   iniciadoAgendamento = "";
   horarioAgendamentoDescricao ="";
   telefoneDescricao="";
+  descricaoLocal = "";
+  descricaoProcedimento = "";
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
