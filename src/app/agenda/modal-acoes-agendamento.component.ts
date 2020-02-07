@@ -72,7 +72,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
       let reqPaciente = this.pacienteService.buscarPorId(this.agendamento.pacienteId).map(paciente => {
         this.paciente = paciente;
         this.agendamento.paciente = paciente;
-        this.telefone = paciente.telefone || paciente.celular ? this.util.formataTelefone(paciente.telefone) + " / " + this.util.formataTelefone(paciente.celular) : "-";
+        this.telefone = this.pacienteService.retornarTelefonePaciene(paciente);
       });
       requisicoes.push(reqPaciente);
 

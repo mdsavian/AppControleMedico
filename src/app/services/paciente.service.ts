@@ -11,6 +11,7 @@ export class PacienteService {
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'paciente/';
   public paciente :Paciente;
+  util = new Util();
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
@@ -44,6 +45,11 @@ export class PacienteService {
 
     return idade;
 
+  }
+
+  public retornarTelefonePaciene(paciente:Paciente)
+  {
+    return paciente.telefone || paciente.celular ? this.util.formataTelefone(paciente.telefone) + " / " + this.util.formataTelefone(paciente.celular) : "-";
   }
 
 }

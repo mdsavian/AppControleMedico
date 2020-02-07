@@ -1,11 +1,10 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {  Router } from '@angular/router';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../uteis/Util'
 import { PrescricaoPaciente } from '../../modelos/prescricaoPaciente';
 import { Paciente } from '../../modelos/paciente';
-import { PacienteService } from '../../services/paciente.service';
 import { PrescricaoPacienteService } from '../../services/prescricaoPaciente.service';
 import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';

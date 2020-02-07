@@ -35,7 +35,7 @@ import { Router } from '@angular/router';
 
 export class AtendimentoAgendamentoComponent implements OnInit {
 
-
+  editorModel;
   spinnerPrescricao: boolean;
   spinnerHistorico: boolean;
   isSpinnerVisible: boolean;
@@ -62,6 +62,8 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   nomePaciente = "";
   anosConvenio = "";
   iniciadoAgendamento = "";
+  horarioAgendamentoDescricao ="";
+  telefoneDescricao="";
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
@@ -80,11 +82,14 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
         this.iniciadoAgendamento = "ATENDIMENTO INICIADO EM " + this.util.dataParaString(this.agendamento.dataInicioAtendimento)
           + " " + this.util.formatarHora(this.agendamento.horaInicialAtendimento);
+          this.horarioAgendamentoDescricao = this.util.dataParaString(this.agendamento.dataAgendamento) + " " + this.util.formatarHora(this.agendamento.horaInicial) + " - " + this.util.formatarHora(this.agendamento.horaFinal);
 
+          
         if (this.paciente != null) {
           this.nomePaciente = this.paciente.nomeCompleto.toUpperCase() + ",";
           this.anosConvenio = this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos. Convênio: ";
 
+          this.telefoneDescricao = this.pacienteService.retornarTelefonePaciene(this.paciente); 
           if (!this.util.isNullOrWhitespace(this.paciente.convenioId)) {
             this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio => {
               if (convenio != null)
@@ -144,6 +149,15 @@ export class AtendimentoAgendamentoComponent implements OnInit {
     else {
       this.router.navigate(['/agenda/agenda']);
     }
+  }
+
+  getEditorInstance(editorInstance: any) {
+  }
+
+  cadastroPaciente()
+  {
+    this.pacienteService.paciente = this.paciente;
+    this.router.navigate(['/cadastros/cadastropaciente']);
   }
 
   ExibeAbaEspecialidade(especialidade: string) {
@@ -293,6 +307,24 @@ export class AtendimentoAgendamentoComponent implements OnInit {
     }
   }
 
+  customToolbar = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['blockquote', 'code-block'],
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+      [{ 'direction': 'rtl' }],                         // text direction
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+      ['clean'],                                         // remove formatting button
+      //['link', 'image', 'video']                          link and image, video
+    ]
+  };
 
   settingsPrescricoes = {
     mode: 'external',

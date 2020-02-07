@@ -33,21 +33,76 @@
                     <ngb-tab title="Informações" id="tabInfo">
                         <ng-template ngbTabContent>
                             <div id="tab_1" class="container col-sm-12 col-md-12" style="padding-top:15px">
-                                <div class="row"></div>
-                                <div class="row rowcadastro">
-                                    <div class="col-xs-6 col-md-3">
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12">
                                         <div class="form-group">
-                                            <label class="control-label" for="tipoAgendamento">Tipo Agendamento</label>
-                                            <input type="text" mask="00/00/0000" id="tipoAgendamento"
-                                                name="tipoAgendamento" disabled class="form-control"
-                                                [(ngModel)]="agendamento.tipoAgendamentoDescricao"
-                                                #tipoAgendamento="ngModel">
+                                            <label class="control-label" for="paciente">Paciente</label>
+                                            <div>
+                                                <div class="input-group">
+                                                    <input type="text" id="paciente" name="paciente" readonly
+                                                        class="form-control" [(ngModel)]="paciente.nomeCompleto"
+                                                        #nomeCompleto="ngModel">
+                                                    <div class="input-group-prepend">
+                                                        <ng-template #tipPaciente>Ir Para Cadastro Do Paciente
+                                                        </ng-template>
+                                                        <span (click)="cadastroPaciente()" [ngbTooltip]="tipPaciente"
+                                                            class="input-group-text" id="img-adiciona-oficio">
+                                                            <i class="fa fa-pencil"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                            </div>
+                                <div class="row">
+                                    <div class="col-xs-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="tipoAgendamento">Tipo Agendamento</label>
+                                            <input type="text" id="tipoAgendamento" name="tipoAgendamento" readonly
+                                                class="form-control" [(ngModel)]="agendamento.tipoAgendamentoDescricao"
+                                                #tipoAgendamento="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="horarioAgendamento">Horário
+                                                Agendamento</label>
+                                            <input type="text" id="horarioAgendamento" name="horarioAgendamento"
+                                                disabled class="form-control" [(ngModel)]="horarioAgendamentoDescricao"
+                                                #horarioAgendamento="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="telefoneDescricao">Telefone</label>
+                                            <input type="text" id="telefoneDescricao" name="telefoneDescricao" disabled
+                                                class="form-control" [(ngModel)]="telefoneDescricao"
+                                                #telefone="ngModel">
+                                        </div>
+                                    </div>
+                                </div>
 
+
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12">
+                                        <label class="control-label" for="observacao">Observação</label>
+                                        <textarea id="observacao" name="observacao" placeholder="observação" readonly
+                                            class="form-control" [(ngModel)]="agendamento.observacao"
+                                            #observacao="ngModel"></textarea>
+                                    </div>
+                                </div>
+                                <br>
+
+                                <div class="col-md-12">
+                                    <quill-editor [(ngModel)]="editorModel" [modules]="customToolbar" id="editorModel"
+                                        name="editorModel" (onEditorCreated)="getEditorInstance($event)"
+                                        [sanitize]="true" [placeholder]="'Monte o modelo de prescrição aqui...'"
+                                        [styles]="{height: '400px'}"></quill-editor>
+                                </div>
+                            </div>
                         </ng-template>
                     </ngb-tab>
 
@@ -104,15 +159,6 @@
                                                         {{dia}}
                                                     </option>
                                                 </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-footer row">
-                                        <div class="form-group">
-                                            <div class="col-xs-8 col-md-6">
-                                                <button class="btn btn-rounded btn-success"
-                                                    [disabled]="!obstetriciaForm.form.valid"
-                                                    (click)="salvarObstetricia()">Salvar Alterações</button>
                                             </div>
                                         </div>
                                     </div>
@@ -185,9 +231,13 @@
 
                         </ng-template>
                     </ngb-tab>
-
                 </ngb-tabset>
-
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <button style="width:30%" (click)="salvarEFinalizar()" class="btn btn-rounded btn-success"
+                        type="submit">Salvar e Finalizar Agendamento</button>
+                </div>
             </div>
         </div>
     </div>
