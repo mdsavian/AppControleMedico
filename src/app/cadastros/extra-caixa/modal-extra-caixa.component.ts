@@ -19,6 +19,8 @@ import { FormaDePagamentoService } from '../../services/forma-de-pagamento.servi
 import { ETipoExtraCaixa } from '../../enums/ETipoExtraCaixa';
 import { ExtraCaixaService } from '../../services/extraCaixa.service';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
+import { MedicoService } from '../../services/medico.service';
+import { Medico } from '../../modelos/medico';
 
 
 @Component({
@@ -49,9 +51,10 @@ export class ModalExtraCaixaComponent {
   usuarioCorrente: Usuario;
   valorTotal: string;
   extraCaixa = new ExtraCaixa();
+  medicos = new Array<Medico>();
   operacao: string;
 
-  constructor(public activeModal: NgbActiveModal, private appService: AppService, private loginService: LoginService, private extraCaixaService: ExtraCaixaService,
+  constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService, private extraCaixaService: ExtraCaixaService,
     private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal, private formaPagamentoService: FormaDePagamentoService) { }
 
   ngOnInit() {
@@ -60,22 +63,18 @@ export class ModalExtraCaixaComponent {
 
       if (this.util.hasItems(this.funcionarios) && this.util.hasItems(this.caixas)) {
         this.caixas.forEach(caixa => {
-          let func = this.funcionarios.find(c => c.id == caixa.funcionarioId);
-          if (func != null)
-            caixa.descricao = func.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+          let pessoa = this.caixaService.retornarPessoaCaixa(caixa, this.funcionarios, this.medicos);
+          if (pessoa != null)
+            caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
         });
 
-        if (!this.util.isNullOrWhitespace(this.usuarioCorrente.funcionarioId)) {
-          var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);
+        var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
 
-          if (caixaAbertoUsuario != null) {
-            this.caixaUsuario = caixaAbertoUsuario != null;
-            this.caixa = caixaAbertoUsuario;
-          }
+        if (caixaAbertoUsuario != null) {
+          this.caixaUsuario = caixaAbertoUsuario != null;
+          this.caixa = caixaAbertoUsuario;
         }
-        else this.caixa = this.caixas.find(c => true);
       }
-
     });
   }
 
@@ -84,9 +83,10 @@ export class ModalExtraCaixaComponent {
 
     var reqFormas = this.formaPagamentoService.Todos().map(formas => { this.formasPagamento = formas; });
     var reqFuncionarios = this.funcionarioService.Todos().map(func => { this.funcionarios = func; });
+    var reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(medicos => { this.medicos = medicos; });
     var reqCaixas = this.caixaService.retornarTodosCaixasAbertos().map(caixas => { this.caixas = caixas; });
 
-    return forkJoin([reqFuncionarios, reqCaixas, reqFormas])
+    return forkJoin([reqFuncionarios, reqCaixas, reqFormas, reqMedicos])
   }
 
   selecionaTipoPagamento(value: string) {
@@ -119,8 +119,8 @@ export class ModalExtraCaixaComponent {
   }
 
   selecionaCaixa(e: Caixa) {
-    var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);
-    this.caixaUsuario = caixaAbertoUsuario != null && this.caixa.id == caixaAbertoUsuario.id;
+    // var caixaAbertoUsuario = this.caixas.find(c => c.funcionarioId == this.usuarioCorrente.funcionarioId);
+    // this.caixaUsuario = caixaAbertoUsuario != null && this.caixa.id == caixaAbertoUsuario.id;
   }
 
   validaCaixaFuncionario() {
@@ -130,12 +130,12 @@ export class ModalExtraCaixaComponent {
   }
 
   validaSenha() {
-    if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId) && this.util.hasItems(this.funcionarios)) {
-      var funcionario = this.funcionarios.find(c => c.id == this.caixa.funcionarioId);
-      this.loginService.validaSenha(funcionario.email, this.senha.nativeElement.value).subscribe(senhaValidada => {
-        this.senhaValida = !senhaValidada;
-      });
-    }
+    // if (!this.util.isNullOrWhitespace(this.caixa.funcionarioId) && this.util.hasItems(this.funcionarios)) {
+    //   var funcionario = this.funcionarios.find(c => c.id == this.caixa.funcionarioId);
+    //   this.loginService.validaSenha(funcionario.email, this.senha.nativeElement.value).subscribe(senhaValidada => {
+    //     this.senhaValida = !senhaValidada;
+    //   });
+    // }
   }
 
   formatarDecimal(e: any) {

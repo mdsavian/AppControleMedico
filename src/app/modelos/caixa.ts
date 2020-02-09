@@ -7,19 +7,20 @@ export class Caixa extends Entidade {
     super();
   }
 
-  clinicaId:string;
-  funcionarioId:string;
-  medicoId:string;
-  dataAbertura:Date;
-  horaAbertura:string; 
-  dataFechamento:Date;
-  horaFechamento:string;
-  trocoAbertura:number;
-  trocoFechamento:number;
-  descricao:string;
-  funcionario:Funcionario;  
-  usuarioFechamentoId:string;
-  usuarioAberturaId:string;
-  pessoaId:string;
-  administrativo:boolean;
+  clinicaId: string;
+  funcionarioId: string;
+  medicoId: string;
+  dataAbertura: Date;
+  horaAbertura: string;
+  dataFechamento: Date;
+  horaFechamento: string;
+  trocoAbertura: number;
+  trocoFechamento: number;
+  descricao: string;
+  funcionario: Funcionario;
+  usuarioFechamentoId: string;
+  usuarioAberturaId: string;
+  pessoaId: string;
+  administrativo: boolean;
+  nomePessoa: string;
 }

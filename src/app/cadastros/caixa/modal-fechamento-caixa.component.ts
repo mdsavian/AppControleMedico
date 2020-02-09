@@ -9,6 +9,10 @@ import { CaixaService } from '../../services/caixa.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { LoginService } from '../../services/login.service';
 import { AppService } from '../../services/app.service';
+import { MedicoService } from '../../services/medico.service';
+import { Medico } from '../../modelos/medico';
+import { forkJoin } from 'rxjs';
+import { Pessoa } from '../../modelos/pessoa';
 
 @Component({
   selector: 'app-modal-fechamento-caixa.component',
@@ -30,7 +34,9 @@ export class ModalFechamentoCaixaComponent {
   testPrice: any;
   existeCaixaAbertoParaFuncionario: boolean;
   senhaValida: boolean;
-  constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private funcionarioService: FuncionarioService,
+  medicos = new Array<Medico>();
+
+  constructor(public activeModal: NgbActiveModal, private loginService: LoginService, private medicoService: MedicoService, private funcionarioService: FuncionarioService,
     private caixaService: CaixaService, private appService: AppService, private modalService: NgbModal) { }
 
   ngOnInit() {
@@ -42,23 +48,42 @@ export class ModalFechamentoCaixaComponent {
     this.caixa.horaFechamento = horaString;
     var usuarioId = this.appService.retornarUsuarioCorrente().id;
 
-    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
-      this.funcionarioService.Todos().subscribe(funcs => {
-        this.funcionarios = funcs;
-        caixas.forEach(caix => {
-          let func = funcs.find(c => c.id == caix.funcionarioId);
+    this.buscarModelos().subscribe(c => {
 
-          caix.dataFechamento = this.util.stringParaData(dataString);
-          caix.horaFechamento = horaString;
-          caix.usuarioFechamentoId = usuarioId;
+      this.caixas.forEach(caix => {
+        caix.dataFechamento = this.util.stringParaData(dataString);
+        caix.horaFechamento = horaString;
+        caix.usuarioFechamentoId = usuarioId;
 
+        var pessoa = this.caixaService.retornarPessoaCaixa(caix, this.funcionarios, this.medicos);
 
-          caix.descricao = "Caixa aberto por " + (func != null ? func.nomeCompleto : "") + " em " + this.util.dataParaString(caix.dataAbertura)
-            + " " + this.util.formatarHora(caix.horaAbertura);
-        });
-        this.caixas = caixas
+        caix.descricao = "Caixa aberto por " + (pessoa != null ? pessoa.nomeCompleto : "") + " em " + this.util.dataParaString(caix.dataAbertura)
+          + " " + this.util.formatarHora(caix.horaAbertura);
       });
+
+    })
+
+  }
+
+  buscarModelos() {
+    let requisicoes = [];
+
+    let reqFunc = this.funcionarioService.Todos().map(funcs => {
+      this.funcionarios = funcs;
     });
+    requisicoes.push(reqFunc);
+
+    let reqCaixa = this.caixaService.retornarTodosCaixasAbertos().map(caixas => {
+      this.caixas = caixas
+    });
+    requisicoes.push(reqCaixa);
+
+    let reqMedico = this.medicoService.buscarMedicosPorUsuario().map(medicos => {
+      this.medicos = medicos;
+    })
+    requisicoes.push(reqMedico);
+
+    return forkJoin(requisicoes);
   }
 
   formatarDecimal(e: any) {
@@ -68,9 +93,10 @@ export class ModalFechamentoCaixaComponent {
 
   descricaoCaixa(e: any) {
     let caix = this.caixas.find(c => c.id == this.caixa.id);
-    let func = this.funcionarios.find(c => c.id == caix.funcionarioId);
-    if (func != null)
-      this.login.nativeElement.value = func.email;
+    
+    var pessoa = this.caixaService.retornarPessoaCaixa(caix, this.funcionarios, this.medicos);
+    if (pessoa != null)
+      this.login.nativeElement.value = pessoa.email;
   }
 
   validaSenha() {
@@ -83,9 +109,9 @@ export class ModalFechamentoCaixaComponent {
 
   salvar() {
     var retornar = false;
-    if (this.util.isNullOrWhitespace(this.caixa.funcionarioId)) {
+    if (this.util.isNullOrWhitespace(this.caixa.pessoaId)) {
       var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modal.componentInstance.mensagemErro = "Funcionário inválido.";
+      modal.componentInstance.mensagemErro = "Pessoa inválida.";
       retornar = true;
     }
 

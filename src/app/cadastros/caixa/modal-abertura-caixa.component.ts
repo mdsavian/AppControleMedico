@@ -33,7 +33,7 @@ export class ModalAberturaCaixaComponent {
   medicos: Array<Pessoa> = new Array<Medico>();
   funcionarios: Array<Pessoa> = new Array<Funcionario>();
   existeCaixaAbertoParaPessoa: boolean;
-  usuario:Usuario;
+  usuario: Usuario;
   constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService, private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal) { }
 
   ngOnInit() {
@@ -53,10 +53,10 @@ export class ModalAberturaCaixaComponent {
       if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId))
         this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.funcionarioId).id;
 
-        if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
-          this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.medicoId).id;
+      if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
+        this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.medicoId).id;
 
-          this.validaCaixaFuncionario();
+      this.validaCaixaFuncionario();
     });
   }
 
@@ -77,7 +77,7 @@ export class ModalAberturaCaixaComponent {
   }
 
   validaCaixaFuncionario() {
-    this.caixaService.retornarCaixaAbertoPessoa(this.caixa.pessoaId).subscribe(caixa => { 
+    this.caixaService.retornarCaixaAbertoPessoa(this.caixa.pessoaId).subscribe(caixa => {
       this.existeCaixaAbertoParaPessoa = caixa != null;
     });
   }
@@ -86,13 +86,16 @@ export class ModalAberturaCaixaComponent {
     var medico = this.medicos.find(c => c.id == this.caixa.pessoaId);
     var funcionario = this.funcionarios.find(c => c.id == this.caixa.pessoaId);
 
-    if (medico != null)
-      this.caixa.medicoId = medico.id;
+    if (medico != null) {
+      this.caixa.pessoaId = this.caixa.medicoId = medico.id;
+      this.caixa.funcionarioId = "";
+    }
 
-    if (funcionario != null)
-      this.caixa.funcionarioId = funcionario.id;
-
-      this.validaCaixaFuncionario();
+    if (funcionario != null) {
+      this.caixa.pessoaId = this.caixa.funcionarioId = funcionario.id;
+      this.caixa.medicoId = "";
+    }
+    this.validaCaixaFuncionario();
 
   }
 

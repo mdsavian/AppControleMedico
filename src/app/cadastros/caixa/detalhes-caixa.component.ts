@@ -51,9 +51,9 @@ export class DetalhesCaixaComponent implements OnInit {
         this.nomeUsuarioAbertura = this.caixaService.listaFuncionarios.find(c => c.usuarioId == this.caixa.usuarioAberturaId).nomeCompleto;
 
         if (this.caixa.usuarioAberturaId != this.caixa.usuarioFechamentoId)
-          this.nomeUsuarioFechamento = this.caixaService.listaFuncionarios.find(c => c.usuarioId == this.caixa.usuarioFechamentoId).nomeCompleto;
+          this.nomeUsuarioFechamento = this.caixaService.listaFuncionarios.find(c => c.usuarioId == this.caixa.usuarioFechamentoId).nomeCompleto;          
         else this.nomeUsuarioFechamento = this.nomeUsuarioAbertura;
-        this.nomeFuncionarioCaixa = this.caixaService.listaFuncionarios.find(c => c.id == this.caixa.funcionarioId).nomeCompleto;
+
       }
 
       this.agendamentoService.buscarAgendamentosCaixa(this.caixa).subscribe(agendamentos => {

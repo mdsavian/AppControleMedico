@@ -9,6 +9,9 @@ import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { Util } from '../../uteis/Util';
 import { Funcionario } from '../../modelos/funcionario';
 import { FuncionarioService } from '../../services/funcionario.service';
+import { forkJoin } from 'rxjs';
+import { MedicoService } from '../../services/medico.service';
+import { Medico } from '../../modelos/medico';
 
 @Component({
   templateUrl: './listagem-caixa.component.html'
@@ -17,29 +20,53 @@ export class ListagemCaixaComponent {
   source: LocalDataSource;
   listaCaixas: Array<Caixa>;
   listaFuncionarios: Array<Funcionario>;
+  listaMedicos: Array<Medico>;
   public isSpinnerVisible = false;
   closeResult: string;
   util = new Util();
 
-  constructor(private caixaService: CaixaService, private funcionarioService: FuncionarioService, private router: Router, private modalService: NgbModal) {
+  constructor(private caixaService: CaixaService, private funcionarioService: FuncionarioService, private router: Router,
+    private modalService: NgbModal, private medicoService: MedicoService) {
+
     this.isSpinnerVisible = true;
-    this.buscaModelos();
-  }
+    this.buscaModelos().subscribe(c => {
+      this.isSpinnerVisible = false;
 
-  buscaModelos(): void {
-    this.caixaService.Todos().subscribe(dados => {
-      this.listaCaixas = dados;
-      this.caixaService.listaCaixa = this.listaCaixas;      
+      this.listaCaixas.forEach(caixa => {
 
-      this.funcionarioService.Todos().subscribe(funcs => {
-        this.listaFuncionarios = funcs;
-        this.caixaService.listaFuncionarios = funcs;
-        this.source = new LocalDataSource(this.listaCaixas);
-        this.isSpinnerVisible = false;
+        caixa.nomePessoa = this.caixaService.retornarPessoaCaixa(caixa,this.caixaService.listaFuncionarios, this.caixaService.listaMedicos).nomeCompleto;        
       });
 
+      this.source = new LocalDataSource(this.listaCaixas);
+
     });
-    
+  }
+
+  buscaModelos() {
+    let requisicoes = [];
+
+    let reqCaixas = this.caixaService.Todos().map(dados => {
+      this.listaCaixas = dados;
+      this.caixaService.listaCaixa = this.listaCaixas;
+    });
+    requisicoes.push(reqCaixas);
+
+    let reqFuncionarios = this.funcionarioService.Todos().map(funcs => {
+      this.listaFuncionarios = funcs;
+      this.caixaService.listaFuncionarios = funcs;
+    });
+
+    requisicoes.push(reqFuncionarios);
+
+    let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(medicos => {
+      this.listaMedicos = medicos;
+      this.caixaService.listaMedicos = medicos;
+    });
+
+    requisicoes.push(reqMedicos);
+
+    return forkJoin(requisicoes);
+
   }
 
   editarRegistro(event) {
@@ -51,12 +78,9 @@ export class ListagemCaixaComponent {
     mode: 'external',
     noDataMessage: "Não foi encontrado nenhum registro",
     columns: {
-      funcionarioId: {
-        title: 'Funcionário',
-        filter: true,
-        valuePrepareFunction: (funcionarioId) => {
-          return this.util.hasItems(this.listaFuncionarios) ? this.listaFuncionarios.find(c=> c.id == funcionarioId).nomeCompleto : "";
-        }
+      nomePessoa: {
+        title: 'Pessoa',
+        filter: true
       },
       dataAbertura: {
         title: 'Data Abertura',

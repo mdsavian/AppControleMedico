@@ -6,22 +6,35 @@
         </button>
     </div>
     <div class="modal-body">
+        <div class="alert-warning" *ngIf="caixa.administrativo">
+            Quando selecionado caixa administrativo todas contas serão divididas entre os médicos da clínica.
+        </div>
+        <br>
         <div class="row">
             <div class="col-xs-12 col-md-12">
                 <div class="form-group">
                     <label class="control-label" for="pessoa">Pessoa(*)</label>
-                    <select class="form-control" (change)="trocaPessoa()" 
-                        #pessoaModel="ngModel" [(ngModel)]="caixa.pessoaId" id="pessoa" name="pessoa" required>
+                    <select class="form-control" (change)="trocaPessoa()" #pessoaModel="ngModel"
+                        [(ngModel)]="caixa.pessoaId" id="pessoa" name="pessoa" required>
                         <option *ngFor="let pes of pessoas" [ngValue]="pes.id">
                             {{pes.nomeCompleto}}
                         </option>
                     </select>
-                    <div *ngIf="pessoaModel.invalid || existeCaixaAbertoParaPessoa"
-                        class="alert alert-danger">
+                    <div *ngIf="pessoaModel.invalid || existeCaixaAbertoParaPessoa" class="alert alert-danger">
                         <div *ngIf="pessoaModel.invalid && pessoaModel.errors.required"> Pessoa
                             Obrigatória. </div>
-                         <div *ngIf="existeCaixaAbertoParaPessoa"> Já existe um caixa aberto para a pessoa selecionada. </div> 
+                        <div *ngIf="existeCaixaAbertoParaPessoa"> Já existe um caixa aberto para a pessoa selecionada.
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="form-group">
+                    <label class="form-check-inline" for="administrativo">Administrativo</label>
+                    <input class="form-check-inline" [(ngModel)]="caixa.administrativo" name="administrativo"
+                        id="administrativo" value="checked" type="checkbox">
                 </div>
             </div>
         </div>

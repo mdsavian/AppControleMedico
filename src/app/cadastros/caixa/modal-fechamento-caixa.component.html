@@ -31,20 +31,6 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-12">
-                <div class="form-group">
-                    <label class="control-label" for="senha">Senha(*)</label>
-                    <input type="password" class="form-control" id="senha" (blur)="validaSenha()" name="senha"
-                        placeholder="senha" required #senha>
-                    <div *ngIf="senha.value == '' || senhaValida" class="alert alert-danger">
-                        <div *ngIf="senha.value == ''"> Senha Obrigatória. </div>
-                        <div *ngIf="senhaValida"> Senha Inválida. </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col-xs-4 col-md-4">
                 <label class="control-label" for="trocoFechamento">Troco Fechamento(*)</label>
                 <div class="input-group">
