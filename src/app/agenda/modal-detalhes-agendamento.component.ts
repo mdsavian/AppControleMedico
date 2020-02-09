@@ -37,7 +37,7 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
   formaDePagamentos = new Array<FormaDePagamento>();
   sourcePagamentos: LocalDataSource;
   totalPagamentos: string;
-  telefone:string;
+  telefone: string;
   isSpinnerVisible: boolean;
 
 
@@ -74,7 +74,7 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
           if (paciente != null) {
             this.paciente = paciente;
             this.nomePaciente = paciente.nomeCompleto
-            this.telefone = paciente.telefone || paciente.celular ? this.util.formataTelefone(paciente.telefone) + " / " + this.util.formataTelefone(paciente.celular) : "-";
+            this.telefone = this.pacienteService.retornarTelefonePaciene(paciente);
           }
         });
 
@@ -83,7 +83,7 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
       else {
         this.paciente = this.agendamento.paciente;
         this.nomePaciente = this.agendamento.paciente.nomeCompleto
-        this.telefone = this.agendamento.paciente.telefone || this.agendamento.paciente.celular ? this.util.formataTelefone(this.agendamento.paciente.telefone) + " / " + this.util.formataTelefone(this.agendamento.paciente.celular) : "-";
+        this.telefone = this.pacienteService.retornarTelefonePaciene(this.agendamento.paciente);
       }
     }
     if (this.agendamento.medico == null) {

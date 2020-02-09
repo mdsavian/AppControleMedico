@@ -441,6 +441,8 @@ export class AgendaComponent implements OnInit {
 
   actionAgendamento(evento: CalendarEvent) {
 
+    console.log("actionAgendamento", evento );
+
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
     if (agendamento != null) {

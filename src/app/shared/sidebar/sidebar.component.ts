@@ -81,7 +81,7 @@ export class SidebarComponent implements OnInit {
           itensSideBar = this.removeMenu(itensSideBar, "Médico");
           itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Forma de Pagamento");
           itensSideBar = this.removeMenu(itensSideBar, "Cadastros/Pessoas/Funcionário/Ofício");
-          itensSideBar = this.removeMenu(itensSideBar, "Paciente/Prontuário");
+          // itensSideBar = this.removeMenu(itensSideBar, "Paciente/Prontuário");
           itensSideBar = this.removeMenu(itensSideBar, "Paciente/Histórico");
         }
 
@@ -284,16 +284,16 @@ export class SidebarComponent implements OnInit {
           extralink: false,
           submenu: []
         },
-        {
-          path: '/listagem/listagemprontuario',
-          title: 'Prontuário',
-          icon: '',
-          class: '',
-          label: '',
-          labelClass: '',
-          extralink: false,
-          submenu: []
-        },
+        // {
+        //   path: '/listagem/listagemprontuario',
+        //   title: 'Prontuário',
+        //   icon: '',
+        //   class: '',
+        //   label: '',
+        //   labelClass: '',
+        //   extralink: false,
+        //   submenu: []
+        // },
         {
           path: '/listagem/listagemtimeline',
           title: 'Histórico',

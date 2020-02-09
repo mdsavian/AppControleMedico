@@ -56,7 +56,7 @@ export class TimelineComponent implements OnInit {
 
   }
 
-  constructor(private timelineService: TimelineService, private appService:AppService, private medicoService:MedicoService,private modalService: NgbModal, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService, private router: Router,
+  constructor(private timelineService: TimelineService, private appService:AppService, private medicoService:MedicoService,private modalService: NgbModal, private agendamentoService: AgendamentoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService
   ) {
 
@@ -64,59 +64,13 @@ export class TimelineComponent implements OnInit {
 
   buscarDadosTimeline() {
     this.buscarModelosNovoAgendamento().subscribe(c => {
-      var i = 1;
+      
       this.agendamentoService.buscarAgendamentosPaciente(this.timelineService.pacienteId, this.appService.retornarUsuarioCorrente().id,
       this.appService.retornarClinicaCorrente().id).subscribe(agendamentos => {
 
         this.agendamentos = agendamentos;
-        agendamentos.forEach(agenda => {
-          agenda = this.agendamentoService.tratarCorAgendamento(agenda, this.exames, this.cirurgias, this.procedimentos);
-
-          var timeline = new Timeline();
-          timeline.agendamentoId = agenda.id;
-          timeline.dataHora = this.util.dataParaString(agenda.dataAgendamento) + " " + this.util.formatarHora(agenda.horaInicial) + " - " + this.util.formatarHora(agenda.horaFinal);
-
-          timeline.titulo = ETipoAgendamento[agenda.tipoAgendamento] + " - " + ESituacaoAgendamento[agenda.situacaoAgendamento];
-          timeline.descricao = this.agendamentoService.retornarOperacaoAgendamento(agenda, this.exames, this.cirurgias, this.procedimentos).toUpperCase();
-          timeline.cor = agenda.corFundo;
-
-          agenda.medico = this.medicos.find(c=> c.id == agenda.medicoId);
-          if (agenda.medico != null)
-            timeline.descricao = timeline.descricao + "\n Médico: " + agenda.medico.nomeCompleto;          
-
-          if (!this.util.isNullOrWhitespace(agenda.localId)) {
-            agenda.local = this.locais.find(c => c.id == agenda.localId);
-            timeline.descricao = timeline.descricao + "\n Local: " + agenda.local.descricao.toUpperCase();
-          }
-
-          if (!this.util.isNullOrWhitespace(agenda.observacao)) {
-            timeline.descricao = timeline.descricao + "\n Obs.: " + agenda.observacao;
-          }
-
-          if (this.util.hasItems(agenda.pagamentos)) {
-
-            this.contaReceberService.buscarPorAgendamento(agenda.id).subscribe(conta => {
-              if (conta != null) {
-                timeline.contaReceber = conta;
-                timeline.valorTotal = agenda.pagamentos.reduce(function (valor, pagamento) { return pagamento.valor + valor; }, 0);
-                timeline.descricao = timeline.descricao + "\n Valor Pago: " + this.util.formatarDecimal(timeline.valorTotal);
-              }
-            });
-          }
-          timeline.par = i % 2 === 0;
-          this.listaTimeline.push(timeline);
-          i++;
-        });
-
-        var timelineCadastro = new Timeline();
-        timelineCadastro.dataHora = this.util.dataParaString(this.timelineService.paciente.dataCadastro);
-
-        timelineCadastro.titulo = "Cadastro";
-        timelineCadastro.descricao = "Cadastro do paciente realizado em " + this.util.dataParaString(this.timelineService.paciente.dataCadastro) + ".";
-        timelineCadastro.cor = "#66cdaa";
-        timelineCadastro.par = i % 2 === 0;
-        this.listaTimeline.push(timelineCadastro);
-
+      
+        this.listaTimeline = this.timelineService.montarDadosTimeline(agendamentos, this.exames, this.cirurgias, this.procedimentos, this.locais, this.medicos);
 
         this.isSpinnerVisible = false;
       });

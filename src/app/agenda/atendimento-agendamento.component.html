@@ -27,7 +27,7 @@
 
 <div class="row" *ngIf=!isSpinnerVisible>
     <div class="col-lg-12 col-xlg-12 col-md-12">
-        <div class="card">
+        <div class="card" id="formAtendimento">
             <div class="card-body">
                 <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet justify="justified">
                     <ngb-tab title="Informações" id="tabInfo">
@@ -44,7 +44,7 @@
                                                         class="form-control" [(ngModel)]="paciente.nomeCompleto"
                                                         #nomeCompleto="ngModel">
                                                     <div class="input-group-prepend">
-                                                        <ng-template #tipPaciente>Ir Para Cadastro Do Paciente
+                                                        <ng-template #tipPaciente>Cadastro Paciente
                                                         </ng-template>
                                                         <span (click)="cadastroPaciente()" [ngbTooltip]="tipPaciente"
                                                             class="input-group-text" id="img-adiciona-oficio">
@@ -65,6 +65,8 @@
                                                 #tipoAgendamento="ngModel">
                                         </div>
                                     </div>
+
+
                                     <div class="col-xs-6 col-md-4">
                                         <div class="form-group">
                                             <label class="control-label" for="horarioAgendamento">Horário
@@ -74,6 +76,7 @@
                                                 #horarioAgendamento="ngModel">
                                         </div>
                                     </div>
+
                                     <div class="col-xs-6 col-md-4">
                                         <div class="form-group">
                                             <label class="control-label" for="telefoneDescricao">Telefone</label>
@@ -85,10 +88,19 @@
                                 </div>
 
 
+                                <div class="row">
+                                    <div class="col-xs-8 col-md-8" *ngIf="descricaoLocal">
+                                        <div class="form-group">
+                                            <label class="control-label" for="descricaoLocal">Local</label>
+                                            <input type="text" id="descricaoLocal" name="descricaoLocal" readonly
+                                                class="form-control" [(ngModel)]="descricaoLocal" #local="ngModel">
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="row">
                                     <div class="col-xs-12 col-md-12">
-                                        <label class="control-label" for="observacao">Observação</label>
+                                        <label class="control-label" for="observacao">Observação Agendamento</label>
                                         <textarea id="observacao" name="observacao" placeholder="observação" readonly
                                             class="form-control" [(ngModel)]="agendamento.observacao"
                                             #observacao="ngModel"></textarea>
@@ -196,6 +208,41 @@
                             </div>
 
                             <div id="tab_4" class="container col-sm-12 col-md-12" *ngIf="!spinnerHistorico">
+
+                                <ul class="timeline" *ngFor="let time of listaTimeline">
+                                    <li [ngClass]="time.par ? 'timeline-inverted' : ''">
+                                        <div class="timeline-badge" [style.backgroundColor]="time.cor"> </div>
+                                        <div class="timeline-panel">
+                                            <div class="timeline-heading">
+                                                <h4 class="timeline-title">{{time.titulo}}</h4>
+                                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{time.dataHora}}</small>
+                                                </p>
+                                            </div>
+                                            <div class="timeline-body" >
+                                                <p style="white-space: pre-line">{{time.descricao}}</p>
+                
+                                                <hr *ngIf="time.agendamentoId || time.contaReceber != null">
+                                                <div class="btn-group" *ngIf="time.agendamentoId || time.contaReceber != null">
+                                                    <ng-template #tipAgendamento>Detalhes Agendamento</ng-template>
+                                                    <ng-template #tipContaReceber>Detalhes Conta a Receber</ng-template>
+                
+                                                    <button *ngIf="time.agendamentoId" [ngbTooltip]="tipAgendamento"
+                                                        (click)="chamaAgendamento(time.agendamentoId)" type="button"
+                                                        class="btn btn-primary btn-sm btn-info" style="margin-right: 2px;">
+                                                        <i class="fa fa-calendar"></i> 
+                                                    </button>
+                                                    <button *ngIf="time.contaReceber != null" [ngbTooltip]="tipContaReceber"
+                                                        (click)="chamaContaReceber(time)" type="button"
+                                                        class="btn btn-sm btn-dark" style="margin-right: 2px;"> <i
+                                                            class="fa fa-money"></i>
+                                                    </button>
+                                                </div>
+                
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
                             </div>
 
                         </ng-template>
@@ -235,8 +282,13 @@
             </div>
             <div class="card-footer">
                 <div class="row">
-                    <button style="width:30%" (click)="salvarEFinalizar()" class="btn btn-rounded btn-success"
-                        type="submit">Salvar e Finalizar Agendamento</button>
+                    <button style="width:30%; margin:10px" (click)="salvarAgendamento()" class="btn btn-rounded btn-success" 
+                        type="button">Salvar Agendamento</button>
+                        <button style="width:30%; margin:10px" (click)="finalizarAtendimento()" class="btn btn-rounded btn-primary"
+                        type="button">Finalizar Atendimento</button>
+                        
+                        <button style="width:30%; margin:10px" (click)="voltar()" class="btn btn-rounded btn-warning"
+                        type="button">Voltar</button>
                 </div>
             </div>
         </div>

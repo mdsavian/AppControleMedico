@@ -27,7 +27,16 @@ import { EDiasGestacao } from '../enums/EDiasGestacao';
 import { ConvenioService } from '../services/convenio.service';
 import { ModalSucessoComponent } from '../shared/modal/modal-sucesso.component';
 import { Router } from '@angular/router';
-
+import { LocalService } from '../services/local.service';
+import { TimelineService } from '../services/timeline.service';
+import { ProcedimentoService } from '../services/procedimento.service';
+import { CirurgiaService } from '../services/cirurgia.service';
+import { ExameService } from '../services/exame.service';
+import { Exame } from '../modelos/exame';
+import { Cirurgia } from '../modelos/cirurgia';
+import { Local } from '../modelos/local';
+import { Procedimento } from '../modelos/procedimento';
+import { Timeline } from '../modelos/timeline';
 
 @Component({
   templateUrl: './atendimento-agendamento.component.html',
@@ -62,36 +71,48 @@ export class AtendimentoAgendamentoComponent implements OnInit {
   nomePaciente = "";
   anosConvenio = "";
   iniciadoAgendamento = "";
-  horarioAgendamentoDescricao ="";
-  telefoneDescricao="";
+  horarioAgendamentoDescricao = "";
+  telefoneDescricao = "";
   descricaoLocal = "";
   descricaoProcedimento = "";
+  exames: Array<Exame> = [];
+  cirurgias: Array<Cirurgia> = [];
+  pacientes: Array<Paciente> = [];
+  locais: Array<Local> = [];
+  procedimentos: Array<Procedimento> = [];
+  acoesPermitidas: Array<string> = [];
+  agendamentos: Array<Agendamento> = [];
+  listaTimeline = new Array<Timeline>();
+
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
+    private localService: LocalService, private timelineService: TimelineService, private appService: AppService,
+    private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private exameService: ExameService,
     private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService, private router: Router,
     private medicoService: MedicoService, private prescricaoPacienteService: PrescricaoPacienteService, ) {
   }
 
   ngOnInit(): void {
 
-    this.agendamento = this.agendamentoService.agendamento;
+    if (this.agendamentoService.agendamento != null) {
+      this.agendamento = this.agendamentoService.agendamento;
+      this.editorModel = this.agendamento.descricaoAtendimento;
 
-    if (this.agendamento != null) {
       this.isSpinnerVisible = true;
 
       this.buscarModelos().subscribe(c => {
 
         this.iniciadoAgendamento = "ATENDIMENTO INICIADO EM " + this.util.dataParaString(this.agendamento.dataInicioAtendimento)
           + " " + this.util.formatarHora(this.agendamento.horaInicialAtendimento);
-          this.horarioAgendamentoDescricao = this.util.dataParaString(this.agendamento.dataAgendamento) + " " + this.util.formatarHora(this.agendamento.horaInicial) + " - " + this.util.formatarHora(this.agendamento.horaFinal);
+        this.horarioAgendamentoDescricao = this.util.dataParaString(this.agendamento.dataAgendamento) + " " + this.util.formatarHora(this.agendamento.horaInicial) + " - " + this.util.formatarHora(this.agendamento.horaFinal);
 
-          
+
         if (this.paciente != null) {
           this.nomePaciente = this.paciente.nomeCompleto.toUpperCase() + ",";
           this.anosConvenio = this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos. Convênio: ";
 
-          this.telefoneDescricao = this.pacienteService.retornarTelefonePaciene(this.paciente); 
+          this.telefoneDescricao = this.pacienteService.retornarTelefonePaciene(this.paciente);
           if (!this.util.isNullOrWhitespace(this.paciente.convenioId)) {
             this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio => {
               if (convenio != null)
@@ -117,6 +138,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
           });
 
+
           this.spinnerPrescricao = true;
           this.prescricaoPacienteService.buscarPorPaciente(this.paciente.id).subscribe(c => {
             if (this.util.hasItems(c)) {
@@ -128,6 +150,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
           });
         }
 
+        this.buscarDadosTimeline();
 
         if (this.util.hasItems(this.agendamento.pagamentos) && this.util.hasItems(this.formaDePagamentos)) {
 
@@ -153,11 +176,43 @@ export class AtendimentoAgendamentoComponent implements OnInit {
     }
   }
 
+  buscarDadosTimeline() {
+    this.spinnerHistorico = true;
+
+    this.buscarModelosNovoAgendamento().subscribe(c => {
+
+      console.log("11111");
+
+      this.timelineService.paciente = this.paciente;
+      this.agendamentoService.buscarAgendamentosPaciente(this.paciente.id, this.appService.retornarUsuarioCorrente().id,
+        this.appService.retornarClinicaCorrente().id).subscribe(agendamentos => {
+
+          this.agendamentos = agendamentos;
+
+          this.listaTimeline = this.timelineService.montarDadosTimeline(agendamentos, this.exames, this.cirurgias, this.procedimentos, this.locais, this.medicos);
+
+          this.spinnerHistorico = false;
+        });
+    });
+
+  }
+
+  buscarModelosNovoAgendamento() {
+
+    let reqExames = this.exameService.Todos().map(dados => { this.exames = dados; });
+    let reqLocais = this.localService.Todos().map(dados => { this.locais = dados; });
+    let reqCirurgias = this.cirurgiaService.Todos().map(dados => { this.cirurgias = dados; });
+    let reqProcedimento = this.procedimentoService.Todos().map(dados => { this.procedimentos = dados; });
+    let reqMedico = this.medicoService.buscarMedicosPorUsuario()
+      .map(dados => { this.medicos = dados; });
+
+    return forkJoin([reqExames, reqMedico, reqLocais, reqCirurgias, reqProcedimento]);
+  }
+
   getEditorInstance(editorInstance: any) {
   }
 
-  cadastroPaciente()
-  {
+  cadastroPaciente() {
     this.pacienteService.paciente = this.paciente;
     this.router.navigate(['/cadastros/cadastropaciente']);
   }
@@ -272,6 +327,14 @@ export class AtendimentoAgendamentoComponent implements OnInit {
       requisicoes.push(reqUltimoAgendamento);
     }
 
+    if (!this.util.isNullOrWhitespace(this.agendamento.localId)) {
+      let reqLocal = this.localService.buscarPorId(this.agendamento.localId).map(local => {
+        this.agendamento.local = local;
+        this.descricaoLocal = local.descricao;
+      });
+      requisicoes.push(reqLocal);
+    }
+
     let reqFormas = this.formaPagamentoService.Todos().map(formas => {
       this.formaDePagamentos = formas;
     });
@@ -287,15 +350,44 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
     return forkJoin(requisicoes);
   }
-  salvarObstetricia() {
-    this.pacienteService.salvar(this.paciente).subscribe(c => {
-      this.paciente = c;
 
-      var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder" });
-      modal.componentInstance.mensagem = "Dados salvos com sucesso";
-      modal.componentInstance.titulo = "Salvo com sucesso";
+  salvarAgendamento() {
+    this.agendamento.descricaoAtendimento = this.editorModel;
+
+    this.agendamentoService.salvar(this.agendamento).subscribe(c => {
+
+      this.pacienteService.salvar(this.paciente).subscribe(c => {
+        this.paciente = c;
+
+        var modal = this.modalService.open(ModalSucessoComponent, { windowClass: "modal-holder modal-error" });
+
+        modal.componentInstance.mensagem = "Agendamento salvo com sucesso.";
+      });
     });
+
   }
+
+  finalizarAtendimento() {
+
+    this.agendamento.descricaoAtendimento = this.editorModel;
+    this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Finalizado;
+    this.agendamento.horaFinalAtendimento = this.util.horaAgoraString();
+
+    this.agendamentoService.salvar(this.agendamento).subscribe(c => {
+
+      this.pacienteService.salvar(this.paciente).subscribe(c => {
+        this.paciente = c;
+
+        this.router.navigate(['/agenda/agenda']);
+      });
+    });
+
+  }
+
+  public voltar() {
+    this.router.navigate(['/agenda/agenda']);
+  }
+
   public formataData(e): void {
 
     var dataFormatada = "";

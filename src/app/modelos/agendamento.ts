@@ -50,4 +50,6 @@ export class Agendamento extends Entidade {
     tipoAgendamentoDescricao:string;
     horaInicialAtendimento: string;
     horaFinalAtendimento: string;
+    descricaoAtendimento:string;
+
 }
