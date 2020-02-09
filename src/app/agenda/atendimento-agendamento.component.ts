@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal, } from '@ng-bootstrap/ng-bootstrap';
-import { ETipoAgendamento } from '../enums/ETipoAgendamento';
 import { ESituacaoAgendamento } from '../enums/ESituacaoAgendamento';
 import { Agendamento } from '../modelos/agendamento';
 import { AppService } from '../services/app.service'
@@ -37,6 +36,8 @@ import { Cirurgia } from '../modelos/cirurgia';
 import { Local } from '../modelos/local';
 import { Procedimento } from '../modelos/procedimento';
 import { Timeline } from '../modelos/timeline';
+import { ModalDetalhesAgendamentoComponent } from './modal-detalhes-agendamento.component';
+import { ModalDetalheContaReceberComponent } from '../cadastros/conta-receber/modal-detalhe-conta-receber.component';
 
 @Component({
   templateUrl: './atendimento-agendamento.component.html',
@@ -113,8 +114,8 @@ export class AtendimentoAgendamentoComponent implements OnInit {
           this.anosConvenio = this.pacienteService.RetornarIdadePaciente(this.paciente).toString() + " anos. Convênio: ";
 
           this.telefoneDescricao = this.pacienteService.retornarTelefonePaciene(this.paciente);
-          if (!this.util.isNullOrWhitespace(this.paciente.convenioId)) {
-            this.convenioService.buscarPorId(this.paciente.convenioId).subscribe(convenio => {
+          if (!this.util.isNullOrWhitespace(this.agendamento.convenioId)) {
+            this.convenioService.buscarPorId(this.agendamento.convenioId).subscribe(convenio => {
               if (convenio != null)
                 this.anosConvenio = this.anosConvenio + convenio.descricao.toUpperCase();
             })
@@ -181,20 +182,36 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
     this.buscarModelosNovoAgendamento().subscribe(c => {
 
-      console.log("11111");
-
       this.timelineService.paciente = this.paciente;
       this.agendamentoService.buscarAgendamentosPaciente(this.paciente.id, this.appService.retornarUsuarioCorrente().id,
         this.appService.retornarClinicaCorrente().id).subscribe(agendamentos => {
 
           this.agendamentos = agendamentos;
 
-          this.listaTimeline = this.timelineService.montarDadosTimeline(agendamentos, this.exames, this.cirurgias, this.procedimentos, this.locais, this.medicos);
+          this.listaTimeline = this.timelineService.montarDadosTimeline(agendamentos, this.exames, this.cirurgias, this.procedimentos,
+             this.locais, this.medicos, true, this.agendamento.id);
 
           this.spinnerHistorico = false;
         });
     });
 
+  }
+
+  chamaContaReceber(timeline: Timeline) {
+    var modalDetalheContaReceber = this.modalService.open(ModalDetalheContaReceberComponent, { size: "lg" });
+    modalDetalheContaReceber.componentInstance.contaReceber = timeline.contaReceber;
+  }
+
+  chamaAgendamento(agendamentoId: string) {
+    var agendamento = this.agendamentos.find(c => c.id == agendamentoId);
+    if (agendamento != null) {
+      var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
+      modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
+    }
+    else {
+      var modalErro = this.modalService.open(ModalErrorComponent);
+      modalErro.componentInstance.mensagemErro = "Houve um erro. Tente novamente mais tarde."
+    }
   }
 
   buscarModelosNovoAgendamento() {
@@ -305,7 +322,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
         this.paciente = paciente;
         this.dataUltimaMenstru = this.util.dataParaString(paciente.dataUltimaMenstruacao);
         this.agendamento.paciente = paciente;
-        this.telefone = paciente.telefone || paciente.celular ? this.util.formataTelefone(paciente.telefone) + " / " + this.util.formataTelefone(paciente.celular) : "-";
+        this.telefone = this.pacienteService.retornarTelefonePaciene(paciente);
       });
       requisicoes.push(reqPaciente);
 
@@ -313,6 +330,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
         if (ultimoAgendamento != null) {
           this.ultimoAgendamentoCancelado = ultimoAgendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado;
 
+          console.log(ultimoAgendamento.situacaoAgendamento);
           this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
             " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
 
@@ -371,6 +389,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
     this.agendamento.descricaoAtendimento = this.editorModel;
     this.agendamento.situacaoAgendamento = ESituacaoAgendamento.Finalizado;
+    this.agendamento.corFundo = this.agendamento.corLetra = "#003200";
     this.agendamento.horaFinalAtendimento = this.util.horaAgoraString();
 
     this.agendamentoService.salvar(this.agendamento).subscribe(c => {

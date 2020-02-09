@@ -33,12 +33,17 @@ export class TimelineService {
   }
 
 
-  montarDadosTimeline(agendamentos: Agendamento[], exames: Exame[], cirurgias: Cirurgia[], procedimentos: Procedimento[], locais: Local[], medicos: Medico[]) {
+  montarDadosTimeline(agendamentos: Agendamento[], exames: Exame[], cirurgias: Cirurgia[], procedimentos: Procedimento[], locais: Local[],
+     medicos: Medico[], atendimento = false, agendamentoId:string = "") {
 
     let listaTimeline = new Array<Timeline>();
     var i = 1;
 
     agendamentos.forEach(agenda => {
+
+      if (agenda.id == agendamentoId)
+        return;  
+
       agenda = this.agendamentoService.tratarCorAgendamento(agenda, exames, cirurgias, procedimentos);
 
       var timeline = new Timeline();
@@ -50,12 +55,12 @@ export class TimelineService {
       timeline.cor = agenda.corFundo;
 
       agenda.medico = medicos.find(c => c.id == agenda.medicoId);
-      if (agenda.medico != null)
+      if (agenda.medico != null && !atendimento)
         timeline.descricao = timeline.descricao + "\n Médico: " + agenda.medico.nomeCompleto;
 
       if (!this.util.isNullOrWhitespace(agenda.localId)) {
         agenda.local = locais.find(c => c.id == agenda.localId);
-        timeline.descricao = timeline.descricao + "\n Local: " + agenda.local.descricao.toUpperCase();
+        timeline.descricao = timeline.descricao + "\n Local: " + agenda.local.descricao;
       }
 
       if (!this.util.isNullOrWhitespace(agenda.observacao)) {
@@ -73,6 +78,11 @@ export class TimelineService {
         });
       }
 
+      if (atendimento && !this.util.isNullOrWhitespace(agenda.descricaoAtendimento))
+      {
+        let finalSubstring = agenda.descricaoAtendimento.length > 150 ? 150 :agenda.descricaoAtendimento.length;
+        timeline.descricao = timeline.descricao + "\n\n Descrição Agendamento: " + agenda.descricaoAtendimento.substring(0, finalSubstring);
+      }
 
       timeline.par = i % 2 === 0;
       listaTimeline.push(timeline);

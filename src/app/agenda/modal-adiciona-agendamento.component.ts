@@ -522,7 +522,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento.paciente = paciente;
       this.agendamento.pacienteId = paciente.id;
 
-      this.telefone = this.paciente.telefone || this.paciente.celular ? this.util.formataTelefone(this.paciente.telefone) + " / " + this.util.formataTelefone(this.paciente.celular) : "-";
+      this.telefone = this.pacienteService.retornarTelefonePaciene(this.paciente);
 
       this.buscarUltimoAgendamentoPaciente();
 

@@ -164,6 +164,30 @@
                     </div>
                 </ng-template>
             </ngb-tab>
+            <ngb-tab title="Atendimento" *ngIf="visualizaAtendimento">
+                <ng-template ngbTabContent>
+                    <div id="tab_2" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                        <br />
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="dataHoraAtendimento">Data/Hora Atendimento</label>
+                                    <input type="text" id="dataHoraAtendimento" name="dataHoraAtendimento"
+                                        class="form-control" readonly [(ngModel)]="dataHoraAtendimento">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <quill-editor [(ngModel)]="editorModel" [modules]="customToolbar" id="editorModel"
+                                    name="editorModel" disabled (onEditorCreated)="getEditorInstance($event)"
+                                    [sanitize]="true" [placeholder]="'Monte o modelo de prescrição aqui...'"
+                                    [styles]="{height: '400px'}"></quill-editor>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
         </ngb-tabset>
     </div>
 

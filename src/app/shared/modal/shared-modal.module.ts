@@ -21,10 +21,11 @@ import { ModalAberturaCaixaComponent } from '../../cadastros/caixa/modal-abertur
 import { ModalFechamentoCaixaComponent } from '../../cadastros/caixa/modal-fechamento-caixa.component';
 import { ModalPagamentoAgendamentoComponent } from '../../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { EnumToArrayPipe } from '../../uteis/enumToArray.pipe'
+import { QuillModule } from 'ngx-quill';
 
 
 @NgModule({
-  imports: [Ng2SmartTableModule, CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
+  imports: [Ng2SmartTableModule, QuillModule.forRoot(),CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
   declarations: [BotaoImprimirComponent, EnumToArrayPipe, CorComponent,ModalPagamentoAgendamentoComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
   entryComponents: [ModalPagamentoAgendamentoComponent,BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
   exports:[EnumToArrayPipe]

@@ -49,7 +49,7 @@ export class PacienteService {
   public retornarTelefonePaciene(paciente: Paciente) {
 
     var telefone = "";
-    telefone = !this.util.isNullOrWhitespace(paciente.telefone) ? this.util.formataTelefone(paciente.telefone) : " - ";
+    telefone = this.util.isNullOrWhitespace(paciente.telefone) == false ? this.util.formataTelefone(paciente.telefone) : " - ";
     telefone = telefone + " / ";
     telefone = telefone + (this.util.isNullOrWhitespace(paciente.celular) == false ? this.util.formataTelefone(paciente.celular) : "-");
 

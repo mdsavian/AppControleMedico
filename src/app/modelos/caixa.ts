@@ -21,4 +21,5 @@ export class Caixa extends Entidade {
   usuarioFechamentoId:string;
   usuarioAberturaId:string;
   pessoaId:string;
+  administrativo:boolean;
 }

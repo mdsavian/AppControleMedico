@@ -147,16 +147,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
             this.acoesPermitidas.push("Cancelar");
             this.acoesPermitidas.push("Excluir");
             break;
-          }
-        case (ESituacaoAgendamento["Pago"].valueOf()):
-          {
-            if (!this.util.isNullOrWhitespace(usuario.medicoId) && this.agendamento.medicoId == usuario.medicoId)
-              this.acoesPermitidas.push("IniciarAtendimento");
-
-            this.acoesPermitidas.push("Editar");
-            this.acoesPermitidas.push("Pagar");
-            break;
-          }
+          }        
       }
     }
     else {

@@ -496,6 +496,8 @@ export class AgendaComponent implements OnInit {
                     agendamento.dataInicioAtendimento = new Date();
                     agendamento.horaInicialAtendimento = this.util.horaAgoraString();
                     agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];
+                    agendamento.corFundo = agendamento.corLetra = "#006600";
+
                     this.agendamentoService.salvar(agendamento).subscribe(agendamentoRetorno=> {
                       this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoRetorno))
                       this.agendamentoService.agendamento = agendamentoRetorno;  

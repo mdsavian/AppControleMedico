@@ -16,6 +16,7 @@ import { Observable, forkJoin } from 'rxjs';
 import { Paciente } from '../modelos/paciente';
 import { TimelineService } from '../services/timeline.service';
 import { Router } from '@angular/router';
+import { AppService } from '../services/app.service';
 
 
 @Component({
@@ -39,9 +40,12 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
   totalPagamentos: string;
   telefone: string;
   isSpinnerVisible: boolean;
+  visualizaAtendimento: boolean;
+  dataHoraAtendimento: string;
+  editorModel;
 
 
-  constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService, private timelineService: TimelineService, private router: Router,
+  constructor(public activeModal: NgbActiveModal, private pacienteService: PacienteService, private timelineService: TimelineService, private router: Router, private appService: AppService,
     private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private convenioService: ConvenioService, private localService: LocalService) {
   }
 
@@ -109,12 +113,20 @@ export class ModalDetalhesAgendamentoComponent implements OnInit {
     return forkJoin(requisicoes);
   }
 
+  getEditorInstance(editorInstance: any) {
+  }
 
   ngOnInit() {
 
+    this.visualizaAtendimento = !this.util.isNullOrWhitespace(this.appService.retornarUsuarioCorrente().medicoId);
     if (this.agendamento != null && this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
       this.isSpinnerVisible = true;
+
+      this.dataHoraAtendimento = this.util.dataParaString(this.agendamento.dataInicioAtendimento)
+        + " " + this.util.formatarHora(this.agendamento.horaInicialAtendimento) + " até " + this.util.formatarHora(this.agendamento.horaFinalAtendimento);
+
       this.carregarModelos().subscribe(c => {
+        this.editorModel = this.agendamento.descricaoAtendimento;
         this.isSpinnerVisible = false;
       });
     }

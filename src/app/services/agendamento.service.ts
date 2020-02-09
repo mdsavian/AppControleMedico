@@ -12,8 +12,6 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CaixaService } from './caixa.service';
 
 
 @Injectable({
@@ -135,9 +133,15 @@ export class AgendamentoService {
   public tratarCorAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>) {
 
-    if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Pago"]) {
-      agendamento.corFundo = "#656565";
-      agendamento.corLetra = "#656565";
+      console.log(agendamento.situacaoAgendamento == ESituacaoAgendamento["Finalizado"]);
+      
+    if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"]) {
+      agendamento.corFundo = "#006600";
+      agendamento.corLetra = "#006600";
+    }
+    else if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Finalizado"]) {
+      agendamento.corFundo = "#003200";
+      agendamento.corLetra = "#003200";
     }
     else {
       switch (agendamento.tipoAgendamento) {
