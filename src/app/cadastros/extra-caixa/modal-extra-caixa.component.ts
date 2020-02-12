@@ -21,7 +21,6 @@ import { ExtraCaixaService } from '../../services/extraCaixa.service';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
 import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';
-import { runInThisContext } from 'vm';
 
 
 @Component({
@@ -78,14 +77,14 @@ export class ModalExtraCaixaComponent {
           }
         }
       }
-      else
-      {
+      else {
         let pessoa = this.caixaService.retornarPessoaCaixa(this.caixa, this.funcionarios, this.medicos);
-            if (pessoa != null){
-              let caixa =  this.caixas.find(c=> true);              
-              caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
-              this.caixa = caixa;
-            }
+        if (pessoa != null) {
+          let caixa = this.caixas.find(c => true);
+          caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+          this.caixa = caixa;
+        }
+        this.operacao = this.extraCaixa.tipoExtraCaixa == 1 ? "Débito" : "Crédito";
       }
     });
 
@@ -98,11 +97,11 @@ export class ModalExtraCaixaComponent {
     var reqFuncionarios = this.funcionarioService.Todos().map(func => { this.funcionarios = func; });
     var reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(medicos => { this.medicos = medicos; });
 
-    var reqCaixas = this.util.isNullOrWhitespace(this.extraCaixa.id) ? this.caixaService.retornarTodosCaixasAbertos().map(caixas => { this.caixas = caixas; }) : 
-    this.caixaService.buscarPorId(this.extraCaixa.caixaId).map(caixa => { 
-      this.caixas.push(caixa);  
-      this.caixa = caixa;    
-    });
+    var reqCaixas = this.util.isNullOrWhitespace(this.extraCaixa.id) ? this.caixaService.retornarTodosCaixasAbertos().map(caixas => { this.caixas = caixas; }) :
+      this.caixaService.buscarPorId(this.extraCaixa.caixaId).map(caixa => {
+        this.caixas.push(caixa);
+        this.caixa = caixa;
+      });
 
     return forkJoin([reqFuncionarios, reqCaixas, reqFormas, reqMedicos])
   }

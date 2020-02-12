@@ -50,10 +50,10 @@ export class CustomDateFormatter extends CalendarDateFormatter {
           useClass: CustomDateFormatter
         }
       })],
-  declarations: [AgendaComponent, ModalExtraCaixaComponent, AtendimentoAgendamentoComponent, ModalAcoesAgendamentoComponent,
+  declarations: [AgendaComponent, AtendimentoAgendamentoComponent, ModalAcoesAgendamentoComponent,
     ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
   exports: [AgendaComponent],
-  entryComponents: [ModalExtraCaixaComponent, ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
+  entryComponents: [ ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
 })
 
 export class AgendaModule { }

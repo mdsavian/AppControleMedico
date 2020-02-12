@@ -60,7 +60,6 @@ export class DetalhesCaixaComponent implements OnInit {
         this.todosRecebimentos = this.recebimentosAgenda;
 
         this.extrasCaixa.forEach(extra => {
-          console.log("adicionando", extra);
           var agenda = new Agendamento();
 
           agenda.tipoAgendamentoDescricao = ETipoExtraCaixa[extra.tipoExtraCaixa];
@@ -85,14 +84,13 @@ export class DetalhesCaixaComponent implements OnInit {
           soma = +soma + +extra.valor
         });
 
-
-        console.log(this.todosRecebimentos);
-
         this.sourceRecebimentos = new LocalDataSource(this.todosRecebimentos);
         this.totalRecebimentos = this.util.formatarDecimalBlur(soma);
-
+        
         this.pessoas = this.caixaService.listaFuncionarios;
         this.pessoas = this.pessoas.concat(this.caixaService.listaMedicos);
+
+        console.log(this.pessoas);
 
         this.dataAber = this.util.dataParaString(this.caixa.dataAbertura);
         this.dataFech = this.util.dataParaString(this.caixa.dataFechamento);
@@ -100,11 +98,15 @@ export class DetalhesCaixaComponent implements OnInit {
         this.trocoAberturaFormatado = this.util.formatarDecimalBlur(this.caixa.trocoAbertura);
         this.trocoFechamentoFormatado = this.util.formatarDecimalBlur(this.caixa.trocoFechamento);
 
-        if (!this.util.isNullOrWhitespace(this.caixa.usuarioAberturaId))
-          this.nomeUsuarioAbertura = this.pessoas.find(c => c.usuarioId == this.caixa.usuarioAberturaId).nomeCompleto;
+        if (!this.util.isNullOrWhitespace(this.caixa.usuarioAberturaId)){
+          var usuario = this.pessoas.find(c => c.usuarioId == this.caixa.usuarioAberturaId);
+          this.nomeUsuarioAbertura = usuario != null ? usuario.nomeCompleto : "";
+        }
 
-        if (!this.util.isNullOrWhitespace(this.caixa.usuarioFechamentoId))
-          this.nomeUsuarioFechamento = this.pessoas.find(c => c.usuarioId == this.caixa.usuarioFechamentoId).nomeCompleto;
+        if (!this.util.isNullOrWhitespace(this.caixa.usuarioFechamentoId)){
+          var usuario = this.pessoas.find(c => c.usuarioId == this.caixa.usuarioFechamentoId);          
+          this.nomeUsuarioFechamento = usuario != null ? usuario.nomeCompleto : "";
+        }
 
         this.isSpinnerVisible = false;
       });
@@ -131,7 +133,7 @@ export class DetalhesCaixaComponent implements OnInit {
 
     if (this.util.isNullOrWhitespace(recebimento.medicoId) && this.util.isNullOrWhitespace(recebimento.pacienteId)) {
 
-      var extraCaixa = this.extrasCaixa.find(c=> c.id = recebimento.id);
+      var extraCaixa = this.extrasCaixa.find(c=> c.id == recebimento.id);
 
       var modalExtraCaixa = this.modalService.open(ModalExtraCaixaComponent, { size: "lg" });
       modalExtraCaixa.componentInstance.extraCaixa = extraCaixa;
@@ -159,7 +161,7 @@ export class DetalhesCaixaComponent implements OnInit {
       {
         title: 'Médico',
         filter: true,
-        valuePrepareFunction: (medico) => { return medico != null ? medico.nomeCompleto : ""; }
+        valuePrepareFunction: (medico) => { return this.caixa.administrativo ? "Todos" : medico != null ? medico.nomeCompleto : ""; }
       },
       paciente:
       {
