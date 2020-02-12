@@ -13,7 +13,6 @@ import { RouterModule } from '@angular/router';
 import { ModalAdicionaAgendamentoComponent } from './modal-adiciona-agendamento.component'
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 import { ModalCadastroPacienteComponent } from '../cadastros/paciente/modal-cadastro-paciente.component';
-import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-caixa.component';
 import { ModalAcoesAgendamentoComponent } from './modal-acoes-agendamento.component';
 import { AtendimentoAgendamentoComponent } from './atendimento-agendamento.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
