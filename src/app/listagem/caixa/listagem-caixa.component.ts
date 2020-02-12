@@ -30,14 +30,15 @@ export class ListagemCaixaComponent {
 
     this.isSpinnerVisible = true;
     this.buscaModelos().subscribe(c => {
-      this.isSpinnerVisible = false;
-
+      
       this.listaCaixas.forEach(caixa => {
-
-        caixa.nomePessoa = this.caixaService.retornarPessoaCaixa(caixa,this.caixaService.listaFuncionarios, this.caixaService.listaMedicos).nomeCompleto;        
+        var pessoa = this.caixaService.retornarPessoaCaixa(caixa, this.caixaService.listaFuncionarios, this.caixaService.listaMedicos);
+        caixa.nomePessoa = pessoa != null ? pessoa.nomeCompleto : "";
       });
 
       this.source = new LocalDataSource(this.listaCaixas);
+
+      this.isSpinnerVisible = false;
 
     });
   }

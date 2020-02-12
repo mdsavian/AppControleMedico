@@ -17,7 +17,6 @@ export class Funcionario extends Pessoa {
   }
 
   oficioId: string;
-  usuarioId: string;
   oficio: Oficio;
   // usuario: Usuario;
   dataAdmissao: Date;

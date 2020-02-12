@@ -21,6 +21,7 @@ import { ExtraCaixaService } from '../../services/extraCaixa.service';
 import { ModalSucessoComponent } from '../../shared/modal/modal-sucesso.component';
 import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';
+import { runInThisContext } from 'vm';
 
 
 @Component({
@@ -53,6 +54,7 @@ export class ModalExtraCaixaComponent {
   extraCaixa = new ExtraCaixa();
   medicos = new Array<Medico>();
   operacao: string;
+  adicionarEditar = "Adicionar";
 
   constructor(public activeModal: NgbActiveModal, private appService: AppService, private medicoService: MedicoService, private extraCaixaService: ExtraCaixaService,
     private funcionarioService: FuncionarioService, private caixaService: CaixaService, private modalService: NgbModal, private formaPagamentoService: FormaDePagamentoService) { }
@@ -60,22 +62,33 @@ export class ModalExtraCaixaComponent {
   ngOnInit() {
 
     this.alimentarModelos().subscribe(c => {
+      if (this.util.isNullOrWhitespace(this.extraCaixa.id)) {
+        if (this.util.hasItems(this.funcionarios) && this.util.hasItems(this.caixas)) {
+          this.caixas.forEach(caixa => {
+            let pessoa = this.caixaService.retornarPessoaCaixa(caixa, this.funcionarios, this.medicos);
+            if (pessoa != null)
+              caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+          });
 
-      if (this.util.hasItems(this.funcionarios) && this.util.hasItems(this.caixas)) {
-        this.caixas.forEach(caixa => {
-          let pessoa = this.caixaService.retornarPessoaCaixa(caixa, this.funcionarios, this.medicos);
-          if (pessoa != null)
-            caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
-        });
+          var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
 
-        var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
-
-        if (caixaAbertoUsuario != null) {
-          this.caixaUsuario = caixaAbertoUsuario != null;
-          this.caixa = caixaAbertoUsuario;
+          if (caixaAbertoUsuario != null) {
+            this.caixaUsuario = caixaAbertoUsuario != null;
+            this.caixa = caixaAbertoUsuario;
+          }
         }
       }
+      else
+      {
+        let pessoa = this.caixaService.retornarPessoaCaixa(this.caixa, this.funcionarios, this.medicos);
+            if (pessoa != null){
+              let caixa =  this.caixas.find(c=> true);              
+              caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+              this.caixa = caixa;
+            }
+      }
     });
+
   }
 
   alimentarModelos() {
@@ -84,7 +97,12 @@ export class ModalExtraCaixaComponent {
     var reqFormas = this.formaPagamentoService.Todos().map(formas => { this.formasPagamento = formas; });
     var reqFuncionarios = this.funcionarioService.Todos().map(func => { this.funcionarios = func; });
     var reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(medicos => { this.medicos = medicos; });
-    var reqCaixas = this.caixaService.retornarTodosCaixasAbertos().map(caixas => { this.caixas = caixas; });
+
+    var reqCaixas = this.util.isNullOrWhitespace(this.extraCaixa.id) ? this.caixaService.retornarTodosCaixasAbertos().map(caixas => { this.caixas = caixas; }) : 
+    this.caixaService.buscarPorId(this.extraCaixa.caixaId).map(caixa => { 
+      this.caixas.push(caixa);  
+      this.caixa = caixa;    
+    });
 
     return forkJoin([reqFuncionarios, reqCaixas, reqFormas, reqMedicos])
   }

@@ -60,7 +60,14 @@ export class AgendamentoService {
   buscarPagamentoAgendamentoForma(formaPagamentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "BuscarPagamentoAgendamentoForma/" + formaPagamentoId); }
   buscarAgendamentosConvenio(convenioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosConvenio/" + convenioId); }
   buscarAgendamentosProcedimento(procedimentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId); }
-  buscarAgendamentosCaixa(caixa: Caixa) { let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId); return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros); }
+
+  buscarAgendamentosCaixa(caixa: Caixa) {
+    
+     let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId); 
+     console.log(parametros);
+     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros); 
+    }
+
   buscarAgendamentosExame(exameId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId); }
   buscarAgendamentosCirurgia(cirurgiaId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId); }
   buscarAgendamentosFuncionario(funcionarioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId); }

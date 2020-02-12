@@ -13,7 +13,7 @@ export class Pessoa extends Entidade {
     celular: string;
     email: string;
     ativo:boolean;
-    
+    usuarioId: string;
     cep: string;
     endereco: string;
     numero: string;

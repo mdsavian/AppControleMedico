@@ -21,7 +21,7 @@ export class Medico extends Pessoa {
 
   crm: string;
   conveniosId: string[];
-  usuarioId: string;
+  
   especialidadeId: string;
   administrador: boolean;
   clinicasId: string[];

@@ -1,6 +1,6 @@
 <form #extraCaixaForm="ngForm">
     <div class="modal-header">
-        <h4 class="modal-title">Adicionar Extra Caixa - {{operacao}}</h4>
+        <h4 class="modal-title">{{adicionarEditar}} Extra Caixa - {{operacao}}</h4>
     </div>
     <div class="modal-body">
         <div class="row">
@@ -8,7 +8,7 @@
                 <div class="form-group">
                     <label class="control-label" for="Caixa">Caixa(*)</label>
                     <select class="form-control" (change)="selecionaCaixa($event.target.value)" [(ngModel)]="caixa"
-                        #caixaModel="ngModel" id="caixa" name="caixa" required>
+                        #caixaModel="ngModel" id="caixa" name="caixa" required [disabled]="extraCaixa.id">
                         <option *ngFor="let cax of caixas" [ngValue]="cax">
                             {{cax.descricao}}
                         </option>
@@ -34,7 +34,7 @@
         <div class="row rowcadastro">
             <div class="col-xs-12 col-md-12">
                 <label class="control-label" for="descricao">Descrição</label>
-                <textarea id="descricao" name="descricao" placeholder="descrição" required class="form-control"
+                <textarea id="descricao" name="descricao" placeholder="descrição" required class="form-control" [readonly]="extraCaixa.id"
                     [(ngModel)]="extraCaixa.descricao" #descricao="ngModel"></textarea>
                 <div *ngIf="descricao.invalid" class="alert alert-danger">
                     <div *ngIf="descricao.errors.required"> Descrição Obrigatória. </div>
@@ -47,7 +47,7 @@
                 <div class="form-group">
                     <label class="control-label" for="formaPagamento">Forma de Pagamento(*)</label>
                     <select class="form-control" (change)="alteraFormaPagamento()"
-                        [(ngModel)]="extraCaixa.formaPagamentoId" #formaPagamentoModel="ngModel" id="formaPagamento"
+                        [(ngModel)]="extraCaixa.formaPagamentoId" #formaPagamentoModel="ngModel" id="formaPagamento" [disabled]="extraCaixa.id"
                         name="formaPagamento" required>
                         <option *ngFor="let forma of formasPagamento" [ngValue]="forma.id">
                             {{forma.descricao}}
@@ -63,7 +63,7 @@
         <div class="row">
             <div class="col-xs-2 col-md-3">
                 <label class="control-label" for="tipoPagamento">Tipo Pagamento(*)</label>
-                <select class="form-control" (change)="selecionaTipoPagamento($event.target.value)"
+                <select class="form-control" (change)="selecionaTipoPagamento($event.target.value)" [disabled]="extraCaixa.id"
                     [(ngModel)]="vistaPrazo" #tipoPagamento="ngModel" disabled id="tipoPagamento" name="tipoPagamento">
                     <option *ngFor="let codigo of vistaPrazoEnum | enumToArray">
                         {{codigo}}
@@ -74,7 +74,7 @@
             <div class="col-xs-2 col-md-2" *ngIf="visualizaParcela">
                 <label class="control-label" for="parcela">Parcela</label>
                 <div class="input-group">
-                    <input type="number" min="1" id="parcela" name="parcela" class="form-control" required
+                    <input type="number" min="1" id="parcela" name="parcela" class="form-control" required [disabled]="extraCaixa.id"
                         [(ngModel)]="extraCaixa.parcela" #parcela="ngModel">
                 </div>
             </div>
@@ -86,7 +86,7 @@
                         <span class="input-group-text">R$</span>
                     </div>
                     <input type="text" id="valor" mask="dot_separator.2" (blur)="formatarDecimal($event)" name="valor"
-                        placeholder="000,00" class="form-control" required [(ngModel)]="extraCaixa.valor"
+                        placeholder="000,00" class="form-control" required [(ngModel)]="extraCaixa.valor" [readonly]="extraCaixa.id"
                         #valor="ngModel">
                 </div>
                 <div *ngIf="valor.invalid" class="alert alert-danger">
@@ -96,8 +96,8 @@
         </div>
     </div>
 </form>
-<div class="modal-footer">
-    <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
-    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-        [disabled]="(senha != null && (senha.value == '' ||senhaValida))">Salvar</button>
+<div class="modal-footer">    
+    <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" *ngIf="extraCaixa.id"
+        [disabled]="(senha != null && (senha.value == '' ||senhaValida))" >Salvar</button>
+        <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
 </div>

@@ -33,4 +33,9 @@ export class ExtraCaixaService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + extraCaixaId);
   }
 
+  public BuscarPorCaixa(caixaId:string)
+  {
+    return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "buscarPorCaixa/" + caixaId);
+  }
+
 }

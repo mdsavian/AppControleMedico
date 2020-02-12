@@ -22,12 +22,20 @@ import { ModalFechamentoCaixaComponent } from '../../cadastros/caixa/modal-fecha
 import { ModalPagamentoAgendamentoComponent } from '../../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { EnumToArrayPipe } from '../../uteis/enumToArray.pipe'
 import { QuillModule } from 'ngx-quill';
+import { ModalExtraCaixaComponent } from '../../cadastros/extra-caixa/modal-extra-caixa.component';
 
 
 @NgModule({
-  imports: [Ng2SmartTableModule, QuillModule.forRoot(),CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
-  declarations: [BotaoImprimirComponent, EnumToArrayPipe, CorComponent,ModalPagamentoAgendamentoComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
-  entryComponents: [ModalPagamentoAgendamentoComponent,BotaoImprimirComponent, CorComponent, BotaoDownloadComponent, ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
-  exports:[EnumToArrayPipe]
+  imports: [Ng2SmartTableModule, QuillModule.forRoot(), CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
+
+  declarations: [BotaoImprimirComponent, EnumToArrayPipe, CorComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, BotaoDownloadComponent,
+    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent,
+    ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+
+  entryComponents: [ModalPagamentoAgendamentoComponent, BotaoImprimirComponent, ModalExtraCaixaComponent, CorComponent, BotaoDownloadComponent,
+    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent,
+    ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent],
+
+  exports: [EnumToArrayPipe]
 })
 export class SharedModalModule { }
