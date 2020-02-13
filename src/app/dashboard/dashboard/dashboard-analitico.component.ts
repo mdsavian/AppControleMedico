@@ -18,13 +18,6 @@ import { AppService } from '../../services/app.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-export interface Chart {
-  type: ChartType;
-  data: Chartist.IChartistData;
-  options?: any;
-  responsiveOptions?: any;
-  events?: ChartEvent;
-}
 
 @Component({
   templateUrl: './dashboard-analitico.component.html',
@@ -32,8 +25,7 @@ export interface Chart {
 })
 export class DashboardAnaliticoComponent implements OnInit {
 
-  subtitle: string;
-  isSpinnerVisible = false;
+    isSpinnerVisible = false;
   contasReceber: Array<ContaReceber> = new Array<ContaReceber>();
   contasPagar: Array<ContaPagar> = new Array<ContaPagar>();
   medicos: Array<Medico> = new Array<Medico>();
@@ -51,6 +43,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   projecaoLucroBruto = this.util.formatarDecimal(0);
   totalAgendamentosMedicos = this.util.formatarDecimal(0);
 
+  tempoMedioAgendamento = "";
   totalAgendados = 0;
   totalConfirmados = 0;
   totalPagos = 0;
@@ -61,22 +54,6 @@ export class DashboardAnaliticoComponent implements OnInit {
   constructor(private contaPagarService: ContaPagarService, private modalService: NgbModal, private appService: AppService,
     private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService) { }
 
-  public dadosGraficoLinhas: Array<any> = [];
-
-  public labelsGraficoLinhas = new Array<any>();
-  public opcoesGraficoLinhas: any = {
-    lineTension: 1,
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      yAxes: [{
-        ticks: {
-          max: 100,
-          min: 0
-        }
-      }]
-    }
-  };
 
   ngOnInit(): void {
 
@@ -180,15 +157,12 @@ export class DashboardAnaliticoComponent implements OnInit {
     let agendados = new Array<number>();
     let cancelados = new Array<number>();
 
-    this.dadosGraficoLinhas = [];
-
     //inicializa os arrays para começarem em 0, se nã o gráfico começa encima
     confirmados[0] = 0;
     pagos[0] = 0;
     agendados[0] = 0;
     cancelados[0] = 0;
 
-    let maiorValorAxesY = 0;
     for (var i = 1; i <= this.dataHoje.getDate(); i++) {
       confirmados[i] = 0;
       pagos[i] = 0;
@@ -204,47 +178,12 @@ export class DashboardAnaliticoComponent implements OnInit {
         agendados[i] = agendados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Agendado).length;
         cancelados[i] = cancelados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Cancelado).length;
       });
-
-      if (confirmados[i] > maiorValorAxesY)
-        maiorValorAxesY = confirmados[i];
-
-      if (pagos[i] > maiorValorAxesY)
-        maiorValorAxesY = pagos[i];
-
-      if (agendados[i] > maiorValorAxesY)
-        maiorValorAxesY = agendados[i];
-
-      if (cancelados[i] > maiorValorAxesY)
-        maiorValorAxesY = cancelados[i];
     }
 
     this.totalConfirmados = confirmados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalAgendados = agendados.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalPagos = pagos.reduce(function (total, valor) { return total + valor; }, 0);
     this.totalCancelados = cancelados.reduce(function (total, valor) { return total + valor; }, 0);
-    
-    maiorValorAxesY = Math.round(maiorValorAxesY * 1.25) == 0 ? 1 : Math.round(maiorValorAxesY * 1.25);
-    this.opcoesGraficoLinhas = {
-      lineTension: 1,
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        yAxes: [{
-          ticks: {
-            max: maiorValorAxesY,
-            min : 0
-          }
-        }]
-      }
-    };
-
-    this.dadosGraficoLinhas = [
-      { data: agendados, label: 'Agendados(s)' },
-      { data: confirmados, label: 'Confirmado(s)' },
-      { data: pagos, label: 'Pago(s)' },
-      { data: cancelados, label: 'Cancelado(s)' },
-    ];
-
 
   }
 
@@ -289,18 +228,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   buscarDadosDashboard(dataInicio: Date, dataFim: Date) {
     this.isSpinnerVisible = true;
 
-    var diferencaTempo = Math.abs(dataInicio.getTime() - dataFim.getTime());
-    var diferencaDias = Math.ceil(diferencaTempo / (1000 * 3600 * 24));
-
-    this.labelsGraficoLinhas = new Array<any>();
-
-    this.labelsGraficoLinhas[0] = 0;
-    for (var i = 1; i <= diferencaDias; i++) {
-      this.labelsGraficoLinhas[i] = i;
-    }
-
     let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
-
 
       if (dados.length > 1) {
         let medicoTodos = new Medico();
@@ -336,50 +264,13 @@ export class DashboardAnaliticoComponent implements OnInit {
 
     let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
       this.agendamentos = dados;
+      console.log(this.agendamentoService.calcularTempoMedio(dados));
+      this.tempoMedioAgendamento = this.agendamentoService.calcularTempoMedio(dados) + " Minutos";
     });
 
     return Observable.forkJoin([reqContaReceber, reqContaPagar, reqAgendamento, reqMedicos]);
 
   }
-
-  public coresGraficoLinhas: Array<any> = [
-    {
-      // laranja Agendado
-      backgroundColor: 'rgba(255,102,0,0)',
-      borderColor: 'rgba(255,102,0,1)',
-      pointBackgroundColor: 'rgba(255,102,0,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(255,102,0,0.5)'
-    },
-    {
-      // verde Confirmados
-      backgroundColor: 'rgba(0,153,0,0)',
-      borderColor: 'rgba(0,153,0,1)',
-      pointBackgroundColor: 'rgba(0,153,0,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(0,153,0,0.5)'
-    },
-    {
-      // azul Pagos
-      backgroundColor: 'rgba(0,0,255,0)',
-      borderColor: 'rgba(0,0,255,1)',
-      pointBackgroundColor: 'rgba(0,0,255,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(0,0,255,0.5)'
-    },
-    {
-      // vermelho cancelados
-      backgroundColor: 'rgba(255,0,0,0)',
-      borderColor: 'rgba(255,0,0,1)',
-      pointBackgroundColor: 'rgba(255,0,0,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(255,0,0,0.5)'
-    }
-  ];
 
   settingsAgendamentosMedicos = {
     mode: 'external',

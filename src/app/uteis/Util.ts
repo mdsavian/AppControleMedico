@@ -265,4 +265,10 @@ export class Util {
         else return false;
     }
 
+    converteHorarioParaMinutos(horario: string): number {
+        horario = horario.replace(':', "");
+        return parseInt(horario.substr(0, 2)) * 60 + parseInt(horario.substr(2, 2));
+      }
+    
+
 }

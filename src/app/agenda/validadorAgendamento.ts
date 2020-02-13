@@ -18,8 +18,8 @@ export class ValidadorAgendamento {
     
     var data = this.util.stringParaData(dataString);
 
-    var horasMinutosInicialAgendamento = this.converteHorarioParaMinutos(horaInicial);
-    var horasMinutosFinalAgendamento = this.converteHorarioParaMinutos(horaFinal);
+    var horasMinutosInicialAgendamento = this.util.converteHorarioParaMinutos(horaInicial);
+    var horasMinutosFinalAgendamento = this.util.converteHorarioParaMinutos(horaFinal);
 
     if (horasMinutosInicialAgendamento >= horasMinutosFinalAgendamento) {
       erro = "Hora de agendamento inválida.";
@@ -37,10 +37,10 @@ export class ValidadorAgendamento {
         }
 
         
-        var horasMinutoInicioConfiguracao = this.converteHorarioParaMinutos(configuracaoAgendaDias.primeiroHorarioInicial);
-        var horasMinutoFinalConfiguracao = this.converteHorarioParaMinutos(configuracaoAgendaDias.segundoHorarioFinal);
-        var horarioInicioIntervalo = this.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
-        var horarioFimIntervalo = this.converteHorarioParaMinutos(configuracaoAgendaDias.horarioFimIntervalo);
+        var horasMinutoInicioConfiguracao = this.util.converteHorarioParaMinutos(configuracaoAgendaDias.primeiroHorarioInicial);
+        var horasMinutoFinalConfiguracao = this.util.converteHorarioParaMinutos(configuracaoAgendaDias.segundoHorarioFinal);
+        var horarioInicioIntervalo = this.util.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
+        var horarioFimIntervalo = this.util.converteHorarioParaMinutos(configuracaoAgendaDias.horarioFimIntervalo);
 
         if (horasMinutosInicialAgendamento < horasMinutoInicioConfiguracao) {
           erro = "Hora de início do agendamento menor que a hora inicial configurada neste dia.";
@@ -65,9 +65,5 @@ export class ValidadorAgendamento {
     return erro;
   }
 
-  converteHorarioParaMinutos(horario: string): number {
-    horario = horario.replace(':', "");
-    return parseInt(horario.substr(0, 2)) * 60 + parseInt(horario.substr(2, 2));
-  }
-
+  
 }

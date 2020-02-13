@@ -19,14 +19,14 @@ import { Caixa } from '../modelos/caixa';
 })
 
 export class AgendamentoService {
-    
+
 
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
 
-  public agendamento:Agendamento;
-  
+  public agendamento: Agendamento;
+
   constructor(private http: HttpClient,
     private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
@@ -62,11 +62,11 @@ export class AgendamentoService {
   buscarAgendamentosProcedimento(procedimentoId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosProcedimento/" + procedimentoId); }
 
   buscarAgendamentosCaixa(caixa: Caixa) {
-    
-     let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId); 
-     console.log(parametros);
-     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros); 
-    }
+
+    let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId);
+    console.log(parametros);
+    return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros);
+  }
 
   buscarAgendamentosExame(exameId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosExame/" + exameId); }
   buscarAgendamentosCirurgia(cirurgiaId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId); }
@@ -140,8 +140,6 @@ export class AgendamentoService {
   public tratarCorAgendamento(agendamento: Agendamento, exames: Array<Exame>,
     cirurgias: Array<Cirurgia>, procedimentos: Array<Procedimento>) {
 
-      console.log(agendamento.situacaoAgendamento == ESituacaoAgendamento["Finalizado"]);
-      
     if (agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"]) {
       agendamento.corFundo = "#006600";
       agendamento.corLetra = "#006600";
@@ -194,5 +192,19 @@ export class AgendamentoService {
       }
     }
     return agendamento;
+  }
+
+  calcularTempoMedio(agendamentos: Array<Agendamento>) {
+
+    let somaMinutos = 0;
+    agendamentos.forEach(agenda => {
+
+      var horasMinutosInicialAgendamento = this.util.converteHorarioParaMinutos(agenda.horaInicial);
+      var horasMinutosFinalAgendamento = this.util.converteHorarioParaMinutos(agenda.horaFinal);
+      somaMinutos = somaMinutos + horasMinutosFinalAgendamento - horasMinutosInicialAgendamento;
+    })
+
+    var media = (somaMinutos/ agendamentos.length).toFixed(2);
+    return media;
   }
 }

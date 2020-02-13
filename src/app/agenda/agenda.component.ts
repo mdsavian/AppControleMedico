@@ -310,8 +310,8 @@ export class AgendaComponent implements OnInit {
         var horaSegmentoFinal = hora * 60 + minutos + minutosFinal;
         if (configuracaoAgendaDias.horarioInicioIntervalo != null) {
 
-          var horarioInicioIntervalo = this.validadorAgendamento.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
-          var horarioFimIntervalo = this.validadorAgendamento.converteHorarioParaMinutos(configuracaoAgendaDias.horarioFimIntervalo);
+          var horarioInicioIntervalo = this.util.converteHorarioParaMinutos(configuracaoAgendaDias.horarioInicioIntervalo);
+          var horarioFimIntervalo = this.util.converteHorarioParaMinutos(configuracaoAgendaDias.horarioFimIntervalo);
 
           retorno = ((horaSegmentoInicial >= horarioInicioIntervalo && horaSegmentoInicial <= horarioFimIntervalo)
             || (horaSegmentoFinal >= horarioInicioIntervalo && horaSegmentoFinal <= horarioFimIntervalo)
