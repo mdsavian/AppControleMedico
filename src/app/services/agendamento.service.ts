@@ -20,7 +20,6 @@ import { Caixa } from '../modelos/caixa';
 
 export class AgendamentoService {
 
-
   private headers: HttpHeaders;
   private accessPointUrl: string = environment.apiUrl + 'agendamento/';
   private util = new Util();
@@ -203,8 +202,9 @@ export class AgendamentoService {
       var horasMinutosFinalAgendamento = this.util.converteHorarioParaMinutos(agenda.horaFinal);
       somaMinutos = somaMinutos + horasMinutosFinalAgendamento - horasMinutosInicialAgendamento;
     })
-
-    var media = (somaMinutos/ agendamentos.length).toFixed(2);
-    return media;
+    var media = parseFloat((somaMinutos / agendamentos.length).toFixed(2));
+    var minutos = Math.floor(media);
+    var segundos = 60 * (media - minutos);
+    return minutos + ":" + segundos.toFixed(0) ;
   }
 }

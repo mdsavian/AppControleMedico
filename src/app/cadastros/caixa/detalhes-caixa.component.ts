@@ -90,8 +90,6 @@ export class DetalhesCaixaComponent implements OnInit {
         this.pessoas = this.caixaService.listaFuncionarios;
         this.pessoas = this.pessoas.concat(this.caixaService.listaMedicos);
 
-        console.log(this.pessoas);
-
         this.dataAber = this.util.dataParaString(this.caixa.dataAbertura);
         this.dataFech = this.util.dataParaString(this.caixa.dataFechamento);
 

@@ -25,7 +25,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class DashboardAnaliticoComponent implements OnInit {
 
-    isSpinnerVisible = false;
+  isSpinnerVisible = false;
   contasReceber: Array<ContaReceber> = new Array<ContaReceber>();
   contasPagar: Array<ContaPagar> = new Array<ContaPagar>();
   medicos: Array<Medico> = new Array<Medico>();
@@ -46,7 +46,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   tempoMedioAgendamento = "";
   totalAgendados = 0;
   totalConfirmados = 0;
-  totalPagos = 0;
+  totalFinalizados = 0;
   totalCancelados = 0;
   usuario = this.appService.retornarUsuarioCorrente();
 
@@ -61,13 +61,25 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.dataInicial = this.util.dataParaString(primeiroDiaMes);
 
     this.buscarDadosDashboard(primeiroDiaMes, this.dataHoje).subscribe(c => {
-      this.calcularTotais();
-      this.montarGrafico();
-      this.montarListagemMedico();
-
-      this.isSpinnerVisible = false;
+      this.refreshPage();
 
     });
+  }
+
+  montarTooltip() {
+
+    this.totalConfirmados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Confirmado).length;
+    this.totalFinalizados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Finalizado"]).length;
+    this.totalAgendados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Agendado).length;
+    this.totalCancelados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Cancelado).length;
+
+  }
+
+  refreshPage() {
+    this.calcularTotais();
+    this.montarListagemMedico();
+    this.montarTooltip();
+    this.isSpinnerVisible = false;
   }
 
   buscar() {
@@ -89,12 +101,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       this.isSpinnerVisible = true;
 
       this.buscarDadosDashboard(dataInicio, dataFim).subscribe(c => {
-        this.calcularTotais();
-        this.montarGrafico();
-        this.montarListagemMedico();
-
-        this.isSpinnerVisible = false;
-
+        this.refreshPage();
       });
     }
   }
@@ -130,7 +137,7 @@ export class DashboardAnaliticoComponent implements OnInit {
 
       if (agendamentosMedicos.length > 0) {
 
-        agendamentosMedicos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago"]).forEach(agendamento => {
+        agendamentosMedicos.filter(c => this.util.hasItems(c.pagamentos)).forEach(agendamento => {
           agendamento.pagamentos.forEach(pagamento => {
             totalRecebidoAgendamentos = totalRecebidoAgendamentos + pagamento.parcela * pagamento.valor
           });
@@ -151,49 +158,13 @@ export class DashboardAnaliticoComponent implements OnInit {
 
   }
 
-  montarGrafico() {
-    let confirmados = new Array<number>();
-    let pagos = new Array<number>();
-    let agendados = new Array<number>();
-    let cancelados = new Array<number>();
-
-    //inicializa os arrays para começarem em 0, se nã o gráfico começa encima
-    confirmados[0] = 0;
-    pagos[0] = 0;
-    agendados[0] = 0;
-    cancelados[0] = 0;
-
-    for (var i = 1; i <= this.dataHoje.getDate(); i++) {
-      confirmados[i] = 0;
-      pagos[i] = 0;
-      agendados[i] = 0;
-      cancelados[i] = 0;
-
-      this.medicos.forEach(medico => {
-
-        var agendamentosNaData = this.agendamentos.filter((agenda) => new Date(agenda.dataAgendamento).getDate() == i && agenda.medicoId == medico.id);
-
-        confirmados[i] = confirmados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Confirmado).length;
-        pagos[i] = pagos[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago"]).length;
-        agendados[i] = agendados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Agendado).length;
-        cancelados[i] = cancelados[i] + agendamentosNaData.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Cancelado).length;
-      });
-    }
-
-    this.totalConfirmados = confirmados.reduce(function (total, valor) { return total + valor; }, 0);
-    this.totalAgendados = agendados.reduce(function (total, valor) { return total + valor; }, 0);
-    this.totalPagos = pagos.reduce(function (total, valor) { return total + valor; }, 0);
-    this.totalCancelados = cancelados.reduce(function (total, valor) { return total + valor; }, 0);
-
-  }
-
   calcularTotais() {
     let totalAgendamentoPagos = 0;
     let totalContasRebidas = 0;
     let totalContasPagar = 0;
 
     this.medicos.forEach(medico => {
-      var agendamentosPagos = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Pago"] && c.medicoId == medico.id);
+      var agendamentosPagos = this.agendamentos.filter(c => this.util.hasItems(c.pagamentos) && c.medicoId == medico.id);
 
       agendamentosPagos.forEach(agendamento => {
         agendamento.pagamentos.forEach(pagamento => {
@@ -202,7 +173,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       });
     });
 
-    var contasRecebidasPagas = this.contasReceber.filter(c => c.pagamentos != null && c.pagamentos.length > 0);
+    var contasRecebidasPagas = this.contasReceber.filter(c => this.util.hasItems(c.pagamentos));
 
     contasRecebidasPagas.forEach(conta => {
       conta.pagamentos.forEach(pagamento => {
@@ -210,7 +181,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       });
     });
 
-    var contasPagarPagas = this.contasPagar.filter(c => c.pagamentos != null && c.pagamentos.length > 0);
+    var contasPagarPagas = this.contasPagar.filter(c => this.util.hasItems(c.pagamentos));
 
     contasPagarPagas.forEach(conta => {
       conta.pagamentos.forEach(pagamento => {
@@ -243,7 +214,7 @@ export class DashboardAnaliticoComponent implements OnInit {
         else
           this.medico = this.medicos.find(c => c.id == this.medico.id);
       }
-      else{
+      else {
         this.medicos = dados;
         this.medico = this.medicos.find(c => true);
       }
