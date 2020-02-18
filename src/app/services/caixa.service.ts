@@ -56,14 +56,17 @@ export class CaixaService {
     var pessoa = new Pessoa();
     if (!this.util.isNullOrWhitespace(caixa.funcionarioId))
       pessoa = funcionarios.find(c => c.id == caixa.funcionarioId);
-    else pessoa = medicos.find(c => c.id == caixa.medicoId);
+    else if (!this.util.isNullOrWhitespace(caixa.medicoId))
+      pessoa = medicos.find(c => c.id == caixa.medicoId);
 
     return pessoa;
   }
 
   retornarDescricaoCaixa(caixa: Caixa, funcionarios: Array<Funcionario>, medicos: Array<Medico>) {
     let pessoa = this.retornarPessoaCaixa(caixa, funcionarios, medicos);
+
     if (pessoa != null) {
+
       caixa.descricao = pessoa.nomeCompleto;
 
       if (!this.util.isNullOrWhitespace(caixa.dataAbertura))
@@ -72,12 +75,12 @@ export class CaixaService {
       if (!this.util.isNullOrWhitespace(caixa.horaAbertura))
         caixa.descricao = caixa.descricao + " " + this.util.formatarHora(caixa.horaAbertura);
 
-        if (!this.util.isNullOrWhitespace(caixa.dataFechamento))
+      if (!this.util.isNullOrWhitespace(caixa.dataFechamento))
         caixa.descricao = caixa.descricao + " até " + this.util.dataParaString(caixa.dataFechamento);
 
       if (!this.util.isNullOrWhitespace(caixa.horaFechamento))
         caixa.descricao = caixa.descricao + " " + this.util.formatarHora(caixa.horaFechamento);
-    }    
+    }
     return caixa;
   }
 

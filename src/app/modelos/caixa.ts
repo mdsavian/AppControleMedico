@@ -5,6 +5,7 @@ export class Caixa extends Entidade {
 
   constructor() {
     super();
+    this.id = "";
   }
 
   clinicaId: string;

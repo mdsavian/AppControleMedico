@@ -60,6 +60,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   toDate: NgbDate;
   falhaNaBusca = false;
   funcionario = new Funcionario();
+  caixa = new Caixa();
 
   constructor(private contaPagarService: ContaPagarService, private calendar: NgbCalendar, private modalService: NgbModal, private appService: AppService,
     private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService, private caixaService: CaixaService,
@@ -249,7 +250,8 @@ export class DashboardAnaliticoComponent implements OnInit {
       this.contasPagar = dados;
     });
 
-    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
+
+    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id).map(dados => {
       this.agendamentos = dados;
       this.tempoMedioAgendamento = this.util.hasItems(dados) ? this.agendamentoService.calcularTempoMedio(dados) + " Minutos" : "-";
     });
@@ -351,9 +353,17 @@ export class DashboardAnaliticoComponent implements OnInit {
   }
 
   buscaCaixa = (text$: Observable<string>) =>
+
     text$.pipe(
       distinctUntilChanged(),
       map(term => {
+        
+        if (this.util.isNullOrWhitespace(term))
+        {          
+          this.caixa = new Caixa();
+          return false;
+        }
+
         if (this.descricoesCaixas == null) {
           this.falhaNaBusca = true;
           return false;
@@ -363,6 +373,15 @@ export class DashboardAnaliticoComponent implements OnInit {
         return this.descricoesCaixas.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
       })
     )
+
+  selecionaCaixa(item) {
+
+    var caixa = this.caixas.find(c => c.descricao === item.item);
+    if (caixa != null) {
+      this.caixa = caixa;
+    }
+    else this.caixa = new Caixa();
+  }
 
   settingsAgendamentosMedicos = {
     mode: 'external',

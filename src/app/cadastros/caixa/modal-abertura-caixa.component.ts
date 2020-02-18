@@ -51,11 +51,10 @@ export class ModalAberturaCaixaComponent {
       this.pessoas = this.pessoas.concat(this.medicos);
 
       if (!this.util.isNullOrWhitespace(this.usuario.funcionarioId))
-        this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.funcionarioId).id;
+        this.caixa.funcionarioId = this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.funcionarioId).id;
 
       if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
-        this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.medicoId).id;
-
+        this.caixa.medicoId = this.caixa.pessoaId = this.pessoas.find(c => c.id == this.usuario.medicoId).id;
       this.validaCaixaFuncionario();
     });
   }

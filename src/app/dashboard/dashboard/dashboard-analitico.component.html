@@ -58,7 +58,7 @@
                                     <label class="control-label" for="caixaModel">Caixa</label>
                                     <div class="input-group">
                                         <input id="caixaSelecionado" name="caixaSelecionado" type="text"
-                                            (selectItem)="selecionaPaciente($event)"
+                                            (selectItem)="selecionaCaixa($event)"
                                             placeholder="Digite uma data ou o nome do funcionário" [ngbTypeahead]="buscaCaixa" class="form-control" #caixaModel="ngModel"
                                             id="caixaModel" [(ngModel)]="caixaSelecionado">
                                     </div>

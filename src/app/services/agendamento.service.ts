@@ -71,8 +71,8 @@ export class AgendamentoService {
   buscarAgendamentosCirurgia(cirurgiaId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId); }
   buscarAgendamentosFuncionario(funcionarioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId); }
 
-  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId: string) {
-    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId);
+  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId: string, caixaId:string) {
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("caixaId",caixaId);
     return this.http.get<Array<Agendamento>>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
 
   }
