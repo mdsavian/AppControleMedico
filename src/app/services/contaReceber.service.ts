@@ -37,8 +37,8 @@ export class ContaReceberService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + contaReceberId);
   }
 
-  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId:string) {
-    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId);    
+  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId:string, funcionarioId:string) {
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("funcionarioId", funcionarioId);    
     return this.http.get<ContaReceber[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 

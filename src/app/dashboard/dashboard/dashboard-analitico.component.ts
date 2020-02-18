@@ -211,19 +211,14 @@ export class DashboardAnaliticoComponent implements OnInit {
     requisicoes.push(reqCaixas);
 
     let reqFuncionario = this.funcionarioService.Todos().map(funcionarios => {
-      if (funcionarios.length > 1) {
-        let funcionarioTodos = new Funcionario();
-        funcionarioTodos.nomeCompleto = "Todos";
-        funcionarioTodos.id = "";
-        this.funcionarios.push(funcionarioTodos);
 
-        this.funcionarios = this.funcionarios.concat(funcionarios);
-        this.funcionario = this.funcionarios.find(c => c == funcionarioTodos);
-      }
-      else {
-        this.funcionarios = funcionarios;
-        this.funcionario = this.funcionarios.find(c => true);
-      }
+      let funcionarioTodos = new Funcionario();
+      funcionarioTodos.nomeCompleto = "Todos";
+      funcionarioTodos.id = "";
+      this.funcionarios.push(funcionarioTodos);
+
+      this.funcionarios = this.funcionarios.concat(funcionarios);
+      this.funcionario = this.funcionarios.find(c => c == funcionarioTodos);
 
     });
     requisicoes.push(reqFuncionario);
@@ -242,16 +237,16 @@ export class DashboardAnaliticoComponent implements OnInit {
     let dataInicio = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
     let dataFim = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
 
-    let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
+    let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.funcionario.id).map(dados => {
       this.contasReceber = dados;
     });
 
-    let reqContaPagar = this.contaPagarService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
+    let reqContaPagar = this.contaPagarService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.funcionario.id).map(dados => {
       this.contasPagar = dados;
     });
 
 
-    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id).map(dados => {
+    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id).map(dados => {
       this.agendamentos = dados;
       this.tempoMedioAgendamento = this.util.hasItems(dados) ? this.agendamentoService.calcularTempoMedio(dados) + " Minutos" : "-";
     });
@@ -357,9 +352,8 @@ export class DashboardAnaliticoComponent implements OnInit {
     text$.pipe(
       distinctUntilChanged(),
       map(term => {
-        
-        if (this.util.isNullOrWhitespace(term))
-        {          
+
+        if (this.util.isNullOrWhitespace(term)) {
           this.caixa = new Caixa();
           return false;
         }
