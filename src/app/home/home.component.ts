@@ -46,9 +46,9 @@ export class HomeComponent implements OnInit {
           rota = "/agenda/agenda"
           break;
         }
-      case "Dashboard":
+      case "Transações":
         {
-          rota = "/dashboard/dashboardanalitico"
+          rota = "/dashboard/transacoesfinanceiras"
 
           break;
         }

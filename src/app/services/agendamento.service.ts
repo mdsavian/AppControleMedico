@@ -205,6 +205,6 @@ export class AgendamentoService {
     var media = parseFloat((somaMinutos / agendamentos.length).toFixed(2));
     var minutos = Math.floor(media);
     var segundos = 60 * (media - minutos);
-    return minutos + ":" + segundos.toFixed(0) ;
+    return minutos + ":" + ("0" + segundos.toFixed(0)).slice(-2);
   }
-}
+} 

@@ -64,9 +64,7 @@ export class ModalExtraCaixaComponent {
       if (this.util.isNullOrWhitespace(this.extraCaixa.id)) {
         if (this.util.hasItems(this.funcionarios) && this.util.hasItems(this.caixas)) {
           this.caixas.forEach(caixa => {
-            let pessoa = this.caixaService.retornarPessoaCaixa(caixa, this.funcionarios, this.medicos);
-            if (pessoa != null)
-              caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+            caixa = this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos);
           });
 
           var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
@@ -78,12 +76,8 @@ export class ModalExtraCaixaComponent {
         }
       }
       else {
-        let pessoa = this.caixaService.retornarPessoaCaixa(this.caixa, this.funcionarios, this.medicos);
-        if (pessoa != null) {
-          let caixa = this.caixas.find(c => true);
-          caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
-          this.caixa = caixa;
-        }
+
+        this.caixa = this.caixaService.retornarDescricaoCaixa(this.caixa, this.funcionarios, this.medicos);
         this.operacao = this.extraCaixa.tipoExtraCaixa == 1 ? "Débito" : "Crédito";
       }
     });

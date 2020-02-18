@@ -104,8 +104,7 @@ export class ModalPagamentoAgendamentoComponent {
 
           this.caixaService.buscarPorId(caixaId).subscribe(caixa => {
             
-            var pessoa = this.caixaService.retornarPessoaCaixa(caixa,this.funcionarios, this.medicos);
-            caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+            caixa = this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos);
 
             this.caixas.push(caixa);
             this.caixa = this.caixas.find(c => true);
@@ -122,9 +121,7 @@ export class ModalPagamentoAgendamentoComponent {
           if (this.util.hasItems(this.funcionarios) && this.util.hasItems(this.caixas) && this.util.hasItems(this.medicos)) {
 
             this.caixas.forEach(caixa => {
-              var pessoa = this.caixaService.retornarPessoaCaixa(caixa,this.funcionarios, this.medicos);              
-              if (pessoa != null)
-                caixa.descricao = pessoa.nomeCompleto + " - " + this.util.dataParaString(caixa.dataAbertura) + " " + this.util.formatarHora(caixa.horaAbertura);
+              caixa = this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos);
             });
               var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
 

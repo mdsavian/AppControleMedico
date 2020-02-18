@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
             var funcionario = usuario.funcionario;
 
             if (!funcionario.permissaoAdministrador) {
-                if (url == '/dashboard/dashboardanalitico'
+                if (url == '/dashboard/transacoesfinanceiras'
                     || url == '/listagem/listagemcaixa'
                     || url == '/listagem/listagemmedico'
                     || url == '/cadastros/cadastromedico'

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, TemplateRef, Component, OnInit } from '@angular/core';
-import { NgbModal, NgbDateStruct, NgbCalendar, NgbDate, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbDateStruct, NgbCalendar, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DayViewHourSegment } from 'calendar-utils';
 import { CalendarEvent, CalendarEventTitleFormatter, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';

@@ -76,7 +76,7 @@ export class SidebarComponent implements OnInit {
         var funcionario = usuario.funcionario;
 
         if (!funcionario.permissaoAdministrador) {
-          itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Dashboard Analítico");
+          itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Transações Financeiras");
           itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Caixas");
           itensSideBar = this.removeMenu(itensSideBar, "Médico");
           itensSideBar = this.removeMenu(itensSideBar, "Financeiro/Forma de Pagamento");
@@ -387,8 +387,8 @@ export class SidebarComponent implements OnInit {
       extralink: false,
       submenu: [
         {
-          path: '/dashboard/dashboardanalitico',
-          title: 'Dashboard Analítico',
+          path: '/dashboard/transacoesfinanceiras',
+          title: 'Transações Financeiras',
           icon: '',
           class: '',
           label: '',

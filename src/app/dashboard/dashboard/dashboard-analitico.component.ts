@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import * as Chartist from 'chartist';
-import { Observable } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Observable, forkJoin } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
-import { ChartType, ChartEvent } from 'ng-chartist/dist/chartist.component';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { ContaReceberService } from '../../services/contaReceber.service';
 import { ContaPagarService } from '../../services/contaPagar.service';
@@ -16,14 +14,20 @@ import { MedicoService } from '../../services/medico.service';
 import { Medico } from '../../modelos/medico';
 import { AppService } from '../../services/app.service';
 import { ModalErrorComponent } from '../../shared/modal/modal-error.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbModal, NgbDateStruct, NgbCalendar, NgbInputDatepicker, NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { FuncionarioService } from '../../services/funcionario.service';
+import { CaixaService } from '../../services/caixa.service';
+import { Funcionario } from '../../modelos/funcionario';
+import { Caixa } from '../../modelos/caixa';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   templateUrl: './dashboard-analitico.component.html',
   styleUrls: ['./dashboard-analitico.component.css']
 })
 export class DashboardAnaliticoComponent implements OnInit {
+
+  @ViewChild('datePickerNgb', { read: NgbInputDatepicker, static: false }) datePickerNgb: NgbInputDatepicker;
 
   isSpinnerVisible = false;
   contasReceber: Array<ContaReceber> = new Array<ContaReceber>();
@@ -34,34 +38,45 @@ export class DashboardAnaliticoComponent implements OnInit {
   util = new Util();
   dataHoje = new Date();
   sourceAgendamentosMedicos: LocalDataSource;
-  dataInicial = this.util.dataParaString(new Date());
-  dataFinal = this.util.dataParaString(new Date());
-
   totalRecebido = this.util.formatarDecimal(0);
   totalAPagar = this.util.formatarDecimal(0);
   lucroBruto = this.util.formatarDecimal(0);
   projecaoLucroBruto = this.util.formatarDecimal(0);
   totalAgendamentosMedicos = this.util.formatarDecimal(0);
-
+  titulo = "";
   tempoMedioAgendamento = "";
   totalAgendados = 0;
   totalConfirmados = 0;
   totalFinalizados = 0;
   totalCancelados = 0;
   usuario = this.appService.retornarUsuarioCorrente();
+  funcionarios = new Array<Funcionario>();
+  caixas = new Array<Caixa>();
+  descricoesCaixas = new Array<string>();
+  pacienteSelecionado: string;
+  dataPicker: NgbDateStruct;
+  hoveredDate: NgbDate;
+  fromDate: NgbDate;
+  toDate: NgbDate;
+  falhaNaBusca = false;
+  funcionario = new Funcionario();
 
-
-  constructor(private contaPagarService: ContaPagarService, private modalService: NgbModal, private appService: AppService,
-    private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService) { }
-
+  constructor(private contaPagarService: ContaPagarService, private calendar: NgbCalendar, private modalService: NgbModal, private appService: AppService,
+    private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService, private caixaService: CaixaService,
+    private funcionarioService: FuncionarioService) { }
 
   ngOnInit(): void {
+    this.toDate = this.fromDate = new NgbDate(this.dataHoje.getFullYear(), this.dataHoje.getMonth(), this.dataHoje.getDate());
+    this.buscarDadosDashboard().subscribe(c => {
+      this.buscarDadosSecundarios().subscribe(d => {
 
-    var primeiroDiaMes = new Date(this.dataHoje.getFullYear(), this.dataHoje.getMonth(), 1);
-    this.dataInicial = this.util.dataParaString(primeiroDiaMes);
+        this.caixas.forEach(caixa => {
+          caixa = this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos);
+          this.descricoesCaixas.push(caixa.descricao);
+        });
 
-    this.buscarDadosDashboard(primeiroDiaMes, this.dataHoje).subscribe(c => {
-      this.refreshPage();
+        this.refreshPage();
+      });
 
     });
   }
@@ -72,7 +87,6 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.totalFinalizados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento["Finalizado"]).length;
     this.totalAgendados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Agendado).length;
     this.totalCancelados = this.agendamentos.filter(c => c.situacaoAgendamento == ESituacaoAgendamento.Cancelado).length;
-
   }
 
   refreshPage() {
@@ -83,43 +97,13 @@ export class DashboardAnaliticoComponent implements OnInit {
   }
 
   buscar() {
-    let retorno = false;
+    this.isSpinnerVisible = true;
 
-    //transforma 01112019 para 01/11/2019
-    var dataInicioBusca = this.util.formatarData(this.dataInicial);
-    var dataFimBusca = this.util.formatarData(this.dataFinal);
+    this.buscarDadosDashboard().subscribe(c => {
+      this.refreshPage();
+    });
 
-    if (!this.util.validaData(dataInicioBusca) || !this.util.validaData(dataFimBusca) || this.util.stringParaData(dataInicioBusca) > this.util.stringParaData(dataFimBusca)) {
-      var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-      modalErro.componentInstance.mensagemErro = "Data inválida.";
-      retorno = true;
-    }
-
-    if (!retorno) {
-      var dataInicio = this.util.stringParaData(dataInicioBusca);
-      var dataFim = this.util.stringParaData(dataFimBusca);
-      this.isSpinnerVisible = true;
-
-      this.buscarDadosDashboard(dataInicio, dataFim).subscribe(c => {
-        this.refreshPage();
-      });
-    }
   }
-
-  public formataData(e): void {
-    var dataFormatada = "";
-
-    if (!this.util.isNullOrWhitespace(e.target.value))
-      dataFormatada = this.util.formatarDataBlur(e.target.value);
-
-    if (e.target.id == "dataInicio") {
-      this.dataInicial = dataFormatada;
-    }
-    if (e.target.id == "dataFim") {
-      this.dataFinal = dataFormatada;
-    }
-  }
-
   montarListagemMedico() {
     let dados = new Array<any>();
     var totalAgendamentos = 0;
@@ -196,11 +180,10 @@ export class DashboardAnaliticoComponent implements OnInit {
     this.projecaoLucroBruto = this.util.formatarDecimal((lucroBrutoDecimal / this.dataHoje.getDate()) * 30);
   }
 
-  buscarDadosDashboard(dataInicio: Date, dataFim: Date) {
-    this.isSpinnerVisible = true;
+  buscarDadosSecundarios() {
+    var requisicoes = [];
 
-    let reqMedicos = this.medicoService.buscarMedicosPorUsuario().map(dados => {
-
+    let reqMedico = this.medicoService.buscarMedicosPorUsuario().map(dados => {
       if (dados.length > 1) {
         let medicoTodos = new Medico();
         medicoTodos.nomeCompleto = "Todos";
@@ -208,22 +191,55 @@ export class DashboardAnaliticoComponent implements OnInit {
         this.medicos.push(medicoTodos);
 
         this.medicos = this.medicos.concat(dados);
+        this.medico = this.medicos.find(c => c == medicoTodos);
 
-        if (this.medico == null)
-          this.medico = this.medicos.find(c => c == medicoTodos);
-        else
-          this.medico = this.medicos.find(c => c.id == this.medico.id);
       }
       else {
         this.medicos = dados;
         this.medico = this.medicos.find(c => true);
       }
-
       //quando usuário for um médico traz ele selecionado primeiro
       if (!this.util.isNullOrWhitespace(this.usuario.medicoId))
         this.medico = this.medicos.find(c => c.id == this.usuario.medicoId);
+    });
+    requisicoes.push(reqMedico);
+
+    let reqCaixas = this.caixaService.caixasUltimos7dias().map(caixas => {
+      this.caixas = caixas;
+    });
+    requisicoes.push(reqCaixas);
+
+    let reqFuncionario = this.funcionarioService.Todos().map(funcionarios => {
+      if (funcionarios.length > 1) {
+        let funcionarioTodos = new Funcionario();
+        funcionarioTodos.nomeCompleto = "Todos";
+        funcionarioTodos.id = "";
+        this.funcionarios.push(funcionarioTodos);
+
+        this.funcionarios = this.funcionarios.concat(funcionarios);
+        this.funcionario = this.funcionarios.find(c => c == funcionarioTodos);
+      }
+      else {
+        this.funcionarios = funcionarios;
+        this.funcionario = this.funcionarios.find(c => true);
+      }
 
     });
+    requisicoes.push(reqFuncionario);
+
+    return forkJoin(requisicoes);
+  }
+
+  buscarDadosDashboard() {
+    this.isSpinnerVisible = true;
+
+    if (this.fromDate == null || this.toDate == null)
+      return forkJoin();
+
+    this.montaTitulo();
+
+    let dataInicio = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
+    let dataFim = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
 
     let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
       this.contasReceber = dados;
@@ -235,13 +251,118 @@ export class DashboardAnaliticoComponent implements OnInit {
 
     let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id).map(dados => {
       this.agendamentos = dados;
-      console.log(this.agendamentoService.calcularTempoMedio(dados));
-      this.tempoMedioAgendamento = this.agendamentoService.calcularTempoMedio(dados) + " Minutos";
+      this.tempoMedioAgendamento = this.util.hasItems(dados) ? this.agendamentoService.calcularTempoMedio(dados) + " Minutos" : "-";
     });
 
-    return Observable.forkJoin([reqContaReceber, reqContaPagar, reqAgendamento, reqMedicos]);
+    return Observable.forkJoin([reqContaReceber, reqContaPagar, reqAgendamento]);
 
   }
+
+  montaTitulo() {
+
+    let dataInicio = this.fromDate != null ? new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day) : new Date();
+    let dataFim = this.toDate != null ? new Date(this.toDate.year, this.toDate.month, this.toDate.day) : new Date();
+
+    this.titulo = "De " + this.util.dataParaString(dataInicio) + " até " + this.util.dataParaString(dataFim);
+  }
+
+  selecionaDataPicker(date: NgbDate) {
+
+    if (!this.fromDate && !this.toDate) {
+      this.fromDate = date;
+    } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
+      this.toDate = date;
+    } else {
+      this.toDate = null;
+      this.fromDate = date;
+    }
+
+    if (this.fromDate && this.toDate)
+      this.buscar();
+  }
+
+  irParaDatePicker(valor) {
+    if (this.util.validaData(valor)) {
+      var dataPartes = valor.split("/");
+      var dia = parseInt(dataPartes[0]);
+      var mes = dataPartes[1] - 1;
+      var ano = parseInt(dataPartes[2]);
+
+      this.toDate = this.fromDate = new NgbDate(ano, mes, dia);
+
+      this.buscar();
+    }
+    else {
+      var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+      modal.componentInstance.mensagemErro = "Data inválida";
+    }
+  }
+
+  trocarData(acao) {
+    var date = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
+    var toDate = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
+    
+    if (acao == 'Anterior') {
+      date.setDate(date.getDate() - 1);
+    }
+    else {
+      date.setDate(date.getDate() + 1);
+    }
+
+    if (date > toDate) {
+      this.toDate = new NgbDate(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+    else
+      this.fromDate = new NgbDate(date.getFullYear(), date.getMonth(), date.getDate());
+
+
+    this.buscar();
+
+  }
+
+  abrirCalendario() {
+    this.datePickerNgb.navigateTo(this.fromDate);
+    this.fromDate = this.toDate = null;
+    this.datePickerNgb.open();
+  }
+
+  hojeDatePicker() {
+    this.dataPicker = this.calendar.getToday();
+    this.datePickerNgb.navigateTo(this.dataPicker);
+    this.toDate = this.fromDate = new NgbDate(this.dataPicker.year, this.dataPicker.month - 1, this.dataPicker.day);
+
+    this.buscar();
+  }
+
+  fecharCalendario() {
+    this.datePickerNgb.close();
+  }
+
+  isHovered(date: NgbDate) {
+    return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+  }
+
+  isInside(date: NgbDate) {
+    return date.after(this.fromDate) && date.before(this.toDate);
+  }
+
+  isRange(date: NgbDate) {
+    return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
+  }
+
+  buscaCaixa = (text$: Observable<string>) =>
+    text$.pipe(
+      distinctUntilChanged(),
+      map(term => {
+        if (this.descricoesCaixas == null) {
+          this.falhaNaBusca = true;
+          return false;
+        }
+
+        this.falhaNaBusca = this.descricoesCaixas.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10).length == 0;
+        return this.descricoesCaixas.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+      })
+    )
 
   settingsAgendamentosMedicos = {
     mode: 'external',

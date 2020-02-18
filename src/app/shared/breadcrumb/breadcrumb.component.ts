@@ -29,7 +29,7 @@ export class BreadcrumbComponent implements OnInit {
       )
       .subscribe(event => {
         if (this.router.url.indexOf("agenda/agenda") > 0 || this.router.url.indexOf("home/home") > 0 || this.router.url.indexOf("agenda/atendimento") > 0
-          || this.router.url.indexOf("/dashboard/dashboardanalitico") > 0) {
+          || this.router.url.indexOf("dashboard/transacoesfinanceiras") > 0) {
           this.titleService.setTitle("");
           this.pageInfo = null;
         }

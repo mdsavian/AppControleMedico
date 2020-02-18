@@ -48,6 +48,10 @@ export class CaixaService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + caixaId);
   }
 
+  caixasUltimos7dias() {
+    return this.http.get<Array<Caixa>>(this.accessPointUrl + "caixasUltimos7dias/");
+
+  }
   retornarPessoaCaixa(caixa: Caixa, funcionarios: Array<Funcionario>, medicos: Array<Medico>) {
     var pessoa = new Pessoa();
     if (!this.util.isNullOrWhitespace(caixa.funcionarioId))
@@ -55,6 +59,26 @@ export class CaixaService {
     else pessoa = medicos.find(c => c.id == caixa.medicoId);
 
     return pessoa;
+  }
+
+  retornarDescricaoCaixa(caixa: Caixa, funcionarios: Array<Funcionario>, medicos: Array<Medico>) {
+    let pessoa = this.retornarPessoaCaixa(caixa, funcionarios, medicos);
+    if (pessoa != null) {
+      caixa.descricao = pessoa.nomeCompleto;
+
+      if (!this.util.isNullOrWhitespace(caixa.dataAbertura))
+        caixa.descricao = caixa.descricao + " - " + this.util.dataParaString(caixa.dataAbertura);
+
+      if (!this.util.isNullOrWhitespace(caixa.horaAbertura))
+        caixa.descricao = caixa.descricao + " " + this.util.formatarHora(caixa.horaAbertura);
+
+        if (!this.util.isNullOrWhitespace(caixa.dataFechamento))
+        caixa.descricao = caixa.descricao + " até " + this.util.dataParaString(caixa.dataFechamento);
+
+      if (!this.util.isNullOrWhitespace(caixa.horaFechamento))
+        caixa.descricao = caixa.descricao + " " + this.util.formatarHora(caixa.horaFechamento);
+    }    
+    return caixa;
   }
 
 }

@@ -7,13 +7,13 @@ export const DashboardRoutes: Routes = [
     path: '',
     children: [
       {
-        path: 'dashboardanalitico',
+        path: 'transacoesfinanceiras',
         component: DashboardAnaliticoComponent,
         data: {
-          title: 'Dashboard Analítico',
+          title: 'Transações Financeiras',
           urls: [
             { title: 'Dashboard', url: '/dashboard' },
-            { title: 'Dashboard Analítico' }
+            { title: 'Transações Financeiras' }
           ]
         }
       }

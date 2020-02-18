@@ -5,42 +5,85 @@
 <div *ngIf="!isSpinnerVisible">
     <div class="row">
         <div class="col-12">
-            <div class="row">
-                <div class="card col-12">
-                    <div class="card-body">
-                        <div class="row">
-                            
-                            <label style="display: block;" for="dataInicio">Período</label>
-                            <div class="input-group col-md-2">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                </div>
-                                <input type="text" mask="00/00/0000" required id="dataInicio" name="dataInicio"
-                                    placeholder="01/01/1901" class="form-control" [(ngModel)]="dataInicial"
-                                    #dataInicio="ngModel" (blur)="formataData($event)">
+
+            <div class="card col-12">
+                <div class="card-body" style="padding: 0.5rem">
+
+                    <div class="col-md-12">
+                        <div class="row form-group">
+                            <div class="btn-group" style="margin: 0 auto;text-align: center;">
+                                <button class="btn btn-light" style="background-color: transparent;"
+                                    (click)="trocarData('Anterior')">
+                                    <span class="fa fa-backward" title="Anterior"></span>
+                                </button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-light" style="background-color: transparent;"
+                                    (click)="trocarData('Próximo')">
+                                    <span class="fa fa-forward" title="Próximo"></span>
+                                </button>
+                                &nbsp;&nbsp;
+
+                                <input class="form-control" placeholder="yyyy-mm-dd" hidden name="dp"
+                                    [displayMonths]="2" [outsideDays]="visible" [autoClose]="'false'"
+                                    [startDate]="fromDate" [showWeekNumbers]="true" ngbDatepicker [dayTemplate]="t"
+                                    [(ngModel)]="dataPicker" (dateSelect)="selecionaDataPicker($event)"
+                                    #datePickerNgb="ngbDatepicker" [footerTemplate]="footerDatePicker">
+
+                                <button class="btn btn-light" style="background-color: transparent;"
+                                    (click)="abrirCalendario()">
+                                    <span class="fa fa-calendar fa-2x"></span>
+                                </button>
+                                &nbsp;&nbsp;
+                                <h1><strong>{{titulo}}</strong></h1>
                             </div>
 
-                            <label style="display: block;">Até</label>
-                            <div class="input-group col-md-2">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+
+                        <div class="row form-group">
+
+                            <div class="col-xs-5 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label" for="medicoModel">Médico</label>
+                                    <select class="form-control" [(ngModel)]="medico" #medicoModel="ngModel"
+                                        id="medicoModel" name="medicoModel">
+                                        <option *ngFor="let med of medicos" [ngValue]="med">
+                                            {{med.nomeCompleto}}
+                                        </option>
+                                    </select>
                                 </div>
-                                <input type="text" mask="00/00/0000" required id="dataFim" name="dataFim"
-                                    placeholder="01/01/1901" class="form-control" [(ngModel)]="dataFinal"
-                                    #dataFim="ngModel" (blur)="formataData($event)">
                             </div>
 
-                            <label style="display:block;" for="medicoModel">Médico</label>
-                            <div class="col-md-3">
-                                <select class="form-control" [(ngModel)]="medico" #medicoModel="ngModel" id="medicoModel"
-                                    name="medicoModel">
-                                    <option *ngFor="let med of medicos" [ngValue]="med">
-                                        {{med.nomeCompleto}}
-                                    </option>
-                                </select>
+                            <div class="col-xs-5 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label" for="caixaModel">Caixa</label>
+                                    <div class="input-group">
+                                        <input id="caixaSelecionado" name="caixaSelecionado" type="text"
+                                            (selectItem)="selecionaPaciente($event)"
+                                            placeholder="Digite uma data ou o nome do funcionário" [ngbTypeahead]="buscaCaixa" class="form-control" #caixaModel="ngModel"
+                                            id="caixaModel" [(ngModel)]="caixaSelecionado">
+                                    </div>
+                                    <div *ngIf="(falhaNaBusca || caixaModel.invalid)" class="alert alert-warning">
+                                        <div *ngIf="falhaNaBusca">Não foi possível encontrar um caixa com esta busca.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
+                            <div class="col-xs-5 col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label" for="funcionarioModel">Funcionário</label>
+
+                                    <select class="form-control" [(ngModel)]="funcionario" #funcionarioModel="ngModel"
+                                        id="funcionarioModel" name="funcionarioModel">
+                                        <option *ngFor="let func of funcionarios" [ngValue]="func">
+                                            {{func.nomeCompleto}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-1">
+                                <div class="form-group">
+                                    <button class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,3 +240,23 @@
         </div>
     </div>
 </div>
+
+
+<ng-template #t let-date let-focused="focused">
+    <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+        [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+        (mouseleave)="hoveredDate = null">
+        {{ date.day }}
+    </span>
+</ng-template>
+
+<ng-template #footerDatePicker>
+    <hr class="my-0">
+    <button class="btn btn-primary btn-sm m-2 float-left" (click)="hojeDatePicker()">Hoje</button>
+    &nbsp;
+
+    <input type="text" mask="00/00/0000" id="dataIrPara" #dataIrPara placeholder="31/12/2001" class="form-control"
+        style="width: 120px;">
+    <button class="btn btn-primary btn-sm m-2" (click)="irParaDatePicker(dataIrPara.value)">Ir Para</button>
+
+</ng-template>
