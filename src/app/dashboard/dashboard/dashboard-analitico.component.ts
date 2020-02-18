@@ -211,7 +211,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     requisicoes.push(reqCaixas);
 
     let reqFuncionario = this.funcionarioService.Todos().map(funcionarios => {
-
+      
       let funcionarioTodos = new Funcionario();
       funcionarioTodos.nomeCompleto = "Todos";
       funcionarioTodos.id = "";
@@ -294,8 +294,9 @@ export class DashboardAnaliticoComponent implements OnInit {
       modal.componentInstance.mensagemErro = "Data inválida";
     }
   }
-
+  
   trocarData(acao) {
+    console.log(this.fromDate, this.toDate);
     var date = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
     var toDate = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
 
