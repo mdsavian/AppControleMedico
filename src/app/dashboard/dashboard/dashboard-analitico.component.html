@@ -10,7 +10,7 @@
                 <div class="card-body" style="padding: 0.5rem">
 
                     <div class="col-md-12">
-                        <div class="row form-group">
+                        <div class="row form-group" style="margin-bottom: 10px;">
                             <div class="btn-group" style="margin: 0 auto;text-align: center;">
                                 <button class="btn btn-light" style="background-color: transparent;"
                                     (click)="trocarData('Anterior')">
@@ -39,10 +39,10 @@
 
                         </div>
 
-                        <div class="row form-group">
+                        <div class="row form-group" style="margin-bottom: 0px;">
 
                             <div class="col-xs-5 col-md-4">
-                                <div class="form-group">
+                                <div class="form-group" style="margin-bottom: 0px;">
                                     <label class="control-label" for="medicoModel">Médico</label>
                                     <select class="form-control" [(ngModel)]="medico" #medicoModel="ngModel"
                                         id="medicoModel" name="medicoModel">
@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="col-xs-5 col-md-4">
-                                <div class="form-group">
+                                <div class="form-group" style="margin-bottom: 0px;">
                                     <label class="control-label" for="caixaModel">Caixa</label>
                                     <div class="input-group">
                                         <input id="caixaSelecionado" name="caixaSelecionado" type="text"
@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                             <div class="col-xs-5 col-md-3">
-                                <div class="form-group">
+                                <div class="form-group" style="margin-bottom: 0px;">
                                     <label class="control-label" for="funcionarioModel">Funcionário</label>
 
                                     <select class="form-control" [(ngModel)]="funcionario" #funcionarioModel="ngModel"
@@ -81,8 +81,8 @@
                                 </div>
                             </div>
                             <div class="col-xs-4 col-md-1">
-                                <div class="form-group">
-                                    <button class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
+                                <div class="form-group" style="margin-bottom: 0px;">
+                                    <button style="margin-top: 30px;" class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
                                 </div>
                             </div>
                         </div>

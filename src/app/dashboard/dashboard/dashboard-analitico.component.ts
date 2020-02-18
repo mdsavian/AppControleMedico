@@ -267,7 +267,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   }
 
   selecionaDataPicker(date: NgbDate) {
-
+    date.month = date.month - 1;
     if (!this.fromDate && !this.toDate) {
       this.fromDate = date;
     } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
@@ -301,7 +301,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   trocarData(acao) {
     var date = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
     var toDate = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
-    
+
     if (acao == 'Anterior') {
       date.setDate(date.getDate() - 1);
     }
