@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ExtraCaixa } from '../modelos/extraCaixa'
 import { environment } from '../../environments/environment';
 @Injectable({
@@ -36,6 +36,11 @@ export class ExtraCaixaService {
   public BuscarPorCaixa(caixaId:string)
   {
     return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "buscarPorCaixa/" + caixaId);
+  }
+  
+  TodosPorPeriodo(dataInicio: any, dataFinal: any, medicoId:string,caixaId:string, funcionarioId:string) {
+    let parametros = new HttpParams().set("dataInicio", dataInicio).set("dataFinal", dataFinal).set("medicoId", medicoId).set("caixaId",caixaId).set("funcionarioId", funcionarioId);    
+    return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 
 }

@@ -75,6 +75,7 @@ export class CadastroMedicoComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    console.log("opa entrei cadastro medico");
     this.isSpinnerVisible = true;
     this.alimentarModelos().subscribe(c => { this.isSpinnerVisible = false; });
   }

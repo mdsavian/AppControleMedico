@@ -20,6 +20,9 @@ import { CaixaService } from '../../services/caixa.service';
 import { Funcionario } from '../../modelos/funcionario';
 import { Caixa } from '../../modelos/caixa';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { ExtraCaixaService } from '../../services/extraCaixa.service';
+import { ExtraCaixa } from '../../modelos/extraCaixa';
+import { ETipoExtraCaixa } from '../../enums/ETipoExtraCaixa';
 
 @Component({
   templateUrl: './dashboard-analitico.component.html',
@@ -61,8 +64,9 @@ export class DashboardAnaliticoComponent implements OnInit {
   falhaNaBusca = false;
   funcionario = new Funcionario();
   caixa = new Caixa();
+  extrasCaixa = new Array<ExtraCaixa>();
 
-  constructor(private contaPagarService: ContaPagarService, private calendar: NgbCalendar, private modalService: NgbModal, private appService: AppService,
+  constructor(private contaPagarService: ContaPagarService, private calendar: NgbCalendar, private modalService: NgbModal, private appService: AppService, private extraCaixaService: ExtraCaixaService,
     private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService, private caixaService: CaixaService,
     private funcionarioService: FuncionarioService) { }
 
@@ -174,6 +178,13 @@ export class DashboardAnaliticoComponent implements OnInit {
       });
     });
 
+    this.extrasCaixa.forEach(extra => {
+      if (extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Crédito"])
+        totalContasRebidas = totalContasRebidas + extra.parcela * extra.valor
+      else
+        totalContasPagar = totalContasPagar + extra.parcela * extra.valor
+    });
+
     this.totalRecebido = this.util.formatarDecimal(totalContasRebidas + totalAgendamentoPagos);
     this.totalAPagar = this.util.formatarDecimal(totalContasPagar);
     let lucroBrutoDecimal = (totalContasRebidas + totalAgendamentoPagos) - totalContasPagar;
@@ -211,7 +222,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     requisicoes.push(reqCaixas);
 
     let reqFuncionario = this.funcionarioService.Todos().map(funcionarios => {
-      
+
       let funcionarioTodos = new Funcionario();
       funcionarioTodos.nomeCompleto = "Todos";
       funcionarioTodos.id = "";
@@ -245,13 +256,16 @@ export class DashboardAnaliticoComponent implements OnInit {
       this.contasPagar = dados;
     });
 
+    let reqExtraCaixa = this.extraCaixaService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id).map(dados => {
+      this.extrasCaixa = dados;
+    });
 
     let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id).map(dados => {
       this.agendamentos = dados;
       this.tempoMedioAgendamento = this.util.hasItems(dados) ? this.agendamentoService.calcularTempoMedio(dados) + " Minutos" : "-";
     });
 
-    return Observable.forkJoin([reqContaReceber, reqContaPagar, reqAgendamento]);
+    return Observable.forkJoin([reqContaReceber, reqContaPagar, reqAgendamento, reqExtraCaixa]);
 
   }
 
@@ -294,9 +308,8 @@ export class DashboardAnaliticoComponent implements OnInit {
       modal.componentInstance.mensagemErro = "Data inválida";
     }
   }
-  
+
   trocarData(acao) {
-    console.log(this.fromDate, this.toDate);
     var date = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
     var toDate = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
 
