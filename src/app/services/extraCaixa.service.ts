@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ExtraCaixa } from '../modelos/extraCaixa'
 import { environment } from '../../environments/environment';
+import { ContaReceber } from '../modelos/contaReceber';
+import { ContaPagar } from '../modelos/contaPagar';
 @Injectable({
   providedIn: 'root'
 })
@@ -41,6 +43,40 @@ export class ExtraCaixaService {
   TodosPorPeriodo(dataInicio: any, dataFim: any, medicoId:string,caixaId:string, funcionarioId:string) {
     let parametros = new HttpParams().set("dataInicio", dataInicio).set("dataFim", dataFim).set("medicoId", medicoId).set("caixaId",caixaId).set("funcionarioId", funcionarioId);    
     return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
+  }
+
+  converterExtraCaixaContaReceber(extraCaixas:Array<ExtraCaixa>)
+  {
+    let contas = new Array<ContaReceber>();
+
+    extraCaixas.forEach(extra => {
+      let conta = new ContaReceber();
+      conta.usuarioId = extra.usuarioId;
+      conta.dataEmissao = extra.data;
+      conta.valor = extra.parcela * extra.valor;  
+
+      contas.push(conta);
+    });
+
+    return contas;
+    
+  }
+
+  converterExtraCaixaContaPagar(extraCaixas:Array<ExtraCaixa>)
+  {
+    let contas = new Array<ContaPagar>();
+
+    extraCaixas.forEach(extra => {
+      let conta = new ContaPagar();
+      conta.usuarioId = extra.usuarioId;
+      conta.dataEmissao = extra.data;
+      conta.valor = extra.parcela * extra.valor;  
+
+      contas.push(conta);
+    });
+
+    return contas;
+    
   }
 
 }

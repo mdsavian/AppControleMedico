@@ -126,8 +126,6 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
       this.dataEmi = this.util.dataParaString(this.contaReceber.dataEmissao);
       this.dataVenc = this.util.dataParaString(this.contaReceber.dataVencimento);
       this.contaDeAgendamento = !this.util.isNullOrWhitespace(this.contaReceber.agendamentoId);
-
-
     }
     else {
       this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];

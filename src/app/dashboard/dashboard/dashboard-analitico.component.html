@@ -59,7 +59,8 @@
                                     <div class="input-group">
                                         <input id="caixaSelecionado" name="caixaSelecionado" type="text"
                                             (selectItem)="selecionaCaixa($event)"
-                                            placeholder="Digite uma data ou o nome do funcionário" [ngbTypeahead]="buscaCaixa" class="form-control" #caixaModel="ngModel"
+                                            placeholder="Digite uma data ou o nome do funcionário"
+                                            [ngbTypeahead]="buscaCaixa" class="form-control" #caixaModel="ngModel"
                                             id="caixaModel" [(ngModel)]="caixaSelecionado">
                                     </div>
                                     <div *ngIf="(falhaNaBusca || caixaModel.invalid)" class="alert alert-warning">
@@ -82,7 +83,8 @@
                             </div>
                             <div class="col-xs-4 col-md-1">
                                 <div class="form-group" style="margin-bottom: 0px;">
-                                    <button style="margin-top: 30px;" class="btn-success btn-rounded" (click)="buscar()">Buscar</button>
+                                    <button style="margin-top: 30px;" class="btn-success btn-rounded"
+                                        (click)="buscar()">Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -99,10 +101,10 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-row">
-                                <div class="round align-self-center round-success"><i class="ti-wallet"></i></div>
+                                <div class="round align-self-center round-primary"><i class="ti-wallet"></i></div>
                                 <div class="m-l-10 align-self-center">
-                                    <h3 class="m-b-0">{{totalRecebido}}</h3>
-                                    <h5 class="text-muted m-b-0">Total Recebido</h5>
+                                    <h3 class="m-b-0">{{tempoMedioAgendamento}}</h3>
+                                    <h5 class="text-muted m-b-0">Tempo Médio</h5>
                                 </div>
                             </div>
                         </div>
@@ -113,10 +115,10 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-row">
-                                <div class="round align-self-center round-primary"><i class="ti-wallet"></i></div>
+                                <div class="round align-self-center round-success"><i class="ti-wallet"></i></div>
                                 <div class="m-l-10 align-self-center">
-                                    <h3 class="m-b-0">{{tempoMedioAgendamento}}</h3>
-                                    <h5 class="text-muted m-b-0">Tempo Médio</h5>
+                                    <h3 class="m-b-0">{{totalRecebido}}</h3>
+                                    <h5 class="text-muted m-b-0">Total Recebido</h5>
                                 </div>
                             </div>
                         </div>
@@ -143,8 +145,8 @@
                             <div class="d-flex flex-row">
                                 <div class="round align-self-center round-danger"><i class="ti-wallet"></i></div>
                                 <div class="m-l-10 align-self-center">
-                                    <h3 class="m-b-0">{{projecaoLucroBruto}}</h3>
-                                    <h5 class="text-muted m-b-0">Projeção Lucro Bruto</h5>
+                                    <h3 class="m-b-0">{{lucroBruto}}</h3>
+                                    <h5 class="text-muted m-b-0">Lucro Bruto</h5>
                                 </div>
                             </div>
                         </div>
@@ -217,24 +219,70 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div>
-                            <h5 class="card-title">Agendamentos Por Médico</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body bg-light">
-                    <div class="row">
-                        <div class="col-6">
-                            <h4 class="font-light m-t-0">Total Agendamentos</h4>
-                        </div>
-                        <div class="col-6 align-self-center display-6 text-info text-right">{{totalAgendamentosMedicos}}
-                        </div>
-                    </div>
-                </div>
-                <div class="table table-responsive smart-table">
-                    <ng2-smart-table [(settings)]="settingsAgendamentosMedicos" [(source)]="sourceAgendamentosMedicos"
-                        class=""></ng2-smart-table>
+                    <ngb-tabset type="pills" [destroyOnHide]="false">
+                        <ngb-tab title="Agendamentos">
+                            <ng-template ngbTabContent>
+                                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                                    
+                                    <div class="card-body bg-light">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4 class="font-light m-t-0">Total Agendamentos</h4>
+                                            </div>
+                                            <div class="col-6 align-self-center display-6 text-info text-right">
+                                                {{totalAgendamentosMedicos}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table table-responsive smart-table">
+                                        <ng2-smart-table [(settings)]="settingsAgendamentosMedicos"
+                                            [(source)]="sourceAgendamentosMedicos" class=""></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+                        <ngb-tab title="Entradas">
+                            <ng-template ngbTabContent>
+                                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                                    <div class="card-body bg-light">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4 class="font-light m-t-0">Total Entradas</h4>
+                                            </div>
+                                            <div class="col-6 align-self-center display-6 text-info text-right">
+                                                {{totalAgendamentosMedicos}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table table-responsive smart-table">
+                                        <ng2-smart-table [(settings)]="settingsAgendamentosMedicos"
+                                            [(source)]="sourceEntradas" class=""></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+                        <ngb-tab title="Saídas">
+                            <ng-template ngbTabContent>
+                                <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+                                    <div class="card-body bg-light">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4 class="font-light m-t-0">Total Saídas</h4>
+                                            </div>
+                                            <div class="col-6 align-self-center display-6 text-info text-right">
+                                                {{totalAgendamentosMedicos}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table table-responsive smart-table">
+                                        <ng2-smart-table [(settings)]="settingsAgendamentosMedicos"
+                                            [(source)]="sourceSaidas" class=""></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+                    </ngb-tabset>
+                    
                 </div>
             </div>
         </div>

@@ -270,5 +270,12 @@ export class Util {
         return parseInt(horario.substr(0, 2)) * 60 + parseInt(horario.substr(2, 2));
       }
     
+      diferencaDatas(dataInicio,dataFim)
+      {
+        let diff = Math.abs(dataInicio.getTime() - dataFim.getTime()); // Subtrai uma data pela outra
+        let days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+        return days;
+      }
 
 }

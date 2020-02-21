@@ -103,7 +103,7 @@ export class ModalPagamentoAgendamentoComponent {
           this.caixas = new Array<Caixa>();
 
           this.caixaService.buscarPorId(caixaId).subscribe(caixa => {
-            
+
             caixa = this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos);
 
             this.caixas.push(caixa);
@@ -123,12 +123,12 @@ export class ModalPagamentoAgendamentoComponent {
             this.caixas.forEach(caixa => {
               caixa = this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos);
             });
-              var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
+            var caixaAbertoUsuario = this.caixas.find(c => c.pessoaId == this.usuarioCorrente.funcionarioId || c.pessoaId == this.usuarioCorrente.medicoId);
 
-              if (caixaAbertoUsuario != null) {
-                // this.caixaUsuario = caixaAbertoUsuario != null;
-                this.caixa = caixaAbertoUsuario;
-              }
+            if (caixaAbertoUsuario != null) {
+              // this.caixaUsuario = caixaAbertoUsuario != null;
+              this.caixa = caixaAbertoUsuario;
+            }
           }
         }
       }

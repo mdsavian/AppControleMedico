@@ -41,6 +41,8 @@ export class DashboardAnaliticoComponent implements OnInit {
   util = new Util();
   dataHoje = new Date();
   sourceAgendamentosMedicos: LocalDataSource;
+  sourceEntradas: LocalDataSource;
+  sourceSaidas: LocalDataSource;
   totalRecebido = this.util.formatarDecimal(0);
   totalAPagar = this.util.formatarDecimal(0);
   lucroBruto = this.util.formatarDecimal(0);
@@ -178,18 +180,27 @@ export class DashboardAnaliticoComponent implements OnInit {
       });
     });
 
-    this.extrasCaixa.forEach(extra => {
-      if (extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Crédito"])
-        totalContasRebidas = totalContasRebidas + extra.parcela * extra.valor
-      else
+    var extrasDebito = this.extrasCaixa.filter(extra=> extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Débito"]);
+    var extrasCredito = this.extrasCaixa.filter(extra=> extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Crédito"]);
+
+    extrasDebito.forEach(extra => {      
         totalContasPagar = totalContasPagar + extra.parcela * extra.valor
     });
+
+    this.contasPagar.concat(this.extraCaixaService.converterExtraCaixaContaPagar(extrasDebito));
+    this.contasReceber.concat(this.extraCaixaService.converterExtraCaixaContaReceber(extrasCredito));
+
+    extrasCredito.forEach(extra => {
+        totalContasRebidas = totalContasRebidas + extra.parcela * extra.valor
+    });
+
+    this.sourceSaidas = new LocalDataSource(this.contasPagar);
+    this.sourceEntradas = new LocalDataSource(this.contasReceber);
 
     this.totalRecebido = this.util.formatarDecimal(totalContasRebidas + totalAgendamentoPagos);
     this.totalAPagar = this.util.formatarDecimal(totalContasPagar);
     let lucroBrutoDecimal = (totalContasRebidas + totalAgendamentoPagos) - totalContasPagar;
     this.lucroBruto = this.util.formatarDecimal(lucroBrutoDecimal);
-    this.projecaoLucroBruto = this.util.formatarDecimal((lucroBrutoDecimal / this.dataHoje.getDate()) * 30);
   }
 
   buscarDadosSecundarios() {
