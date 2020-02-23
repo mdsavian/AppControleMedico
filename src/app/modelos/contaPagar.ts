@@ -1,6 +1,7 @@
 import { Entidade } from "./entidade";
 import { ContaPagarPagamento } from "./contaPagarPagamento";
 import { ETipoContaPagar } from "../enums/ETipoContaPagar";
+import { Caixa } from "./caixa";
 
 export class ContaPagar extends Entidade {
 
@@ -15,15 +16,19 @@ export class ContaPagar extends Entidade {
   dataEmissao: Date;
   dataVencimento: Date;
   numeroDocumento: string;
-  numeroFatura: number;  
-  jurosMulta:number;
-  desconto:number;
+  numeroFatura: number;
+  jurosMulta: number;
+  desconto: number;
   valor: number;
-  valorTotal:number;
-  saldo:number;
+  valorTotal: number;
+  saldo: number;
   tipoContaPagar: ETipoContaPagar;
   pagamentos: Array<ContaPagarPagamento>;
-  observacao:string;  
+  observacao: string;
+
+  //ignore
+  tipoContaDescricao:string;
+  caixa: Caixa;
 }
 
 

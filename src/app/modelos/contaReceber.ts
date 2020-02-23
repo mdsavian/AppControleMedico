@@ -1,6 +1,7 @@
 import { Entidade } from "./entidade";
 import { ETipoContaReceber } from "../enums/ETipoContaReceber";
 import { ContaReceberPagamento } from "./contaReceberPagamento";
+import { Caixa } from "./caixa";
 
 export class ContaReceber extends Entidade {
 
@@ -25,6 +26,10 @@ export class ContaReceber extends Entidade {
   pagamentos: Array<ContaReceberPagamento>;
   observacao:string;  
   agendamentoId:string;
+  
+  
+  //ignore
+  caixa: Caixa;
   tipoContaDescricao:string;
 
 }

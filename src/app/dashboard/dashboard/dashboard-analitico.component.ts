@@ -67,6 +67,7 @@ export class DashboardAnaliticoComponent implements OnInit {
   funcionario = new Funcionario();
   caixa = new Caixa();
   extrasCaixa = new Array<ExtraCaixa>();
+  totalEntradas: string;
 
   constructor(private contaPagarService: ContaPagarService, private calendar: NgbCalendar, private modalService: NgbModal, private appService: AppService, private extraCaixaService: ExtraCaixaService,
     private medicoService: MedicoService, private contaReceberService: ContaReceberService, private agendamentoService: AgendamentoService, private caixaService: CaixaService,
@@ -169,6 +170,7 @@ export class DashboardAnaliticoComponent implements OnInit {
     contasRecebidasPagas.forEach(conta => {
       conta.pagamentos.forEach(pagamento => {
         totalContasRebidas = totalContasRebidas + pagamento.parcela * pagamento.valor
+        conta.valor = pagamento.parcela * pagamento.valor;
       });
     });
 
@@ -177,26 +179,28 @@ export class DashboardAnaliticoComponent implements OnInit {
     contasPagarPagas.forEach(conta => {
       conta.pagamentos.forEach(pagamento => {
         totalContasPagar = totalContasPagar + pagamento.parcela * pagamento.valor
+        conta.valor = pagamento.parcela * pagamento.valor;
       });
     });
 
-    var extrasDebito = this.extrasCaixa.filter(extra=> extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Débito"]);
-    var extrasCredito = this.extrasCaixa.filter(extra=> extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Crédito"]);
+    var extrasDebito = this.extrasCaixa.filter(extra => extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Débito"]);
+    var extrasCredito = this.extrasCaixa.filter(extra => extra.tipoExtraCaixa == ETipoExtraCaixa["Extra Crédito"]);
 
-    extrasDebito.forEach(extra => {      
-        totalContasPagar = totalContasPagar + extra.parcela * extra.valor
+    extrasDebito.forEach(extra => {
+      totalContasPagar = totalContasPagar + extra.parcela * extra.valor
     });
-
-    this.contasPagar.concat(this.extraCaixaService.converterExtraCaixaContaPagar(extrasDebito));
-    this.contasReceber.concat(this.extraCaixaService.converterExtraCaixaContaReceber(extrasCredito));
 
     extrasCredito.forEach(extra => {
-        totalContasRebidas = totalContasRebidas + extra.parcela * extra.valor
+      totalContasRebidas = totalContasRebidas + extra.parcela * extra.valor
     });
+
+    this.contasPagar = this.contasPagar.concat(this.extraCaixaService.converterExtraCaixaContaPagar(extrasDebito));
+    this.contasReceber = this.contasReceber.concat(this.extraCaixaService.converterExtraCaixaContaReceber(extrasCredito));
 
     this.sourceSaidas = new LocalDataSource(this.contasPagar);
     this.sourceEntradas = new LocalDataSource(this.contasReceber);
 
+    this.totalEntradas = this.util.formatarDecimal(totalContasRebidas);
     this.totalRecebido = this.util.formatarDecimal(totalContasRebidas + totalAgendamentoPagos);
     this.totalAPagar = this.util.formatarDecimal(totalContasPagar);
     let lucroBrutoDecimal = (totalContasRebidas + totalAgendamentoPagos) - totalContasPagar;
@@ -422,6 +426,57 @@ export class DashboardAnaliticoComponent implements OnInit {
       mediaAgendamento: {
         title: 'Média por Agendamento',
         valuePrepareFunction: (mediaAgendamento) => { return this.util.formatarDecimal(mediaAgendamento) },
+        filter: false
+      }
+    },
+    actions:
+    {
+      columnTitle: '',
+      delete: false,
+      add: false,
+      edit: false
+    }
+  };
+
+  settingsEntradasSaidas = {
+    mode: 'external',
+    noDataMessage: "Não foi encontrado nenhum registro",
+    columns: {
+      medicoId: {
+        title: 'Médico',
+        filter: true,
+        valuePrepareFunction: (medicoId) => {
+
+          console.log(this.medicos, medicoId);
+          
+          if (this.util.isNullOrWhitespace(medicoId) || !this.util.hasItems(this.medicos))
+            return "Todos";
+          else {
+
+            var medico = this.medicos.find(c => c.id == medicoId);
+            if (medico != null)
+              return medico.nomeCompleto;
+            else return "";
+          }
+        }
+      },
+      caixa: {
+        title: 'Caixa',
+        filter: true,
+        valuePrepareFunction: (caixa) => {          
+          return caixa != null && caixa != "" ? this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos).descricao : "";
+        }
+      },
+      dataEmissao: {
+        title: 'Emissão',
+        filter: true,
+        valuePrepareFunction: (dataEmissao) => { return this.util.dataParaString(dataEmissao) }
+      },
+      valor: {
+        title: 'Valor',
+        valuePrepareFunction: (valor) => {
+          return this.util.formatarDecimal(valor)
+        },
         filter: false
       }
     },

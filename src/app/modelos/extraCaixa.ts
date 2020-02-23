@@ -1,6 +1,7 @@
 import { Entidade } from "./entidade";
 import { ETipoExtraCaixa } from "../enums/ETipoExtraCaixa";
 import { EVistaPrazo } from "../enums/EVistaPrazo";
+import { Caixa } from "./caixa";
 
 export class ExtraCaixa extends Entidade {
 
@@ -19,6 +20,7 @@ export class ExtraCaixa extends Entidade {
   vistaPrazo:EVistaPrazo;
   parcela:number;
   tipoExtraCaixa: ETipoExtraCaixa;
+  caixa:Caixa;
 }
 
 

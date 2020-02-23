@@ -54,6 +54,8 @@ export class ExtraCaixaService {
       conta.usuarioId = extra.usuarioId;
       conta.dataEmissao = extra.data;
       conta.valor = extra.parcela * extra.valor;  
+      conta.caixa = extra.caixa;
+      conta.tipoContaDescricao = "Extra Débito";
 
       contas.push(conta);
     });
@@ -71,6 +73,8 @@ export class ExtraCaixaService {
       conta.usuarioId = extra.usuarioId;
       conta.dataEmissao = extra.data;
       conta.valor = extra.parcela * extra.valor;  
+      conta.caixa = extra.caixa;
+      conta.tipoContaDescricao = "Extra Crédito";
 
       contas.push(conta);
     });
