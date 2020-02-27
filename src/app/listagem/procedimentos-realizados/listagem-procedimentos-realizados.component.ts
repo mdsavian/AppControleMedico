@@ -12,7 +12,7 @@ import { forkJoin } from 'rxjs';
 import { Agendamento } from '../../modelos/agendamento';
 import { PacienteService } from '../../services/paciente.service';
 import { ModalDetalhesAgendamentoComponent } from '../../agenda/modal-detalhes-agendamento.component';
-import { BotaoAdicionarPagamentoComponent } from './botao-adicionar-pagamento-component';
+import { BotaoAdicionarPagamentoComponent } from '../../shared/components/botao-adicionar-pagamento-component';
 import { ModalPagamentoAgendamentoComponent } from '../../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { CaixaService } from '../../services/caixa.service';
 import { FormaDePagamentoService } from '../../services/forma-de-pagamento.service';
@@ -20,7 +20,6 @@ import { FormaDePagamento } from '../../modelos/formaDePagamento';
 
 @Component({
   templateUrl: './listagem-procedimentos-realizados.component.html',
-  styleUrls: ['./botao-adicionar-pagamento-component.css'],
 
 })
 export class ListagemProcedimentosRealizadosComponent implements OnInit {

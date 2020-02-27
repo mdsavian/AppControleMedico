@@ -106,12 +106,11 @@ export class DashboardAnaliticoComponent implements OnInit {
 
   buscar() {
     this.isSpinnerVisible = true;
-
     this.buscarDadosDashboard().subscribe(c => {
       this.refreshPage();
     });
-
   }
+
   montarListagemMedico() {
     let dados = new Array<any>();
     var totalAgendamentos = 0;
@@ -121,7 +120,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       if (this.medico != null && !this.util.isNullOrWhitespace(this.medico.id) && medico.id != this.medico.id)
         return;
 
-      let agendamentosMedicos = this.agendamentos.filter(c => c.medicoId == medico.id);
+      let agendamentosMedicos = this.agendamentos.filter(c => c.medicoId == medico.id || this.util.isNullOrWhitespace(medico.id));  //médico todos
 
       let totalRecebidoAgendamentos = 0;
       let mediaAgendamento = 0;
@@ -139,9 +138,11 @@ export class DashboardAnaliticoComponent implements OnInit {
         mediaAgendamento = totalRecebidoAgendamentos > 0 && quantidadeAgendamentos > 0 ? totalRecebidoAgendamentos / quantidadeAgendamentos : 0;
       }
 
-      totalAgendamentos = totalAgendamentos + totalRecebidoAgendamentos;
+      if (!this.util.isNullOrWhitespace(medico.id)) //médico todos
+        totalAgendamentos = totalAgendamentos + totalRecebidoAgendamentos;
 
-      dados.push({ nomeMedico: medico.nomeCompleto, quantidadeAgendamentos: quantidadeAgendamentos, total: totalRecebidoAgendamentos, mediaAgendamento: mediaAgendamento })
+      if (quantidadeAgendamentos > 0)
+        dados.push({ medicoId: medico.id, nomeMedico: medico.nomeCompleto, quantidadeAgendamentos: quantidadeAgendamentos, total: totalRecebidoAgendamentos, mediaAgendamento: mediaAgendamento })
     });
 
     this.totalAgendamentosMedicos = this.util.formatarDecimal(totalAgendamentos);
@@ -406,6 +407,15 @@ export class DashboardAnaliticoComponent implements OnInit {
     else this.caixa = new Caixa();
   }
 
+  visualizarAgendamentosMedico(e: any) {
+    var agendamentosMedico = this.agendamentos.find(c => c.medicoId == e.medicoId);
+
+    console.log(agendamentosMedico);
+
+    
+
+  }
+
   settingsAgendamentosMedicos = {
     mode: 'external',
     noDataMessage: "Não foi encontrado nenhum registro",
@@ -429,12 +439,16 @@ export class DashboardAnaliticoComponent implements OnInit {
         filter: false
       }
     },
+    edit: {
+      editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+      cancelButtonContent: '<i class="ti-close text-danger"></i>',
+    },
     actions:
     {
       columnTitle: '',
       delete: false,
       add: false,
-      edit: false
     }
   };
 
@@ -447,8 +461,6 @@ export class DashboardAnaliticoComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (medicoId) => {
 
-          console.log(this.medicos, medicoId);
-          
           if (this.util.isNullOrWhitespace(medicoId) || !this.util.hasItems(this.medicos))
             return "Todos";
           else {
@@ -463,7 +475,7 @@ export class DashboardAnaliticoComponent implements OnInit {
       caixa: {
         title: 'Caixa',
         filter: true,
-        valuePrepareFunction: (caixa) => {          
+        valuePrepareFunction: (caixa) => {
           return caixa != null && caixa != "" ? this.caixaService.retornarDescricaoCaixa(caixa, this.funcionarios, this.medicos).descricao : "";
         }
       },

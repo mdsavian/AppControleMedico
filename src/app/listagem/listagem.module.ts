@@ -27,7 +27,6 @@ import { ListagemTimelineComponent } from './timeline/listagem-timeline.componen
 import { ListagemCaixaComponent } from './caixa/listagem-caixa.component';
 import { ListagemModeloPrescricaoComponent } from './modelo-prescricao/listagem-modelo-prescricao.component';
 import { ListagemProcedimentosRealizadosComponent } from './procedimentos-realizados/listagem-procedimentos-realizados.component';
-import { BotaoAdicionarPagamentoComponent } from './procedimentos-realizados/botao-adicionar-pagamento-component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { SharedModalModule } from '../shared/modal/shared-modal.module';
 
@@ -46,9 +45,8 @@ import { SharedModalModule } from '../shared/modal/shared-modal.module';
   declarations: [
     ListagemMedicoComponent, ListagemPacienteComponent, ListagemModeloPrescricaoComponent,ListagemProcedimentosRealizadosComponent, TimelineComponent, ListagemTimelineComponent, ListagemCaixaComponent, ListagemContaPagarComponent, ListagemContaReceberComponent, ListagemFornecedorComponent, ListagemFormaDePagamentoComponent, ListagemExameComponent, ListagemCirurgiaComponent, ListagemLocalComponent,
     ListagemConvenioComponent, ListagemProntuarioComponent, TimelineComponent, ListagemTimelineComponent, ListagemFuncionarioComponent, ListagemClinicaComponent, ListagemOficioComponent, ListagemEspecialidadeComponent,
-    ListagemProcedimentoComponent,BotaoAdicionarPagamentoComponent
-  ],
-  entryComponents:[BotaoAdicionarPagamentoComponent]
+    ListagemProcedimentoComponent
+  ]
 
 })
 export class ListagemModule { }

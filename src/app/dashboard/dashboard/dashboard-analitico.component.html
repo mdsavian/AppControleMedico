@@ -235,7 +235,7 @@
                                         </div>
                                     </div>
                                     <div class="table table-responsive smart-table">
-                                        <ng2-smart-table [(settings)]="settingsAgendamentosMedicos"
+                                        <ng2-smart-table [(settings)]="settingsAgendamentosMedicos" (edit)="visualizarAgendamentosMedico($event)"
                                             [(source)]="sourceAgendamentosMedicos" class=""></ng2-smart-table>
                                     </div>
                                 </div>
@@ -275,7 +275,7 @@
                                         </div>
                                     </div>
                                     <div class="table table-responsive smart-table">
-                                        <ng2-smart-table [(settings)]="settingsEntradasSaidas"
+                                        <ng2-smart-table [(settings)]="settingsEntradasSaidas" 
                                             [(source)]="sourceSaidas" class=""></ng2-smart-table>
                                     </div>
                                 </div>
@@ -308,3 +308,4 @@
     <button class="btn btn-primary btn-sm m-2" (click)="irParaDatePicker(dataIrPara.value)">Ir Para</button>
 
 </ng-template>
+
