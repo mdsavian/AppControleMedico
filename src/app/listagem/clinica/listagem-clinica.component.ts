@@ -94,7 +94,8 @@ export class ListagemClinicaComponent {
 
       },
       ativo: {
-        title: 'ativo'
+        title: 'ativo',
+        valuePrepareFunction: (ativo) => { return ativo ? "Sim" :"Não"; }
       }
     },
     actions:

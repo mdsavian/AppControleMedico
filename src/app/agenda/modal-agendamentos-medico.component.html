@@ -6,30 +6,29 @@
 
     <div class="modal-header" [hidden]=isSpinnerVisible>
         <h4 class="modal-title">{{tituloTela}}</h4>
-    </div>              
+        <button type="button" class="close" aria-label="Fechar" (click)="activeModal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 
     <div class="modal-body" [hidden]=isSpinnerVisible>
-        <ngb-tabset type="pills" [destroyOnHide]="false" #tabSet>
-            <ngb-tab title="Informações" id="tabInfo">
-                <ng-template ngbTabContent>
-                    <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
-                        <div class="row rowcadastro">
-                            <div class="col-xs-12 col-md-12">                                
-                                <div class="table table-responsive smart-table" *ngIf=!isSpinnerVisible>
-                                    <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
-                                        (edit)="editarRegistro($event)" (create)="criarRegistro()" (delete)="deletarRegistro($event)">
-                                    </ng2-smart-table>
-                                </div>
-                            </div>
-                        </div>                       
+        <div id="tab_1" style="margin-top: 10px;" class="container col-sm-12 col-md-12">
+            <div class="row rowcadastro">
+                <div class="col-xs-12 col-md-12">
+                    <div class="table table-responsive smart-table" *ngIf=!isSpinnerVisible>
+                        <ng2-smart-table [(settings)]="settings" [(source)]="source" class=""
+                            (edit)="editarRegistro($event)" (create)="criarRegistro()"
+                            (delete)="deletarRegistro($event)">
+                        </ng2-smart-table>
                     </div>
-                </ng-template>
-            </ngb-tab>
-        </ngb-tabset>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer" [hidden]=isSpinnerVisible>
-        <button style="width:30%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Fechar</button>
+        <button style="width:30%" (click)="activeModal.close()" class="btn btn-rounded btn-warning"
+            type="submit">Fechar</button>
     </div>
 
 </form>

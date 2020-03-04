@@ -16,3 +16,9 @@
   .custom-day.faded {
     background-color: rgba(2, 117, 216, 0.5);
   }
+
+  ::ng-deep .modal-xl .modal-dialog {
+    width: 90%;
+   max-width:1200px;
+   min-width: 768px;
+  }

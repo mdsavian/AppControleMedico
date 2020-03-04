@@ -314,7 +314,7 @@ export class CadastroMedicoComponent implements OnInit {
       var modal = this.modalService.open(ModalAlteraSenhaComponent, { windowClass: "modal-holder" });
 
       modal.result.then((alteraSenha) => {
-        alteraSenha.usuarioId = this.usuario.id;
+        alteraSenha.usuarioId = this.medico.usuarioId;
         this.usuarioService.alterarSenha(alteraSenha).subscribe(c => {
 
           if (c == null) {

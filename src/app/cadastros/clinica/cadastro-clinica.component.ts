@@ -52,7 +52,7 @@ export class CadastroClinicaComponent implements OnInit, AfterViewInit {
   }
 
   public buscaCep() {
-    if (this.clinica.cep != "") {
+    if (!this.util.isNullOrWhitespace(this.clinica.cep)) {
       this.enderecoService.buscarEndereco(this.clinica.cep).subscribe(c => {
         this.clinica.cep = c.cep;
         this.clinica.bairro = c.bairro;

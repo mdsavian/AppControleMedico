@@ -87,15 +87,14 @@ export class ListagemFuncionarioComponent implements OnInit{
           title: 'Nome', 
           filter: true
         },   
-        dataAdmissao: {
-          title: 'Data De Admissão',
-          filter: false,
-          valuePrepareFunction: (data) => {this.util.dataParaString(data) }
+        email: {
+          title: 'Email',
+          filter: true,          
         },
-        dataDemissao: {
-          title: 'Data De Admissão',
-          filter: false,
-          valuePrepareFunction: (data) => {this.util.dataParaString(data) }
+        celular: {
+          title: 'Celular',
+          filter: true,
+          valuePrepareFunction: (valor) => { return this.util.formataCelular(valor) }
         },    
         ativo: {
           title: 'Ativo',

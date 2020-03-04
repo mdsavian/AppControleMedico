@@ -94,19 +94,12 @@ export class AgendaComponent implements OnInit {
     this.isSpinnerVisible = true;
 
     this.buscarModelosNovoAgendamento().subscribe(c => {
-      if (this.medicos.find(c => !this.util.isNullOrWhitespace(c.fotoId)) != null) {
 
-        this.buscarFotoMedicos().subscribe(c => {
-
-          this.isSpinnerVisible = false;
-          this.refreshPage();
-
-        });
-      }
-      else {
+      this.buscarFotoMedicos().subscribe(c => {
         this.isSpinnerVisible = false;
         this.refreshPage();
-      }
+
+      });
     });
   }
 
@@ -173,18 +166,24 @@ export class AgendaComponent implements OnInit {
     let reqFotos = [];
 
     this.medicos.forEach(medico => {
-
       if (!this.util.isNullOrWhitespace(medico.fotoId)) {
         let reqFoto = this.uploadService.downloadImagem(medico.id, "medico").map(byte => {
           medico.foto = "data:image/jpeg;base64," + byte['value'];
         });
         reqFotos.push(reqFoto);
       }
-      else
+      else {
         medico.foto = '../../assets/images/fotoCadastro.jpg';
+      }
     });
 
-    return forkJoin(reqFotos);
+    if (reqFotos.length > 0)
+      return forkJoin(reqFotos);
+    else {
+      this.isSpinnerVisible = false;
+      this.refreshPage();
+    }
+
   }
 
   tratarMedicosParaBuscaAgendamento() {
@@ -441,7 +440,7 @@ export class AgendaComponent implements OnInit {
 
   actionAgendamento(evento: CalendarEvent) {
 
-    console.log("actionAgendamento", evento );
+    console.log("actionAgendamento", evento);
 
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
@@ -498,9 +497,9 @@ export class AgendaComponent implements OnInit {
                     agendamento.situacaoAgendamento = ESituacaoAgendamento["Em Atendimento"];
                     agendamento.corFundo = agendamento.corLetra = "#006600";
 
-                    this.agendamentoService.salvar(agendamento).subscribe(agendamentoRetorno=> {
+                    this.agendamentoService.salvar(agendamento).subscribe(agendamentoRetorno => {
                       this.converteEAdicionaAgendamentoEvento(new Array<Agendamento>().concat(agendamentoRetorno))
-                      this.agendamentoService.agendamento = agendamentoRetorno;  
+                      this.agendamentoService.agendamento = agendamentoRetorno;
                       this.router.navigate(['/agenda/atendimento']);
                     });
                   }

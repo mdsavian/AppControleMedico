@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgendamentoService } from '../services/agendamento.service';
 import { Util } from '../uteis/Util';
 import { ModalErrorComponent } from '../shared/modal/modal-error.component';
@@ -11,13 +11,12 @@ import { BotaoAdicionarPagamentoComponent } from '../shared/components/botao-adi
 import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pagamento/modal-pagamento-agendamento.component';
 import { CaixaService } from '../services/caixa.service';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
+import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
 
 @Component({
-  templateUrl: './listagem-procedimentos-realizados.component.html',
-  styleUrls: ['./botao-adicionar-pagamento-component.css'],
-
+  templateUrl: './modal-agendamentos-medico.component.html'
 })
-export class ListagemProcedimentosRealizadosComponent implements OnInit {
+export class ModalAgendamentosMedicoComponent implements OnInit {
   source: LocalDataSource;
   public isSpinnerVisible = false;
   closeResult: string;
@@ -29,12 +28,24 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
   medico: Medico = new Medico();
   agendamentos: Array<Agendamento>;
   formaDePagamentos = new Array<FormaDePagamento>();
+  tituloTela = "";
 
-  constructor(private agendamentoService: AgendamentoService,private caixaService:CaixaService, private modalService: NgbModal) {
+  constructor(public activeModal: NgbActiveModal,private agendamentoService: AgendamentoService,private formaPagamentoService: FormaDePagamentoService,private caixaService:CaixaService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
-    this.source = new LocalDataSource(this.agendamentos);
+
+    this.formaPagamentoService.Todos().subscribe(formas => {
+      this.formaDePagamentos = formas;
+    });
+    
+    this.agendamentos = this.agendamentos.sort((val1, val2)=> {return <any>val1.dataAgendamento - <any>val2.dataAgendamento});
+      
+    var medico = this.agendamentos.find(c=> true).medico;
+    this.tituloTela = "Agendamentos " + medico.nomeCompleto;
+
+    if (this.util.hasItems(this.agendamentos))
+      this.source = new LocalDataSource(this.agendamentos);
     
   } 
 
@@ -52,14 +63,6 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
         title: 'Data',
         filter: true,
         valuePrepareFunction: (dataAgendamento) => { return this.util.dataParaString(dataAgendamento) }
-      },
-      medico: {
-        title: 'Médico',
-        filter: true,
-        valuePrepareFunction: (medico) => { return medico != null ? medico.nomeCompleto : "" },
-        filterFunction: (cell?: any, search?: string) => {
-          return cell.nomeCompleto.toUpperCase().indexOf(search.toUpperCase()) >= 0;
-        }
       },
       paciente: {
         title: 'Paciente',

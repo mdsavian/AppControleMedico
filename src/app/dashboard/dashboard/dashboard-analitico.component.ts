@@ -23,6 +23,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ExtraCaixaService } from '../../services/extraCaixa.service';
 import { ExtraCaixa } from '../../modelos/extraCaixa';
 import { ETipoExtraCaixa } from '../../enums/ETipoExtraCaixa';
+import { ModalAgendamentosMedicoComponent } from '../../agenda/modal-agendamentos-medico.component';
 
 @Component({
   templateUrl: './dashboard-analitico.component.html',
@@ -408,12 +409,12 @@ export class DashboardAnaliticoComponent implements OnInit {
   }
 
   visualizarAgendamentosMedico(e: any) {
-    var agendamentosMedico = this.agendamentos.find(c => c.medicoId == e.medicoId);
+    if (!this.util.isNullOrWhitespace(e.data.medicoId)) {
+      var agendamentosMedico = this.agendamentos.filter(c => c.medicoId == e.data.medicoId);
 
-    console.log(agendamentosMedico);
-
-    
-
+      var modal = this.modalService.open(ModalAgendamentosMedicoComponent, { windowClass: 'modal-xl' });
+      modal.componentInstance.agendamentos = agendamentosMedico;
+    }
   }
 
   settingsAgendamentosMedicos = {

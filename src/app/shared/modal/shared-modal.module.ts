@@ -10,6 +10,7 @@ import { ModalWebcamComponent } from './modal-webcam.component';
 import { ModalPagamentoComponent } from './modal-pagamento.component';
 import { ModalExcluirRegistroComponent } from './modal-excluir-registro.component';
 import { ModalDetalhesAgendamentoComponent } from '../../agenda/modal-detalhes-agendamento.component';
+import { ModalAgendamentosMedicoComponent } from '../../agenda/modal-agendamentos-medico.component';
 import { ModalDetalheContaReceberComponent } from '../../cadastros/conta-receber/modal-detalhe-conta-receber.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { WebcamModule } from 'ngx-webcam';
@@ -29,11 +30,11 @@ import { BotaoAdicionarPagamentoComponent } from '../components/botao-adicionar-
   imports: [Ng2SmartTableModule, QuillModule.forRoot(), CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
 
   declarations: [BotaoImprimirComponent, EnumToArrayPipe, CorComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, BotaoDownloadComponent,
-    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent,
+    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent,ModalAgendamentosMedicoComponent,
     ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent, BotaoAdicionarPagamentoComponent],
 
   entryComponents: [ModalPagamentoAgendamentoComponent, BotaoImprimirComponent, ModalExtraCaixaComponent, CorComponent, BotaoDownloadComponent,
-    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalWebcamComponent,
+    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalAgendamentosMedicoComponent,ModalWebcamComponent,
     ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent,
     BotaoAdicionarPagamentoComponent],
 
