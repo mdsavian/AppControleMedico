@@ -12,6 +12,7 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
+import { AppService } from './app.service';
 
 
 @Injectable({
@@ -27,7 +28,7 @@ export class AgendamentoService {
   public agendamento: Agendamento;
 
   constructor(private http: HttpClient,
-    private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
+    private exameService: ExameService, private procedimentoService: ProcedimentoService, private appService:AppService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -72,7 +73,8 @@ export class AgendamentoService {
   buscarAgendamentosFuncionario(funcionarioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId); }
 
   TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId: string, caixaId: string, funcionarioId: string) {
-    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("caixaId", caixaId).set("funcionarioId", funcionarioId);
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("caixaId", caixaId).set("funcionarioId", funcionarioId)
+    .set("clinicaId", this.appService.retornarClinicaCorrente().id);
     return this.http.get<Array<Agendamento>>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
 
   }

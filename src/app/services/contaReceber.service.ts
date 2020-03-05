@@ -38,7 +38,7 @@ export class ContaReceberService {
   }
 
   TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId:string, funcionarioId:string) {
-    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("funcionarioId", funcionarioId);    
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("funcionarioId", funcionarioId).set("clinicaId", this.appService.retornarClinicaCorrente().id);    
     return this.http.get<ContaReceber[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 
@@ -48,3 +48,4 @@ export class ContaReceberService {
   }
 
 }
+ 

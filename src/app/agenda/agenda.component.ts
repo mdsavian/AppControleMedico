@@ -440,8 +440,6 @@ export class AgendaComponent implements OnInit {
 
   actionAgendamento(evento: CalendarEvent) {
 
-    console.log("actionAgendamento", evento);
-
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
     if (agendamento != null) {
@@ -451,8 +449,6 @@ export class AgendaComponent implements OnInit {
 
         this.agendamentoService.agendamento = agendamento;
         this.router.navigate(['/agenda/atendimento']);
-
-        // this.chamarModalAdicionaAgendamento(agendamento, "editar");
       }
       else {
 

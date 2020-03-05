@@ -4,6 +4,7 @@ import { ExtraCaixa } from '../modelos/extraCaixa'
 import { environment } from '../../environments/environment';
 import { ContaReceber } from '../modelos/contaReceber';
 import { ContaPagar } from '../modelos/contaPagar';
+import { AppService } from './app.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +16,7 @@ export class ExtraCaixaService {
   public extraCaixa:ExtraCaixa;
   public listaExtraCaixa :Array<ExtraCaixa>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appService:AppService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -41,7 +42,8 @@ export class ExtraCaixaService {
   }
   
   TodosPorPeriodo(dataInicio: any, dataFim: any, medicoId:string,caixaId:string, funcionarioId:string) {
-    let parametros = new HttpParams().set("dataInicio", dataInicio).set("dataFim", dataFim).set("medicoId", medicoId).set("caixaId",caixaId).set("funcionarioId", funcionarioId);    
+    let parametros = new HttpParams().set("dataInicio", dataInicio).set("dataFim", dataFim).set("medicoId", medicoId).set("caixaId",caixaId).set("funcionarioId", funcionarioId)
+    .set("clinicaId", this.appService.retornarClinicaCorrente().id);    
     return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 

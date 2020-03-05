@@ -55,7 +55,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text">@</span>
                           </div>
-                          <input type="email" id="email" placeholder="funcionario@email.com" name="email"
+                          <input type="email" id="email"  [disabled]="funcionario.id != null && funcionario.id != ''" placeholder="funcionario@email.com" name="email"
                             class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel"
                             appValidaEmailUsuario>
                         </div>
