@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://controlemedico.kinghost.net/api/',
+  apiUrl: 'http://gercli.kinghost.net/api/',
   isLoading :false
 };

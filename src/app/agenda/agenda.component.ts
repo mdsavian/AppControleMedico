@@ -44,6 +44,7 @@ import { FormaDePagamentoService } from '../services/forma-de-pagamento.service'
 import { FormaDePagamento } from '../modelos/formaDePagamento';
 import { UploadService } from '../services/upload.service';
 import { ModalExtraCaixaComponent } from '../cadastros/extra-caixa/modal-extra-caixa.component';
+import { AgendamentoPagamentoService } from '../services/agendamentoPagamento.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush, //com esta propriedade ativa a cada mudança deve ser chamado o refresh page manualmente
@@ -87,7 +88,7 @@ export class AgendaComponent implements OnInit {
   constructor(private agendamentoService: AgendamentoService, private calendar: NgbCalendar, private caixaService: CaixaService, private modalService: NgbModal, private cdr: ChangeDetectorRef,
     private appService: AppService, private configuracaoAgendaService: ConfiguracaoAgendaService, private medicoService: MedicoService, private router: Router,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private localService: LocalService, private exameService: ExameService,
-    private pacienteService: PacienteService, private convenioService: ConvenioService, private formaPagamentoService: FormaDePagamentoService, private uploadService: UploadService) {
+    private pacienteService: PacienteService, private agendamentoPagamentoService: AgendamentoPagamentoService, private convenioService: ConvenioService, private formaPagamentoService: FormaDePagamentoService, private uploadService: UploadService) {
   }
 
   ngOnInit() {
@@ -180,8 +181,9 @@ export class AgendaComponent implements OnInit {
     if (reqFotos.length > 0)
       return forkJoin(reqFotos);
     else {
-      this.isSpinnerVisible = false;
+      this.isSpinnerVisible = false;      
       this.refreshPage();
+      return forkJoin();
     }
 
   }
@@ -440,8 +442,6 @@ export class AgendaComponent implements OnInit {
 
   actionAgendamento(evento: CalendarEvent) {
 
-    console.log("actionAgendamento", evento);
-
     var agendamento = this.eventosBanco.find(c => c.id == evento.id.toString());
 
     if (agendamento != null) {
@@ -451,8 +451,6 @@ export class AgendaComponent implements OnInit {
 
         this.agendamentoService.agendamento = agendamento;
         this.router.navigate(['/agenda/atendimento']);
-
-        // this.chamarModalAdicionaAgendamento(agendamento, "editar");
       }
       else {
 
@@ -461,6 +459,7 @@ export class AgendaComponent implements OnInit {
 
         modalAcoes.result.then(result => {
           switch (result) {
+            
             case ("Detalhes"):
               var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
               modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
@@ -468,6 +467,17 @@ export class AgendaComponent implements OnInit {
 
             case ("Editar"):
               this.chamarModalAdicionaAgendamento(agendamento, "editar");
+              break;
+            case ("ImprimirRecibo"):
+
+              var descricao = "";
+              
+              descricao = this.agendamentoPagamentoService.imprimirRecibo(agendamento);
+              let popupWinindow;
+              popupWinindow = window.open('', '_blank', 'width=800,height=500,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
+              popupWinindow.document.open();
+              popupWinindow.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /><title>Recibo</title></head><body onload="window.print()">' + descricao + '</html>');
+              popupWinindow.document.close();
               break;
 
             case ("Encaixar"): {

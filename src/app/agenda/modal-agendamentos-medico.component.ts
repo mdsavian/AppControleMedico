@@ -12,6 +12,7 @@ import { ModalPagamentoAgendamentoComponent } from '../cadastros/agendamento-pag
 import { CaixaService } from '../services/caixa.service';
 import { FormaDePagamento } from '../modelos/formaDePagamento';
 import { FormaDePagamentoService } from '../services/forma-de-pagamento.service';
+import { BotaoImprimirReciboComponent } from '../shared/components/botao-imprimir-recibo-component';
 
 @Component({
   templateUrl: './modal-agendamentos-medico.component.html'
@@ -30,7 +31,7 @@ export class ModalAgendamentosMedicoComponent implements OnInit {
   formaDePagamentos = new Array<FormaDePagamento>();
   tituloTela = "";
 
-  constructor(public activeModal: NgbActiveModal,private agendamentoService: AgendamentoService,private formaPagamentoService: FormaDePagamentoService,private caixaService:CaixaService, private modalService: NgbModal) {
+  constructor(public activeModal: NgbActiveModal, private agendamentoService: AgendamentoService, private formaPagamentoService: FormaDePagamentoService, private caixaService: CaixaService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -38,16 +39,18 @@ export class ModalAgendamentosMedicoComponent implements OnInit {
     this.formaPagamentoService.Todos().subscribe(formas => {
       this.formaDePagamentos = formas;
     });
-    
-    this.agendamentos = this.agendamentos.sort((val1, val2)=> {return <any>val1.dataAgendamento - <any>val2.dataAgendamento});
-      
-    var medico = this.agendamentos.find(c=> true).medico;
+
+    this.agendamentos = this.agendamentos.sort((val1, val2) => { return <any>val1.dataAgendamento - <any>val2.dataAgendamento });
+
+    var medico = this.agendamentos.find(c => true).medico;
     this.tituloTela = "Agendamentos " + medico.nomeCompleto;
 
-    if (this.util.hasItems(this.agendamentos))
+    if (this.util.hasItems(this.agendamentos)){
+      this.agendamentos.forEach(c=> c.idAux = c.id);
       this.source = new LocalDataSource(this.agendamentos);
-    
-  } 
+    }
+
+  }
 
   editarRegistro(event) {
     var agendamento = this.agendamentos.find(c => c.id == event.data.id);
@@ -93,58 +96,65 @@ export class ModalAgendamentosMedicoComponent implements OnInit {
         title: "Adicionar Pagamento",
         type: "custom",
         filter: false,
-        renderComponent: BotaoAdicionarPagamentoComponent, onComponentInitFunction: (instance) => {          
+        renderComponent: BotaoAdicionarPagamentoComponent, onComponentInitFunction: (instance) => {
           instance.save.subscribe(id => {
             this.adicionarPagamento(id);
           });
         }
+      },
+      idAux: {
+        title: "Imprimir Recibo",
+        type: "custom",
+        filter: false,
+        renderComponent: BotaoImprimirReciboComponent,
       }
-    },
+    },   
+   
     actions:
-    {
-      columnTitle: '',
-      add: false,
-      delete: false
-    },
-    edit: {
-      editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
-      saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
-      cancelButtonContent: '<i class="ti-close text-danger"></i>',
-    },
-  };
+      {
+        columnTitle: '',
+        add: false,
+        delete: false
+      },
+      edit: {
+        editButtonContent: '<i class="ti-pencil text-info m-r-10"></i>',
+        saveButtonContent: '<i class="ti-save text-success m-r-10"></i>',
+        cancelButtonContent: '<i class="ti-close text-danger"></i>',
+      },
+    };
 
-  adicionarPagamento(id) {
+    adicionarPagamento(id) {
 
-    this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
-      if (!this.util.hasItems(caixas)) {
-        var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
-        modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
-      }
-      else {
+      this.caixaService.retornarTodosCaixasAbertos().subscribe(caixas => {
+        if (!this.util.hasItems(caixas)) {
+          var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
+          modal.componentInstance.mensagemErro = "Não existe caixa aberto, abra um caixa para proceder com o pagamento.";
+        }
+        else {
 
-        var agendamento = this.agendamentos.find(c=> c.id == id);
+          var agendamento = this.agendamentos.find(c => c.id == id);
 
-        var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
+          var modalPagamento = this.modalService.open(ModalPagamentoAgendamentoComponent, { size: "lg" });
 
-        modalPagamento.componentInstance.agendamento = agendamento;
-        modalPagamento.componentInstance.medico = agendamento.medico;
-        modalPagamento.componentInstance.formasPagamento = this.formaDePagamentos;
-        modalPagamento.componentInstance.caixas = caixas;
+          modalPagamento.componentInstance.agendamento = agendamento;
+          modalPagamento.componentInstance.medico = agendamento.medico;
+          modalPagamento.componentInstance.formasPagamento = this.formaDePagamentos;
+          modalPagamento.componentInstance.caixas = caixas;
 
-        modalPagamento.result.then(retorno => {
+          modalPagamento.result.then(retorno => {
 
-          if (retorno != null && retorno != "") {
-            this.agendamentoService.salvar(retorno).subscribe(c=> {
-              this.source = new LocalDataSource(this.agendamentos)
-            });
-          }
+            if (retorno != null && retorno != "") {
+              this.agendamentoService.salvar(retorno).subscribe(c => {
+                this.source = new LocalDataSource(this.agendamentos)
+              });
+            }
 
-        }, (error) => { })
-      }
-    });
+          }, (error) => { })
+        }
+      });
+
+    }
 
   }
-
-}
 
 

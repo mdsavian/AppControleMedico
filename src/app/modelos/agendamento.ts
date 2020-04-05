@@ -9,6 +9,7 @@ import { ESituacaoAgendamento } from "../enums/ESituacaoAgendamento";
 import { Procedimento } from "./procedimento";
 import { Convenio } from "./convenio";
 import { AgendamentoPagamento } from "./agendamentoPagamento";
+import { Clinica } from "./clinica";
 
 export class Agendamento extends Entidade {
 
@@ -41,6 +42,7 @@ export class Agendamento extends Entidade {
     pagamentos:Array<AgendamentoPagamento>;
     paciente: Paciente;
     medico: Medico;
+    clinica:Clinica;
     exame: Exame;
     local: Local;
     cirurgia: Cirurgia;
@@ -51,5 +53,7 @@ export class Agendamento extends Entidade {
     horaInicialAtendimento: string;
     horaFinalAtendimento: string;
     descricaoAtendimento:string;
+
+    idAux:string;
 
 }

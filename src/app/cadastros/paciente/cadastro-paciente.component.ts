@@ -292,7 +292,7 @@ export class CadastroPacienteComponent implements OnInit, AfterViewChecked {
         }
       },
       id: {
-        title: "Download",
+        title: "Imprimir",
         type: "custom",
         filter: false,
         renderComponent: BotaoImprimirComponent,

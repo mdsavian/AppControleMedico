@@ -148,20 +148,32 @@ export class Util {
     public formatarHora(hora: string) {
         if (hora == null)
             return "";
-        if(hora.length == 4)
+        if (hora.length == 4)
             return (hora.substr(0, 2) + ":" + hora.substr(2, 2));
-        else if(hora.length == 5)
-        return (hora.substr(0, 2) + ":" + hora.substr(3, 2));
+        else if (hora.length == 5)
+            return (hora.substr(0, 2) + ":" + hora.substr(3, 2));
 
     }
 
     public formataCnpj(cnpj: string) {
+        if (this.isNullOrWhitespace(cnpj))
+            return "-";
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5");
 
     }
 
+    public formatarCep(cep: string) {
+        if (this.isNullOrWhitespace(cep))
+            return "-";
+
+        return cep.replace(/([\d]{2})\.*([\d]{3})-*([\d]{3})/, "$1.$2-$3");
+
+    }
+
     public formataCpf(cpf: string) {
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4");
+        if (this.isNullOrWhitespace(cpf))
+            return "-";
+        else return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4");
     }
 
     public validaData(data: string): boolean {
@@ -195,6 +207,8 @@ export class Util {
     }
 
     public formataTelefone(telefone: string) {
+        if (this.isNullOrWhitespace(telefone))
+            return "-";
         telefone = telefone.replace(/\D/g, "");             //Remove tudo o que não é dígito
         telefone = telefone.replace(/^(\d{2})(\d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
         telefone = telefone.replace(/(\d)(\d{4})$/, "$1-$2");
@@ -202,6 +216,8 @@ export class Util {
     }
 
     public formataCelular(celular: string) {
+        if (this.isNullOrWhitespace(celular))
+            return "-";
         celular = celular.replace(/\D/g, "");             //Remove tudo o que não é dígito
         celular = celular.replace(/^(\d{2})(\d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
         celular = celular.replace(/(\d)(\d{4})$/, "$1-$2");
@@ -218,6 +234,9 @@ export class Util {
 
     retornaDiaSemana(data: Date) {
 
+        if (data == null)
+            return "";
+
         var diaSemana = new Array(7);
         diaSemana[0] = "Domingo";
         diaSemana[1] = "Segunda";
@@ -232,6 +251,10 @@ export class Util {
     }
 
     retornarMes(data: Date) {
+
+        if (data == null)
+            return "";
+
         var meses = new Array(7);
         meses[0] = "Janeiro";
         meses[1] = "Fevereiro";
@@ -268,14 +291,13 @@ export class Util {
     converteHorarioParaMinutos(horario: string): number {
         horario = horario.replace(':', "");
         return parseInt(horario.substr(0, 2)) * 60 + parseInt(horario.substr(2, 2));
-      }
-    
-      diferencaDatas(dataInicio,dataFim)
-      {
+    }
+
+    diferencaDatas(dataInicio, dataFim) {
         let diff = Math.abs(dataInicio.getTime() - dataFim.getTime()); // Subtrai uma data pela outra
         let days = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
         return days;
-      }
+    }
 
 }

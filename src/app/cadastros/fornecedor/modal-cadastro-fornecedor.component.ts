@@ -20,4 +20,9 @@ export class ModalCadastroFornecedorComponent  {
   public salvar(): void {
     this.activeModal.close(this.fornecedor);
   }
+
+  fechar() {
+    this.activeModal.close();
+  }
+  
 }

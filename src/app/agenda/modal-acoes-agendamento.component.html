@@ -87,6 +87,9 @@
 
         <button type="button" class="btn btn-danger btn-lg btn-acoes" *ngIf="validarBotoesAcoes('Excluir')"
           (click)="fechar('Excluir')"><span class="fa fa-trash" title="Excluir"></span> Excluir</button>
+
+          <button type="button" class="btn-lg btn-acoes btn btn-secondary" *ngIf="validarBotoesAcoes('ImprimirRecibo')"
+          (click)="fechar('ImprimirRecibo')"><span class="fa fa-print" title="Imprimir Recibo"></span> Imprimir Recibo </button>
       </div>
     </div>
 

@@ -38,6 +38,7 @@ import { Procedimento } from '../modelos/procedimento';
 import { Timeline } from '../modelos/timeline';
 import { ModalDetalhesAgendamentoComponent } from './modal-detalhes-agendamento.component';
 import { ModalDetalheContaReceberComponent } from '../cadastros/conta-receber/modal-detalhe-conta-receber.component';
+import { AgendamentoPagamentoService } from '../services/agendamentoPagamento.service';
 
 @Component({
   templateUrl: './atendimento-agendamento.component.html',
@@ -88,7 +89,7 @@ export class AtendimentoAgendamentoComponent implements OnInit {
 
   constructor(private pacienteService: PacienteService, private agendamentoService: AgendamentoService,
     private uploadService: UploadService, private modalService: NgbModal, private convenioService: ConvenioService,
-    private localService: LocalService, private timelineService: TimelineService, private appService: AppService,
+    private localService: LocalService, private timelineService: TimelineService, private appService: AppService, private agendamentoPagamentoService:AgendamentoPagamentoService,
     private cirurgiaService: CirurgiaService, private procedimentoService: ProcedimentoService, private exameService: ExameService,
     private caixaService: CaixaService, private formaPagamentoService: FormaDePagamentoService, private router: Router,
     private medicoService: MedicoService, private prescricaoPacienteService: PrescricaoPacienteService, ) {
@@ -401,6 +402,19 @@ export class AtendimentoAgendamentoComponent implements OnInit {
       });
     });
 
+  }
+  
+  imprimirRecibo()
+  {
+    
+      var descricao = this.agendamentoPagamentoService.imprimirRecibo(this.agendamento);
+
+      let popupWinindow;
+      popupWinindow = window.open('', '_blank', 'width=800,height=500,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
+      popupWinindow.document.open();
+      popupWinindow.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /><title>Recibo</title></head><body onload="window.print()">' + descricao + '</html>');
+      popupWinindow.document.close();
+  
   }
 
   public voltar() {

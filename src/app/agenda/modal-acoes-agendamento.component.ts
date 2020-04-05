@@ -72,7 +72,6 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
       let reqPaciente = this.pacienteService.buscarPorId(this.agendamento.pacienteId).map(paciente => {
         this.paciente = paciente;
         this.agendamento.paciente = paciente;
-        console.log(paciente.telefone, paciente.celular);
         this.telefone = this.pacienteService.retornarTelefonePaciene(paciente);
       });
       requisicoes.push(reqPaciente);
@@ -116,6 +115,9 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
 
       this.acoesPermitidas.push("Encaixar");
       this.acoesPermitidas.push("Detalhes");
+      
+      if (this.agendamento.contemPagamentos)      
+        this.acoesPermitidas.push("ImprimirRecibo");
 
       switch (this.agendamento.situacaoAgendamento) {
         case (ESituacaoAgendamento.Agendado.valueOf()):

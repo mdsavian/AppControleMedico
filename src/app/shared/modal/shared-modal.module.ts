@@ -17,6 +17,7 @@ import { WebcamModule } from 'ngx-webcam';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { BotaoDownloadComponent } from '../components/botao-download-component';
 import { BotaoImprimirComponent } from '../components/botao-imprimir-component';
+import { BotaoImprimirReciboComponent } from '../components/botao-imprimir-recibo-component';
 import { CorComponent } from '../components/cor-component';
 import { ModalAberturaCaixaComponent } from '../../cadastros/caixa/modal-abertura-caixa.component';
 import { ModalFechamentoCaixaComponent } from '../../cadastros/caixa/modal-fechamento-caixa.component';
@@ -29,12 +30,12 @@ import { BotaoAdicionarPagamentoComponent } from '../components/botao-adicionar-
 @NgModule({
   imports: [Ng2SmartTableModule, QuillModule.forRoot(), CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
 
-  declarations: [BotaoImprimirComponent, EnumToArrayPipe, CorComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, BotaoDownloadComponent,
-    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent,ModalAgendamentosMedicoComponent,
+  declarations: [BotaoImprimirComponent, BotaoImprimirReciboComponent, EnumToArrayPipe, CorComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, BotaoDownloadComponent,
+    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalAgendamentosMedicoComponent,
     ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent, BotaoAdicionarPagamentoComponent],
 
-  entryComponents: [ModalPagamentoAgendamentoComponent, BotaoImprimirComponent, ModalExtraCaixaComponent, CorComponent, BotaoDownloadComponent,
-    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalAgendamentosMedicoComponent,ModalWebcamComponent,
+  entryComponents: [ModalPagamentoAgendamentoComponent, BotaoImprimirComponent, BotaoImprimirReciboComponent, ModalExtraCaixaComponent, CorComponent, BotaoDownloadComponent,
+    ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalAgendamentosMedicoComponent, ModalWebcamComponent,
     ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent,
     BotaoAdicionarPagamentoComponent],
 
