@@ -67,7 +67,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   cirurgias: Array<Cirurgia> = [];
   falhaNaBusca = true;
   tituloTela: string = "";
-  telefone:string;
+  telefone: string;
   obrigaPaciente = true;
   agendamentoEmAtendimento = false;
   formaDePagamentos = new Array<FormaDePagamento>();
@@ -89,7 +89,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
   @ViewChild('convenioModel', { read: ElementRef, static: false }) private convenioModel: ElementRef;
 
   constructor(public activeModal: NgbActiveModal, private timelineService: TimelineService, private router: Router, private caixaService: CaixaService,
-    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService,private formaPagamentoService: FormaDePagamentoService, 
+    private medicoService: MedicoService, private agendamentoService: AgendamentoService, public modalService: NgbModal, private appService: AppService, private formaPagamentoService: FormaDePagamentoService,
     private uploadService: UploadService, private pacienteService: PacienteService, private convenioService: ConvenioService, private procedimentoService: ProcedimentoService, private localService: LocalService, private cirurgiaService: CirurgiaService, private exameService: ExameService) {
   }
 
@@ -126,7 +126,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     if (this.editando) {
 
       this.agendamentoEmAtendimento = this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"];
-    
+
       this.tituloTela = "Editar Agendamento - ";
       this.falhaNaBusca = false;
       this.tipoAgenda = ETipoAgendamento[this.agendamento.tipoAgendamento];
@@ -136,9 +136,9 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId) && this.util.hasItems(this.pacientes)) {
           this.paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
           this.pacienteSelecionado = this.nomePacientes.find(c => c == this.paciente.nomeCompleto);
-          this.agendamento.paciente = this.paciente;          
+          this.agendamento.paciente = this.paciente;
 
-          this.buscarDadosPaciente();          
+          this.buscarDadosPaciente();
         }
 
         if (!this.util.isNullOrWhitespace(this.agendamento.convenioId) && this.util.hasItems(this.convenios))
@@ -297,29 +297,44 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
     modalNovoPaciente.result.then((paciente: Paciente) => {
       if (paciente != null && paciente.nomeCompleto != '') {
         var pacienteExistente = this.pacientes.find(c => c.nomeCompleto == paciente.nomeCompleto);
+
         if (pacienteExistente != null) {
           this.agendamento.paciente = pacienteExistente;
           this.agendamento.pacienteId = pacienteExistente.id;
-          this.pacienteSelecionado = pacienteExistente.nomeCompleto;          
-                  
+          this.pacienteSelecionado = pacienteExistente.nomeCompleto;
+          this.paciente = pacienteExistente;
+
+          this.falhaNaBusca = false;
+          this.buscarDadosPaciente();
         }
         else {
 
           this.pacientes.push(paciente);
           this.nomePacientes.push(paciente.nomeCompleto);
-          this.pacienteSelecionado = paciente.nomeCompleto;          
+          this.pacienteSelecionado = paciente.nomeCompleto;
 
           this.pacienteService.salvar(paciente).subscribe(pacienteCadastrado => {
+
+            if (!this.medico.conveniosId.includes(paciente.convenioId)) {
+              this.convenios.push(paciente.convenio);
+              this.agendamento.convenio = paciente.convenio;
+              this.agendamento.convenioId = paciente.convenioId;
+              this.medico.conveniosId.push(paciente.convenioId);
+              this.medicoService.salvar(this.medico).subscribe(c => { });
+            }
 
             if (paciente.foto != null)
               this.uploadService.salvarImagem(paciente.foto, "paciente", pacienteCadastrado.id);
 
             this.agendamento.paciente = pacienteCadastrado;
-            this.agendamento.pacienteId = pacienteCadastrado.id;            
+            this.paciente = pacienteCadastrado
+            this.agendamento.pacienteId = pacienteCadastrado.id;
+
+            this.falhaNaBusca = false;
+            this.buscarDadosPaciente();
+
           });
         }
-        this.falhaNaBusca = false;
-        this.buscarDadosPaciente();
       }
     }).catch((error) => { })
 
@@ -536,10 +551,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
   }
 
-  buscarDadosPaciente()
-  {
+  buscarDadosPaciente() {
     this.telefone = this.pacienteService.retornarTelefonePaciene(this.paciente);
-
     this.buscarUltimoAgendamentoPaciente();
   }
 

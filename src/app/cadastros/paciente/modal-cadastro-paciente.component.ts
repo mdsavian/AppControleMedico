@@ -47,6 +47,7 @@ export class ModalCadastroPacienteComponent {
         var convenioExistente = this.convenios.find(c => c.descricao == convenio.descricao);
         if (convenioExistente != null) {
           this.paciente.convenio = convenioExistente;
+          this.paciente.convenioId = convenioExistente.id;
           this.convenio = convenioExistente;
         }
         else {
@@ -57,6 +58,7 @@ export class ModalCadastroPacienteComponent {
 
           this.convenioService.salvar(this.convenio).subscribe(convenioCadastrado => {
             this.paciente.convenio = convenioCadastrado;
+            this.paciente.convenioId = convenioCadastrado.id;
           });
 
           this.convenio = this.convenios.find(c => c.descricao == convenio.descricao);
@@ -99,8 +101,7 @@ export class ModalCadastroPacienteComponent {
   salvar() {
     var retorno = false;
 
-    console.log(this.paciente.dataNascimento);
-    if (!this.util.isNullOrWhitespace(this.paciente.dataNascimento) && !this.util.validaData(this.util.dataParaString(this.paciente.dataNascimento))) {
+    if (this.paciente.dataNascimento != null && !this.util.validaData(this.util.dataParaString(this.paciente.dataNascimento))) {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modalErro.componentInstance.mensagemErro = "Data inválida.";
       retorno = true;
