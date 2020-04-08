@@ -75,7 +75,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <input type="text" mask="Hh:m0" pattern="{{patterHora}}" id="horaAbertura" name="horaAbertura"
+                    <input type="text" mask="Hh:m0" pattern="{{patternHora}}" id="horaAbertura" name="horaAbertura"
                         placeholder="HH:mm" class="form-control" [(ngModel)]="caixa.horaAbertura"
                         #horaAbertura="ngModel" readonly>
                 </div>
@@ -85,6 +85,6 @@
 </form>
 <div class="modal-footer">
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success"
-        [disabled]="!aberturaCaixa.form.valid || existeCaixaAbertoParaFuncionario">Salvar</button>
+        [disabled]="!aberturaCaixa.form.valid || existeCaixaAbertoParaPessoa">Salvar</button>
     <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
 </div>

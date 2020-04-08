@@ -32,7 +32,6 @@ export class ModalFechamentoCaixaComponent {
   funcionarios: Array<Funcionario>;
   dataFecha: string;
   testPrice: any;
-  existeCaixaAbertoParaFuncionario: boolean;
   senhaValida: boolean;
   medicos = new Array<Medico>();
 

@@ -76,12 +76,13 @@ export class ModalAberturaCaixaComponent {
   }
 
   validaCaixaFuncionario() {
+
     this.caixaService.retornarCaixaAbertoPessoa(this.caixa.pessoaId).subscribe(caixa => {
       this.existeCaixaAbertoParaPessoa = caixa != null;
     });
   }
 
-  trocaPessoa(e: any) {
+  trocaPessoa() {
     var medico = this.medicos.find(c => c.id == this.caixa.pessoaId);
     var funcionario = this.funcionarios.find(c => c.id == this.caixa.pessoaId);
 

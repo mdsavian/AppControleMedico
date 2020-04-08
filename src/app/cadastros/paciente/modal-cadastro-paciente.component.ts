@@ -99,7 +99,8 @@ export class ModalCadastroPacienteComponent {
   salvar() {
     var retorno = false;
 
-    if (!this.util.validaData(this.util.dataParaString(this.paciente.dataNascimento))) {
+    console.log(this.paciente.dataNascimento);
+    if (!this.util.isNullOrWhitespace(this.paciente.dataNascimento) && !this.util.validaData(this.util.dataParaString(this.paciente.dataNascimento))) {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modalErro.componentInstance.mensagemErro = "Data inválida.";
       retorno = true;

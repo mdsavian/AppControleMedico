@@ -59,21 +59,50 @@
                     <input type="number" id="numeroCartao" name="numeroCartao" placeholder="Número Cartão"
                         class="form-control" [(ngModel)]="paciente.numeroCartao" #numeroCartao="ngModel">
                 </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="email">E-mail</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">@</span>
+                        </div>
+                        <input type="email" id="email" placeholder="paciente@email.com" name="email"
+                            class="form-control" email [(ngModel)]="paciente.email" #emailInput="ngModel">
+                    </div>
+                    <div *ngIf="emailInput.invalid" class="alert alert-danger">
+                        <div *ngIf="emailInput.errors.email"> E-mail inválido. </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="col-xs-6 col-md-4">
-                <label class="control-label" for="celular">Telefone(*)</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
+                <div class="form-group">
+                    <label class="control-label" for="celular">Celular(*)</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
+                        </div>
+                        <input type="text" id="celular" name="celular" placeholder="Celular" class="form-control"
+                            [(ngModel)]="paciente.celular" mask="(00) 0 0000-0000" #celular="ngModel"
+                            pattern="^[0-9]{11}$">
                     </div>
-                    <input type="text" id="celular" name="celular" placeholder="Telefone" class="form-control" required
-                        [(ngModel)]="paciente.celular" mask="(00) 0 0000-0000" #celular="ngModel" pattern="^[0-9]{11}$">
+                    <div *ngIf="celular.invalid" class="alert alert-danger">
+                        <div *ngIf="celular.errors.pattern"> Celular Inválido. </div>
+                    </div>
                 </div>
-                <div *ngIf="celular.invalid" class="alert alert-danger">
-                    <div *ngIf="celular.errors.required"> Celular Obrigatório. </div>
-                    <div *ngIf="celular.errors.pattern"> Celular Inválido. </div>
-                </div>
+                
+                    <div class="form-group">
+                        <label class="control-label" for="telefone">Telefone</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone"></i></span>
+                            </div>
+                            <input type="text" id="telefone" placeholder="Telefone" name="telefone" class="form-control"
+                                [(ngModel)]="paciente.telefone" mask="(00) 0000-0000" #telefone="ngModel">
+                        </div>
+                    </div>
+                
 
                 <label class="control-label" for="dataNascimento">Data de Nascimento</label>
                 <div class="input-group">
@@ -87,6 +116,7 @@
                 <div *ngIf="dataNascimento.errors?.validaDataModal" class="alert alert-danger">
                     <div *ngIf="dataNascimento.errors?.validaDataModal"> Data Inválida.</div>
                 </div>
+
                 <label class="control-label" for="cpf">CPF</label>
                 <input type="text" id="cpf" mask="000.000.000-00" placeholder="CPF" name="cpf" class="form-control"
                     [(ngModel)]="paciente.cpfCnpj" #cpf="ngModel">

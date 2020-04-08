@@ -136,11 +136,9 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId) && this.util.hasItems(this.pacientes)) {
           this.paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
           this.pacienteSelecionado = this.nomePacientes.find(c => c == this.paciente.nomeCompleto);
-          this.agendamento.paciente = this.paciente;
+          this.agendamento.paciente = this.paciente;          
 
-          this.telefone = this.paciente.telefone || this.paciente.celular ? this.util.formataTelefone(this.paciente.telefone) + " / " + this.util.formataTelefone(this.paciente.celular) : "-";
-
-          this.buscarUltimoAgendamentoPaciente();
+          this.buscarDadosPaciente();          
         }
 
         if (!this.util.isNullOrWhitespace(this.agendamento.convenioId) && this.util.hasItems(this.convenios))
@@ -302,20 +300,26 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         if (pacienteExistente != null) {
           this.agendamento.paciente = pacienteExistente;
           this.agendamento.pacienteId = pacienteExistente.id;
+          this.pacienteSelecionado = pacienteExistente.nomeCompleto;          
+                  
         }
         else {
 
           this.pacientes.push(paciente);
           this.nomePacientes.push(paciente.nomeCompleto);
-          this.pacienteSelecionado = paciente.nomeCompleto;
+          this.pacienteSelecionado = paciente.nomeCompleto;          
 
           this.pacienteService.salvar(paciente).subscribe(pacienteCadastrado => {
+
             if (paciente.foto != null)
               this.uploadService.salvarImagem(paciente.foto, "paciente", pacienteCadastrado.id);
+
             this.agendamento.paciente = pacienteCadastrado;
-            this.agendamento.pacienteId = pacienteCadastrado.id;
+            this.agendamento.pacienteId = pacienteCadastrado.id;            
           });
         }
+        this.falhaNaBusca = false;
+        this.buscarDadosPaciente();
       }
     }).catch((error) => { })
 
@@ -522,10 +526,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       this.agendamento.paciente = paciente;
       this.agendamento.pacienteId = paciente.id;
 
-      this.telefone = this.pacienteService.retornarTelefonePaciene(this.paciente);
-
-      this.buscarUltimoAgendamentoPaciente();
-
+      this.buscarDadosPaciente();
 
       if (!this.util.isNullOrWhitespace(paciente.convenioId)) {
         this.agendamento.convenioId = paciente.convenioId;
@@ -533,6 +534,13 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
       }
     }
 
+  }
+
+  buscarDadosPaciente()
+  {
+    this.telefone = this.pacienteService.retornarTelefonePaciene(this.paciente);
+
+    this.buscarUltimoAgendamentoPaciente();
   }
 
   buscarUltimoAgendamentoPaciente() {
