@@ -26,7 +26,6 @@ export class BotaoImprimirReciboComponent implements OnInit {
         
         this.agendamentoService.buscarPorId(this.agendamentoId).subscribe(agendamento=>
             {
-                console.log(agendamento);
                 var descricao = this.agendamentoPagamentoService.imprimirRecibo(agendamento);
 
                 let popupWinindow;

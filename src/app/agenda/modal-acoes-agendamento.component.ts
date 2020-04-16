@@ -84,6 +84,13 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
           this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
             " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
 
+          if (ultimoAgendamento.convenio.diasRetorno > 0) {
+            var dataRetorno = new Date(ultimoAgendamento.dataAgendamento);
+            dataRetorno.setDate(dataRetorno.getDate() + ultimoAgendamento.convenio.diasRetorno)
+
+            this.mensagemUltimoAgendamento = this.mensagemUltimoAgendamento + " | Retorno até " + this.util.dataParaString(dataRetorno);
+          }
+
           if (ultimoAgendamento.contemPagamentos) {
             var soma = 0;
             ultimoAgendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));
@@ -115,8 +122,8 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
 
       this.acoesPermitidas.push("Encaixar");
       this.acoesPermitidas.push("Detalhes");
-      
-      if (this.agendamento.contemPagamentos)      
+
+      if (this.agendamento.contemPagamentos)
         this.acoesPermitidas.push("ImprimirRecibo");
 
       switch (this.agendamento.situacaoAgendamento) {
@@ -149,7 +156,7 @@ export class ModalAcoesAgendamentoComponent implements OnInit {
             this.acoesPermitidas.push("Cancelar");
             this.acoesPermitidas.push("Excluir");
             break;
-          }        
+          }
       }
     }
     else {

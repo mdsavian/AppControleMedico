@@ -44,9 +44,6 @@ export class ClinicaService {
 
     this.buscarPorId(clinicaId).subscribe(clinica => {
       if (clinica != null) {
-
-        console.log(clinica);
-
         if (!this.util.isNullOrWhitespace(clinica.endereco)) {
           var endereco = clinica.endereco + (!this.util.isNullOrWhitespace(clinica.numero) ? ", " + clinica.numero : "")
             + (!this.util.isNullOrWhitespace(clinica.bairro) ? " | " + clinica.bairro : "")

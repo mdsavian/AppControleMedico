@@ -200,6 +200,8 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     var retorno = false;
 
+    this.agendamento.pacienteId = this.paciente.id;
+
     if (this.obrigaPaciente && this.util.isNullOrWhitespace(this.agendamento.pacienteId)) {
       var modalErro = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
       modalErro.componentInstance.mensagemErro = "Paciente inválido.";
@@ -566,6 +568,13 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
           this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
             " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
+
+          if (ultimoAgendamento.convenio.diasRetorno > 0) {
+            var dataRetorno = new Date(ultimoAgendamento.dataAgendamento);
+            dataRetorno.setDate(dataRetorno.getDate() + ultimoAgendamento.convenio.diasRetorno)
+
+            this.mensagemUltimoAgendamento = this.mensagemUltimoAgendamento + " | Retorno até " + this.util.dataParaString(dataRetorno);
+          }
 
           if (ultimoAgendamento.contemPagamentos) {
             var soma = 0;

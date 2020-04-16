@@ -19,7 +19,6 @@ import { ValidaDescricaoEspecialidadeDirective } from '../validadores/valida-des
 import { ValidaDescricaoFormaDePagamentoDirective } from '../validadores/valida-descricao-forma-de-pagamento.directive';
 import { ValidaEmailUsuarioDirective } from '../validadores/valida-email-usuario';
 import { ValidaNomeOficioDirective } from '../validadores/valida-nome-oficio.directive';
-import { ValidaCpfDirective } from '../validadores/valida-cpf.directive';
 import { ValidaCnpjDirective } from '../validadores/valida-cnpj.directive';
 import { ValidaDataDirective } from '../validadores/valida-data.directive';
 
@@ -56,7 +55,7 @@ import { ConfiguracaoAtalhoComponent } from './configuracao-atalho/configuracao-
   declarations: [CadastroLocalComponent, CadastroProntuarioComponent, CadastroModeloPrescricaoComponent, CadastroCirurgiaComponent, CadastroContaPagarComponent, CadastroContaReceberComponent, CadastroExameComponent, CadastroPacienteComponent, ModalCadastroFornecedorComponent,
     ConfiguracaoAtalhoComponent, CadastroFornecedorComponent, ModalCadastroPrescricaoPacienteComponent, ConfiguracaoAgendaComponent, CadastroFormaDePagamentoComponent, DetalhesCaixaComponent, CadastroMedicoComponent, CadastroConvenioComponent, ModalAdicionaConvenioComponent,
     CadastroFuncionarioComponent, CadastroProcedimentoComponent, CadastroOficioComponent, CadastroEspecialidadeComponent, CadastroClinicaComponent,
-    ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaCpfDirective, ValidaNomeOficioDirective,
+    ValidaDescricaoConvenioDirective, ValidaCnpjDirective, ValidaDataDirective, ValidaNomeOficioDirective,
     ValidaDescricaoEspecialidadeDirective, ValidaDescricaoExameDirective, ValidaDescricaoProcedimentoDirective,
     ValidaDescricaoCirurgiaDirective, ValidaDescricaoLocalDirective, ValidaEmailUsuarioDirective, ValidaDescricaoFormaDePagamentoDirective],
     exports:[ValidaDataDirective],

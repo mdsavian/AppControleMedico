@@ -53,6 +53,7 @@ export class Agendamento extends Entidade {
     horaInicialAtendimento: string;
     horaFinalAtendimento: string;
     descricaoAtendimento:string;
+    dataEmissaoRecibo:Date;
 
     idAux:string;
 

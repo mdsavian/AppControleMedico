@@ -330,8 +330,6 @@ export class AtendimentoAgendamentoComponent implements OnInit {
       let reqUltimoAgendamento = this.agendamentoService.buscarUltimoAgendamentoPaciente(this.agendamento.pacienteId, this.agendamento.id).map(ultimoAgendamento => {
         if (ultimoAgendamento != null) {
           this.ultimoAgendamentoCancelado = ultimoAgendamento.situacaoAgendamento == ESituacaoAgendamento.Cancelado;
-
-          console.log(ultimoAgendamento.situacaoAgendamento);
           this.mensagemUltimoAgendamento = "Último agendamento em " + this.util.dataParaString(ultimoAgendamento.dataAgendamento) +
             " | Situação: " + ESituacaoAgendamento[ultimoAgendamento.situacaoAgendamento];
 

@@ -74,8 +74,7 @@ export class CadastroMedicoComponent implements OnInit {
     private convenioService: ConvenioService, private pacienteService: PacienteService, private router: Router, private modalService: NgbModal) {
   }
 
-  public ngOnInit(): void {
-    console.log("opa entrei cadastro medico");
+  public ngOnInit(): void {    
     this.isSpinnerVisible = true;
     this.alimentarModelos().subscribe(c => { this.isSpinnerVisible = false; });
   }

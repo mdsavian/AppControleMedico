@@ -26,19 +26,21 @@ import { EnumToArrayPipe } from '../../uteis/enumToArray.pipe'
 import { QuillModule } from 'ngx-quill';
 import { ModalExtraCaixaComponent } from '../../cadastros/extra-caixa/modal-extra-caixa.component';
 import { BotaoAdicionarPagamentoComponent } from '../components/botao-adicionar-pagamento-component';
+import { ValidaCpfDirective } from '../../validadores/valida-cpf.directive';
+
 
 @NgModule({
   imports: [Ng2SmartTableModule, QuillModule.forRoot(), CommonModule, WebcamModule, NgbModule, RouterModule, FormsModule, NgxMaskModule.forRoot()],
 
   declarations: [BotaoImprimirComponent, BotaoImprimirReciboComponent, EnumToArrayPipe, CorComponent, ModalPagamentoAgendamentoComponent, ModalExtraCaixaComponent, BotaoDownloadComponent,
     ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalAgendamentosMedicoComponent,
-    ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent, BotaoAdicionarPagamentoComponent],
+    ModalWebcamComponent, ModalExcluirRegistroComponent, ModalPagamentoComponent, ValidaCpfDirective, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent, BotaoAdicionarPagamentoComponent],
 
   entryComponents: [ModalPagamentoAgendamentoComponent, BotaoImprimirComponent, BotaoImprimirReciboComponent, ModalExtraCaixaComponent, CorComponent, BotaoDownloadComponent,
     ModalDetalheContaReceberComponent, ModalAberturaCaixaComponent, ModalFechamentoCaixaComponent, ModalDetalhesAgendamentoComponent, ModalAgendamentosMedicoComponent, ModalWebcamComponent,
     ModalExcluirRegistroComponent, ModalPagamentoComponent, ModalAdicionaModeloDescricaoComponent, ModalAlteraSenhaComponent, ModalSucessoComponent,
     BotaoAdicionarPagamentoComponent],
 
-  exports: [EnumToArrayPipe]
+  exports: [EnumToArrayPipe, ValidaCpfDirective]
 })
 export class SharedModalModule { }

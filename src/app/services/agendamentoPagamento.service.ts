@@ -51,8 +51,6 @@ export class AgendamentoPagamentoService {
       if (!this.util.isNullOrWhitespace(clinica.telefone))
         enderecoClinica = enderecoClinica + " | Fone: " + this.util.formataTelefone(clinica.telefone);
 
-      console.log(enderecoClinica);
-
       var total = 0;
 
       agendamento.pagamentos.forEach(c => {
@@ -61,8 +59,19 @@ export class AgendamentoPagamentoService {
 
       var valorTotal = this.util.formatarDecimalBlur(total);
       var descricaoAgendamento = agendamento.tipoAgendamentoDescricao;
+      var descricaoData = "";
       var dataHoje = new Date();
-      var descricaoData = this.util.retornaDiaSemana(dataHoje) + ", " + dataHoje.getDate() + " de " + this.util.retornarMes(dataHoje) + " de " + dataHoje.getFullYear();
+
+      if (agendamento.dataEmissaoRecibo == null) {
+        descricaoData = this.util.retornaDiaSemana(dataHoje) + ", " + dataHoje.getDate() + " de " + this.util.retornarMes(dataHoje) + " de " + dataHoje.getFullYear();
+        agendamento.dataEmissaoRecibo = dataHoje;
+        this.agendamentoService.salvar(agendamento).subscribe(c=> agendamento = c);
+      }
+      else {
+        
+        dataHoje = new Date(agendamento.dataEmissaoRecibo);
+        descricaoData = this.util.retornaDiaSemana(dataHoje) + ", " + dataHoje.getDate() + " de " + this.util.retornarMes(dataHoje) + " de " + dataHoje.getFullYear();
+      }
 
       let descricao =
         '<!DOCTYPE html>                                                                                                      ' +

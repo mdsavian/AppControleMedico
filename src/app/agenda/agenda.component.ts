@@ -181,7 +181,7 @@ export class AgendaComponent implements OnInit {
     if (reqFotos.length > 0)
       return forkJoin(reqFotos);
     else {
-      this.isSpinnerVisible = false;      
+      this.isSpinnerVisible = false;
       this.refreshPage();
       return forkJoin();
     }
@@ -459,7 +459,7 @@ export class AgendaComponent implements OnInit {
 
         modalAcoes.result.then(result => {
           switch (result) {
-            
+
             case ("Detalhes"):
               var modalDetalhesAgendamento = this.modalService.open(ModalDetalhesAgendamentoComponent, { size: "lg" });
               modalDetalhesAgendamento.componentInstance.agendamento = agendamento;
@@ -471,7 +471,7 @@ export class AgendaComponent implements OnInit {
             case ("ImprimirRecibo"):
 
               var descricao = "";
-              
+
               descricao = this.agendamentoPagamentoService.imprimirRecibo(agendamento);
               let popupWinindow;
               popupWinindow = window.open('', '_blank', 'width=800,height=500,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
@@ -723,6 +723,9 @@ export class AgendaComponent implements OnInit {
   converteEAdicionaAgendamentoEvento(lista: Array<Agendamento>) {
     lista.forEach(agendamento => {
       var dataHoraInicial = this.util.concatenaDataHora(this.util.dataParaString(agendamento.dataAgendamento), agendamento.horaInicial);
+
+      if (this.pacientes.find(c => c.id == agendamento.pacienteId) == null && agendamento.paciente != null)
+        this.pacientes.push(agendamento.paciente);
 
       var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
       if (eventoBancoVelho != null) {

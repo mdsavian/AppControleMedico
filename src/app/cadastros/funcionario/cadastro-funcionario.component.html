@@ -56,7 +56,7 @@
                             <span class="input-group-text">@</span>
                           </div>
                           <input type="email" id="email" placeholder="funcionario@email.com" name="email"
-                            class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel"
+                            class="form-control" required email [(ngModel)]="funcionario.email" #emailInput="ngModel" [disabled]="funcionario.id != '' && funcionario.id != null"
                             appValidaEmailUsuario>
                         </div>
                         <div *ngIf="emailInput.invalid || emailInput.errors?.validaEmailUsuario"
@@ -377,15 +377,15 @@
           </ngb-tabset>
 
           <div class="panel-footer row rowcadastro">
-            <div class="col-xs-6 col-md-6">
-              <button class="btn btn-rounded btn-danger" style="width:40%" [disabled]="!usuarioEditandoFuncionario"
+            <div class="col-xs-4 col-md-4">
+              <button class="btn btn-rounded btn-danger" style="width:70%" [disabled]="!usuarioEditandoFuncionario"
                 (click)="alterarSenha()">Alterar Senha</button>
             </div>
-            <div class="col-xs-6 col-md-6">
-              <button class="btn btn-rounded btn-success" style="width:40%;right:200px;  position: absolute;"
-                [disabled]="(!funcionarioForm.form.valid || (!usuarioEditandoFuncionario && !usuarioAdministrador))"
-                (click)="salvar()">Salvar</button>
-              <a href="javascript:history.back()" style="width:40%; right:0px; position: absolute;"
+            <div class="col-xs-8 col-md-8" style="text-align: right;">
+              <button class="btn btn-rounded btn-success" style="width:40%;" (click)="salvar()"
+                [disabled]="(!funcionarioForm.form.valid || (!usuarioEditandoFuncionario && !usuarioAdministrador))">Salvar</button>
+
+              <a href="javascript:history.back()" style="width:40%; margin-left: 5px;"
                 class="btn btn-rounded btn-danger">Cancelar</a>
             </div>
           </div>

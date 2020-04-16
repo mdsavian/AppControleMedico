@@ -98,6 +98,6 @@
 </form>
 <div class="modal-footer">    
     <button style="width:40%" (click)="salvar()" class="btn btn-rounded btn-success" *ngIf="!extraCaixa.id"
-        [disabled]="(senha != null && (senha.value == '' ||senhaValida))" >Salvar</button>
+        [disabled]="(senha != null && (senha.value == '' ||senhaValida)) || !extraCaixaForm.form.valid" >Salvar</button>
         <button style="width:40%" (click)="fechar()" class="btn btn-rounded btn-warning" type="submit">Cancelar</button>
 </div>

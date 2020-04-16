@@ -19,6 +19,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CadastrosModule } from '../cadastros/cadastros.module';
 import { QuillModule } from 'ngx-quill';
 
+
 export class CustomDateFormatter extends CalendarDateFormatter {
 
   public dayViewHour({ date, locale }: DateFormatterParams): string {
@@ -52,7 +53,7 @@ export class CustomDateFormatter extends CalendarDateFormatter {
       })],
   declarations: [AgendaComponent, AtendimentoAgendamentoComponent, ModalAcoesAgendamentoComponent,
     ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent],
-  exports: [AgendaComponent],
+  exports: [AgendaComponent, ModalCadastroPacienteComponent],
   entryComponents: [ ModalAdicionaAgendamentoComponent, ModalCadastroPacienteComponent, ModalAcoesAgendamentoComponent]
 })
 

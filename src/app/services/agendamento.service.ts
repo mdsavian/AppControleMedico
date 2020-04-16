@@ -63,7 +63,6 @@ export class AgendamentoService {
   buscarAgendamentosCaixa(caixa: Caixa) {
 
     let parametros = new HttpParams().set("caixaId", caixa.id).set("clinicaId", caixa.clinicaId);
-    console.log(parametros);
     return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCaixa?" + parametros);
   }
 
