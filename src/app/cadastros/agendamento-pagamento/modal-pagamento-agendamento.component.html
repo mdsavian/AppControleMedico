@@ -13,8 +13,8 @@
                             {{cax.descricao}}
                         </option>
                     </select>
-                    <div *ngIf="caixaModel.invalid" class="alert alert-danger">
-                        <div *ngIf="caixaModel.invalid && caixaModel.errors.required"> Caixa Obrigatório. </div>
+                    <div *ngIf="caixaModel.invalid || caixa.id == ''" class="alert alert-danger">
+                        <div *ngIf="(caixaModel.invalid && caixaModel.errors.required) || caixa.id == ''"> Caixa Obrigatório. </div>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-xs-3 col-md-3 text-center divCentralizada">
-                <button class="btn btn-rounded btn-success" [disabled]="!pagamentoAgendamento.form.valid"
+                <button class="btn btn-rounded btn-success" [disabled]="!pagamentoAgendamento.form.valid || caixa.id == ''"
                     (click)="adicionarPagamento()" style="width: 100%;">Adicionar</button>
             </div>
         </div>

@@ -78,8 +78,9 @@ export class ModalPagamentoAgendamentoComponent {
 
       if (this.agendamento != null) {
 
-        this.formaPagamentoModel.nativeElement.focus();
-        this.agendamentoPagamento.formaPagamentoId == this.formasPagamento.find(c => c.descricao == "DINHEIRO").id;
+        this.formaPagamentoModel.nativeElement.focus();        
+
+        this.agendamentoPagamento.formaPagamentoId = this.formasPagamento.find(c => c.descricao == "DINHEIRO").id;
 
         if (this.agendamento.exame != null && this.agendamento.exame.valor > 0) {
           this.agendamentoPagamento.valor = this.agendamento.exame.valor;
@@ -133,6 +134,7 @@ export class ModalPagamentoAgendamentoComponent {
           }
         }
       }
+      console.log(this.agendamentoPagamento.formaPagamentoId);
     });
   }
 
@@ -249,11 +251,9 @@ export class ModalPagamentoAgendamentoComponent {
   }
 
   salvar() {
-
     this.agendamento.contemPagamentos = this.util.hasItems(this.listaPagamentos);
     this.agendamento.pagamentos = this.listaPagamentos;
     this.activeModal.close(this.agendamento);
-
   }
 
   fechar() {

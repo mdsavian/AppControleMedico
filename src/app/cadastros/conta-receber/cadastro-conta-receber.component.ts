@@ -9,7 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Estados } from "../../enums/estados";
 import { Paises } from "../../enums/paises";
 import { Paciente } from '../../modelos/paciente';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
@@ -62,36 +62,12 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
   tiposConta = ETipoContaReceber;
   medicos: Array<Medico> = new Array<Medico>();
   medicoSelecionado: Medico;
+  isSpinnerVisible = false;
 
-  constructor(private pacienteService: PacienteService,private medicoService: MedicoService, private formaPagamentoService: FormaDePagamentoService, private appService: AppService, private contaReceberService: ContaReceberService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
+  constructor(private pacienteService: PacienteService, private medicoService: MedicoService, private formaPagamentoService: FormaDePagamentoService, private appService: AppService, private contaReceberService: ContaReceberService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
   }
 
   ngAfterViewInit(): void {
-    this.medicoService.buscarMedicosPorUsuario().subscribe(medicos => {
-      this.medicos = medicos;
-      if (this.util.isNullOrWhitespace(this.contaReceber.medicoId)) {
-        let medicoTodos = new Medico();
-        medicoTodos.nomeCompleto = "Todos";
-        medicoTodos.id = "";
-        this.medicos.push(medicoTodos);
-
-        this.contaReceber.medicoId = this.medicos.find(c => c == medicoTodos).id;
-      }
-      else if (this.medicoModel != null)
-        this.medicoModel.nativeElement.setAttribute('readonly', true);
-    });
-
-    this.pacienteService.Todos().subscribe(pacientes => {
-      this.pacientes = pacientes;
-
-      if (!this.util.isNullOrWhitespace(this.contaReceber.pacienteId))
-        this.pacienteSelecionado = this.pacientes.find(c => c.id == this.contaReceber.pacienteId).nomeCompleto;
-
-      this.nomePacientes = new Array<string>();
-      this.pacientes.forEach(d => {
-        this.nomePacientes.push(d.nomeCompleto);
-      });
-    });
 
     if (this.pacienteModel != null) {
       this.pacienteModel.nativeElement.focus();
@@ -112,29 +88,74 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
     }
   }
 
-  public ngOnInit(): void {
+  private buscarDados() {
+    var requisicoes = [];
 
-    this.formaPagamentoService.Todos().subscribe(formas => {
-      if (this.contaReceberService.contaReceber != null && this.util.hasItems(this.contaReceber.pagamentos)) {
-        this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
-      }
+    var reqMed = this.medicoService.buscarMedicosPorUsuario().map(medicos => {
+      this.medicos = medicos;
+    });
+    requisicoes.push(reqMed);
+
+    let reqPaciente = this.pacienteService.Todos().map(pacientes => {
+      this.pacientes = pacientes;
+      this.nomePacientes = new Array<string>();
+      this.pacientes.forEach(d => {
+        this.nomePacientes.push(d.nomeCompleto);
+      });
+    });
+
+    requisicoes.push(reqPaciente);
+
+    var reqForma = this.formaPagamentoService.Todos().map(formas => {
       this.formaDePagamentos = formas;
     });
 
-    if (this.contaReceberService.contaReceber != null) {
-      this.contaReceber = this.contaReceberService.contaReceber;
-      this.dataEmi = this.util.dataParaString(this.contaReceber.dataEmissao);
-      this.dataVenc = this.util.dataParaString(this.contaReceber.dataVencimento);
-      this.contaDeAgendamento = !this.util.isNullOrWhitespace(this.contaReceber.agendamentoId);
-    }
-    else {
-      this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];
-      this.contaReceber.tipoContaDescricao = "Lançamento Manual";
-      this.contaReceber.usuarioId = this.appService.retornarUsuarioCorrente().id;
-      this.contaReceber.clinicaId = this.appService.retornarClinicaCorrente().id;
-      this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];
-      this.contaReceber.dataEmissao = new Date();
-    }
+    requisicoes.push(reqForma);
+
+    return forkJoin(requisicoes);
+  }
+
+  public ngOnInit(): void {
+
+    this.buscarDados().subscribe(c => {
+      if (this.contaReceberService.contaReceber != null) {
+        this.contaReceber = this.contaReceberService.contaReceber;
+        this.dataEmi = this.util.dataParaString(this.contaReceber.dataEmissao);
+        this.dataVenc = this.util.dataParaString(this.contaReceber.dataVencimento);
+        this.contaDeAgendamento = !this.util.isNullOrWhitespace(this.contaReceber.agendamentoId);
+
+        if (this.util.hasItems(this.contaReceber.pagamentos)) {
+          this.sourcePagamentos = new LocalDataSource(this.contaReceber.pagamentos);
+        }
+
+        if (!this.util.isNullOrWhitespace(this.contaReceber.pacienteId))
+          this.pacienteSelecionado = this.pacientes.find(c => c.id == this.contaReceber.pacienteId).nomeCompleto;
+
+        if (this.util.isNullOrWhitespace(this.contaReceber.medicoId)) {
+          let medicoTodos = new Medico();
+          medicoTodos.nomeCompleto = "Todos";
+          medicoTodos.id = "";
+          this.medicos.push(medicoTodos);
+
+          this.contaReceber.medicoId = this.medicos.find(c => c == medicoTodos).id;
+        }
+        else if (this.medicoModel != null)
+          this.medicoModel.nativeElement.setAttribute('readonly', true);
+
+      }
+      else {
+        this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];
+        this.contaReceber.tipoContaDescricao = "Lançamento Manual";
+        this.contaReceber.usuarioId = this.appService.retornarUsuarioCorrente().id;
+        this.contaReceber.clinicaId = this.appService.retornarClinicaCorrente().id;
+        this.contaReceber.tipoContaReceber = ETipoContaReceber["Lançamento Manual"];
+        this.contaReceber.dataEmissao = new Date();
+      }
+
+      this.isSpinnerVisible = false;
+    });
+
+
   }
 
   ngAfterViewChecked(): void {
@@ -237,7 +258,7 @@ export class CadastroContaReceberComponent implements OnInit, AfterViewInit, Aft
 
     if (!this.util.isNullOrWhitespace(e.target.value))
       dataFormatada = this.util.formatarDataBlur(e.target.value);
-      
+
     if (e.target.id == "dataVencimento") {
       this.dataVenc = dataFormatada;
       this.contaReceber.dataVencimento = this.util.stringParaData(dataFormatada);

@@ -10,7 +10,7 @@ import { Estados } from "../../enums/estados";
 import { Paises } from "../../enums/paises";
 import { Fornecedor } from '../../modelos/fornecedor';
 import { Medico } from '../../modelos/medico';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
@@ -62,37 +62,12 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
   fornecedor: Fornecedor;
   falhaNaBusca: boolean;
   tiposConta = ETipoContaPagar;
+  isSpinnerVisible = false;
 
   constructor(private fornecedorService: FornecedorService, private formaPagamentoService: FormaDePagamentoService, private medicoService: MedicoService, private appService: AppService, private contaPagarService: ContaPagarService, private route: ActivatedRoute, private enderecoService: EnderecoService, private router: Router, private modalService: NgbModal) {
-  }  
- 
+  }
+
   ngAfterViewInit(): void {
-
-    this.medicoService.buscarMedicosPorUsuario().subscribe(medicos => {
-      this.medicos = medicos;
-      if (this.util.isNullOrWhitespace(this.contaPagar.medicoId)) {
-        let medicoTodos = new Medico();
-        medicoTodos.nomeCompleto = "Todos";
-        medicoTodos.id = "";
-        this.medicos.push(medicoTodos);
-
-        this.contaPagar.medicoId = this.medicos.find(c => c == medicoTodos).id;
-      }
-      else if (this.medicoModel != null)
-        this.medicoModel.nativeElement.setAttribute('readonly', true);
-    });
-
-    this.fornecedorService.Todos().subscribe(fornec => {
-      this.fornecedores = fornec;
-
-      if (!this.util.isNullOrWhitespace(this.contaPagar.fornecedorId))
-        this.fornecedorSelecionado = this.fornecedores.find(c => c.id == this.contaPagar.fornecedorId).razaoSocial;
-
-      this.nomeFornecedores = new Array<string>();
-      this.fornecedores.forEach(d => {
-        this.nomeFornecedores.push(d.razaoSocial);
-      });
-    });
 
     if (this.fornecedorModel != null) {
       this.fornecedorModel.nativeElement.focus();
@@ -116,26 +91,74 @@ export class CadastroContaPagarComponent implements OnInit, AfterViewInit, After
     }
   }
 
-  public ngOnInit(): void {
+  buscarDados() {
+    var requisicoes = [];
 
-    this.formaPagamentoService.Todos().subscribe(formas => {
-      this.formaDePagamentos = formas;
-      if (this.contaPagarService.contaPagar != null && this.util.hasItems(this.contaPagar.pagamentos)) {
-        this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
-      }
+    var contaPagar = this.contaPagarService.contaPagar;
+
+    var reqMed = this.medicoService.buscarMedicosPorUsuario().map(medicos => {
+      this.medicos = medicos;
     });
 
-    if (this.contaPagarService.contaPagar != null) {
-      this.contaPagar = this.contaPagarService.contaPagar;
-      this.dataEmi = this.util.dataParaString(this.contaPagar.dataEmissao);
-      this.dataVenc = this.util.dataParaString(this.contaPagar.dataVencimento);
-    }
-    else {
-      this.contaPagar.usuarioId = this.appService.retornarUsuarioCorrente().id;
-      this.contaPagar.clinicaId = this.appService.retornarClinicaCorrente().id;
-      this.contaPagar.tipoContaPagar = ETipoContaPagar["Lançamento Manual"];
-      this.contaPagar.dataEmissao = new Date();
-    }
+    requisicoes.push(reqMed);
+
+    var reqFornec = this.fornecedorService.Todos().map(fornec => {
+      this.fornecedores = fornec;
+
+      this.nomeFornecedores = new Array<string>();
+      this.fornecedores.forEach(d => {
+        this.nomeFornecedores.push(d.razaoSocial);
+      });
+    });
+
+    requisicoes.push(reqFornec);
+
+    var reqForma = this.formaPagamentoService.Todos().map(formas => {
+      this.formaDePagamentos = formas;
+    });
+    requisicoes.push(reqForma);
+
+    return forkJoin(requisicoes);
+
+  }
+
+  public ngOnInit(): void {
+    this.isSpinnerVisible = true;
+
+    this.buscarDados().subscribe(c => {
+      this.isSpinnerVisible = false;
+
+      if (this.contaPagarService.contaPagar != null) {
+        this.contaPagar = this.contaPagarService.contaPagar;
+        this.dataEmi = this.util.dataParaString(this.contaPagar.dataEmissao);
+        this.dataVenc = this.util.dataParaString(this.contaPagar.dataVencimento);
+
+        if (this.util.isNullOrWhitespace(this.contaPagar.medicoId)) {
+          let medicoTodos = new Medico();
+          medicoTodos.nomeCompleto = "Todos";
+          medicoTodos.id = "";
+          this.medicos.push(medicoTodos);
+
+          this.contaPagar.medicoId = this.medicos.find(c => c == medicoTodos).id;
+        }
+        else if (this.medicoModel != null)
+          this.medicoModel.nativeElement.setAttribute('readonly', true);
+
+        if (!this.util.isNullOrWhitespace(this.contaPagar.fornecedorId))
+          this.fornecedorSelecionado = this.fornecedores.find(c => c.id == this.contaPagar.fornecedorId).razaoSocial;
+
+        if (this.util.hasItems(this.contaPagar.pagamentos)) {
+          this.sourcePagamentos = new LocalDataSource(this.contaPagar.pagamentos);
+        }
+
+      }
+      else {
+        this.contaPagar.usuarioId = this.appService.retornarUsuarioCorrente().id;
+        this.contaPagar.clinicaId = this.appService.retornarClinicaCorrente().id;
+        this.contaPagar.tipoContaPagar = ETipoContaPagar["Lançamento Manual"];
+        this.contaPagar.dataEmissao = new Date();
+      }
+    });
   }
 
   ngAfterViewChecked(): void {
