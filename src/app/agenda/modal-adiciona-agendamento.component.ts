@@ -107,6 +107,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
     if (this.agendamento.situacaoAgendamento == ESituacaoAgendamento["Em Atendimento"]) {
       this.horaInicialModel.nativeElement.setAttribute('disabled', true);
+      this.horaInicialModel.nativeElement.setAttribute('disabled', true);
       this.horaFinalModel.nativeElement.setAttribute('disabled', true);
       this.dataAgendamentoModel.nativeElement.setAttribute('disabled', true);
       this.convenioModel.nativeElement.setAttribute('disabled', true);

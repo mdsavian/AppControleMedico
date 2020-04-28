@@ -37,7 +37,8 @@
                   </p>
 
                   <p style="margin:0px;">
-                    <small><span class="fa fa-stethoscope">  <b>&nbsp;&nbsp;{{agendamento.tipoAgendamentoDescricao.toUpperCase()}}</b></span></small>
+                    <small><span class="fa fa-stethoscope">
+                        <b>&nbsp;&nbsp;{{agendamento.tipoAgendamentoDescricao.toUpperCase()}}</b></span></small>
                   </p>
 
                 </div>
@@ -50,6 +51,9 @@
                     [ngClass]="{'alert-danger' : ultimoAgendamentoCancelado, 'alert' : true, 'alert-success' : !ultimoAgendamentoCancelado}"
                     *ngIf="mensagemUltimoAgendamento">
                     {{mensagemUltimoAgendamento}}
+                  </div>
+                  <div class="alert-warning alert" style="text-align: center" *ngIf="agendamento.primeiraConsulta">
+                    PRIMEIRA CONSULTA
                   </div>
                 </div>
               </div>
@@ -88,8 +92,9 @@
         <button type="button" class="btn btn-danger btn-lg btn-acoes" *ngIf="validarBotoesAcoes('Excluir')"
           (click)="fechar('Excluir')"><span class="fa fa-trash" title="Excluir"></span> Excluir</button>
 
-          <button type="button" class="btn-lg btn-acoes btn btn-secondary" *ngIf="validarBotoesAcoes('ImprimirRecibo')"
-          (click)="fechar('ImprimirRecibo')"><span class="fa fa-print" title="Imprimir Recibo"></span> Imprimir Recibo </button>
+        <button type="button" class="btn-lg btn-acoes btn btn-secondary" *ngIf="validarBotoesAcoes('ImprimirRecibo')"
+          (click)="fechar('ImprimirRecibo')"><span class="fa fa-print" title="Imprimir Recibo"></span> Imprimir Recibo
+        </button>
       </div>
     </div>
 
