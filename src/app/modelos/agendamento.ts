@@ -48,6 +48,7 @@ export class Agendamento extends Entidade {
     cirurgia: Cirurgia;
     convenio: Convenio;
     procedimento: Procedimento;
+    primeiraConsulta:boolean;
     dataInicioAtendimento:Date;
     tipoAgendamentoDescricao:string;
     horaInicialAtendimento: string;

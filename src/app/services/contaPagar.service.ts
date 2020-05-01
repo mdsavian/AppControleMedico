@@ -38,9 +38,9 @@ export class ContaPagarService {
     return this.http.delete(this.accessPointUrl + "excluirPorId/" + contaPagarId);
   }
 
-  TodosPorPeriodo(primeiroDiaMes: string, dataHoje: string, medicoId:string, funcionarioId:string) {
+  TodosPorPeriodo(primeiroDiaMes: string, dataHoje: string, medicoId:string, funcionarioId:string, clinicaId: string) {
 
-    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("funcionarioId", funcionarioId);
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("funcionarioId", funcionarioId).set("clinicaId", clinicaId);;
     
     return this.http.get<Array<ContaPagar>>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }

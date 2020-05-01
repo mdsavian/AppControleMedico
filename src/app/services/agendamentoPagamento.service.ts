@@ -36,7 +36,7 @@ export class AgendamentoPagamentoService {
       var descricaoMedico = ""
 
       nomeMedico = medico.nomeCompleto;
-      descricaoMedico = "CRM " + (!this.util.isNullOrWhitespace(medico.crm) ? medico.crm : "-") + " | CPF " + (!this.util.isNullOrWhitespace(medico.cpfCnpj) ? medico.cpfCnpj : "-");
+      descricaoMedico = "CRM " + (!this.util.isNullOrWhitespace(medico.crm) ? medico.crm : "-") + " | CPF " + (!this.util.isNullOrWhitespace(medico.cpfCnpj) ? this.util.formataCpf(medico.cpfCnpj) : "-");
 
       var enderecoClinica = "";
 

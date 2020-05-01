@@ -134,13 +134,19 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
 
       if (this.agendamento.tipoAgendamento != ETipoAgendamento.Bloqueio) {
 
-        if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId) && this.util.hasItems(this.pacientes)) {
+        console.log(this.agendamento.paciente, this.pacientes);
+
+        if (this.agendamento.paciente != null)
+        {
+          this.paciente = this.agendamento.paciente;
+          this.pacienteSelecionado = this.agendamento.paciente.nomeCompleto;
+        }
+        else if (!this.util.isNullOrWhitespace(this.agendamento.pacienteId) && this.util.hasItems(this.pacientes)) {
           this.paciente = this.pacientes.find(c => c.id == this.agendamento.pacienteId);
           this.pacienteSelecionado = this.nomePacientes.find(c => c == this.paciente.nomeCompleto);
           this.agendamento.paciente = this.paciente;
-
-          this.buscarDadosPaciente();
         }
+        this.buscarDadosPaciente();
 
         if (!this.util.isNullOrWhitespace(this.agendamento.convenioId) && this.util.hasItems(this.convenios))
           this.agendamento.convenio = this.convenios.find(c => c.id == this.agendamento.convenioId);
@@ -312,7 +318,6 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
         }
         else {
 
-          this.pacientes.push(paciente);
           this.nomePacientes.push(paciente.nomeCompleto);
           this.pacienteSelecionado = paciente.nomeCompleto;
 
@@ -332,6 +337,7 @@ export class ModalAdicionaAgendamentoComponent implements OnInit, AfterViewInit 
             this.agendamento.paciente = pacienteCadastrado;
             this.paciente = pacienteCadastrado
             this.agendamento.pacienteId = pacienteCadastrado.id;
+            this.pacientes.push(paciente);
 
             this.falhaNaBusca = false;
             this.buscarDadosPaciente();

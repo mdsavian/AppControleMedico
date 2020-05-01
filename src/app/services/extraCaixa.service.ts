@@ -40,8 +40,8 @@ export class ExtraCaixaService {
     return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "buscarPorCaixa/" + caixaId);
   }
   
-  TodosPorPeriodo(dataInicio: any, dataFim: any, medicoId:string,caixaId:string, funcionarioId:string) {
-    let parametros = new HttpParams().set("dataInicio", dataInicio).set("dataFim", dataFim).set("medicoId", medicoId).set("caixaId",caixaId).set("funcionarioId", funcionarioId);    
+  TodosPorPeriodo(dataInicio: any, dataFim: any, medicoId:string,caixaId:string, funcionarioId:string, clinicaId: string) {
+    let parametros = new HttpParams().set("dataInicio", dataInicio).set("dataFim", dataFim).set("medicoId", medicoId).set("caixaId",caixaId).set("funcionarioId", funcionarioId).set("clinicaId", clinicaId);;    
     return this.http.get<ExtraCaixa[]>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
   }
 

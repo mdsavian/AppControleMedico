@@ -264,20 +264,23 @@ export class DashboardAnaliticoComponent implements OnInit {
 
     let dataInicio = new Date(this.fromDate.year, this.fromDate.month, this.fromDate.day);
     let dataFim = new Date(this.toDate.year, this.toDate.month, this.toDate.day);
+    
+    var clinicaId = this.appService.retornarClinicaCorrente().id;
+    console.log(clinicaId);
 
-    let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.funcionario.id).map(dados => {
+    let reqContaReceber = this.contaReceberService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.funcionario.id, clinicaId).map(dados => {
       this.contasReceber = dados;
     });
 
-    let reqContaPagar = this.contaPagarService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.funcionario.id).map(dados => {
+    let reqContaPagar = this.contaPagarService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.funcionario.id, clinicaId).map(dados => {
       this.contasPagar = dados;
     });
 
-    let reqExtraCaixa = this.extraCaixaService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id).map(dados => {
+    let reqExtraCaixa = this.extraCaixaService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id, clinicaId).map(dados => {
       this.extrasCaixa = dados;
     });
 
-    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id).map(dados => {
+    let reqAgendamento = this.agendamentoService.TodosPorPeriodo(this.util.dataParaString(dataInicio), this.util.dataParaString(dataFim), this.medico.id, this.caixa.id, this.funcionario.id, clinicaId).map(dados => {
       this.agendamentos = dados;
       this.tempoMedioAgendamento = this.util.hasItems(dados) ? this.agendamentoService.calcularTempoMedio(dados) + " Minutos" : "-";
     });

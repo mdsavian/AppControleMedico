@@ -724,8 +724,9 @@ export class AgendaComponent implements OnInit {
     lista.forEach(agendamento => {
       var dataHoraInicial = this.util.concatenaDataHora(this.util.dataParaString(agendamento.dataAgendamento), agendamento.horaInicial);
 
-      if (this.pacientes.find(c => c.id == agendamento.pacienteId) == null && agendamento.paciente != null)
-        this.pacientes.push(agendamento.paciente);
+      // console.log("opa eae", this.pacientes.find(c => c.id == agendamento.pacienteId) == null,agendamento.paciente);
+      // if (this.pacientes.find(c => c.id == agendamento.pacienteId) == null && agendamento.paciente != null)
+      //   this.pacientes.push(agendamento.paciente);
 
       var eventoBancoVelho = this.eventosBanco.find(c => c.id == agendamento.id);
       if (eventoBancoVelho != null) {
@@ -835,7 +836,7 @@ export class AgendaComponent implements OnInit {
 
       var paciente: Paciente;
       if (!this.util.isNullOrWhitespace(agendamento.pacienteId))
-        paciente = this.pacientes.find(c => c.id == agendamento.pacienteId);
+        paciente = agendamento.paciente == null ? this.pacientes.find(c => c.id == agendamento.pacienteId) : agendamento.paciente;
       var convenio = this.convenios.find(c => c.id == agendamento.convenioId);
 
       var operacao = this.agendamentoService.retornarOperacaoAgendamento(agendamento, this.exames, this.cirurgias, this.procedimentos).toUpperCase();
