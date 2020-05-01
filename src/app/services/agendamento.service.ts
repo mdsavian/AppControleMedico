@@ -12,6 +12,7 @@ import { CirurgiaService } from '../services/cirurgia.service';
 import { ExameService } from '../services/exame.service';
 import { ProcedimentoService } from '../services/procedimento.service';
 import { Caixa } from '../modelos/caixa';
+import { AppService } from './app.service';
 
 
 @Injectable({
@@ -27,7 +28,7 @@ export class AgendamentoService {
   public agendamento: Agendamento;
 
   constructor(private http: HttpClient,
-    private exameService: ExameService, private procedimentoService: ProcedimentoService, private cirurgiaService: CirurgiaService) {
+    private exameService: ExameService, private procedimentoService: ProcedimentoService, private appService:AppService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
