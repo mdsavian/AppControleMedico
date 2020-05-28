@@ -24,6 +24,7 @@ import { ExtraCaixaService } from '../../services/extraCaixa.service';
 import { ExtraCaixa } from '../../modelos/extraCaixa';
 import { ETipoExtraCaixa } from '../../enums/ETipoExtraCaixa';
 import { ModalAgendamentosMedicoComponent } from '../../agenda/modal-agendamentos-medico.component';
+import { BotaoImprimirAgendamentoMedicosComponent } from '../../shared/components/botao-imprimir-agendamento-medicos-component';
 
 @Component({
   templateUrl: './dashboard-analitico.component.html',
@@ -143,7 +144,7 @@ export class DashboardAnaliticoComponent implements OnInit {
         totalAgendamentos = totalAgendamentos + totalRecebidoAgendamentos;
 
       if (quantidadeAgendamentos > 0)
-        dados.push({ medicoId: medico.id, nomeMedico: medico.nomeCompleto, quantidadeAgendamentos: quantidadeAgendamentos, total: totalRecebidoAgendamentos, mediaAgendamento: mediaAgendamento })
+        dados.push({ medicoId: medico.id, nomeMedico: medico.nomeCompleto, quantidadeAgendamentos: quantidadeAgendamentos, total: totalRecebidoAgendamentos, mediaAgendamento: mediaAgendamento, agendamentos:agendamentosMedicos })
     });
 
     this.totalAgendamentosMedicos = this.util.formatarDecimal(totalAgendamentos);
@@ -441,6 +442,12 @@ export class DashboardAnaliticoComponent implements OnInit {
         title: 'Média por Agendamento',
         valuePrepareFunction: (mediaAgendamento) => { return this.util.formatarDecimal(mediaAgendamento) },
         filter: false
+      },
+      agendamentos: {
+        title: "Imprimir Resumo",
+        type: "custom",
+        filter: false,
+        renderComponent: BotaoImprimirAgendamentoMedicosComponent,
       }
     },
     edit: {

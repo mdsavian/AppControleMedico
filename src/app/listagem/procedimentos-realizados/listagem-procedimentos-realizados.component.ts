@@ -137,6 +137,11 @@ export class ListagemProcedimentosRealizadosComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (dataAgendamento) => { return this.util.dataParaString(dataAgendamento) }
       },
+      horaInicial: {
+        title: 'Hora',
+        filter: true,
+        valuePrepareFunction: (horaInicial) => { return this.util.formatarHora(horaInicial) }
+      },
       medico: {
         title: 'Médico',
         filter: true,

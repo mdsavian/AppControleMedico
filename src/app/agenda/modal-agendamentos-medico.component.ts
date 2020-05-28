@@ -67,6 +67,11 @@ export class ModalAgendamentosMedicoComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (dataAgendamento) => { return this.util.dataParaString(dataAgendamento) }
       },
+      horaInicial: {
+        title: 'Hora',
+        filter: true,
+        valuePrepareFunction: (horaInicial) => { return this.util.formatarHora(horaInicial) }
+      },
       paciente: {
         title: 'Paciente',
         filter: true,

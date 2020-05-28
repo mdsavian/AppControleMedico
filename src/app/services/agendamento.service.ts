@@ -28,7 +28,7 @@ export class AgendamentoService {
   public agendamento: Agendamento;
 
   constructor(private http: HttpClient,
-    private exameService: ExameService, private procedimentoService: ProcedimentoService, private appService:AppService, private cirurgiaService: CirurgiaService) {
+    private exameService: ExameService, private procedimentoService: ProcedimentoService, private appService: AppService, private cirurgiaService: CirurgiaService) {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
   }
 
@@ -71,8 +71,8 @@ export class AgendamentoService {
   buscarAgendamentosCirurgia(cirurgiaId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosCirurgia/" + cirurgiaId); }
   buscarAgendamentosFuncionario(funcionarioId: any) { return this.http.get<Agendamento[]>(this.accessPointUrl + "buscarAgendamentosFuncionario/" + funcionarioId); }
 
-  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId: string, caixaId: string, funcionarioId: string, clinicaId: string) {    
-  let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("caixaId", caixaId).set("funcionarioId", funcionarioId).set("clinicaId",clinicaId);
+  TodosPorPeriodo(primeiroDiaMes: any, dataHoje: any, medicoId: string, caixaId: string, funcionarioId: string, clinicaId: string) {
+    let parametros = new HttpParams().set("primeiroDiaMes", primeiroDiaMes).set("dataHoje", dataHoje).set("medicoId", medicoId).set("caixaId", caixaId).set("funcionarioId", funcionarioId).set("clinicaId", clinicaId);
     console.log(parametros);
     return this.http.get<Array<Agendamento>>(this.accessPointUrl + "todosPorPeriodo?" + parametros);
 
@@ -207,5 +207,90 @@ export class AgendamentoService {
     var minutos = Math.floor(media);
     var segundos = 60 * (media - minutos);
     return minutos + ":" + ("0" + segundos.toFixed(0)).slice(-2);
+  }
+
+
+  imprimirResumoAgendamentos(agendamentos: Agendamento[]) {
+
+    if (agendamentos != null && this.util.hasItems(agendamentos)) {
+
+      let descricao =
+        '<!DOCTYPE html>                                                                                                      ' +
+        '<html>                                                                                                               ' +
+        '<head>                                                                                                               ' +
+        '    <title>Recibo</title>                                                                                            ' +
+        '    <meta charset="utf-8">                                                                                           ' +
+        '    <meta name="viewport" content="width=device-width, initial-scale=1">                                             ' +
+        '    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">             ' +
+        '    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>                         ' +
+        '    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>                ' +
+        '    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>                      ' +
+
+        '<style>                           ' +
+        'table {                           ' +
+        '  font-family: arial, sans-serif; ' +
+        '  border-collapse: collapse;      ' +
+        '  width: 100%;                    ' +
+        '}                                 ' +
+        '                                  ' +
+        'td, th {                          ' +
+        '  border: 1px solid #dddddd;      ' +
+        '  text-align: left;               ' +
+        '  padding: 8px;                   ' +
+        '}                                 ' +
+        '                                  ' +
+        'tr:nth-child(even) {              ' +
+        '  background-color: #dddddd;      ' +
+        '}                                 ' +
+        '</style>                          ' +
+
+        '</head>                                                                                                              ' +
+        '<body>                                                                                                               ' +
+        '<table>                 ' +
+        '  <tr>                  ' +
+        '    <th>Data</th>       ' +
+        '    <th>Médico</th>     ' +
+        '    <th>Paciente</th>   ' +
+        '    <th>Descrição</th>  ' +
+        '    <th>Valor</th>      ' +
+        '  </tr>                 ' ;
+        
+
+        let somaTodos= 0;
+        agendamentos.forEach(agendamento => {
+
+          let soma = 0;
+          if (agendamento.pagamentos != null && this.util.hasItems(agendamento.pagamentos)) {
+            agendamento.pagamentos.forEach(pag => soma = +soma + +(pag.valor * pag.parcela));            
+          }
+          somaTodos = somaTodos + soma;
+          
+
+          descricao = descricao +
+          '  <tr>                  ' +
+          '    <td>' + this.util.dataParaString(agendamento.dataAgendamento) + '</td> ' +
+          '    <td>' + agendamento.medico.nomeCompleto.toUpperCase() + '</td> ' +
+          '    <td>' + agendamento.paciente.nomeCompleto.toUpperCase() + '</td> ' +
+          '    <td>' + agendamento.tipoAgendamentoDescricao.toUpperCase() + '</td> ' +
+          '    <td>' + this.util.formatarDecimal(soma) + '</td>     ' +
+          '  </tr>                 ' ;
+
+        });
+
+        descricao = descricao + 
+        '  <tr>                  ' +
+        '    <td></td>       ' +                
+        '    <td></td>       ' +                
+        '    <td></td>  ' +
+        '    <td>VALOR TOTAL: </td>  ' +
+        '    <td>' + this.util.formatarDecimalBlur(somaTodos) + '</td>' +
+        '  </tr>                 ' ;        
+        '</table>                ' +
+        '</body>' +
+        '</html>';
+        
+      return descricao;
+
+    }
   }
 } 
