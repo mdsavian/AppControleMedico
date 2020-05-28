@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     this.loginService.login(this.usuario).pipe(first()).subscribe(
       usuarioRetorno => {
 
-        
+        console.log(usuarioRetorno);
         if (usuarioRetorno == null) {
           var modal = this.modalService.open(ModalErrorComponent, { windowClass: "modal-holder modal-error" });
           modal.componentInstance.mensagemErro = "Usuário/Senha inválidos. Verifique!";
