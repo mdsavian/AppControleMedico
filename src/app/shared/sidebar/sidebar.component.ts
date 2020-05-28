@@ -69,6 +69,7 @@ export class SidebarComponent implements OnInit {
   montarSideBar() {
     var usuario = this.appService.retornarUsuarioCorrente();
     var itensSideBar = this.ROUTES.filter(sidebarnavItem => sidebarnavItem);
+    
     this.isSpinnerVisible = true;
     if (usuario != null && this.util.hasItems(itensSideBar)) {
 
