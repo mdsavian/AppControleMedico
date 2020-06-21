@@ -37,13 +37,13 @@ This ERP features all the best tools and practices in web development!
 3. Run command npm install
 4. Run ng serve.
 5. <b> To acess use Login: admin | Password: @adm1234 </b>
-6. You can create a user for yourself acessing "Médicos" or "Funcionários".
+6. You can create a user for yourself acessing "Médico" or "Funcionário".
 
 ### Getting started with the backend server
 1. Clone Web Api repo using git clone https://github.com/mdsavian/ApiControleMedico.git
 2. Install MongoDb. Create Database.
 3. On DbContexto.cs you can change the name of database and the connection link.
-4. Start api.
+4. Start Api.
 
 ## License
 
