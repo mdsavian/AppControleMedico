@@ -1,27 +1,39 @@
-# AdminAngular
+<h1 align="center">GERCLI - A ERP for your clinic. </h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.0.
+<div align="center">
 
-## Development server
+[![Sponsorship](https://img.shields.io/badge/funding-github-%23EA4AAA)](https://github.com/users/mattlewis92/sponsorship)
+[![Build Status](https://travis-ci.org/mattlewis92/angular-calendar.svg?branch=master)](https://travis-ci.org/mattlewis92/angular-calendar)
+[![codecov](https://codecov.io/gh/mattlewis92/angular-calendar/branch/master/graph/badge.svg)](https://codecov.io/gh/mattlewis92/angular-calendar)
+[![npm version](https://badge.fury.io/js/angular-calendar.svg)](http://badge.fury.io/js/angular-calendar)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Twitter Follow](https://img.shields.io/twitter/follow/mattlewis92_.svg)](https://twitter.com/mattlewis92_)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+</div>
 
-## Code scaffolding
+## Table of contents
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- [About](#about)
+- [Features](#features)
+- [Getting started](#getting-started)
+- [License](#license)
 
-## Build
+<h2 align="center">About</h2>
+Um erp para o gerenciamento de uma clínica, com calendário para agendamentos, gerenciamento da parte financeira e outras coisas que você pode descobrir testando.
+An ERP to admin your clinic, with a calendar to make appointments, admin financial part.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+<h2 align="center">Features</h2>
+This ERP features all the best tools and practices in web development!
 
-## Running unit tests
+- ⚛️ **TypeScript** 
+- ♻️ **Angular 8**
+- 💹 **Node Js**
+- ⚛️ **Bootstrap 4**
+- 💹 **JQuery 3**
+- ♻️ **Rxjs 6**
+- 📄 **MongoDB**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+<h2 align="center">Getting started</h2>
 
-## Running end-to-end tests
+<h2 align="center">License</h2>
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
