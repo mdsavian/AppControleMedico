@@ -17,8 +17,7 @@
 - [License](#license)
 
 <h2 align="center">About</h2>
-Um erp para o gerenciamento de uma clínica, com calendário para agendamentos, gerenciamento da parte financeira e outras coisas que você pode descobrir testando.
-An ERP to admin your clinic, with a calendar to make appointments, admin financial part.
+An Erp to managing a medical clinic, with a calendar for appointments.
 
 <h2 align="center">Features</h2>
 This ERP features all the best tools and practices in web development!
@@ -32,6 +31,10 @@ This ERP features all the best tools and practices in web development!
 - 📄 **MongoDB**
 
 <h2 align="center">Getting started</h2>
-
+ 1. Clone this repo using git clone https://github.com/mdsavian/AppControleMedico.git
+ 2. Move yourself to the appropriate directory: cd appcontrolemedico
+ 3. Run command npm install
+ 
 <h2 align="center">License</h2>
 
+This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/licenses/MIT) page for details.
