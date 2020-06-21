@@ -1,10 +1,10 @@
 <h1 align="center">GERCLI - A ERP for your clinic. </h1>
 
 <div align="center">
-  
-  ![Twitter Follow](https://img.shields.io/twitter/follow/MarlonSavian?style=social)  
+
   ![GitHub language count](https://img.shields.io/github/languages/count/mdsavian/AppControleMedico)
   ![GitHub top language](https://img.shields.io/github/languages/top/mdsavian/AppControleMedico)
+  ![Twitter Follow](https://img.shields.io/twitter/follow/MarlonSavian?style=social)
   
 </div>
 
