@@ -1,4 +1,4 @@
-<h1 align="center">GERCLI - A ERP for your clinic. </h1>
+<h1 align="center">GERCLI - An ERP for medical clinic. </h1>
 
 <div align="center">
 
