@@ -1,10 +1,9 @@
 <h1 align="center">GERCLI - A ERP for your clinic. </h1>
 
-<div align="center">
-![GitHub repo size](https://img.shields.io/github/repo-size/mdsavian/AppControleMedico?style=plastic)
-![GitHub version](https://badge.fury.io/gh/mdsavian%2FAppControleMedico.svg)](https://badge.fury.io/gh/mdsavian%2FAppControleMedico)
+<!--div align="center">
+[![Twitter Follow](https://img.shields.io/twitter/follow/mattlewis92_.svg)](https://twitter.com/mattlewis92_)
 
-</div>
+<!--/div-->
 
 ## Table of contents
 
